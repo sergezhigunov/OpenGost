@@ -37,9 +37,22 @@
     <DocumentationFile>bin\Release\Gost.Security.Cryptography.XML</DocumentationFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Cryptography\SecurityCryptographyStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SecurityCryptographyStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Cryptography\SecurityCryptographyStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SecurityCryptographyStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Security\Cryptography\SymmetricTransform.cs" />
+    <Compile Include="Security\Cryptography\SymmetricTransformMode.cs" />
+    <Compile Include="Security\Cryptography\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

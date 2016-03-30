@@ -48,6 +48,9 @@
     <Compile Include="Security\Cryptography\Grasshopper.cs" />
     <Compile Include="Security\Cryptography\GrasshopperManaged.cs" />
     <Compile Include="Security\Cryptography\GrasshopperManagedTransform.cs" />
+    <Compile Include="Security\Cryptography\Magma.cs" />
+    <Compile Include="Security\Cryptography\MagmaManaged.cs" />
+    <Compile Include="Security\Cryptography\MagmaManagedTransform.cs" />
     <Compile Include="Security\Cryptography\SecurityCryptographyStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

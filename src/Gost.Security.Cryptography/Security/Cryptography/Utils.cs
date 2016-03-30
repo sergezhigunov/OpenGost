@@ -11,6 +11,13 @@ namespace Gost.Security.Cryptography
         internal static RandomNumberGenerator StaticRandomNumberGenerator
             => LazyInitializer.EnsureInitialized(ref s_randomNumberGenerator, () => new RNGCryptoServiceProvider());
 
+        internal static byte[] GenerateRandomBytes(int size)
+        {
+            byte[] array = new byte[size];
+            StaticRandomNumberGenerator.GetBytes(array);
+            return array;
+        }
+
         internal static void EraseData<T>(ref T[] data)
             where T : struct
         {

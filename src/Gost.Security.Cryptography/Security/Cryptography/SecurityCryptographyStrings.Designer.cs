@@ -115,6 +115,24 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specified feedback is not a valid for this algorithm..
+        /// </summary>
+        internal static string InvalidFeedbackSize {
+            get {
+                return ResourceManager.GetString("InvalidFeedbackSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specified initialization vector (IV) does not match allowed size for this algorithm..
+        /// </summary>
+        internal static string InvalidIVSize {
+            get {
+                return ResourceManager.GetString("InvalidIVSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Padding is invalid and cannot be removed..
         /// </summary>
         internal static string InvalidPadding {

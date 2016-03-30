@@ -135,6 +135,12 @@
   <data name="InvalidDataSize" xml:space="preserve">
     <value>Length of the data to transform is invalid.</value>
   </data>
+  <data name="InvalidFeedbackSize" xml:space="preserve">
+    <value>Specified feedback is not a valid for this algorithm.</value>
+  </data>
+  <data name="InvalidIVSize" xml:space="preserve">
+    <value>Specified initialization vector (IV) does not match allowed size for this algorithm.</value>
+  </data>
   <data name="InvalidPadding" xml:space="preserve">
     <value>Padding is invalid and cannot be removed.</value>
   </data>

@@ -54,7 +54,7 @@ namespace Gost.Security.Cryptography
         /// </summary>
         public override void GenerateIV()
         {
-            KeyValue = GenerateRandomBytes(FeedbackSizeValue / 8);
+            IVValue = GenerateRandomBytes(FeedbackSizeValue / 8);
         }
 
         /// <summary>

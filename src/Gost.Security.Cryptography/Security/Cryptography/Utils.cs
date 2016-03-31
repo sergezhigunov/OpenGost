@@ -27,5 +27,11 @@ namespace Gost.Security.Cryptography
                 data = null;
             }
         }
+
+        internal static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] result, int resultOffset, int count)
+        {
+            for (int i = 0; i < count; i++)
+                result[resultOffset + i] = (byte)(left[leftOffset + i] ^ right[rightOffset + i]);
+        }
     }
 }

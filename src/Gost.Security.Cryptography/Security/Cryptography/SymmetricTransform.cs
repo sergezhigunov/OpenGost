@@ -281,12 +281,6 @@ namespace Gost.Security.Cryptography
             return inputCount + padSize;
         }
 
-        protected static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] result, int resultOffset, int count)
-        {
-            for (int i = 0; i < count; i++)
-                result[resultOffset + i] = (byte)(left[leftOffset + i] ^ right[rightOffset + i]);
-        }
-
         private int DecryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[] outputBuffer, int outputOffset, bool isFinalTransform)
         {
             if (outputBuffer == null)

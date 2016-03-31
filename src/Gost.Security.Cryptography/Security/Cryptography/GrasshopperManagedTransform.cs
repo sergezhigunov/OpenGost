@@ -124,7 +124,7 @@ namespace Gost.Security.Cryptography
         }
 
         private static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] output, int outputOffset)
-            => Xor(left, leftOffset, right, rightOffset, output, outputOffset, 16);
+            => Utils.Xor(left, leftOffset, right, rightOffset, output, outputOffset, 16);
 
         private static void Substitute(byte[] substTable, byte[] data, int dataOffset)
         {

@@ -36,7 +36,9 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Gost.Security.Cryptography\Gost.Security.Cryptography.csproj">
       <Project>{11b37b75-a816-4fe6-b621-dac618d6c49f}</Project>

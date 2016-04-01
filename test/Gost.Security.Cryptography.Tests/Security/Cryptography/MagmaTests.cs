@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    using static Utils;
+    using static TestsUtils;
 
     public class MagmaTests
     {

@@ -2,7 +2,7 @@
 
 namespace Gost.Security.Cryptography
 {
-    using static Utils;
+    using static CryptoUtils;
 
     /// <summary>
     /// Accesses the managed version of the <see cref="Grasshopper"/> algorithm. This class cannot be inherited.

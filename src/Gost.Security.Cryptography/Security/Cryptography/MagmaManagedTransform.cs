@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
-    using static Utils;
+    using static CryptoUtils;
 
     internal sealed class MagmaManagedTransform : SymmetricTransform
     {
@@ -65,10 +65,10 @@ namespace Gost.Security.Cryptography
                 a0 = ToUInt32(inputBuffer, inputOffset + 4),
                 a1 = ToUInt32(inputBuffer, inputOffset);
 
-            ComputeEightRoundsDirectly(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsDirectly(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsDirectly(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsConversely(_keyExpansion, ref a0, ref a1);
+            ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
+            ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
+            ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
+            ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
 
             CopyUInt32To(outputBuffer, outputOffset, a0);
             CopyUInt32To(outputBuffer, outputOffset + 4, a1);
@@ -80,10 +80,10 @@ namespace Gost.Security.Cryptography
                 a0 = ToUInt32(inputBuffer, inputOffset + 4),
                 a1 = ToUInt32(inputBuffer, inputOffset);
 
-            ComputeEightRoundsDirectly(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsConversely(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsConversely(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsConversely(_keyExpansion, ref a0, ref a1);
+            ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
+            ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
+            ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
+            ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
 
             CopyUInt32To(outputBuffer, outputOffset, a0);
             CopyUInt32To(outputBuffer, outputOffset + 4, a1);
@@ -99,7 +99,7 @@ namespace Gost.Security.Cryptography
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ComputeEightRoundsDirectly(uint[] k, ref uint a0, ref uint a1)
+        private static void ComputeEightRoundsForwardKeyOrder(uint[] k, ref uint a0, ref uint a1)
         {
             a1 ^= SubstituteAndRotateElevenBits(a0 + k[0]);
             a0 ^= SubstituteAndRotateElevenBits(a1 + k[1]);
@@ -112,7 +112,7 @@ namespace Gost.Security.Cryptography
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ComputeEightRoundsConversely(uint[] k, ref uint a0, ref uint a1)
+        private static void ComputeEightRoundsBackwardKeyOrder(uint[] k, ref uint a0, ref uint a1)
         {
             a1 ^= SubstituteAndRotateElevenBits(a0 + k[7]);
             a0 ^= SubstituteAndRotateElevenBits(a1 + k[6]);

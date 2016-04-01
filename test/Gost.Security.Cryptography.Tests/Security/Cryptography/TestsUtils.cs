@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Gost.Security.Cryptography
 {
-    internal static class Utils
+    internal static class TestsUtils
     {
         internal static byte[] ReadToEnd(this CryptoStream stream)
         {

@@ -4,13 +4,13 @@ using System.Security.Cryptography;
 namespace Gost.Security.Cryptography
 {
     using static Buffer;
-    using static Utils;
+    using static CryptoUtils;
 
     internal sealed class GrasshopperManagedTransform : SymmetricTransform
     {
         private static readonly byte[]
             s_kB = { 148, 32, 133, 16, 194, 192, 1, 251, 1, 192, 194, 16, 133, 32, 148, 1 },
-            s_substTable =
+            s_forwardSubstTable =
             {
                 0xFC, 0xEE, 0xDD, 0x11, 0xCF, 0x6E, 0x31, 0x16, 0xFB, 0xC4, 0xFA, 0xDA, 0x23, 0xC5, 0x04, 0x4D,
                 0xE9, 0x77, 0xF0, 0xDB, 0x93, 0x2E, 0x99, 0xBA, 0x17, 0x36, 0xF1, 0xBB, 0x14, 0xCD, 0x5F, 0xC1,
@@ -29,7 +29,7 @@ namespace Gost.Security.Cryptography
                 0x20, 0x71, 0x67, 0xA4, 0x2D, 0x2B, 0x09, 0x5B, 0xCB, 0x9B, 0x25, 0xD0, 0xBE, 0xE5, 0x6C, 0x52,
                 0x59, 0xA6, 0x74, 0xD2, 0xE6, 0xF4, 0xB4, 0xC0, 0xD1, 0x66, 0xAF, 0xC2, 0x39, 0x4B, 0x63, 0xB6,
             },
-            s_reversedSubstTable =
+            s_backwardSubstTable =
             {
                 0xA5, 0x2D, 0x32, 0x8F, 0x0E, 0x30, 0x38, 0xC0, 0x54, 0xE6, 0x9E, 0x39, 0x55, 0x7E, 0x52, 0x91,
                 0x64, 0x03, 0x57, 0x5A, 0x1C, 0x60, 0x07, 0x18, 0x21, 0x72, 0xA8, 0xD1, 0x29, 0xC6, 0xA4, 0x3F,
@@ -76,8 +76,8 @@ namespace Gost.Security.Cryptography
                 for (int j = 0; j < 8; j++)
                 {
                     Xor(s_iterConsts[i][j], 0, _keyExpansion, expansionPartOffset, temp, 0);
-                    Substitute(s_substTable, temp, 0);
-                    ComputeLinearTransform(temp, 0);
+                    Substitute(s_forwardSubstTable, temp, 0);
+                    ComputeLinearTransformForward(temp, 0);
                     Xor(temp, 0, _keyExpansion, expansionPartOffset + 16, temp, 0);
 
                     BlockCopy(_keyExpansion, expansionPartOffset, _keyExpansion, expansionPartOffset + 16, 16);
@@ -104,8 +104,8 @@ namespace Gost.Security.Cryptography
             for (int i = 0; i < 9; i++)
             {
                 Xor(outputBuffer, outputOffset, _keyExpansion, 16 * i, outputBuffer, outputOffset);
-                Substitute(s_substTable, outputBuffer, outputOffset);
-                ComputeLinearTransform(outputBuffer, outputOffset);
+                Substitute(s_forwardSubstTable, outputBuffer, outputOffset);
+                ComputeLinearTransformForward(outputBuffer, outputOffset);
             }
             Xor(outputBuffer, outputOffset, _keyExpansion, 16 * 9, outputBuffer, outputOffset);
         }
@@ -117,14 +117,14 @@ namespace Gost.Security.Cryptography
             for (int i = 0; i < 9; i++)
             {
                 Xor(outputBuffer, outputOffset, _keyExpansion, (9 - i) * 16, outputBuffer, outputOffset);
-                ComputeReversedLinearTransform(outputBuffer, outputOffset);
-                Substitute(s_reversedSubstTable, outputBuffer, outputOffset);
+                ComputeLinearTransformBackward(outputBuffer, outputOffset);
+                Substitute(s_backwardSubstTable, outputBuffer, outputOffset);
             }
             Xor(outputBuffer, outputOffset, _keyExpansion, 0, outputBuffer, outputOffset);
         }
 
         private static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] output, int outputOffset)
-            => Utils.Xor(left, leftOffset, right, rightOffset, output, outputOffset, 16);
+            => CryptoUtils.Xor(left, leftOffset, right, rightOffset, output, outputOffset, 16);
 
         private static void Substitute(byte[] substTable, byte[] data, int dataOffset)
         {
@@ -132,7 +132,7 @@ namespace Gost.Security.Cryptography
                 data[dataOffset + i] = substTable[data[dataOffset + i]];
         }
 
-        private static void ComputeLinearTransform(byte[] data, int dataOffset)
+        private static void ComputeLinearTransformForward(byte[] data, int dataOffset)
         {
             for (int i = 0; i < 16; i++)
             {
@@ -146,7 +146,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
-        private static void ComputeReversedLinearTransform(byte[] data, int dataOffset)
+        private static void ComputeLinearTransformBackward(byte[] data, int dataOffset)
         {
             for (int i = 0; i < 16; i++)
             {
@@ -175,7 +175,7 @@ namespace Gost.Security.Cryptography
                 {
                     byte[] iterConst = new byte[16];
                     iterConst[15] = (byte)(i * 8 + j + 1); ;
-                    ComputeLinearTransform(iterConst, 0);
+                    ComputeLinearTransformForward(iterConst, 0);
                     row[j] = iterConst;
                 }
 
@@ -186,29 +186,29 @@ namespace Gost.Security.Cryptography
 
         private static byte[][] InitMultTable()
         {
-            byte[][] retval = new byte[16][];
+            byte[][] table = new byte[16][];
             for (int i = 0; i < 16; i++)
             {
                 byte[] row = new byte[256];
                 for (int j = 0; j < 256; j++)
                 {
-                    byte x = (byte)j;
-                    byte z = 0;
-                    byte y = s_kB[i];
+                    int x = j;
+                    int z = 0;
+                    int y = s_kB[i];
 
                     while (y != 0)
                     {
                         if ((y & 1) != 0)
                             z ^= x;
-                        x = (byte)((x << 1) ^ (((byte)(x & 0x80) != 0) ? 0xC3 : 0x00));
+                        x = x << 1 ^ (((x & 0x80) != 0) ? 0xC3 : 0x00);
                         y >>= 1;
                     }
 
                     row[j] = (byte)z;
                 }
-                retval[i] = row;
+                table[i] = row;
             }
-            return retval;
+            return table;
         }
     }
 }

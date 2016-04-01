@@ -5,7 +5,7 @@ namespace Gost.Security.Cryptography
 {
     using static Buffer;
     using static SecurityCryptographyStrings;
-    using static Utils;
+    using static CryptoUtils;
 
     internal abstract class SymmetricTransform : ICryptoTransform
     {

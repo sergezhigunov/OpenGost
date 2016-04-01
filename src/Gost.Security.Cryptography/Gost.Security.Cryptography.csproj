@@ -59,7 +59,7 @@
     </Compile>
     <Compile Include="Security\Cryptography\SymmetricTransform.cs" />
     <Compile Include="Security\Cryptography\SymmetricTransformMode.cs" />
-    <Compile Include="Security\Cryptography\Utils.cs" />
+    <Compile Include="Security\Cryptography\CryptoUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

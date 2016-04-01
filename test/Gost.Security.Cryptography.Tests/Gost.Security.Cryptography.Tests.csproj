@@ -73,7 +73,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\GrasshopperTests.cs" />
     <Compile Include="Security\Cryptography\MagmaTests.cs" />
-    <Compile Include="Security\Cryptography\Utils.cs" />
+    <Compile Include="Security\Cryptography\TestsUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

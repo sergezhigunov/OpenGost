@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Gost.Security.Cryptography
 {
-    internal static class Utils
+    internal static class CryptoUtils
     {
         private static RandomNumberGenerator s_randomNumberGenerator;
 

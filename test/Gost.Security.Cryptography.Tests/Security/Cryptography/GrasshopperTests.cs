@@ -29,22 +29,10 @@ namespace Gost.Security.Cryptography
                 newPlainTextBytes;
 
             using (var algorithm = new GrasshopperManaged { Mode = cipherMode, Padding = paddingMode, Key = KeyBytes, IV = IVBytes })
-            {
-                using (var cipherTextEncryptStream = new MemoryStream())
-                using (var encryptor = algorithm.CreateEncryptor())
-                using (var encryptorStream = new CryptoStream(cipherTextEncryptStream, encryptor, CryptoStreamMode.Write))
-                {
-                    encryptorStream.Write(PlainTextBytes, 0, PlainTextBytes.Length);
-                    encryptorStream.FlushFinalBlock();
-                    cipherTextBytes = cipherTextEncryptStream.ToArray();
-                }
-                using (var cipherTextDecryptStream = new MemoryStream(cipherTextBytes, false))
-                using (var decryptor = algorithm.CreateDecryptor())
-                using (var decryptorStream = new CryptoStream(cipherTextDecryptStream, decryptor, CryptoStreamMode.Read))
-                {
-                    newPlainTextBytes = decryptorStream.ReadToEnd();
-                }
-            }
+                InternalEncryptAndDecrypt(
+                    algorithm.CreateEncryptor,
+                    algorithm.CreateDecryptor,
+                    PlainTextBytes, out cipherTextBytes, out newPlainTextBytes);
 
             Assert.Equal(newPlainTextBytes.ToHexadecimalString(), PlainText);
             Assert.Equal(cipherTextBytes.ToHexadecimalString(), expectedCipherText);

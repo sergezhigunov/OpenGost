@@ -7,17 +7,6 @@ namespace Gost.Security.Cryptography
 {
     internal static class TestsUtils
     {
-        internal static byte[] ReadToEnd(this CryptoStream stream)
-        {
-            if (stream == null) throw new ArgumentNullException(nameof(stream));
-
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
-
         internal static string ToHexadecimalString(this byte[] array)
         {
             if (array == null) throw new ArgumentNullException(nameof(array));
@@ -62,6 +51,29 @@ namespace Gost.Security.Cryptography
             else if (character >= 'A' && character <= 'F')
                 return (byte)((character - 'A') + 10);
             throw new FormatException($"Invalid character '{character}'.");
+        }
+
+        internal static void InternalEncryptAndDecrypt(
+            Func<ICryptoTransform> encryptorFactory,
+            Func<ICryptoTransform> decryptorFactory,
+            byte[] plainText,
+            out byte[] cipherText,
+            out byte[] newPlainText)
+        {
+            cipherText = InternalTransform(encryptorFactory, plainText);
+            newPlainText = InternalTransform(decryptorFactory, cipherText);
+        }
+
+        internal static byte[] InternalTransform(Func<ICryptoTransform> factory, byte[] input)
+        {
+            using (var memoryStream = new MemoryStream())
+            using (var transform = factory())
+            using (var cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Write))
+            {
+                cryptoStream.Write(input, 0, input.Length);
+                cryptoStream.FlushFinalBlock();
+                return memoryStream.ToArray();
+            }
         }
     }
 }

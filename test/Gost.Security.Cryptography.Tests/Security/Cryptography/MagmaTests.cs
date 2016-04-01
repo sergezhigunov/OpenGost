@@ -27,22 +27,11 @@ namespace Gost.Security.Cryptography
                 newPlainTextBytes;
 
             using (var algorithm = new MagmaManaged { Mode = cipherMode, Padding = paddingMode, Key = KeyBytes, IV = FromHexadecimal(iv) })
-            {
-                using (var cipherTextStream = new MemoryStream())
-                using (var encryptor = algorithm.CreateEncryptor())
-                using (var encryptorStream = new CryptoStream(cipherTextStream, encryptor, CryptoStreamMode.Write))
-                {
-                    encryptorStream.Write(PlainTextBytes, 0, PlainTextBytes.Length);
-                    encryptorStream.FlushFinalBlock();
-                    cipherTextBytes = cipherTextStream.ToArray();
-                }
-                using (var cipherTextStream = new MemoryStream(cipherTextBytes, false))
-                using (var decryptor = algorithm.CreateDecryptor())
-                using (var decryptorStream = new CryptoStream(cipherTextStream, decryptor, CryptoStreamMode.Read))
-                {
-                    newPlainTextBytes = decryptorStream.ReadToEnd();
-                }
-            }
+                InternalEncryptAndDecrypt(
+                    algorithm.CreateEncryptor,
+                    algorithm.CreateDecryptor,
+                    PlainTextBytes, out cipherTextBytes, out newPlainTextBytes);
+
 
             Assert.Equal(newPlainTextBytes.ToHexadecimalString(), PlainText);
             Assert.Equal(cipherTextBytes.ToHexadecimalString(), expectedCipherText);

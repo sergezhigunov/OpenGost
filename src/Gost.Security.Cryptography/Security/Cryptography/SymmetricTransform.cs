@@ -207,18 +207,21 @@ namespace Gost.Security.Cryptography
                     {
                         case PaddingMode.None:
                             break;
+
                         case PaddingMode.Zeros:
                             // padBytes is already initialized with zeros
                             break;
+
                         case PaddingMode.PKCS7:
                             for (int index = 0; index < padSize; index++)
                                 padBytes[index] = (byte)padSize;
-
                             break;
+
                         case PaddingMode.ANSIX923:
                             // padBytes is already initialized with zeros. Simply change the last byte
                             padBytes[padSize - 1] = (byte)padSize;
                             break;
+
                         case PaddingMode.ISO10126:
                             // generate random bytes
                             StaticRandomNumberGenerator.GetBytes(padBytes);
@@ -237,45 +240,83 @@ namespace Gost.Security.Cryptography
             else if ((outputBuffer.Length - outputOffset) < (inputCount + padSize))
                 throw new CryptographicException(InsufficientBuffer);
 
+            int shift;
+
             switch (_cipherMode)
             {
                 case CipherMode.ECB:
-                    for (int shift = 0; shift < inputCount; shift += _blockSize)
+                    for (shift = 0; shift < inputCount; shift += InputBlockSize)
                         EncryptBlock(inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift);
                     break;
 
                 case CipherMode.CBC:
-                    for (int shift = 0; shift < inputCount; shift += _blockSize)
+                    for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
-                        Xor(_stateBuffer, 0, inputBuffer, inputOffset + shift, _tempBuffer, 0, _blockSize);
+                        Xor(_stateBuffer, 0, inputBuffer, inputOffset + shift, _tempBuffer, 0, InputBlockSize);
                         EncryptBlock(_tempBuffer, 0, outputBuffer, outputOffset + shift);
-                        BlockCopy(_stateBuffer, _blockSize, _stateBuffer, 0, _rgbIV.Length - _blockSize);
-                        BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer, _rgbIV.Length - _blockSize, _blockSize);
+                        BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
+                        BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
                 case CipherMode.CFB:
-                    for (int shift = 0; shift < inputCount; shift += _blockSize)
+                    for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                        Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, _blockSize);
-                        BlockCopy(_stateBuffer, _blockSize, _stateBuffer, 0, _rgbIV.Length - _blockSize);
-                        BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer, _rgbIV.Length - _blockSize, _blockSize);
+                        Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
+                        BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
+                        BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
                 case CipherMode.OFB:
-                    for (int shift = 0; shift < inputCount; shift += _blockSize)
+                    for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                        Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, _blockSize);
-                        BlockCopy(_stateBuffer, _blockSize, _stateBuffer, 0, _rgbIV.Length - _blockSize);
-                        BlockCopy(_tempBuffer, 0, _stateBuffer, _rgbIV.Length - _blockSize, _blockSize);
+                        Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
+                        BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
+                        BlockCopy(_tempBuffer, 0, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
                 default:
                     throw new CryptographicException(InvalidCipherMode);
+            }
+
+            if (padSize != 0)
+            {
+                byte[] tmpInputBuffer;
+
+                if (padSize == InputBlockSize)
+                    tmpInputBuffer = padBytes;
+                else
+                {
+                    shift -= InputBlockSize;
+                    tmpInputBuffer = new byte[InputBlockSize];
+                    BlockCopy(inputBuffer, inputOffset + shift, tmpInputBuffer, 0, lonelyBytes);
+                    BlockCopy(padBytes, 0, tmpInputBuffer, lonelyBytes, padSize);
+                }
+
+                switch (_cipherMode)
+                {
+                    case CipherMode.ECB:
+                        EncryptBlock(tmpInputBuffer, 0, outputBuffer, outputOffset + shift);
+                        break;
+
+                    case CipherMode.CBC:
+                        Xor(_stateBuffer, 0, tmpInputBuffer, 0, _tempBuffer, 0, InputBlockSize);
+                        EncryptBlock(_tempBuffer, 0, outputBuffer, outputOffset + shift);
+                        break;
+
+                    case CipherMode.CFB:
+                    case CipherMode.OFB:
+                        EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
+                        Xor(_tempBuffer, 0, tmpInputBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
+                        break;
+
+                    default:
+                        throw new CryptographicException(InvalidCipherMode);
+                }
             }
 
             return inputCount + padSize;
@@ -294,37 +335,37 @@ namespace Gost.Security.Cryptography
             switch (_cipherMode)
             {
                 case CipherMode.ECB:
-                    for (int shift = 0; shift < inputCount; shift += _blockSize)
+                    for (int shift = 0; shift < inputCount; shift += InputBlockSize)
                         DecryptBlock(inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift);
                     break;
 
                 case CipherMode.CBC:
-                    for (int shift = 0; shift < inputCount; shift += _blockSize)
+                    for (int shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         DecryptBlock(inputBuffer, inputOffset + shift, _tempBuffer, 0);
-                        Xor(_stateBuffer, 0, _tempBuffer, 0, outputBuffer, outputOffset + shift, _blockSize);
-                        BlockCopy(_stateBuffer, _blockSize, _stateBuffer, 0, _rgbIV.Length - _blockSize);
-                        BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer, _rgbIV.Length - _blockSize, _blockSize);
+                        Xor(_stateBuffer, 0, _tempBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
+                        BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
+                        BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
                 case CipherMode.CFB:
-                    for (int shift = 0; shift < inputCount; shift += _blockSize)
+                    for (int shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                        Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, _blockSize);
-                        BlockCopy(_stateBuffer, _blockSize, _stateBuffer, 0, _rgbIV.Length - _blockSize);
-                        BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer, _rgbIV.Length - _blockSize, _blockSize);
+                        Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
+                        BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
+                        BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
                 case CipherMode.OFB:
-                    for (int shift = 0; shift < inputCount; shift += _blockSize)
+                    for (int shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                        Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, _blockSize);
-                        BlockCopy(_stateBuffer, _blockSize, _stateBuffer, 0, _rgbIV.Length - _blockSize);
-                        BlockCopy(_tempBuffer, 0, _stateBuffer, _rgbIV.Length - _blockSize, _blockSize);
+                        Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
+                        BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
+                        BlockCopy(_tempBuffer, 0, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 

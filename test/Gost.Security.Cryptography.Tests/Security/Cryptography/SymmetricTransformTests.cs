@@ -12,7 +12,7 @@ namespace Gost.Security.Cryptography
 
     public class SymmetricTransformTests
     {
-        private const int BlockSize = 128;
+        private const int BlockSize = 64;
         private const int KeySize = BlockSize;
         private const int FeedbackSize = BlockSize;
         private const int BlockSizeBytes = BlockSize / 8;
@@ -25,6 +25,26 @@ namespace Gost.Security.Cryptography
         private static SymmetricTransformMode[] TransformModes { get; } = { SymmetricTransformMode.Encrypt, SymmetricTransformMode.Decrypt };
         private static byte[] Key { get; } = GenerateRandomBytes(KeySize);
         private static byte[] IV { get; } = GenerateRandomBytes(FeedbackSize);
+
+        private static byte[][] BlockSizeMultiplePlainTexts { get; } =
+        {
+            GenerateRandomBytes(0),
+            GenerateRandomBytes(BlockSizeBytes),
+            GenerateRandomBytes(2 * BlockSizeBytes),
+            GenerateRandomBytes(3 * BlockSizeBytes),
+        };
+
+        private static byte[][] BlockSizeNonMultiplePlainTexts { get; } =
+        {
+            GenerateRandomBytes(1),
+            GenerateRandomBytes(BlockSizeBytes / 2),
+            GenerateRandomBytes(BlockSizeBytes - 1),
+            GenerateRandomBytes(BlockSizeBytes + 1),
+            GenerateRandomBytes(2 * BlockSizeBytes - 2),
+            GenerateRandomBytes(2 * BlockSizeBytes + 2),
+            GenerateRandomBytes(3 * BlockSizeBytes - 3),
+            GenerateRandomBytes(3 * BlockSizeBytes + 3),
+        };
 
         [Fact(DisplayName = nameof(SymmetricTransformTests) + "_" + nameof(CheckLifecycle))]
         public void CheckLifecycle()
@@ -88,26 +108,34 @@ namespace Gost.Security.Cryptography
         [Fact(DisplayName = nameof(SymmetricTransformTests) + "_" + nameof(EncryptAndDecryptPaddingNone))]
         public void EncryptAndDecryptPaddingNone()
         {
-            byte[] plainText = GenerateRandomBytes(4 * BlockSizeBytes),
-                cipherText,
-                newPlainText;
+            Action<byte[]> check = plainText =>
+            {
+                byte[] cipherText, newPlainText;
 
-            InternalEncryptAndDecrypt(
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt),
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Decrypt),
-                plainText, out cipherText, out newPlainText);
+                InternalEncryptAndDecrypt(
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt),
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Decrypt),
+                    plainText, out cipherText, out newPlainText);
 
-            Assert.Equal(plainText, newPlainText);
+                Assert.Equal(plainText, newPlainText);
+
+            };
+
+            foreach (var plainText in BlockSizeMultiplePlainTexts)
+                check(plainText);
+
+            foreach (var plainText in BlockSizeNonMultiplePlainTexts)
+                Assert.Throws<CryptographicException>(() => check(plainText));
         }
 
         [Fact(DisplayName = nameof(SymmetricTransformTests) + "_" + nameof(EncryptAndDecryptPaddingZeros))]
         public void EncryptAndDecryptPaddingZeros()
         {
-            byte[] plainText = GenerateRandomBytes(1),
-                cipherText,
-                newPlainText;
+            Action<byte[]> check = plainText =>
+            {
+                byte[] cipherText, newPlainText;
 
-            InternalEncryptAndDecrypt(
+                InternalEncryptAndDecrypt(
                 () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.Zeros, SymmetricTransformMode.Encrypt),
                 () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.Zeros, SymmetricTransformMode.Decrypt),
                 plainText, out cipherText, out newPlainText);
@@ -117,109 +145,122 @@ namespace Gost.Security.Cryptography
 
             for (int i = plainText.Length; i < newPlainText.Length; i++)
                 Assert.Equal(0, newPlainText[i]);
+            };
+
+            foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
+                check(plainText);
         }
 
         [Fact(DisplayName = nameof(SymmetricTransformTests) + "_" + nameof(EncryptAndDecryptPaddingANSIX923))]
         public void EncryptAndDecryptPaddingANSIX923()
         {
-            byte[] plainText = GenerateRandomBytes(4 * BlockSizeBytes),
-                cipherText,
-                newPlainText,
-                newPlainTextNoDepad;
-
-            InternalEncryptAndDecrypt(
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.ANSIX923, SymmetricTransformMode.Encrypt),
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.ANSIX923, SymmetricTransformMode.Decrypt),
-                plainText, out cipherText, out newPlainText);
-
-            newPlainTextNoDepad = InternalTransform(
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Decrypt),
-                cipherText);
-
-            int padCount = newPlainTextNoDepad.Length - newPlainText.Length;
-
-            byte[] padding = new byte[padCount];
-            BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
-
-            Assert.Equal(plainText, newPlainText);
-
-            for (int i = 0; i < plainText.Length; i++)
-                Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
-
-            if (padCount > 0)
+            Action<byte[]> check = plainText =>
             {
-                Assert.Equal(padCount, padding[padCount - 1]);
+                byte[] cipherText, newPlainText, newPlainTextNoDepad;
 
-                for (int i = 0; i < padCount - 1; i++)
-                    Assert.Equal(0, padding[padCount - 1]);
-            }
+                InternalEncryptAndDecrypt(
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.ANSIX923, SymmetricTransformMode.Encrypt),
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.ANSIX923, SymmetricTransformMode.Decrypt),
+                    plainText, out cipherText, out newPlainText);
+
+                newPlainTextNoDepad = InternalTransform(
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Decrypt),
+                    cipherText);
+
+                int padCount = newPlainTextNoDepad.Length - newPlainText.Length;
+
+                byte[] padding = new byte[padCount];
+                BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
+
+                Assert.Equal(plainText, newPlainText);
+
+                for (int i = 0; i < plainText.Length; i++)
+                    Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
+
+                if (padCount > 0)
+                {
+                    Assert.Equal(padCount, padding[padCount - 1]);
+
+                    for (int i = 0; i < padCount - 1; i++)
+                        Assert.Equal(0, padding[i]);
+                }
+            };
+
+            foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
+                check(plainText);
         }
 
         [Fact(DisplayName = nameof(SymmetricTransformTests) + "_" + nameof(EncryptAndDecryptPaddingPKCS7))]
         public void EncryptAndDecryptPaddingPKCS7()
         {
-            byte[] plainText = GenerateRandomBytes(4 * BlockSizeBytes),
-                cipherText,
-                newPlainText,
-                newPlainTextNoDepad;
-
-            InternalEncryptAndDecrypt(
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.PKCS7, SymmetricTransformMode.Encrypt),
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.PKCS7, SymmetricTransformMode.Decrypt),
-                plainText, out cipherText, out newPlainText);
-
-            newPlainTextNoDepad = InternalTransform(
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Decrypt),
-                cipherText);
-
-            int padCount = newPlainTextNoDepad.Length - newPlainText.Length;
-
-            byte[] padding = new byte[padCount];
-            BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
-
-            Assert.Equal(plainText, newPlainText);
-
-            for (int i = 0; i < plainText.Length; i++)
-                Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
-
-            if (padCount > 0)
+            Action<byte[]> check = plainText =>
             {
-                Assert.Equal(padCount, padding[padCount - 1]);
+                byte[] cipherText, newPlainText, newPlainTextNoDepad;
 
-                for (int i = 0; i < padCount - 1; i++)
+                InternalEncryptAndDecrypt(
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.PKCS7, SymmetricTransformMode.Encrypt),
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.PKCS7, SymmetricTransformMode.Decrypt),
+                    plainText, out cipherText, out newPlainText);
+
+                newPlainTextNoDepad = InternalTransform(
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Decrypt),
+                    cipherText);
+
+                int padCount = newPlainTextNoDepad.Length - newPlainText.Length;
+
+                byte[] padding = new byte[padCount];
+                BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
+
+                Assert.Equal(plainText, newPlainText);
+
+                for (int i = 0; i < plainText.Length; i++)
+                    Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
+
+                if (padCount > 0)
+                {
                     Assert.Equal(padCount, padding[padCount - 1]);
-            }
+
+                    for (int i = 0; i < padCount - 1; i++)
+                        Assert.Equal(padCount, padding[i]);
+                }
+            };
+
+            foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
+                check(plainText);
         }
 
         [Fact(DisplayName = nameof(SymmetricTransformTests) + "_" + nameof(EncryptAndDecryptPaddingISO10126))]
         public void EncryptAndDecryptPaddingISO10126()
         {
-            byte[] plainText = GenerateRandomBytes(4 * BlockSizeBytes),
-                cipherText,
-                newPlainText,
-                newPlainTextNoDepad;
+            Action<byte[]> check = plainText =>
+            {
+                byte[] cipherText, newPlainText, newPlainTextNoDepad;
 
-            InternalEncryptAndDecrypt(
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.ISO10126, SymmetricTransformMode.Encrypt),
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.ISO10126, SymmetricTransformMode.Decrypt),
-                plainText, out cipherText, out newPlainText);
+                InternalEncryptAndDecrypt(
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.ISO10126, SymmetricTransformMode.Encrypt),
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.ISO10126, SymmetricTransformMode.Decrypt),
+                    plainText, out cipherText, out newPlainText);
 
-            newPlainTextNoDepad = InternalTransform(
-                () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Decrypt),
-                cipherText);
+                newPlainTextNoDepad = InternalTransform(
+                    () => new SymmetricTransformMock(Key, IV, BlockSize, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Decrypt),
+                    cipherText);
 
-            int padCount = newPlainTextNoDepad.Length - newPlainText.Length;
+                int padCount = newPlainTextNoDepad.Length - newPlainText.Length;
 
-            byte[] padding = new byte[padCount];
-            BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
+                byte[] padding = new byte[padCount];
+                BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
 
-            Assert.Equal(plainText, newPlainText);
+                Assert.Equal(plainText, newPlainText);
 
-            for (int i = 0; i < plainText.Length; i++)
-                Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
+                for (int i = 0; i < plainText.Length; i++)
+                    Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
 
-            if (padCount > 0)
-                Assert.Equal(padCount, padding[padCount - 1]);
+                if (padCount > 0)
+                    Assert.Equal(padCount, padding[padCount - 1]);
+            };
+
+            foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
+                check(plainText);
         }
     }
 }

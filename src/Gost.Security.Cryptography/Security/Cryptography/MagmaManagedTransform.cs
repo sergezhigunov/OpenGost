@@ -7,7 +7,9 @@ namespace Gost.Security.Cryptography
 
     internal sealed class MagmaManagedTransform : SymmetricTransform
     {
-        private static readonly byte[][] s_substTable = new byte[][]
+        #region Constants
+
+        private static readonly byte[][] s_substitutionBox = new byte[][]
         {
             new byte[] { 0xC, 0x4, 0x6, 0x2, 0xA, 0x5, 0xB, 0x9, 0xE, 0x8, 0xD, 0x7, 0x0, 0x3, 0xF, 0x1 },
             new byte[] { 0x6, 0x8, 0x2, 0x3, 0x9, 0xA, 0x5, 0xC, 0x1, 0xE, 0x4, 0x7, 0xB, 0xD, 0x0, 0xF },
@@ -18,6 +20,8 @@ namespace Gost.Security.Cryptography
             new byte[] { 0x8, 0xE, 0x2, 0x5, 0x6, 0x9, 0x1, 0xC, 0xF, 0x4, 0xB, 0x0, 0xD, 0xA, 0x3, 0x7 },
             new byte[] { 0x1, 0x7, 0xE, 0xD, 0x0, 0x5, 0x8, 0x3, 0x4, 0xF, 0xA, 0x6, 0x9, 0xC, 0xB, 0x2 }
         };
+
+        #endregion
 
         private static readonly uint[]
             s_lookupTable0,
@@ -40,15 +44,32 @@ namespace Gost.Security.Cryptography
                     high = (data & 0xf0) >> 4,
                     low = data & 0x0f;
 
-                s_lookupTable0[data] = RotateElevenBitsLeft(s_substTable[0][low] ^ (uint)s_substTable[1][high] << 4);
-                s_lookupTable1[data] = RotateElevenBitsLeft((s_substTable[2][low] ^ (uint)s_substTable[3][high] << 4) << 8);
-                s_lookupTable2[data] = RotateElevenBitsLeft((s_substTable[4][low] ^ (uint)s_substTable[5][high] << 4) << 16);
-                s_lookupTable3[data] = RotateElevenBitsLeft((s_substTable[6][low] ^ (uint)s_substTable[7][high] << 4) << 24);
-            }
+                s_lookupTable0[data] =
+                    RotateElevenBitsLeft(s_substitutionBox[0][low] ^
+                    (uint)s_substitutionBox[1][high] << 4);
 
+                s_lookupTable1[data] =
+                    RotateElevenBitsLeft((s_substitutionBox[2][low] ^
+                    (uint)s_substitutionBox[3][high] << 4) << 8);
+
+                s_lookupTable2[data] =
+                    RotateElevenBitsLeft((s_substitutionBox[4][low] ^
+                    (uint)s_substitutionBox[5][high] << 4) << 16);
+
+                s_lookupTable3[data] =
+                    RotateElevenBitsLeft((s_substitutionBox[6][low] ^
+                    (uint)s_substitutionBox[7][high] << 4) << 24);
+            }
         }
 
-        public MagmaManagedTransform(byte[] rgbKey, byte[] rgbIV, int blockSize, int feedbackSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
+        public MagmaManagedTransform(
+            byte[] rgbKey,
+            byte[] rgbIV,
+            int blockSize,
+            int feedbackSize,
+            CipherMode cipherMode,
+            PaddingMode paddingMode,
+            SymmetricTransformMode transformMode)
             : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
         { }
 
@@ -56,37 +77,37 @@ namespace Gost.Security.Cryptography
         {
             _keyExpansion = new uint[8];
             for (int i = 0; i < 8; i++)
-                _keyExpansion[i] = ToUInt32(rgbKey, i * 4);
+                _keyExpansion[i] = UInt32FromBigEndian(rgbKey, i * 4);
         }
 
         protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
             uint
-                a0 = ToUInt32(inputBuffer, inputOffset + 4),
-                a1 = ToUInt32(inputBuffer, inputOffset);
+                a0 = UInt32FromBigEndian(inputBuffer, inputOffset + 4),
+                a1 = UInt32FromBigEndian(inputBuffer, inputOffset);
 
             ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
             ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
             ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
             ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
 
-            CopyUInt32To(outputBuffer, outputOffset, a0);
-            CopyUInt32To(outputBuffer, outputOffset + 4, a1);
+            UInt32ToBigEndian(a0, outputBuffer, outputOffset);
+            UInt32ToBigEndian(a1, outputBuffer, outputOffset + 4);
         }
 
         protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
             uint
-                a0 = ToUInt32(inputBuffer, inputOffset + 4),
-                a1 = ToUInt32(inputBuffer, inputOffset);
+                a0 = UInt32FromBigEndian(inputBuffer, inputOffset + 4),
+                a1 = UInt32FromBigEndian(inputBuffer, inputOffset);
 
             ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
             ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
             ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
             ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
 
-            CopyUInt32To(outputBuffer, outputOffset, a0);
-            CopyUInt32To(outputBuffer, outputOffset + 4, a1);
+            UInt32ToBigEndian(a0, outputBuffer, outputOffset);
+            UInt32ToBigEndian(a1, outputBuffer, outputOffset + 4);
         }
 
         protected override void Dispose(bool disposing)
@@ -124,20 +145,6 @@ namespace Gost.Security.Cryptography
             a0 ^= SubstituteAndRotateElevenBits(a1 + k[0]);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void CopyUInt32To(byte[] buffer, int offset, uint value)
-        {
-            buffer[offset] = (byte)(value >> 24);
-            buffer[offset + 1] = (byte)(value >> 16);
-            buffer[offset + 2] = (byte)(value >> 8);
-            buffer[offset + 3] = (byte)value;
-        }
-
-        private static uint ToUInt32(byte[] buffer, int offset)
-        {
-            return buffer[offset + 3] | ((uint)buffer[offset + 2]) << 8 | ((uint)buffer[offset + 1]) << 16 | ((uint)buffer[offset]) << 24;
-        }
-
         private static uint RotateElevenBitsLeft(uint input)
         {
             return input << 11 | input >> 21;
@@ -146,6 +153,7 @@ namespace Gost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static uint SubstituteAndRotateElevenBits(uint data)
         {
+            // Substitution and rotation precomputed in the lookup tables
             return
                 s_lookupTable0[data & 0xff] |
                 s_lookupTable1[(data >> 8) & 0xff] |

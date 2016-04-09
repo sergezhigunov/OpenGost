@@ -3,6 +3,7 @@
 namespace Gost.Security.Cryptography
 {
     using static Buffer;
+    using static CryptoUtils;
 
     /// <summary>
     /// Computes the <see cref="Streebog512"/> hash for the input data using the managed implementation. 
@@ -159,13 +160,7 @@ namespace Gost.Security.Cryptography
         /// </summary>
         public Streebog512Managed()
             : this(s_iv)
-        {
-            HashValue = new byte[64];
-            _sigma = new byte[64];
-            _buffer = new byte[64];
-            _tempKey = new byte[64];
-            _tempBuffer = new byte[64];
-        }
+        { }
 
         internal Streebog512Managed(byte[] iv)
         {
@@ -357,14 +352,7 @@ namespace Gost.Security.Cryptography
                             t = t ^ s_linearTransformTable[j * 8 + k];
                 }
 
-                data[shift] = (byte)t;
-                data[shift + 1] = (byte)(t >> 8);
-                data[shift + 2] = (byte)(t >> 16);
-                data[shift + 3] = (byte)(t >> 24);
-                data[shift + 4] = (byte)(t >> 32);
-                data[shift + 5] = (byte)(t >> 40);
-                data[shift + 6] = (byte)(t >> 48);
-                data[shift + 7] = (byte)(t >> 56);
+                UInt64ToLittleEndian(t, data, shift);
             }
         }
 

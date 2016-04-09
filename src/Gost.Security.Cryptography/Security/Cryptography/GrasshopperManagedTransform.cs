@@ -8,9 +8,11 @@ namespace Gost.Security.Cryptography
 
     internal sealed class GrasshopperManagedTransform : SymmetricTransform
     {
+        #region Constants
+
         private static readonly byte[]
-            s_kB = { 148, 32, 133, 16, 194, 192, 1, 251, 1, 192, 194, 16, 133, 32, 148, 1 },
-            s_forwardSubstTable =
+            s_multiplicationTableConstants = { 148, 32, 133, 16, 194, 192, 1, 251, 1, 192, 194, 16, 133, 32, 148, 1 },
+            s_forwardSubstitutionBox =
             {
                 0xFC, 0xEE, 0xDD, 0x11, 0xCF, 0x6E, 0x31, 0x16, 0xFB, 0xC4, 0xFA, 0xDA, 0x23, 0xC5, 0x04, 0x4D,
                 0xE9, 0x77, 0xF0, 0xDB, 0x93, 0x2E, 0x99, 0xBA, 0x17, 0x36, 0xF1, 0xBB, 0x14, 0xCD, 0x5F, 0xC1,
@@ -29,7 +31,7 @@ namespace Gost.Security.Cryptography
                 0x20, 0x71, 0x67, 0xA4, 0x2D, 0x2B, 0x09, 0x5B, 0xCB, 0x9B, 0x25, 0xD0, 0xBE, 0xE5, 0x6C, 0x52,
                 0x59, 0xA6, 0x74, 0xD2, 0xE6, 0xF4, 0xB4, 0xC0, 0xD1, 0x66, 0xAF, 0xC2, 0x39, 0x4B, 0x63, 0xB6,
             },
-            s_backwardSubstTable =
+            s_backwardSubstitutionBox =
             {
                 0xA5, 0x2D, 0x32, 0x8F, 0x0E, 0x30, 0x38, 0xC0, 0x54, 0xE6, 0x9E, 0x39, 0x55, 0x7E, 0x52, 0x91,
                 0x64, 0x03, 0x57, 0x5A, 0x1C, 0x60, 0x07, 0x18, 0x21, 0x72, 0xA8, 0xD1, 0x29, 0xC6, 0xA4, 0x3F,
@@ -49,13 +51,22 @@ namespace Gost.Security.Cryptography
                 0x12, 0x1A, 0x48, 0x68, 0xF5, 0x81, 0x8B, 0xC7, 0xD6, 0x20, 0x0A, 0x08, 0x00, 0x4C, 0xD7, 0x74,
             };
 
-        private static readonly byte[][] s_multTable = InitMultTable();
+        #endregion
 
-        private static readonly byte[][][] s_iterConsts = InitIterConsts();
+        private static readonly byte[][] s_multiplicationTable = InitializeMultiplicationTable();
+
+        private static readonly byte[][][] s_iterationConstants = InitializeIterationConstants();
 
         private byte[] _keyExpansion;
 
-        public GrasshopperManagedTransform(byte[] rgbKey, byte[] rgbIV, int blockSize, int feedbackSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
+        public GrasshopperManagedTransform(
+            byte[] rgbKey,
+            byte[] rgbIV,
+            int blockSize,
+            int feedbackSize,
+            CipherMode cipherMode,
+            PaddingMode paddingMode,
+            SymmetricTransformMode transformMode)
             : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
         { }
 
@@ -75,9 +86,9 @@ namespace Gost.Security.Cryptography
 
                 for (int j = 0; j < 8; j++)
                 {
-                    Xor(s_iterConsts[i][j], 0, _keyExpansion, expansionPartOffset, temp, 0);
-                    Substitute(s_forwardSubstTable, temp, 0);
-                    ComputeLinearTransformForward(temp, 0);
+                    Xor(s_iterationConstants[i][j], 0, _keyExpansion, expansionPartOffset, temp, 0);
+                    Substitute(s_forwardSubstitutionBox, temp, 0);
+                    DoLinearTransformForward(temp, 0);
                     Xor(temp, 0, _keyExpansion, expansionPartOffset + 16, temp, 0);
 
                     BlockCopy(_keyExpansion, expansionPartOffset, _keyExpansion, expansionPartOffset + 16, 16);
@@ -104,8 +115,8 @@ namespace Gost.Security.Cryptography
             for (int i = 0; i < 9; i++)
             {
                 Xor(outputBuffer, outputOffset, _keyExpansion, 16 * i, outputBuffer, outputOffset);
-                Substitute(s_forwardSubstTable, outputBuffer, outputOffset);
-                ComputeLinearTransformForward(outputBuffer, outputOffset);
+                Substitute(s_forwardSubstitutionBox, outputBuffer, outputOffset);
+                DoLinearTransformForward(outputBuffer, outputOffset);
             }
             Xor(outputBuffer, outputOffset, _keyExpansion, 16 * 9, outputBuffer, outputOffset);
         }
@@ -117,8 +128,8 @@ namespace Gost.Security.Cryptography
             for (int i = 0; i < 9; i++)
             {
                 Xor(outputBuffer, outputOffset, _keyExpansion, (9 - i) * 16, outputBuffer, outputOffset);
-                ComputeLinearTransformBackward(outputBuffer, outputOffset);
-                Substitute(s_backwardSubstTable, outputBuffer, outputOffset);
+                DoLinearTransformBackward(outputBuffer, outputOffset);
+                Substitute(s_backwardSubstitutionBox, outputBuffer, outputOffset);
             }
             Xor(outputBuffer, outputOffset, _keyExpansion, 0, outputBuffer, outputOffset);
         }
@@ -132,21 +143,21 @@ namespace Gost.Security.Cryptography
                 data[dataOffset + i] = substTable[data[dataOffset + i]];
         }
 
-        private static void ComputeLinearTransformForward(byte[] data, int dataOffset)
+        private static void DoLinearTransformForward(byte[] data, int dataOffset)
         {
             for (int i = 0; i < 16; i++)
             {
                 byte sum = 0;
 
                 for (int j = 0; j < 16; j++)
-                    sum ^= s_multTable[j][data[dataOffset + j]];
+                    sum ^= s_multiplicationTable[j][data[dataOffset + j]];
 
                 BlockCopy(data, dataOffset, data, dataOffset + 1, 15);
                 data[dataOffset] = sum;
             }
         }
 
-        private static void ComputeLinearTransformBackward(byte[] data, int dataOffset)
+        private static void DoLinearTransformBackward(byte[] data, int dataOffset)
         {
             for (int i = 0; i < 16; i++)
             {
@@ -158,13 +169,13 @@ namespace Gost.Security.Cryptography
                 byte sum = 0;
 
                 for (int j = 0; j < 16; j++)
-                    sum ^= s_multTable[j][data[dataOffset + j]];
+                    sum ^= s_multiplicationTable[j][data[dataOffset + j]];
 
                 data[dataOffset + 15] = sum;
             }
         }
 
-        private static byte[][][] InitIterConsts()
+        private static byte[][][] InitializeIterationConstants()
         {
             byte[][][] retval = new byte[4][][];
             for (int i = 0; i < 4; i++)
@@ -175,7 +186,7 @@ namespace Gost.Security.Cryptography
                 {
                     byte[] iterConst = new byte[16];
                     iterConst[15] = (byte)(i * 8 + j + 1); ;
-                    ComputeLinearTransformForward(iterConst, 0);
+                    DoLinearTransformForward(iterConst, 0);
                     row[j] = iterConst;
                 }
 
@@ -184,7 +195,7 @@ namespace Gost.Security.Cryptography
             return retval;
         }
 
-        private static byte[][] InitMultTable()
+        private static byte[][] InitializeMultiplicationTable()
         {
             byte[][] table = new byte[16][];
             for (int i = 0; i < 16; i++)
@@ -194,7 +205,7 @@ namespace Gost.Security.Cryptography
                 {
                     int x = j;
                     int z = 0;
-                    int y = s_kB[i];
+                    int y = s_multiplicationTableConstants[i];
 
                     while (y != 0)
                     {

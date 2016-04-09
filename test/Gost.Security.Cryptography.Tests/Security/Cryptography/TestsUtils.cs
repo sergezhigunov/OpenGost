@@ -7,25 +7,42 @@ namespace Gost.Security.Cryptography
 {
     internal static class TestsUtils
     {
-        internal static string ToHexadecimalString(this byte[] array)
+        private static readonly string HexadecimalAlphabet = "0123456789abcdef";
+
+        internal static string ToHexadecimalStringLittleEndian(this byte[] array)
         {
             if (array == null) throw new ArgumentNullException(nameof(array));
 
             var builder = new StringBuilder(array.Length * 2);
-            string hexAlphabet = "0123456789abcdef";
+
             foreach (byte b in array)
             {
-                builder.Append(hexAlphabet[b >> 4]);
-                builder.Append(hexAlphabet[b & 0x0F]);
+                builder.Append(HexadecimalAlphabet[b >> 4]);
+                builder.Append(HexadecimalAlphabet[b & 0x0F]);
             }
             return builder.ToString();
         }
 
-        internal static byte[] FromHexadecimal(string text)
+        internal static string ToHexadecimalStringBigEndian(this byte[] array)
+        {
+            if (array == null) throw new ArgumentNullException(nameof(array));
+
+            var builder = new StringBuilder(array.Length * 2);
+
+            for (int i = array.Length - 1; i >= 0; i--)
+            {
+                byte b = array[i];
+                builder.Append(HexadecimalAlphabet[b >> 4]);
+                builder.Append(HexadecimalAlphabet[b & 0x0F]);
+            }
+            return builder.ToString();
+        }
+
+        internal static byte[] FromHexadecimalLittleEndian(string text)
         {
             if (text == null) throw new ArgumentNullException(nameof(text));
             int textLength = text.Length;
-            if (textLength % 2 != 0) throw new FormatException("Input text has incorrect format.");
+            if (textLength % 2 != 0) throw CreateTextIncorrectFormatException(null);
 
             byte[] retval = new byte[textLength / 2];
             for (int i = 0, j = 0; i < textLength; i += 2, j++)
@@ -36,7 +53,28 @@ namespace Gost.Security.Cryptography
                 }
                 catch (FormatException formatException)
                 {
-                    throw new FormatException("Input text has incorrect format.", formatException);
+                    throw CreateTextIncorrectFormatException(formatException);
+                }
+            }
+            return retval;
+        }
+
+        internal static byte[] FromHexadecimalBigEndian(string text)
+        {
+            if (text == null) throw new ArgumentNullException(nameof(text));
+            int textLength = text.Length;
+            if (textLength % 2 != 0) throw CreateTextIncorrectFormatException(null);
+
+            byte[] retval = new byte[textLength / 2];
+            for (int i = 0, j = textLength / 2 - 1; i < textLength; i += 2, j--)
+            {
+                try
+                {
+                    retval[j] = (byte)((text[i].GetHexadecimalIndex() << 4) ^ text[i + 1].GetHexadecimalIndex());
+                }
+                catch (FormatException formatException)
+                {
+                    throw CreateTextIncorrectFormatException(formatException);
                 }
             }
             return retval;
@@ -75,5 +113,8 @@ namespace Gost.Security.Cryptography
                 return memoryStream.ToArray();
             }
         }
+
+        private static FormatException CreateTextIncorrectFormatException(Exception innerException)
+            => new FormatException("Input text has incorrect format.", innerException);
     }
 }

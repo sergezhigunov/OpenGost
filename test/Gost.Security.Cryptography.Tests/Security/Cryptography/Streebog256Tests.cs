@@ -1,5 +1,4 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 namespace Gost.Security.Cryptography
 {
@@ -17,20 +16,14 @@ namespace Gost.Security.Cryptography
         public void ComputeHashTest(string message, string expectedHashCode)
         {
             byte[]
-                messageBytes = FromHexadecimal(message),
+                messageBytes = FromHexadecimalBigEndian(message),
                 hashCode;
-
-            // Reverse bytes because message has big-endian byte order
-            Array.Reverse(messageBytes);
 
             using (var hashAlgorithm = new Streebog256Managed())
                 hashCode = hashAlgorithm.ComputeHash(messageBytes);
 
-            // Reverse bytes because expectedHashCode has big-endian byte order
-            Array.Reverse(hashCode);
-
             // Big-endian byte order comparation
-            Assert.Equal(expectedHashCode, hashCode.ToHexadecimalString());
+            Assert.Equal(expectedHashCode, hashCode.ToHexadecimalStringBigEndian());
         }
     }
 }

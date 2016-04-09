@@ -3,6 +3,8 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoUtils;
+
     /// <summary>
     /// Computes a Message Authentication Code (MAC) using <see cref="Grasshopper"/>
     /// for the input data <see cref="CryptoStream"/>.
@@ -13,6 +15,7 @@ namespace Gost.Security.Cryptography
         /// Initializes a new instance of the <see cref="MACGrasshopper"/> class.
         /// </summary>
         public MACGrasshopper()
+            : this(GenerateRandomBytes(128))
         { }
 
         /// <summary>
@@ -26,6 +29,8 @@ namespace Gost.Security.Cryptography
         /// </exception>
         public MACGrasshopper(byte[] rgbKey)
         {
+            if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
+
             throw new NotImplementedException();
         }
 

@@ -3,6 +3,8 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConstants;
+    using static CryptoUtils;
     using static SecurityCryptographyStrings;
 
     /// <summary>
@@ -69,5 +71,26 @@ namespace Gost.Security.Cryptography
                 IVValue = (byte[])value.Clone();
             }
         }
+
+        /// <summary>
+        /// Creates an instance of the default implementation of <see cref="Grasshopper"/> algorithm.
+        /// </summary>
+        /// <returns>
+        /// A new instance of <see cref="Grasshopper"/>.
+        /// </returns>
+        public new static Grasshopper Create()
+            => Create(GrasshopperAlgorithmFullName);
+
+        /// <summary>
+        /// Creates an instance of a specified implementation of <see cref="Grasshopper"/> algorithm.
+        /// </summary>
+        /// <param name="algName">
+        /// The name of the specific implementation of <see cref="Grasshopper"/> to be used. 
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="Grasshopper"/> using the specified implementation.
+        /// </returns>
+        public new static Grasshopper Create(string algName)
+            => (Grasshopper)CreateFromName(algName);
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConstants;
+    using static CryptoUtils;
+
     /// <summary>
     /// Computes the <see cref="Streebog256"/> hash for the input data. 
     /// </summary>
@@ -14,5 +17,26 @@ namespace Gost.Security.Cryptography
         {
             HashSizeValue = 256;
         }
+
+        /// <summary>
+        /// Creates an instance of the default implementation of <see cref="Streebog256"/> algorithm.
+        /// </summary>
+        /// <returns>
+        /// A new instance of <see cref="Streebog256"/>.
+        /// </returns>
+        public new static Streebog256 Create()
+            => Create(Streebog256AlgorithmFullName);
+
+        /// <summary>
+        /// Creates an instance of a specified implementation of <see cref="Streebog256"/> algorithm.
+        /// </summary>
+        /// <param name="algName">
+        /// The name of the specific implementation of <see cref="Streebog256"/> to be used. 
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="Streebog256"/> using the specified implementation.
+        /// </returns>
+        public new static Streebog256 Create(string algName)
+            => (Streebog256)CreateFromName(algName);
     }
 }

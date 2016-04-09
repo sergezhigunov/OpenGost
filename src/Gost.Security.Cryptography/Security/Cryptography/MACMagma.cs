@@ -3,6 +3,8 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoUtils;
+
     /// <summary>
     /// Computes a Message Authentication Code (MAC) using <see cref="Magma"/>
     /// for the input data <see cref="CryptoStream"/>.
@@ -13,6 +15,7 @@ namespace Gost.Security.Cryptography
         /// Initializes a new instance of the <see cref="MACMagma"/> class.
         /// </summary>
         public MACMagma()
+            : this(GenerateRandomBytes(64))
         { }
 
         /// <summary>
@@ -26,6 +29,8 @@ namespace Gost.Security.Cryptography
         /// </exception>
         public MACMagma(byte[] rgbKey)
         {
+            if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
+
             throw new NotImplementedException();
         }
 

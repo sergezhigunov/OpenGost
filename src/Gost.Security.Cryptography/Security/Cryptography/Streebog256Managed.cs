@@ -2,17 +2,29 @@
 
 namespace Gost.Security.Cryptography
 {
+    using static Buffer;
+
     /// <summary>
     /// Computes the <see cref="Streebog256"/> hash for the input data using the managed implementation. 
     /// </summary>
     public class Streebog256Managed : Streebog256
     {
+        private static readonly byte[] s_iv =
+        {
+            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
+        };
+
+        private readonly Streebog512Managed _innerAlgorithm;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Streebog256Managed"/> class.
         /// </summary>
         public Streebog256Managed()
         {
-            throw new NotImplementedException();
+            _innerAlgorithm = new Streebog512Managed(s_iv);
         }
 
         /// <summary>
@@ -20,7 +32,7 @@ namespace Gost.Security.Cryptography
         /// </summary>
         public override void Initialize()
         {
-            throw new NotImplementedException();
+            _innerAlgorithm.Initialize();
         }
 
         /// <summary>
@@ -37,7 +49,7 @@ namespace Gost.Security.Cryptography
         /// </param>
         protected override void HashCore(byte[] data, int dataOffset, int dataSize)
         {
-            throw new NotImplementedException();
+            _innerAlgorithm.TransformBlock(data, dataOffset, dataSize, null, 0);
         }
 
         /// <summary>
@@ -48,7 +60,24 @@ namespace Gost.Security.Cryptography
         /// </returns>
         protected override byte[] HashFinal()
         {
-            throw new NotImplementedException();
+            _innerAlgorithm.TransformFinalBlock(new byte[0], 0, 0);
+            byte[] hash = new byte[32];
+            BlockCopy(_innerAlgorithm.Hash, 32, hash, 0, 32);
+            return hash;
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="Streebog256"/> and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// true to release both managed and unmanaged resources;
+        /// false to release only unmanaged resources.
+        /// </param>
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            _innerAlgorithm.Dispose();
         }
     }
 }

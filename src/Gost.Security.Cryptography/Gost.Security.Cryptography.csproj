@@ -57,6 +57,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SecurityCryptographyStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="Security\Cryptography\Streebog256.cs" />
+    <Compile Include="Security\Cryptography\Streebog256Managed.cs" />
     <Compile Include="Security\Cryptography\Streebog512.cs" />
     <Compile Include="Security\Cryptography\Streebog512Managed.cs" />
     <Compile Include="Security\Cryptography\SymmetricTransform.cs" />

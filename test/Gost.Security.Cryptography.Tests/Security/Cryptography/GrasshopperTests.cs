@@ -37,5 +37,19 @@ namespace Gost.Security.Cryptography
             Assert.Equal(newPlainTextBytes.ToHexadecimalStringLittleEndian(), PlainText);
             Assert.Equal(cipherTextBytes.ToHexadecimalStringLittleEndian(), expectedCipherText);
         }
+
+        [Fact(DisplayName = nameof(GrasshopperTests) + "_" + nameof(ComputeMACTest))]
+        public void ComputeMACTest()
+        {
+            string expectedMAC = "336f4d296059fbe3";
+
+            byte[] hashCode;
+
+            using (var mac = new MACGrasshopper(KeyBytes))
+                hashCode = mac.ComputeHash(PlainTextBytes);
+
+            // Little-endian byte order comparation
+            Assert.Equal(expectedMAC, hashCode.ToHexadecimalStringLittleEndian());
+        }
     }
 }

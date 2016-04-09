@@ -35,5 +35,19 @@ namespace Gost.Security.Cryptography
             Assert.Equal(newPlainTextBytes.ToHexadecimalStringLittleEndian(), PlainText);
             Assert.Equal(cipherTextBytes.ToHexadecimalStringLittleEndian(), expectedCipherText);
         }
+
+        [Fact(DisplayName = nameof(MagmaTests) + "_" + nameof(ComputeMACTest))]
+        public void ComputeMACTest()
+        {
+            string expectedMAC = "154e7210";
+
+            byte[] hashCode;
+
+            using (var mac = new MACMagma(KeyBytes))
+                hashCode = mac.ComputeHash(PlainTextBytes);
+
+            // Little-endian byte order comparation
+            Assert.Equal(expectedMAC, hashCode.ToHexadecimalStringLittleEndian());
+        }
     }
 }

@@ -3,11 +3,11 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConstants;
     using static CryptoUtils;
 
     /// <summary>
-    /// Computes a Message Authentication Code (MAC) using <see cref="Magma"/>
-    /// for the input data <see cref="CryptoStream"/>.
+    /// Computes a Message Authentication Code (MAC) using <see cref="Magma"/> algorithm.
     /// </summary>
     public class MACMagma : KeyedHashAlgorithm
     {
@@ -15,7 +15,7 @@ namespace Gost.Security.Cryptography
         /// Initializes a new instance of the <see cref="MACMagma"/> class.
         /// </summary>
         public MACMagma()
-            : this(GenerateRandomBytes(64))
+            : this(GenerateRandomBytes(32))
         { }
 
         /// <summary>
@@ -28,6 +28,23 @@ namespace Gost.Security.Cryptography
         /// The <paramref name="rgbKey"/> parameter is null. 
         /// </exception>
         public MACMagma(byte[] rgbKey)
+            : this(MagmaAlgorithmFullName, rgbKey)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MACMagma"/> class with the specified key data
+        /// and using the specified implementation of <see cref="Magma"/>.
+        /// </summary>
+        /// <param name="algorithmName">
+        /// The name of the <see cref="Magma"/> implementation to use. 
+        /// </param>
+        /// <param name="rgbKey">
+        /// The secret key for <see cref="MACMagma"/> encryption. 
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The <paramref name="rgbKey"/> parameter is null. 
+        /// </exception>
+        public MACMagma(string algorithmName, byte[] rgbKey)
         {
             if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
 

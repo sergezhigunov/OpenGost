@@ -3,11 +3,11 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConstants;
     using static CryptoUtils;
 
     /// <summary>
-    /// Computes a Message Authentication Code (MAC) using <see cref="Grasshopper"/>
-    /// for the input data <see cref="CryptoStream"/>.
+    /// Computes a Message Authentication Code (MAC) using <see cref="Grasshopper"/> algorithm.
     /// </summary>
     public class MACGrasshopper : KeyedHashAlgorithm
     {
@@ -15,7 +15,7 @@ namespace Gost.Security.Cryptography
         /// Initializes a new instance of the <see cref="MACGrasshopper"/> class.
         /// </summary>
         public MACGrasshopper()
-            : this(GenerateRandomBytes(128))
+            : this(GenerateRandomBytes(32))
         { }
 
         /// <summary>
@@ -28,6 +28,23 @@ namespace Gost.Security.Cryptography
         /// The <paramref name="rgbKey"/> parameter is null. 
         /// </exception>
         public MACGrasshopper(byte[] rgbKey)
+            : this(GrasshopperAlgorithmFullName, rgbKey)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MACGrasshopper"/> class with the specified key data
+        /// and using the specified implementation of <see cref="Grasshopper"/>.
+        /// </summary>
+        /// <param name="algorithmName">
+        /// The name of the <see cref="Grasshopper"/> implementation to use. 
+        /// </param>
+        /// <param name="rgbKey">
+        /// The secret key for <see cref="MACGrasshopper"/> encryption. 
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The <paramref name="rgbKey"/> parameter is null. 
+        /// </exception>
+        public MACGrasshopper(string algorithmName, byte[] rgbKey)
         {
             if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
 

@@ -71,7 +71,9 @@ namespace Gost.Security.Cryptography
 
             // By definition, the Grasshopper algorithm takes an IV=0
             _grasshopper.IV = new byte[_bytesPerBlock];
-            _grasshopper.Padding = PaddingMode.Zeros;
+
+            // By definition, special padding (implemented on final hashing)
+            _grasshopper.Padding = PaddingMode.None;
 
             _buffer = new byte[_bytesPerBlock];
             _state = new byte[_bytesPerBlock];
@@ -154,12 +156,14 @@ namespace Gost.Security.Cryptography
             EnsureEncryptorInitialized();
 
             if (_bufferLength == _bytesPerBlock)
-                Xor(_buffer, 0, _keyExpansion1, 0, _buffer, 0, _bufferLength);
+                Xor(_buffer, 0, _keyExpansion1, 0, _buffer, 0, _bytesPerBlock);
             else
             {
+                // By definition, special padding
                 _buffer[_bufferLength] = 0x80;
                 Array.Clear(_buffer, _bufferLength, _bytesPerBlock - _bufferLength - 1);
-                Xor(_buffer, 0, _keyExpansion2, 0, _buffer, 0, _bufferLength);
+
+                Xor(_buffer, 0, _keyExpansion2, 0, _buffer, 0, _bytesPerBlock);
             }
             _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _state, 0);
 

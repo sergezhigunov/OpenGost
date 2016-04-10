@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static Buffer;
     using static CryptoConstants;
     using static CryptoUtils;
 
@@ -11,6 +12,16 @@ namespace Gost.Security.Cryptography
     /// </summary>
     public class MACMagma : KeyedHashAlgorithm
     {
+        private Magma _magma;
+        private ICryptoTransform _encryptor;
+        private byte[]
+            _keyExpansion1,
+            _keyExpansion2,
+            _buffer,
+            _state;
+        private readonly int _bytesPerBlock;
+        private int _bufferLength;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MACMagma"/> class.
         /// </summary>
@@ -48,7 +59,22 @@ namespace Gost.Security.Cryptography
         {
             if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
 
-            throw new NotImplementedException();
+            _magma =
+                algorithmName == null ?
+                Magma.Create() :
+                Magma.Create(algorithmName);
+
+            HashSizeValue = _magma.BlockSize;
+            KeyValue = (byte[])rgbKey.Clone();
+
+            _bytesPerBlock = HashSizeValue / 8;
+
+            // By definition, the Magma algorithm takes an IV=0
+            _magma.IV = new byte[_bytesPerBlock];
+            _magma.Padding = PaddingMode.Zeros;
+
+            _buffer = new byte[_bytesPerBlock];
+            _state = new byte[_bytesPerBlock];
         }
 
         /// <summary>
@@ -56,7 +82,18 @@ namespace Gost.Security.Cryptography
         /// </summary>
         public override void Initialize()
         {
-            throw new NotImplementedException();
+            if (_encryptor != null)
+            {
+                _encryptor.Dispose();
+                _encryptor = null;
+            }
+
+            EraseData(ref _keyExpansion1);
+            EraseData(ref _keyExpansion2);
+
+            _bufferLength = 0;
+            Array.Clear(_buffer, 0, _bytesPerBlock);
+            Array.Clear(_state, 0, _bytesPerBlock);
         }
 
         /// <summary>
@@ -74,7 +111,36 @@ namespace Gost.Security.Cryptography
         /// </param>
         protected override void HashCore(byte[] data, int dataOffset, int dataSize)
         {
-            throw new NotImplementedException();
+            EnsureEncryptorInitialized();
+
+            if (_bufferLength > 0 && _bufferLength + dataSize > _bytesPerBlock)
+            {
+                int bytesToCopy = _bytesPerBlock - _bufferLength;
+                BlockCopy(data, dataOffset, _buffer, _bufferLength, bytesToCopy);
+                dataOffset += bytesToCopy;
+                dataSize -= bytesToCopy;
+                _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _state, 0);
+                _bufferLength = 0;
+            }
+
+            if (dataSize >= _bytesPerBlock && _bufferLength == _bytesPerBlock)
+            {
+                _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _state, 0);
+                _bufferLength = 0;
+            }
+
+            while (dataSize > _bytesPerBlock)
+            {
+                _encryptor.TransformBlock(data, dataOffset, _bytesPerBlock, _state, 0);
+                dataOffset += _bytesPerBlock;
+                dataSize -= _bytesPerBlock;
+            }
+
+            if (dataSize > 0)
+            {
+                BlockCopy(data, dataOffset, _buffer, _bufferLength, dataSize);
+                _bufferLength += dataSize;
+            }
         }
 
         /// <summary>
@@ -85,7 +151,78 @@ namespace Gost.Security.Cryptography
         /// </returns>
         protected override byte[] HashFinal()
         {
-            throw new NotImplementedException();
+            EnsureEncryptorInitialized();
+
+            if (_bufferLength == _bytesPerBlock)
+                Xor(_buffer, 0, _keyExpansion1, 0, _buffer, 0, _bufferLength);
+            else
+            {
+                _buffer[_bufferLength] = 0x80;
+                Array.Clear(_buffer, _bufferLength, _bytesPerBlock - _bufferLength - 1);
+                Xor(_buffer, 0, _keyExpansion2, 0, _buffer, 0, _bufferLength);
+            }
+            _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _state, 0);
+
+            return (byte[])_state.Clone();
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="MACGrasshopper"/>
+        /// and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// true to release both managed and unmanaged resources;
+        /// false to release only unmanaged resources.
+        /// </param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _magma.Clear();
+                _encryptor?.Dispose();
+                EraseData(ref _keyExpansion1);
+                EraseData(ref _keyExpansion2);
+                EraseData(ref _buffer);
+                EraseData(ref _state);
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private void EnsureEncryptorInitialized()
+        {
+            if (_encryptor == null)
+            {
+                _magma.Key = Key;
+                _encryptor = _magma.CreateEncryptor();
+                GenerateKeyExpansion();
+            }
+        }
+
+        private void GenerateKeyExpansion()
+        {
+            _keyExpansion2 = new byte[_bytesPerBlock];
+            _keyExpansion1 = _encryptor.TransformFinalBlock(_keyExpansion2, 0, _bytesPerBlock);
+            if (!_encryptor.CanReuseTransform)
+            {
+                _encryptor.Dispose();
+                _encryptor = _magma.CreateEncryptor();
+            }
+            int r0 = _keyExpansion1[0];
+
+            LeftShiftLittleEndianOneBit(_keyExpansion1);
+
+            if ((r0 & 0x80) == 0x80)
+                _keyExpansion1[_bytesPerBlock - 1] ^= 0x1B;
+
+            BlockCopy(_keyExpansion1, 0, _keyExpansion2, 0, _bytesPerBlock);
+
+            r0 = _keyExpansion2[0];
+
+            LeftShiftLittleEndianOneBit(_keyExpansion2);
+
+            if ((r0 & 0x80) == 0x80)
+                _keyExpansion2[_bytesPerBlock - 1] ^= 0x1B;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Gost.Security.Cryptography
         [Fact(DisplayName = nameof(MagmaTests) + "_" + nameof(ComputeMACTest))]
         public void ComputeMACTest()
         {
-            string expectedMAC = "154e7210";
+            string expectedMAC = "154e72102030c5bb";
 
             byte[] hashCode;
 

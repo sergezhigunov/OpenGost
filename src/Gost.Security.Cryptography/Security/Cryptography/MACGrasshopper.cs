@@ -210,7 +210,7 @@ namespace Gost.Security.Cryptography
             }
             int r0 = _keyExpansion1[0];
 
-            ShiftLeftOne(_keyExpansion1);
+            LeftShiftLittleEndianOneBit(_keyExpansion1);
 
             if ((r0 & 0x80) == 0x80)
                 _keyExpansion1[_bytesPerBlock - 1] ^= 0x87;
@@ -219,21 +219,10 @@ namespace Gost.Security.Cryptography
 
             r0 = _keyExpansion2[0];
 
-            ShiftLeftOne(_keyExpansion2);
+            LeftShiftLittleEndianOneBit(_keyExpansion2);
 
             if ((r0 & 0x80) == 0x80)
                 _keyExpansion2[_bytesPerBlock - 1] ^= 0x87;
-        }
-
-        private static void ShiftLeftOne(byte[] data)
-        {
-            int lastByte = data.Length - 1;
-            for (int i = 0; i < lastByte; i++)
-            {
-                data[i] <<= 1;
-                data[i] |= (byte)((data[i + 1] >> 7) & 0x01);
-            }
-            data[lastByte] <<= 1;
         }
     }
 }

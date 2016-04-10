@@ -91,10 +91,10 @@ namespace Gost.Security.Cryptography
 
         private static void ConfigureGostCryptography()
         {
-            CryptoConfig.AddAlgorithm(typeof(GrasshopperManaged), GrasshopperAlgorithmFullName, GrasshopperAlgorithmName);
-            CryptoConfig.AddAlgorithm(typeof(MagmaManaged), MagmaAlgorithmFullName, MagmaAlgorithmName);
-            CryptoConfig.AddAlgorithm(typeof(Streebog512Managed), Streebog512AlgorithmFullName, Streebog512AlgorithmName);
-            CryptoConfig.AddAlgorithm(typeof(Streebog256Managed), Streebog256AlgorithmFullName, Streebog256AlgorithmName);
+            CryptoConfig.AddAlgorithm(typeof(GrasshopperManaged), GrasshopperManagedAlgorithmFullName, GrasshopperManagedAlgorithmName);
+            CryptoConfig.AddAlgorithm(typeof(MagmaManaged), MagmaManagedAlgorithmFullName, MagmaManagedAlgorithmName);
+            CryptoConfig.AddAlgorithm(typeof(Streebog512Managed), Streebog512ManagedAlgorithmFullName, Streebog512ManagedAlgorithmName);
+            CryptoConfig.AddAlgorithm(typeof(Streebog256Managed), Streebog256ManagedAlgorithmFullName, Streebog256ManagedAlgorithmName);
         }
     }
 }

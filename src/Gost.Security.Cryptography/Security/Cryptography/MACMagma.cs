@@ -28,7 +28,7 @@ namespace Gost.Security.Cryptography
         /// The <paramref name="rgbKey"/> parameter is null. 
         /// </exception>
         public MACMagma(byte[] rgbKey)
-            : this(MagmaAlgorithmFullName, rgbKey)
+            : this(MagmaManagedAlgorithmFullName, rgbKey)
         { }
 
         /// <summary>

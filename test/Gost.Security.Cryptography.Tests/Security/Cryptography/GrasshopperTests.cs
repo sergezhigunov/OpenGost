@@ -41,7 +41,7 @@ namespace Gost.Security.Cryptography
         [Fact(DisplayName = nameof(GrasshopperTests) + "_" + nameof(ComputeMACTest))]
         public void ComputeMACTest()
         {
-            string expectedMAC = "336f4d296059fbe3";
+            string expectedMAC = "336f4d296059fbe34ddeb35b37749c67";
 
             byte[] hashCode;
 

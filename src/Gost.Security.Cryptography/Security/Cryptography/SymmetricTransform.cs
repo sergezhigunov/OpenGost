@@ -122,20 +122,14 @@ namespace Gost.Security.Cryptography
 
             byte[] transformedBytes = null;
             if (_transformMode == SymmetricTransformMode.Encrypt)
-            {
                 EncryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes, 0, true);
-                return transformedBytes;
-            }
             else
             {
                 if (inputCount % InputBlockSize != 0)
                     throw new CryptographicException(InvalidDataSize);
 
                 if (_depadBuffer == null)
-                {
                     DecryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes, 0, true);
-                    return transformedBytes;
-                }
                 else
                 {
                     byte[] temp = new byte[_depadBuffer.Length + inputCount];
@@ -147,10 +141,10 @@ namespace Gost.Security.Cryptography
                                 ref transformedBytes,
                                 0,
                                 true);
-                    Reset();
-                    return transformedBytes;
                 }
             }
+            Reset();
+            return transformedBytes;
         }
 
         public void Dispose()

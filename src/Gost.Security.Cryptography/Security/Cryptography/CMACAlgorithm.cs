@@ -16,7 +16,7 @@ namespace Gost.Security.Cryptography
             _subkey1,
             _subkey2,
             _buffer,
-            _state,
+            _temp,
             _irreduciblePolynomial;
 
         private readonly int _bytesPerBlock;
@@ -42,7 +42,7 @@ namespace Gost.Security.Cryptography
             _symmetricAlgorithm.Padding = PaddingMode.None;
 
             _buffer = new byte[_bytesPerBlock];
-            _state = new byte[_bytesPerBlock];
+            _temp = new byte[_bytesPerBlock];
             _irreduciblePolynomial = irreduciblePolynomial;
         }
 
@@ -59,7 +59,6 @@ namespace Gost.Security.Cryptography
 
             _bufferLength = 0;
             Array.Clear(_buffer, 0, _bytesPerBlock);
-            Array.Clear(_state, 0, _bytesPerBlock);
         }
 
         protected override void HashCore(byte[] data, int dataOffset, int dataSize)
@@ -72,19 +71,19 @@ namespace Gost.Security.Cryptography
                 BlockCopy(data, dataOffset, _buffer, _bufferLength, bytesToCopy);
                 dataOffset += bytesToCopy;
                 dataSize -= bytesToCopy;
-                _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _state, 0);
+                _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
                 _bufferLength = 0;
             }
 
             if (dataSize >= _bytesPerBlock && _bufferLength == _bytesPerBlock)
             {
-                _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _state, 0);
+                _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
                 _bufferLength = 0;
             }
 
             while (dataSize > _bytesPerBlock)
             {
-                _encryptor.TransformBlock(data, dataOffset, _bytesPerBlock, _state, 0);
+                _encryptor.TransformBlock(data, dataOffset, _bytesPerBlock, _temp, 0);
                 dataOffset += _bytesPerBlock;
                 dataSize -= _bytesPerBlock;
             }
@@ -110,9 +109,22 @@ namespace Gost.Security.Cryptography
 
                 Xor(_buffer, 0, _subkey2, 0, _buffer, 0, _bytesPerBlock);
             }
-            _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _state, 0);
+            return _encryptor.TransformFinalBlock(_buffer, 0, _bytesPerBlock);
+        }
 
-            return (byte[])_state.Clone();
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _symmetricAlgorithm.Clear();
+                _encryptor?.Dispose();
+                EraseData(ref _subkey1);
+                EraseData(ref _subkey2);
+                EraseData(ref _buffer);
+                EraseData(ref _temp);
+            }
+
+            base.Dispose(disposing);
         }
 
         private void EnsureEncryptorInitialized()

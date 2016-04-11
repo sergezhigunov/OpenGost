@@ -4,6 +4,7 @@ using System.Threading;
 
 namespace Gost.Security.Cryptography
 {
+    using System.Runtime.CompilerServices;
     using static CryptoConstants;
 
     internal static class CryptoUtils
@@ -33,12 +34,14 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] result, int resultOffset, int count)
         {
             for (int i = 0; i < count; i++)
                 result[resultOffset + i] = (byte)(left[leftOffset + i] ^ right[rightOffset + i]);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void UInt64ToLittleEndian(ulong value, byte[] data, int offset)
         {
             data[offset] = (byte)value;
@@ -51,6 +54,7 @@ namespace Gost.Security.Cryptography
             data[offset + 7] = (byte)(value >> 56);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void UInt32ToBigEndian(uint value, byte[] data, int offset)
         {
             data[offset] = (byte)(value >> 24);

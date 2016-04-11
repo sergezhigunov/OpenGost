@@ -148,9 +148,7 @@ namespace Gost.Security.Cryptography
         }
 
         public void Dispose()
-        {
-            Dispose(true);
-        }
+            => Dispose(true);
 
         protected virtual void Dispose(bool disposing)
         {

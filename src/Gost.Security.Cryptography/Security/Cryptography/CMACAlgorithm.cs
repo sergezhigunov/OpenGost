@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using System.Runtime.CompilerServices;
     using static Buffer;
     using static CryptoUtils;
 
@@ -127,6 +128,7 @@ namespace Gost.Security.Cryptography
             base.Dispose(disposing);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureEncryptorInitialized()
         {
             if (_encryptor == null)
@@ -163,6 +165,7 @@ namespace Gost.Security.Cryptography
                 Xor(_subkey2, 0, _irreduciblePolynomial, 0, _subkey2, 0, _bytesPerBlock);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void LeftShiftLittleEndianOneBit(byte[] data)
         {
             int lastByte = data.Length - 1;

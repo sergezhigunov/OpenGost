@@ -2,6 +2,7 @@
 
 namespace Gost.Security.Cryptography
 {
+    using System.Runtime.CompilerServices;
     using static Buffer;
     using static CryptoUtils;
 
@@ -253,6 +254,7 @@ namespace Gost.Security.Cryptography
             return HashValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DoTransform(byte[] block, uint blockSize)
         {
             Xor(HashValue, _n, _tempKey);
@@ -267,6 +269,7 @@ namespace Gost.Security.Cryptography
             _n += blockSize;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DoFinalTransform(ulong sizeInBits, byte[] sigma)
         {
             byte[] n = new byte[64];
@@ -289,6 +292,7 @@ namespace Gost.Security.Cryptography
             Xor(_tempBuffer, sigma, HashValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Encrypt(byte[] key, byte[] block, byte[] result)
         {
             Xor(key, block, result);
@@ -312,6 +316,7 @@ namespace Gost.Security.Cryptography
                 data[i] = s_substTable[data[i]];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Transpose(byte[] data)
         {
             for (int i = 0; i < 7; i++)
@@ -329,6 +334,7 @@ namespace Gost.Security.Cryptography
         private static void Xor(byte[] left, byte[] right, byte[] result)
             => CryptoUtils.Xor(left, 0, right, 0, result, 0, 64);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Xor(byte[] left, ulong right, byte[] result)
         {
             for (int i = 0; i < 8; i++)
@@ -336,6 +342,7 @@ namespace Gost.Security.Cryptography
             BlockCopy(left, 8, result, 8, 56);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DoLinearTransform(byte[] data)
         {
             for (int i = 0; i < 8; i++)
@@ -356,6 +363,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void AddModuloLittleEndian(byte[] left, byte[] right, byte[] result)
         {
             int t = 0;
@@ -366,6 +374,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void AddModuloLittleEndian(byte[] left, ulong right, byte[] result)
         {
             int i = 0, t = 0;

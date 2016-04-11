@@ -38,18 +38,18 @@ namespace Gost.Security.Cryptography
             Assert.Equal(cipherTextBytes.ToHexadecimalStringLittleEndian(), expectedCipherText);
         }
 
-        [Fact(DisplayName = nameof(GrasshopperTests) + "_" + nameof(ComputeMACTest))]
-        public void ComputeMACTest()
+        [Fact(DisplayName = nameof(GrasshopperTests) + "_" + nameof(ComputeCMACTest))]
+        public void ComputeCMACTest()
         {
-            string expectedMAC = "336f4d296059fbe34ddeb35b37749c67";
+            string expectedCMAC = "336f4d296059fbe34ddeb35b37749c67";
 
             byte[] hashCode;
 
-            using (var mac = new MACGrasshopper(KeyBytes))
-                hashCode = mac.ComputeHash(PlainTextBytes);
+            using (var cmac = new CMACGrasshopper(KeyBytes))
+                hashCode = cmac.ComputeHash(PlainTextBytes);
 
             // Little-endian byte order comparation
-            Assert.Equal(expectedMAC, hashCode.ToHexadecimalStringLittleEndian());
+            Assert.Equal(expectedCMAC, hashCode.ToHexadecimalStringLittleEndian());
         }
     }
 }

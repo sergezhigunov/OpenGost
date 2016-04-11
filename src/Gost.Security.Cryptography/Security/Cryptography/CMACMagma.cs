@@ -7,75 +7,75 @@ namespace Gost.Security.Cryptography
     using static CryptoUtils;
 
     /// <summary>
-    /// Computes a Message Authentication Code (MAC) using <see cref="Grasshopper"/> algorithm.
+    /// Computes a Cipher-based Message Authentication Code (CMAC) using <see cref="Magma"/> algorithm.
     /// </summary>
-    public class MACGrasshopper : KeyedHashAlgorithm
+    public class CMACMagma : KeyedHashAlgorithm
     {
         #region Constants
 
         private static readonly byte[] s_irreduciblePolynomial =
         {
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x87
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1B
         };
 
         #endregion
 
-        private readonly MACAlgorithm _cmacAlgorithm;
+        private readonly CMACAlgorithm _cmacAlgorithm;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MACGrasshopper"/> class.
+        /// Initializes a new instance of the <see cref="CMACMagma"/> class.
         /// </summary>
-        public MACGrasshopper()
+        public CMACMagma()
             : this(GenerateRandomBytes(32))
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MACGrasshopper"/> class with the specified key data.
+        /// Initializes a new instance of the <see cref="CMACMagma"/> class with the specified key data.
         /// </summary>
         /// <param name="rgbKey">
-        /// The secret key for <see cref="MACGrasshopper"/> encryption. 
+        /// The secret key for <see cref="CMACMagma"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// The <paramref name="rgbKey"/> parameter is null. 
         /// </exception>
-        public MACGrasshopper(byte[] rgbKey)
-            : this(GrasshopperManagedAlgorithmFullName, rgbKey)
+        public CMACMagma(byte[] rgbKey)
+            : this(MagmaManagedAlgorithmFullName, rgbKey)
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MACGrasshopper"/> class with the specified key data
-        /// and using the specified implementation of <see cref="Grasshopper"/>.
+        /// Initializes a new instance of the <see cref="CMACMagma"/> class with the specified key data
+        /// and using the specified implementation of <see cref="Magma"/>.
         /// </summary>
         /// <param name="algorithmName">
-        /// The name of the <see cref="Grasshopper"/> implementation to use. 
+        /// The name of the <see cref="Magma"/> implementation to use. 
         /// </param>
         /// <param name="rgbKey">
-        /// The secret key for <see cref="MACGrasshopper"/> encryption. 
+        /// The secret key for <see cref="CMACMagma"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// The <paramref name="rgbKey"/> parameter is null. 
         /// </exception>
-        public MACGrasshopper(string algorithmName, byte[] rgbKey)
+        public CMACMagma(string algorithmName, byte[] rgbKey)
         {
             if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
 
-            Grasshopper grasshopper =
+            Magma magma =
                 algorithmName == null ?
-                Grasshopper.Create() :
-                Grasshopper.Create(algorithmName);
+                Magma.Create() :
+                Magma.Create(algorithmName);
 
-            _cmacAlgorithm = new MACAlgorithm(grasshopper, rgbKey, s_irreduciblePolynomial);
+            _cmacAlgorithm = new CMACAlgorithm(magma, rgbKey, s_irreduciblePolynomial);
         }
 
         /// <summary>
-        /// Initializes an instance of <see cref="MACGrasshopper"/>.
+        /// Initializes an instance of <see cref="CMACMagma"/>.
         /// </summary>
         public override void Initialize()
             => _cmacAlgorithm.Initialize();
 
         /// <summary>
-        /// Routes data written to the object into the <see cref="Grasshopper"/>
-        /// encryptor for computing the Message Authentication Code (MAC).
+        /// Routes data written to the object into the <see cref="Magma"/>
+        /// encryptor for computing the Cipher-based Message Authentication Code (CMAC).
         /// </summary>
         /// <param name="data">
         /// The input data.
@@ -90,7 +90,8 @@ namespace Gost.Security.Cryptography
             => _cmacAlgorithm.TransformBlock(data, dataOffset, dataSize, null, 0);
 
         /// <summary>
-        /// Returns the computed Message Authentication Code (MAC) after all data is written to the object.
+        /// Returns the computed Cipher-based Message Authentication Code (CMAC)
+        /// after all data is written to the object.
         /// </summary>
         /// <returns>
         /// The computed MAC.
@@ -102,7 +103,7 @@ namespace Gost.Security.Cryptography
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="MACGrasshopper"/>
+        /// Releases the unmanaged resources used by the <see cref="CMACGrasshopper"/>
         /// and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">

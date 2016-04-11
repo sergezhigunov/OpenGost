@@ -36,18 +36,18 @@ namespace Gost.Security.Cryptography
             Assert.Equal(cipherTextBytes.ToHexadecimalStringLittleEndian(), expectedCipherText);
         }
 
-        [Fact(DisplayName = nameof(MagmaTests) + "_" + nameof(ComputeMACTest))]
-        public void ComputeMACTest()
+        [Fact(DisplayName = nameof(MagmaTests) + "_" + nameof(ComputeCMACTest))]
+        public void ComputeCMACTest()
         {
-            string expectedMAC = "154e72102030c5bb";
+            string expectedCMAC = "154e72102030c5bb";
 
             byte[] hashCode;
 
-            using (var mac = new MACMagma(KeyBytes))
-                hashCode = mac.ComputeHash(PlainTextBytes);
+            using (var cmac = new CMACMagma(KeyBytes))
+                hashCode = cmac.ComputeHash(PlainTextBytes);
 
             // Little-endian byte order comparation
-            Assert.Equal(expectedMAC, hashCode.ToHexadecimalStringLittleEndian());
+            Assert.Equal(expectedCMAC, hashCode.ToHexadecimalStringLittleEndian());
         }
     }
 }

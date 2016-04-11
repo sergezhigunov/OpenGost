@@ -6,7 +6,9 @@ namespace Gost.Security.Cryptography
     using static Buffer;
     using static CryptoUtils;
 
-    internal class MACAlgorithm : KeyedHashAlgorithm
+    // Computes Cipher-based Message Authentication Code (CMAC)
+    // using any symmetric algorithm
+    internal class CMACAlgorithm : KeyedHashAlgorithm
     {
         private readonly SymmetricAlgorithm _symmetricAlgorithm;
         private ICryptoTransform _encryptor;
@@ -20,7 +22,7 @@ namespace Gost.Security.Cryptography
         private readonly int _bytesPerBlock;
         private int _bufferLength;
 
-        public MACAlgorithm( SymmetricAlgorithm symmetricAlgorithm, byte[] rgbKey, byte[] irreduciblePolynomial)
+        public CMACAlgorithm(SymmetricAlgorithm symmetricAlgorithm, byte[] rgbKey, byte[] irreduciblePolynomial)
         {
             if (symmetricAlgorithm == null) throw new ArgumentNullException(nameof(symmetricAlgorithm));
             if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
@@ -33,7 +35,7 @@ namespace Gost.Security.Cryptography
 
             _bytesPerBlock = HashSizeValue / 8;
 
-            // By definition, the Grasshopper algorithm takes an IV=0
+            // By definition, the symmetric algorithm takes an IV=0
             _symmetricAlgorithm.IV = new byte[_bytesPerBlock];
 
             // By definition, special padding (implemented on final hashing)

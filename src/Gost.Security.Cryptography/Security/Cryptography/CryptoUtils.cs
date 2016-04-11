@@ -68,17 +68,6 @@ namespace Gost.Security.Cryptography
                 ((uint)data[offset]) << 24;
         }
 
-        internal static void LeftShiftLittleEndianOneBit(byte[] data)
-        {
-            int lastByte = data.Length - 1;
-            for (int i = 0; i < lastByte; i++)
-            {
-                data[i] <<= 1;
-                data[i] |= (byte)((data[i + 1] >> 7) & 0x01);
-            }
-            data[lastByte] <<= 1;
-        }
-
         internal static object CreateFromName(string name)
         {
             EnsureGostCryptographyConfigured();

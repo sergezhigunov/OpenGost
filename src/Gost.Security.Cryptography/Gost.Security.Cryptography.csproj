@@ -42,6 +42,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SecurityCryptographyStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Security\Cryptography\SecurityCryptographyStrings.ru.resx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\InternalsVisibleTo.cs" />

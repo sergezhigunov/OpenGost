@@ -82,9 +82,7 @@
     <Compile Include="Security\Cryptography\Streebog256Tests.cs" />
     <Compile Include="Security\Cryptography\Streebog512Tests.cs" />
     <Compile Include="Security\Cryptography\SymmetricAlgorithmTest.cs" />
-    <Compile Include="Security\Cryptography\SymmetricTransformMock.cs" />
     <Compile Include="Security\Cryptography\SymmetricTransformTests.cs" />
-    <Compile Include="Security\Cryptography\TestsUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

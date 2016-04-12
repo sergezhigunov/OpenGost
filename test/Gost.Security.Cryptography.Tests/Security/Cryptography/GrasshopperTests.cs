@@ -12,9 +12,9 @@ namespace Gost.Security.Cryptography
             Key = "8899aabbccddeeff0011223344556677fedcba98765432100123456789abcdef",
             IV = "1234567890abcef0a1b2c3d4e5f0011223344556677889901213141516171819";
 
-        private static byte[] KeyBytes { get; } = FromHexadecimalLittleEndian(Key);
-        private static byte[] PlainTextBytes { get; } = FromHexadecimalLittleEndian(PlainText);
-        private static byte[] IVBytes { get; } = FromHexadecimalLittleEndian(IV);
+        private static byte[] KeyBytes { get; } = Key.HexToByteArray();
+        private static byte[] PlainTextBytes { get; } = PlainText.HexToByteArray();
+        private static byte[] IVBytes { get; } = IV.HexToByteArray();
 
         [Theory(DisplayName = nameof(GrasshopperTests) + "_" + nameof(EncryptAndDecrypt))]
         [InlineData(CipherMode.ECB, PaddingMode.None, "7f679d90bebc24305a468d42b9d4edcdb429912c6e0032f9285452d76718d08bf0ca33549d247ceef3f5a5313bd4b157d0b09ccde830b9eb3a02c4c5aa8ada98")]
@@ -34,8 +34,8 @@ namespace Gost.Security.Cryptography
                     PlainTextBytes, out cipherTextBytes, out newPlainTextBytes);
 
             // Little-endian byte order comparation
-            Assert.Equal(newPlainTextBytes.ToHexadecimalStringLittleEndian(), PlainText);
-            Assert.Equal(cipherTextBytes.ToHexadecimalStringLittleEndian(), expectedCipherText);
+            Assert.Equal(newPlainTextBytes.ToHexString(), PlainText);
+            Assert.Equal(cipherTextBytes.ToHexString(), expectedCipherText);
         }
 
         [Fact(DisplayName = nameof(GrasshopperTests) + "_" + nameof(ComputeCMACTest))]
@@ -49,7 +49,7 @@ namespace Gost.Security.Cryptography
                 hashCode = cmac.ComputeHash(PlainTextBytes);
 
             // Little-endian byte order comparation
-            Assert.Equal(expectedCMAC, hashCode.ToHexadecimalStringLittleEndian());
+            Assert.Equal(expectedCMAC, hashCode.ToHexString());
         }
     }
 }

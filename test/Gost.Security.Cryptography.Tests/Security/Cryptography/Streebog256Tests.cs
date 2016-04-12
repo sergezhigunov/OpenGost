@@ -1,32 +1,27 @@
-﻿using Xunit;
+﻿using System.Text;
+using System.Security.Cryptography;
+using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    using static TestsUtils;
-
-    public class Streebog256Tests
+    public class Streebog256Tests : HashAlgorithmTest
     {
-        [Theory(DisplayName = nameof(Streebog256Tests) + "_" + nameof(ComputeHashTest))]
+        private static readonly Encoding CurrentEncoding = Encoding.GetEncoding(1251);
+
+        protected override HashAlgorithm Create()
+            => Streebog256.Create();
+
+        [Theory(DisplayName = nameof(Streebog256) + "_" + nameof(Hash))]
         [InlineData(
-           "323130393837363534333231303938373635343332313039383736353433323130393837363534333231303938373635343332313039383736353433323130",
-           "00557be5e584fd52a449b16b0251d05d27f94ab76cbaa6da890b59d8ef1e159d")]
+            "012345678901234567890123456789012345678901234567890123456789012",
+            "9d151eefd8590b89daa6ba6cb74af9275dd051026bb149a452fd84e5e57b5500")]
         [InlineData(
-           "fbe2e5f0eee3c820fbeafaebef20fffbf0e1e0f0f520e0ed20e8ece0ebe5f0f2f120fff0eeec20f120faf2fee5e2202ce8f6f3ede220e8e6eee1e8f0f2d1202ce8f0f2e5e220e5d1",
-           "508f7e553c06501d749a66fc28c6cac0b005746d97537fa85d9e40904efed29d")]
+            "Се ветри, Стрибожи внуци, веютъ с моря стрелами на храбрыя плъкы Игоревы",
+            "9dd2fe4e90409e5da87f53976d7405b0c0cac628fc669a741d50063c557e8f50")]
         [InlineData(
             "",
-            "bbe19c8d2025d99f943a932a0b365a822aa36a4c479d22cc02c8973e219a533f")]
-        public void ComputeHashTest(string message, string expectedHashCode)
-        {
-            byte[]
-                messageBytes = FromHexadecimalBigEndian(message),
-                hashCode;
-
-            using (var hashAlgorithm = new Streebog256Managed())
-                hashCode = hashAlgorithm.ComputeHash(messageBytes);
-
-            // Big-endian byte order comparation
-            Assert.Equal(expectedHashCode, hashCode.ToHexadecimalStringBigEndian());
-        }
+            "3f539a213e97c802cc229d474c6aa32a825a360b2a933a949fd925208d9ce1bb")]
+        public void Hash(string message, string expectedHashCode)
+            => Verify(message, CurrentEncoding, expectedHashCode);
     }
 }

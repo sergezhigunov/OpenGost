@@ -11,8 +11,8 @@ namespace Gost.Security.Cryptography
             PlainText = "92def06b3c130a59db54c704f8189d204a98fb2e67a8024c8912409b17b57e41",
             Key = "ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff";
 
-        private static byte[] KeyBytes { get; } = FromHexadecimalLittleEndian(Key);
-        private static byte[] PlainTextBytes { get; } = FromHexadecimalLittleEndian(PlainText);
+        private static byte[] KeyBytes { get; } = Key.HexToByteArray();
+        private static byte[] PlainTextBytes { get; } = PlainText.HexToByteArray();
 
         [Theory(DisplayName = nameof(MagmaTests) + "_" + nameof(EncryptAndDecrypt))]
         [InlineData(CipherMode.ECB, PaddingMode.None, "1234567890abcdef234567890abcdef134567890abcdef12", "2b073f0494f372a0de70e715d3556e4811d8d9e9eacfbc1e7c68260996c67efb")]
@@ -25,15 +25,15 @@ namespace Gost.Security.Cryptography
                 cipherTextBytes,
                 newPlainTextBytes;
 
-            using (var algorithm = new MagmaManaged { Mode = cipherMode, Padding = paddingMode, Key = KeyBytes, IV = FromHexadecimalLittleEndian(iv) })
+            using (var algorithm = new MagmaManaged { Mode = cipherMode, Padding = paddingMode, Key = KeyBytes, IV = iv.HexToByteArray() })
                 InternalEncryptAndDecrypt(
                     algorithm.CreateEncryptor,
                     algorithm.CreateDecryptor,
                     PlainTextBytes, out cipherTextBytes, out newPlainTextBytes);
 
             // Little-endian byte order comparation
-            Assert.Equal(newPlainTextBytes.ToHexadecimalStringLittleEndian(), PlainText);
-            Assert.Equal(cipherTextBytes.ToHexadecimalStringLittleEndian(), expectedCipherText);
+            Assert.Equal(newPlainTextBytes.ToHexString(), PlainText);
+            Assert.Equal(cipherTextBytes.ToHexString(), expectedCipherText);
         }
 
         [Fact(DisplayName = nameof(MagmaTests) + "_" + nameof(ComputeCMACTest))]
@@ -47,7 +47,7 @@ namespace Gost.Security.Cryptography
                 hashCode = cmac.ComputeHash(PlainTextBytes);
 
             // Little-endian byte order comparation
-            Assert.Equal(expectedCMAC, hashCode.ToHexadecimalStringLittleEndian());
+            Assert.Equal(expectedCMAC, hashCode.ToHexString());
         }
     }
 }

@@ -1,32 +1,27 @@
-﻿using Xunit;
+﻿using System.Text;
+using System.Security.Cryptography;
+using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    using static TestsUtils;
-
-    public class Streebog512Tests
+    public class Streebog512Tests : HashAlgorithmTest
     {
-        [Theory(DisplayName = nameof(Streebog512Tests) + "_" + nameof(ComputeHashTest))]
+        private static readonly Encoding CurrentEncoding = Encoding.GetEncoding(1251);
+
+        protected override HashAlgorithm Create()
+            => Streebog512.Create();
+
+        [Theory(DisplayName = nameof(Streebog512) + "_" + nameof(Hash))]
         [InlineData(
-            "323130393837363534333231303938373635343332313039383736353433323130393837363534333231303938373635343332313039383736353433323130",
-            "486f64c1917879417fef082b3381a4e211c324f074654c38823a7b76f830ad00fa1fbae42b1285c0352f227524bc9ab16254288dd6863dccd5b9f54a1ad0541b")]
+            "012345678901234567890123456789012345678901234567890123456789012",
+            "1b54d01a4af5b9d5cc3d86d68d285462b19abc2475222f35c085122be4ba1ffa00ad30f8767b3a82384c6574f024c311e2a481332b08ef7f41797891c1646f48")]
         [InlineData(
-            "fbe2e5f0eee3c820fbeafaebef20fffbf0e1e0f0f520e0ed20e8ece0ebe5f0f2f120fff0eeec20f120faf2fee5e2202ce8f6f3ede220e8e6eee1e8f0f2d1202ce8f0f2e5e220e5d1",
-            "28fbc9bada033b1460642bdcddb90c3fb3e56c497ccd0f62b8a2ad4935e85f037613966de4ee00531ae60f3b5a47f8dae06915d5f2f194996fcabf2622e6881e")]
+            "Се ветри, Стрибожи внуци, веютъ с моря стрелами на храбрыя плъкы Игоревы",
+            "1e88e62226bfca6f9994f1f2d51569e0daf8475a3b0fe61a5300eee46d961376035fe83549ada2b8620fcd7c496ce5b33f0cb9dddc2b6460143b03dabac9fb28")]
         [InlineData(
             "",
-            "8a1a1c4cbf909f8ecb81cd1b5c713abad26a4cac2a5fda3ce86e352855712f36a7f0be98eb6cf51553b507b73a87e97946aebc29859255049f86aa09a25d948e")]
-        public void ComputeHashTest(string message, string expectedHashCode)
-        {
-            byte[]
-                messageBytes = FromHexadecimalBigEndian(message),
-                hashCode;
-
-            using (var hashAlgorithm = new Streebog512Managed())
-                hashCode = hashAlgorithm.ComputeHash(messageBytes);
-
-            // Big-endian byte order comparation
-            Assert.Equal(expectedHashCode, hashCode.ToHexadecimalStringBigEndian());
-        }
+            "8e945da209aa869f0455928529bcae4679e9873ab707b55315f56ceb98bef0a7362f715528356ee83cda5f2aac4c6ad2ba3a715c1bcd81cb8e9f90bf4c1c1a8a")]
+        public void Hash(string message, string expectedHashCode)
+            => Verify(message, CurrentEncoding, expectedHashCode);
     }
 }

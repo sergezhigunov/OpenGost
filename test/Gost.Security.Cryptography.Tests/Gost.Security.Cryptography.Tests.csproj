@@ -73,6 +73,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\GrasshopperTests.cs" />
     <Compile Include="Security\Cryptography\MagmaTests.cs" />
+    <Compile Include="Security\Cryptography\ReusabilityTests.cs" />
     <Compile Include="Security\Cryptography\Streebog256Tests.cs" />
     <Compile Include="Security\Cryptography\Streebog512Tests.cs" />
     <Compile Include="Security\Cryptography\SymmetricTransformMock.cs" />

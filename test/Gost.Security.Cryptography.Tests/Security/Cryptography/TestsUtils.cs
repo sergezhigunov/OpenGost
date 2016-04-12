@@ -28,6 +28,5 @@ namespace Gost.Security.Cryptography
                 return memoryStream.ToArray();
             }
         }
-
     }
 }

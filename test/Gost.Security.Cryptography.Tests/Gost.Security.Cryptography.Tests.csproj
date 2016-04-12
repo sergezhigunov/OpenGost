@@ -71,6 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Cryptography\CmacAlgorithmTest.cs" />
+    <Compile Include="Security\Cryptography\CmacGrasshopperTests.cs" />
+    <Compile Include="Security\Cryptography\CmacMagmaTests.cs" />
     <Compile Include="Security\Cryptography\GrasshopperTests.cs" />
     <Compile Include="Security\Cryptography\HashAlgorithmTest.cs" />
     <Compile Include="Security\Cryptography\HexUtils.cs" />
@@ -78,6 +81,7 @@
     <Compile Include="Security\Cryptography\ReusabilityTests.cs" />
     <Compile Include="Security\Cryptography\Streebog256Tests.cs" />
     <Compile Include="Security\Cryptography\Streebog512Tests.cs" />
+    <Compile Include="Security\Cryptography\SymmetricAlgorithmTest.cs" />
     <Compile Include="Security\Cryptography\SymmetricTransformMock.cs" />
     <Compile Include="Security\Cryptography\SymmetricTransformTests.cs" />
     <Compile Include="Security\Cryptography\TestsUtils.cs" />

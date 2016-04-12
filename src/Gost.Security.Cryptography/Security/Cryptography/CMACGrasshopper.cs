@@ -23,6 +23,34 @@ namespace Gost.Security.Cryptography
         private readonly CMACAlgorithm _cmacAlgorithm;
 
         /// <summary>
+        /// Gets the size, in bits, of the computed hash code.
+        /// </summary>
+        /// <value>
+        /// The size, in bits, of the computed hash code.
+        /// </value>
+        public override int HashSize => _cmacAlgorithm.HashSize;
+
+        /// <summary>
+        /// Gets or sets the key to use in the hash algorithm.
+        /// </summary>
+        /// <value>
+        /// The key to use in the hash algorithm.
+        /// </value>
+        /// <exception cref="CryptographicException">
+        /// An attempt was made to change the <see cref="Key"/>
+        /// property after hashing has begun.
+        /// </exception>
+        public override byte[] Key
+        {
+            get { return _cmacAlgorithm.Key; }
+            set
+            {
+                base.Key = value;
+                _cmacAlgorithm.Key = value;
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CMACGrasshopper"/> class.
         /// </summary>
         public CMACGrasshopper()

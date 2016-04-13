@@ -2,8 +2,8 @@
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConfig;
     using static CryptoConstants;
-    using static CryptoUtils;
 
     /// <summary>
     /// Computes the <see cref="Streebog256"/> hash for the input data. 
@@ -25,7 +25,7 @@ namespace Gost.Security.Cryptography
         /// A new instance of <see cref="Streebog256"/>.
         /// </returns>
         public new static Streebog256 Create()
-            => Create(Streebog256ManagedAlgorithmFullName);
+            => Create(Streebog256AlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Streebog256"/> algorithm.

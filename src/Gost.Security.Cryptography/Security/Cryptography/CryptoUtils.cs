@@ -10,7 +10,6 @@ namespace Gost.Security.Cryptography
     internal static class CryptoUtils
     {
         private static RandomNumberGenerator s_randomNumberGenerator;
-        private static bool s_gostCryptographyConfigured;
 
         internal static RandomNumberGenerator StaticRandomNumberGenerator
             => LazyInitializer.EnsureInitialized(ref s_randomNumberGenerator, () => new RNGCryptoServiceProvider());
@@ -70,35 +69,6 @@ namespace Gost.Security.Cryptography
                 ((uint)data[offset + 2]) << 8 |
                 ((uint)data[offset + 1]) << 16 |
                 ((uint)data[offset]) << 24;
-        }
-
-        internal static object CreateFromName(string name)
-        {
-            EnsureGostCryptographyConfigured();
-
-            return CryptoConfig.CreateFromName(name);
-        }
-
-        private static void EnsureGostCryptographyConfigured()
-        {
-            if (s_gostCryptographyConfigured)
-                return;
-            lock (ConfigurationLock)
-            {
-                if (s_gostCryptographyConfigured)
-                    return;
-
-                ConfigureGostCryptography();
-                s_gostCryptographyConfigured = true;
-            }
-        }
-
-        private static void ConfigureGostCryptography()
-        {
-            CryptoConfig.AddAlgorithm(typeof(GrasshopperManaged), GrasshopperManagedAlgorithmFullName, GrasshopperManagedAlgorithmName);
-            CryptoConfig.AddAlgorithm(typeof(MagmaManaged), MagmaManagedAlgorithmFullName, MagmaManagedAlgorithmName);
-            CryptoConfig.AddAlgorithm(typeof(Streebog512Managed), Streebog512ManagedAlgorithmFullName, Streebog512ManagedAlgorithmName);
-            CryptoConfig.AddAlgorithm(typeof(Streebog256Managed), Streebog256ManagedAlgorithmFullName, Streebog256ManagedAlgorithmName);
         }
     }
 }

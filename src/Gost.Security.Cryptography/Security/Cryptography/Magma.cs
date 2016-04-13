@@ -3,8 +3,8 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConfig;
     using static CryptoConstants;
-    using static CryptoUtils;
     using static SecurityCryptographyStrings;
 
     /// <summary>
@@ -79,7 +79,7 @@ namespace Gost.Security.Cryptography
         /// A new instance of <see cref="Magma"/>.
         /// </returns>
         public new static Magma Create()
-            => Create(MagmaManagedAlgorithmFullName);
+            => Create(MagmaAlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Magma"/> algorithm.

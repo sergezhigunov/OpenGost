@@ -67,7 +67,7 @@ namespace Gost.Security.Cryptography
         /// The <paramref name="rgbKey"/> parameter is null. 
         /// </exception>
         public CMACGrasshopper(byte[] rgbKey)
-            : this(GrasshopperManagedAlgorithmFullName, rgbKey)
+            : this(GrasshopperAlgorithmName, rgbKey)
         { }
 
         /// <summary>

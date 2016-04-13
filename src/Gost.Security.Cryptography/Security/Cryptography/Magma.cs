@@ -79,7 +79,7 @@ namespace Gost.Security.Cryptography
         /// A new instance of <see cref="Magma"/>.
         /// </returns>
         public new static Magma Create()
-            => Create(MagmaAlgorithmFullName);
+            => Create(MagmaAlgorithmName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Magma"/> algorithm.

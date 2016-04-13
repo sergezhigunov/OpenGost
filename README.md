@@ -8,6 +8,6 @@ List of supported cryptographic algoritnms
 * Magma block cipher algorithm (GOST R 34.12-2015, GOST R 34.13-2015)
 
 ## References
-* [GOST R 34.11-2012 "Information technology. Cryptographic data security. Hash function" (in russian)](http://protect.gost.ru/document.aspx?control=7&id=180209)
-* [GOST R 34.12-2015 "Information technology. Cryptographic data security. Block ciphers" (in russian)](http://tc26.ru/standard/gost/GOST_R_3412-2015.pdf)
-* [GOST R 34.13-2015 "Information technology. Cryptographic data security. Modes of operation for block ciphers" (in russian)](http://tc26.ru/standard/gost/GOST_R_3413-2015.pdf)
+* [GOST R 34.11-2012 "Information technology. Cryptographic data security. Hash function"](http://tc26.ru/en/standard/gost/GOST_R_34_11-2012_eng.pdf)
+* [GOST R 34.12-2015 "Information technology. Cryptographic data security. Block ciphers"](http://tc26.ru/en/standard/gost/GOST_R_34_12_2015_ENG.pdf)
+* [GOST R 34.13-2015 "Information technology. Cryptographic data security. Modes of operation for block ciphers"](http://tc26.ru/en/standard/gost/GOST_R_34_13_2015_ENG.pdf)

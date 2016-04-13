@@ -77,6 +77,9 @@
     <Compile Include="Security\Cryptography\GrasshopperTests.cs" />
     <Compile Include="Security\Cryptography\HashAlgorithmTest.cs" />
     <Compile Include="Security\Cryptography\HexUtils.cs" />
+    <Compile Include="Security\Cryptography\HmacStreebog256Tests.cs" />
+    <Compile Include="Security\Cryptography\HmacStreebog512Tests.cs" />
+    <Compile Include="Security\Cryptography\HmacTest.cs" />
     <Compile Include="Security\Cryptography\MagmaTests.cs" />
     <Compile Include="Security\Cryptography\ReusabilityTests.cs" />
     <Compile Include="Security\Cryptography\Streebog256Tests.cs" />

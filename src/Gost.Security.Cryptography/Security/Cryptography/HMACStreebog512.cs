@@ -17,7 +17,7 @@ namespace Gost.Security.Cryptography
         /// class with a randomly generated key.
         /// </summary>
         public HMACStreebog512()
-            : this(GenerateRandomBytes(128))
+            : this(GenerateRandomBytes(64))
         { }
 
         /// <summary>

@@ -1,12 +1,10 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading;
 
 namespace Gost.Security.Cryptography
 {
-    using System.Runtime.CompilerServices;
-    using static CryptoConstants;
-
     internal static class CryptoUtils
     {
         private static RandomNumberGenerator s_randomNumberGenerator;

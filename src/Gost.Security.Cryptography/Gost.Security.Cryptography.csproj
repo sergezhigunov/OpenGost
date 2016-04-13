@@ -54,6 +54,8 @@
     <Compile Include="Security\Cryptography\CMACAlgorithm.cs" />
     <Compile Include="Security\Cryptography\CMACGrasshopper.cs" />
     <Compile Include="Security\Cryptography\CMACMagma.cs" />
+    <Compile Include="Security\Cryptography\HMACStreebog256.cs" />
+    <Compile Include="Security\Cryptography\HMACStreebog512.cs" />
     <Compile Include="Security\Cryptography\Magma.cs" />
     <Compile Include="Security\Cryptography\MagmaManaged.cs" />
     <Compile Include="Security\Cryptography\MagmaManagedTransform.cs" />

@@ -141,10 +141,13 @@ namespace Gost.Security.Cryptography
             0xe4fa2054a80b329c, 0x727d102a548b194e, 0x39b008152acb8227, 0x9258048415eb419d,
             0x492c024284fbaec0, 0xaa16012142f35760, 0x550b8e9e21f7a530, 0xa48b474f9ef5dc18,
             0x70a6a56e2440598e, 0x3853dc371220a247, 0x1ca76e95091051ad, 0x0edd37c48a08a6d8,
-            0x07e095624504536c, 0x8d70c431ac02a736, 0xc83862965601dd1b, 0x641c314b2b8ee083
+            0x07e095624504536c, 0x8d70c431ac02a736, 0xc83862965601dd1b, 0x641c314b2b8ee083,
         };
 
         #endregion
+
+
+        private static readonly ulong[][] s_linearTransformLookupTable = InitializeLinearTransformLookupTable();
 
         private byte[]
             _sigma,
@@ -345,21 +348,14 @@ namespace Gost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DoLinearTransform(byte[] data)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 64; i += 8)
             {
-                int shift = i * 8;
                 ulong t = 0;
 
                 for (int j = 0; j < 8; j++)
-                {
-                    byte b = data[shift + (7 - j)];
+                    t ^= s_linearTransformLookupTable[j][data[i + (7 - j)]];
 
-                    for (int k = 0; k < 8; k++)
-                        if (((b >> (7 - k)) & 1) == 1)
-                            t = t ^ s_linearTransformTable[j * 8 + k];
-                }
-
-                UInt64ToLittleEndian(t, data, shift);
+                UInt64ToLittleEndian(t, data, i);
             }
         }
 
@@ -391,6 +387,29 @@ namespace Gost.Security.Cryptography
                 result[i] = (byte)t;
                 i++;
             }
+        }
+
+        private static ulong[][] InitializeLinearTransformLookupTable()
+        {
+            var result = new ulong[8][];
+
+            for (int j = 0; j < 8; j++)
+            {
+                var row = new ulong[256];
+
+                for (int b = 0; b < 256; b++)
+                {
+                    ulong t = 0;
+                    for (int k = 0; k < 8; k++)
+                        if (((b >> (7 - k)) & 1) == 1)
+                            t = t ^ s_linearTransformTable[j * 8 + k];
+                    row[b] = t;
+                }
+
+                result[j] = row;
+            }
+
+            return result;
         }
     }
 }

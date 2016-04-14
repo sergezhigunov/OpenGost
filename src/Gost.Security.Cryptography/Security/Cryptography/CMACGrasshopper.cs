@@ -126,7 +126,7 @@ namespace Gost.Security.Cryptography
         /// </returns>
         protected override byte[] HashFinal()
         {
-            _cmacAlgorithm.TransformFinalBlock(new byte[0], 0, 0);
+            _cmacAlgorithm.TransformFinalBlock(EmptyArray<byte>.Value, 0, 0);
             return _cmacAlgorithm.Hash;
         }
 

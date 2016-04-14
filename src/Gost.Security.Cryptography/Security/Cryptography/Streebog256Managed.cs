@@ -64,7 +64,7 @@ namespace Gost.Security.Cryptography
         /// </returns>
         protected override byte[] HashFinal()
         {
-            _innerAlgorithm.TransformFinalBlock(new byte[0], 0, 0);
+            _innerAlgorithm.TransformFinalBlock(EmptyArray<byte>.Value, 0, 0);
             byte[] hash = new byte[32];
             BlockCopy(_innerAlgorithm.Hash, 32, hash, 0, 32);
             return hash;

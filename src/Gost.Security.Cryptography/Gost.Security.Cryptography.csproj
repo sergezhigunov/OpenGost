@@ -48,6 +48,7 @@
     <Compile Include="Properties\InternalsVisibleTo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\CryptoConstants.cs" />
+    <Compile Include="Security\Cryptography\EmptyArray.cs" />
     <Compile Include="Security\Cryptography\Grasshopper.cs" />
     <Compile Include="Security\Cryptography\GrasshopperManaged.cs" />
     <Compile Include="Security\Cryptography\GrasshopperManagedTransform.cs" />

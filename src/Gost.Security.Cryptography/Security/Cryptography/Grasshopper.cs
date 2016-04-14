@@ -84,13 +84,13 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Grasshopper"/> algorithm.
         /// </summary>
-        /// <param name="algName">
+        /// <param name="algorithmName">
         /// The name of the specific implementation of <see cref="Grasshopper"/> to be used. 
         /// </param>
         /// <returns>
         /// A new instance of <see cref="Grasshopper"/> using the specified implementation.
         /// </returns>
-        public new static Grasshopper Create(string algName)
-            => (Grasshopper)CreateFromName(algName);
+        public new static Grasshopper Create(string algorithmName)
+            => (Grasshopper)CreateFromName(algorithmName);
     }
 }

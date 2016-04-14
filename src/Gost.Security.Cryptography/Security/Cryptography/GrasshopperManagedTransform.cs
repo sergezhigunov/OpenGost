@@ -64,7 +64,6 @@ namespace Gost.Security.Cryptography
             byte[] rgbKey,
             byte[] rgbIV,
             int blockSize,
-            int feedbackSize,
             CipherMode cipherMode,
             PaddingMode paddingMode,
             SymmetricTransformMode transformMode)

@@ -285,7 +285,7 @@ namespace Gost.Security.Cryptography
 
         private static byte[] InternalTransform(Func<ICryptoTransform> factory, byte[] input)
         {
-            using (var memoryStream = new MemoryStream())
+            var memoryStream = new MemoryStream();
             using (var transform = factory())
             using (var cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Write))
             {

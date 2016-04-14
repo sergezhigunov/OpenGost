@@ -9,7 +9,7 @@ namespace Gost.Security.Cryptography
     {
         #region Constants
 
-        private static readonly byte[][] s_substitutionBox = new byte[][]
+        private static readonly byte[][] s_substitutionBox =
         {
             new byte[] { 0xC, 0x4, 0x6, 0x2, 0xA, 0x5, 0xB, 0x9, 0xE, 0x8, 0xD, 0x7, 0x0, 0x3, 0xF, 0x1 },
             new byte[] { 0x6, 0x8, 0x2, 0x3, 0x9, 0xA, 0x5, 0xC, 0x1, 0xE, 0x4, 0x7, 0xB, 0xD, 0x0, 0xF },
@@ -66,7 +66,6 @@ namespace Gost.Security.Cryptography
             byte[] rgbKey,
             byte[] rgbIV,
             int blockSize,
-            int feedbackSize,
             CipherMode cipherMode,
             PaddingMode paddingMode,
             SymmetricTransformMode transformMode)

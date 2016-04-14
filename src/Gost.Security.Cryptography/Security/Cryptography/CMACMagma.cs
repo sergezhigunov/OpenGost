@@ -60,14 +60,14 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Initializes a new instance of the <see cref="CMACMagma"/> class with the specified key data.
         /// </summary>
-        /// <param name="rgbKey">
+        /// <param name="key">
         /// The secret key for <see cref="CMACMagma"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="rgbKey"/> parameter is null. 
+        /// The <paramref name="key"/> parameter is null. 
         /// </exception>
-        public CMACMagma(byte[] rgbKey)
-            : this(MagmaAlgorithmName, rgbKey)
+        public CMACMagma(byte[] key)
+            : this(MagmaAlgorithmName, key)
         { }
 
         /// <summary>
@@ -77,22 +77,22 @@ namespace Gost.Security.Cryptography
         /// <param name="algorithmName">
         /// The name of the <see cref="Magma"/> implementation to use. 
         /// </param>
-        /// <param name="rgbKey">
+        /// <param name="key">
         /// The secret key for <see cref="CMACMagma"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="rgbKey"/> parameter is null. 
+        /// The <paramref name="key"/> parameter is null. 
         /// </exception>
-        public CMACMagma(string algorithmName, byte[] rgbKey)
+        public CMACMagma(string algorithmName, byte[] key)
         {
-            if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
             Magma magma =
                 algorithmName == null ?
                 Magma.Create() :
                 Magma.Create(algorithmName);
 
-            _cmacAlgorithm = new CMACAlgorithm(magma, rgbKey, s_irreduciblePolynomial);
+            _cmacAlgorithm = new CMACAlgorithm(magma, key, s_irreduciblePolynomial);
         }
 
         /// <summary>

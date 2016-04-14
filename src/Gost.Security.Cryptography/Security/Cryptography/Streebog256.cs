@@ -30,13 +30,13 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Streebog256"/> algorithm.
         /// </summary>
-        /// <param name="algName">
+        /// <param name="algorithmName">
         /// The name of the specific implementation of <see cref="Streebog256"/> to be used. 
         /// </param>
         /// <returns>
         /// A new instance of <see cref="Streebog256"/> using the specified implementation.
         /// </returns>
-        public new static Streebog256 Create(string algName)
-            => (Streebog256)CreateFromName(algName);
+        public new static Streebog256 Create(string algorithmName)
+            => (Streebog256)CreateFromName(algorithmName);
     }
 }

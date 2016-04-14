@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Dictionary>
+  <Words>
+    <Recognized>
+      <Word>gost</Word>
+      <Word>streebog</Word>
+    </Recognized>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <Acronym>HMAC</Acronym>
+      <Acronym>CMAC</Acronym>
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>

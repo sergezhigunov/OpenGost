@@ -36,7 +36,7 @@ namespace Gost.Security.Cryptography
 
             HashSizeValue = 512;
             HashName = Streebog512AlgorithmName;
-            Key = key;
+            base.Key = key;
         }
     }
 }

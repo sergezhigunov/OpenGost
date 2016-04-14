@@ -29,7 +29,7 @@ namespace Gost.Security.Cryptography
         /// </returns>
         public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
         {
-            return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, FeedbackSize, Mode, Padding, SymmetricTransformMode.Decrypt);
+            return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Decrypt);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Gost.Security.Cryptography
         /// </returns>
         public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
         {
-            return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, FeedbackSize, Mode, Padding, SymmetricTransformMode.Encrypt);
+            return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Encrypt);
         }
 
         /// <summary>

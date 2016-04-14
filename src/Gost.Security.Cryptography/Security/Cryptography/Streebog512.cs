@@ -30,13 +30,13 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Streebog512"/> algorithm.
         /// </summary>
-        /// <param name="algName">
+        /// <param name="algorithmName">
         /// The name of the specific implementation of <see cref="Streebog512"/> to be used. 
         /// </param>
         /// <returns>
         /// A new instance of <see cref="Streebog512"/> using the specified implementation.
         /// </returns>
-        public new static Streebog512 Create(string algName)
-            => (Streebog512)CreateFromName(algName);
+        public new static Streebog512 Create(string algorithmName)
+            => (Streebog512)CreateFromName(algorithmName);
     }
 }

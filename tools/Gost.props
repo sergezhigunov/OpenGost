@@ -8,4 +8,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="$(MSBuildThisFileDirectory)CodeAnalysisDictionary.xml" />
+  </ItemGroup>
 </Project>

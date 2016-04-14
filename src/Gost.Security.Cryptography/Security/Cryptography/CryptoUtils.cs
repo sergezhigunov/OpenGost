@@ -12,8 +12,6 @@ namespace Gost.Security.Cryptography
         internal static RandomNumberGenerator StaticRandomNumberGenerator
             => LazyInitializer.EnsureInitialized(ref s_randomNumberGenerator, () => new RNGCryptoServiceProvider());
 
-        private static object ConfigurationLock { get; } = new object();
-
         internal static byte[] GenerateRandomBytes(int size)
         {
             byte[] array = new byte[size];

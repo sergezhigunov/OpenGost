@@ -22,7 +22,7 @@ namespace Gost.Security.Cryptography
             algorithm.IV = ivBytes;
 
             byte[] encryptedBytes;
-            using (MemoryStream input = new MemoryStream(plainTextBytes))
+            var input = new MemoryStream(plainTextBytes);
             using (CryptoStream cryptoStream = new CryptoStream(input, algorithm.CreateEncryptor(), CryptoStreamMode.Read))
             using (MemoryStream output = new MemoryStream())
             {
@@ -37,7 +37,7 @@ namespace Gost.Security.Cryptography
             Assert.Equal(cipherTextBytes, encryptedBytes);
 
             byte[] decryptedBytes;
-            using (MemoryStream input = new MemoryStream(encryptedBytes))
+            input = new MemoryStream(encryptedBytes);
             using (CryptoStream cryptoStream = new CryptoStream(input, algorithm.CreateDecryptor(), CryptoStreamMode.Read))
             using (MemoryStream output = new MemoryStream())
             {

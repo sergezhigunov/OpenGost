@@ -60,14 +60,14 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Initializes a new instance of the <see cref="CMACGrasshopper"/> class with the specified key data.
         /// </summary>
-        /// <param name="rgbKey">
+        /// <param name="key">
         /// The secret key for <see cref="CMACGrasshopper"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="rgbKey"/> parameter is null. 
+        /// The <paramref name="key"/> parameter is null. 
         /// </exception>
-        public CMACGrasshopper(byte[] rgbKey)
-            : this(GrasshopperAlgorithmName, rgbKey)
+        public CMACGrasshopper(byte[] key)
+            : this(GrasshopperAlgorithmName, key)
         { }
 
         /// <summary>
@@ -77,22 +77,22 @@ namespace Gost.Security.Cryptography
         /// <param name="algorithmName">
         /// The name of the <see cref="Grasshopper"/> implementation to use. 
         /// </param>
-        /// <param name="rgbKey">
+        /// <param name="key">
         /// The secret key for <see cref="CMACGrasshopper"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="rgbKey"/> parameter is null. 
+        /// The <paramref name="key"/> parameter is null. 
         /// </exception>
-        public CMACGrasshopper(string algorithmName, byte[] rgbKey)
+        public CMACGrasshopper(string algorithmName, byte[] key)
         {
-            if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
             Grasshopper grasshopper =
                 algorithmName == null ?
                 Grasshopper.Create() :
                 Grasshopper.Create(algorithmName);
 
-            _cmacAlgorithm = new CMACAlgorithm(grasshopper, rgbKey, s_irreduciblePolynomial);
+            _cmacAlgorithm = new CMACAlgorithm(grasshopper, key, s_irreduciblePolynomial);
         }
 
         /// <summary>

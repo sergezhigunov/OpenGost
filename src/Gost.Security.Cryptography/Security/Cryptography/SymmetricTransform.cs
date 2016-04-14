@@ -27,11 +27,11 @@ namespace Gost.Security.Cryptography
 
         public int OutputBlockSize => _blockSize;
 
-        protected SymmetricTransform(byte[] rgbKey, byte[] rgbIV, int blockSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
+        protected SymmetricTransform(byte[] key, byte[] iv, int blockSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
         {
-            if (rgbKey == null) throw new ArgumentNullException(nameof(rgbKey));
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
-            GenerateKeyExpansion(rgbKey);
+            GenerateKeyExpansion(key);
 
             _transformMode = transformMode;
             _blockSize = blockSize / 8;
@@ -46,8 +46,8 @@ namespace Gost.Security.Cryptography
                 case CipherMode.CBC:
                 case CipherMode.CFB:
                 case CipherMode.OFB:
-                    if (rgbIV == null) throw new ArgumentNullException(nameof(rgbIV));
-                    _rgbIV = (byte[])rgbIV.Clone();
+                    if (iv == null) throw new ArgumentNullException(nameof(iv));
+                    _rgbIV = (byte[])iv.Clone();
                     _stateBuffer = new byte[_rgbIV.Length];
                     _tempBuffer = new byte[_blockSize];
                     Reset();

@@ -3,7 +3,6 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
-    using System.Runtime.CompilerServices;
     using static Buffer;
     using static CryptoUtils;
 
@@ -143,7 +142,6 @@ namespace Gost.Security.Cryptography
                 data[dataOffset + i] = substTable[data[dataOffset + i]];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DoLinearTransformForward(byte[] data, int dataOffset)
         {
             for (int i = 0; i < 16; i++)
@@ -158,7 +156,6 @@ namespace Gost.Security.Cryptography
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DoLinearTransformBackward(byte[] data, int dataOffset)
         {
             for (int i = 0; i < 16; i++)

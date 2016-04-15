@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
@@ -118,7 +117,6 @@ namespace Gost.Security.Cryptography
             base.Dispose(disposing);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ComputeEightRoundsForwardKeyOrder(uint[] k, ref uint a0, ref uint a1)
         {
             a1 ^= SubstituteAndRotateElevenBits(a0 + k[0]);
@@ -131,7 +129,6 @@ namespace Gost.Security.Cryptography
             a0 ^= SubstituteAndRotateElevenBits(a1 + k[7]);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ComputeEightRoundsBackwardKeyOrder(uint[] k, ref uint a0, ref uint a1)
         {
             a1 ^= SubstituteAndRotateElevenBits(a0 + k[7]);
@@ -149,7 +146,6 @@ namespace Gost.Security.Cryptography
             return input << 11 | input >> 21;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static uint SubstituteAndRotateElevenBits(uint data)
         {
             // Substitution and rotation precomputed in the lookup tables

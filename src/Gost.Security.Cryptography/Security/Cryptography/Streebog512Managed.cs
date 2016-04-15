@@ -258,9 +258,7 @@ namespace Gost.Security.Cryptography
         private void DoTransform(byte[] block, uint blockSize)
         {
             Xor(HashValue, _n, _tempKey);
-            Substitute(_tempKey);
-            Transpose(_tempKey);
-            DoLinearTransform(_tempKey);
+            Transform(_tempKey);
             Encrypt(_tempKey, block, _tempBuffer);
             Xor(_tempBuffer, HashValue, _tempBuffer);
             Xor(_tempBuffer, block, HashValue);
@@ -275,17 +273,13 @@ namespace Gost.Security.Cryptography
             AddModuloLittleEndian(n, sizeInBits, n);
 
             BlockCopy(HashValue, 0, _tempKey, 0, 64);
-            Substitute(_tempKey);
-            Transpose(_tempKey);
-            DoLinearTransform(_tempKey);
+            Transform(_tempKey);
             Encrypt(_tempKey, n, _tempBuffer);
             Xor(_tempBuffer, HashValue, _tempBuffer);
             Xor(_tempBuffer, n, HashValue);
 
             BlockCopy(HashValue, 0, _tempKey, 0, 64);
-            Substitute(_tempKey);
-            Transpose(_tempKey);
-            DoLinearTransform(_tempKey);
+            Transform(_tempKey);
             Encrypt(_tempKey, sigma, _tempBuffer);
             Xor(_tempBuffer, HashValue, _tempBuffer);
             Xor(_tempBuffer, sigma, HashValue);
@@ -297,25 +291,20 @@ namespace Gost.Security.Cryptography
 
             for (int i = 0; i < 12; i++)
             {
-                Substitute(result);
-                Transpose(result);
-                DoLinearTransform(result);
+                Transform(result);
                 Xor(key, s_keyExpansionTable[i], key);
-                Substitute(key);
-                Transpose(key);
-                DoLinearTransform(key);
+                Transform(key);
                 Xor(result, key, result);
             }
         }
 
-        private static void Substitute(byte[] data)
+        private static void Transform(byte[] data)
         {
+            // Substitution function
             for (int i = 0; i < 64; i++)
                 data[i] = s_substTable[data[i]];
-        }
 
-        private static void Transpose(byte[] data)
-        {
+            // Transposition function
             for (int i = 0; i < 7; i++)
                 for (int j = i + 1; j < 8; j++)
                 {
@@ -326,6 +315,17 @@ namespace Gost.Security.Cryptography
                     data[i1] = data[i2];
                     data[i2] = tmp;
                 }
+
+            // Linear transform
+            for (int i = 0; i < 64; i += 8)
+            {
+                ulong t = 0;
+
+                for (int j = 0; j < 8; j++)
+                    t ^= s_linearTransformLookupTable[j][data[i + (7 - j)]];
+
+                UInt64ToLittleEndian(t, data, i);
+            }
         }
 
         private static void Xor(byte[] left, byte[] right, byte[] result)
@@ -336,19 +336,6 @@ namespace Gost.Security.Cryptography
             for (int i = 0; i < 8; i++)
                 result[i] = (byte)(left[i] ^ (byte)(right >> (i * 8)));
             BlockCopy(left, 8, result, 8, 56);
-        }
-
-        private static void DoLinearTransform(byte[] data)
-        {
-            for (int i = 0; i < 64; i += 8)
-            {
-                ulong t = 0;
-
-                for (int j = 0; j < 8; j++)
-                    t ^= s_linearTransformLookupTable[j][data[i + (7 - j)]];
-
-                UInt64ToLittleEndian(t, data, i);
-            }
         }
 
         private static void AddModuloLittleEndian(byte[] left, byte[] right, byte[] result)

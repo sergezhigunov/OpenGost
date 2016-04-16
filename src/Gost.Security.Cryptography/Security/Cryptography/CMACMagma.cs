@@ -87,12 +87,7 @@ namespace Gost.Security.Cryptography
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            Magma magma =
-                algorithmName == null ?
-                Magma.Create() :
-                Magma.Create(algorithmName);
-
-            _cmacAlgorithm = new CMACAlgorithm(magma, key, s_irreduciblePolynomial);
+            _cmacAlgorithm = new CMACAlgorithm(algorithmName, key, s_irreduciblePolynomial, Magma.Create);
         }
 
         /// <summary>
@@ -105,17 +100,17 @@ namespace Gost.Security.Cryptography
         /// Routes data written to the object into the <see cref="Magma"/>
         /// encryptor for computing the Cipher-based Message Authentication Code (CMAC).
         /// </summary>
-        /// <param name="data">
+        /// <param name="array">
         /// The input data.
         /// </param>
-        /// <param name="dataOffset">
+        /// <param name="ibStart">
         /// The offset into the byte array from which to begin using data.
         /// </param>
-        /// <param name="dataSize">
+        /// <param name="cbSize">
         /// The number of bytes in the array to use as data.
         /// </param>
-        protected override void HashCore(byte[] data, int dataOffset, int dataSize)
-            => _cmacAlgorithm.TransformBlock(data, dataOffset, dataSize, null, 0);
+        protected override void HashCore(byte[] array, int ibStart, int cbSize)
+            => _cmacAlgorithm.TransformBlock(array, ibStart, cbSize, null, 0);
 
         /// <summary>
         /// Returns the computed Cipher-based Message Authentication Code (CMAC)

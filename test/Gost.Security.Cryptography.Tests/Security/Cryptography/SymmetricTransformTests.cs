@@ -65,7 +65,6 @@ namespace Gost.Security.Cryptography
                     var transform = factory();
                     using (transform)
                     {
-                        Assert.True(transform.GenerateKeyExpansionCalled);
                         Assert.False(transform.DisposeCalled);
                     }
                     Assert.True(transform.DisposeCalled);
@@ -351,14 +350,20 @@ namespace Gost.Security.Cryptography
                 : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
             { }
 
-            internal bool GenerateKeyExpansionCalled { get; private set; }
+            private bool GenerateKeyExpansionCalled { get; set; }
             internal bool DisposeCalled { get; private set; }
 
             protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
-                => Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
+            {
+                Assert.True(GenerateKeyExpansionCalled);
+                Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
+            }
 
             protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
-                => Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
+            {
+                Assert.True(GenerateKeyExpansionCalled);
+                Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
+            }
 
             protected override void GenerateKeyExpansion(byte[] rgbKey)
             {

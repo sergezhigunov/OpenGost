@@ -23,43 +23,12 @@ namespace Gost.Security.Cryptography
         #endregion
 
         private static readonly uint[]
-            s_lookupTable0,
-            s_lookupTable1,
-            s_lookupTable2,
-            s_lookupTable3;
+            s_lookupTable0 = InitializeLookupTable(0),
+            s_lookupTable1 = InitializeLookupTable(1),
+            s_lookupTable2 = InitializeLookupTable(2),
+            s_lookupTable3 = InitializeLookupTable(3);
 
         private uint[] _keyExpansion;
-
-        static MagmaManagedTransform()
-        {
-            s_lookupTable0 = new uint[256];
-            s_lookupTable1 = new uint[256];
-            s_lookupTable2 = new uint[256];
-            s_lookupTable3 = new uint[256];
-
-            for (int data = 0; data < 256; data++)
-            {
-                int
-                    high = (data & 0xf0) >> 4,
-                    low = data & 0x0f;
-
-                s_lookupTable0[data] =
-                    RotateElevenBitsLeft(s_substitutionBox[0][low] ^
-                    (uint)s_substitutionBox[1][high] << 4);
-
-                s_lookupTable1[data] =
-                    RotateElevenBitsLeft((s_substitutionBox[2][low] ^
-                    (uint)s_substitutionBox[3][high] << 4) << 8);
-
-                s_lookupTable2[data] =
-                    RotateElevenBitsLeft((s_substitutionBox[4][low] ^
-                    (uint)s_substitutionBox[5][high] << 4) << 16);
-
-                s_lookupTable3[data] =
-                    RotateElevenBitsLeft((s_substitutionBox[6][low] ^
-                    (uint)s_substitutionBox[7][high] << 4) << 24);
-            }
-        }
 
         public MagmaManagedTransform(
             byte[] rgbKey,
@@ -154,6 +123,17 @@ namespace Gost.Security.Cryptography
                 s_lookupTable1[(data >> 8) & 0xff] |
                 s_lookupTable2[(data >> 16) & 0xff] |
                 s_lookupTable3[(data >> 24) & 0xff];
+        }
+
+        private static uint[] InitializeLookupTable(int tableNumber)
+        {
+            var lookupTable = new uint[256];
+
+            for (int b = 0; b < 256; b++)
+                lookupTable[b] = RotateElevenBitsLeft((s_substitutionBox[2 * tableNumber][b & 0x0f] ^
+                    (uint)s_substitutionBox[2 * tableNumber + 1][b >> 4] << 4) << tableNumber * 8);
+
+            return lookupTable;
         }
     }
 }

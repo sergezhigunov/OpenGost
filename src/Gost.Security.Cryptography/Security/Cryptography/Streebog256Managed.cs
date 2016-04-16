@@ -42,19 +42,17 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Routes data written to the object into the <see cref="Streebog256"/> hash algorithm for computing the hash.
         /// </summary>
-        /// <param name="data">
+        /// <param name="array">
         /// The input data. 
         /// </param>
-        /// <param name="dataOffset">
+        /// <param name="ibStart">
         /// The offset into the byte array from which to begin using data. 
         /// </param>
-        /// <param name="dataSize">
+        /// <param name="cbSize">
         /// The number of bytes in the array to use as data. 
         /// </param>
-        protected override void HashCore(byte[] data, int dataOffset, int dataSize)
-        {
-            _innerAlgorithm.TransformBlock(data, dataOffset, dataSize, null, 0);
-        }
+        protected override void HashCore(byte[] array, int ibStart, int cbSize)
+            => _innerAlgorithm.TransformBlock(array, ibStart, cbSize, null, 0);
 
         /// <summary>
         /// Returns the computed <see cref="Streebog256"/> hash value after all data has been written to the object.

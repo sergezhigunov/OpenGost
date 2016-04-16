@@ -22,13 +22,15 @@ namespace Gost.Security.Cryptography
         private readonly int _bytesPerBlock;
         private int _bufferLength;
 
-        public CMACAlgorithm(SymmetricAlgorithm symmetricAlgorithm, byte[] key, byte[] irreduciblePolynomial)
+        public CMACAlgorithm(string algorithmName, byte[] key, byte[] irreduciblePolynomial, Func<SymmetricAlgorithm> defaultFactory)
         {
-            if (symmetricAlgorithm == null) throw new ArgumentNullException(nameof(symmetricAlgorithm));
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (irreduciblePolynomial == null) throw new ArgumentNullException(nameof(irreduciblePolynomial));
 
-            _symmetricAlgorithm = symmetricAlgorithm;
+            _symmetricAlgorithm = 
+                algorithmName == null ?
+                defaultFactory.Invoke() :
+                SymmetricAlgorithm.Create(algorithmName);
 
             HashSizeValue = _symmetricAlgorithm.BlockSize;
             KeyValue = (byte[])key.Clone();

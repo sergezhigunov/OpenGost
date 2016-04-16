@@ -146,44 +146,14 @@ namespace Gost.Security.Cryptography
         #endregion
 
         private static readonly ulong[]
-            s_lookupTable0,
-            s_lookupTable1,
-            s_lookupTable2,
-            s_lookupTable3,
-            s_lookupTable4,
-            s_lookupTable5,
-            s_lookupTable6,
-            s_lookupTable7;
-
-        static Streebog512Managed()
-        {
-            s_lookupTable0 = new ulong[256];
-            s_lookupTable1 = new ulong[256];
-            s_lookupTable2 = new ulong[256];
-            s_lookupTable3 = new ulong[256];
-            s_lookupTable4 = new ulong[256];
-            s_lookupTable5 = new ulong[256];
-            s_lookupTable6 = new ulong[256];
-            s_lookupTable7 = new ulong[256];
-
-            for (int b = 0; b < 256; b++)
-            {
-                int index = s_backwardSubstitutionBox[b];
-
-                for (int j = 0; j < 8; j++)
-                    if (((b << j) & 0x80) == 0x80)
-                    {
-                        s_lookupTable7[index] ^= s_linearTransformTable[j];
-                        s_lookupTable6[index] ^= s_linearTransformTable[8 + j];
-                        s_lookupTable5[index] ^= s_linearTransformTable[16 + j];
-                        s_lookupTable4[index] ^= s_linearTransformTable[24 + j];
-                        s_lookupTable3[index] ^= s_linearTransformTable[32 + j];
-                        s_lookupTable2[index] ^= s_linearTransformTable[40 + j];
-                        s_lookupTable1[index] ^= s_linearTransformTable[48 + j];
-                        s_lookupTable0[index] ^= s_linearTransformTable[56 + j];
-                    }
-            }
-        }
+            s_lookupTable0 = InitializeLookupTable(0),
+            s_lookupTable1 = InitializeLookupTable(1),
+            s_lookupTable2 = InitializeLookupTable(2),
+            s_lookupTable3 = InitializeLookupTable(3),
+            s_lookupTable4 = InitializeLookupTable(4),
+            s_lookupTable5 = InitializeLookupTable(5),
+            s_lookupTable6 = InitializeLookupTable(6),
+            s_lookupTable7 = InitializeLookupTable(7);
 
         private byte[]
             _sigma,
@@ -234,44 +204,44 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Routes data written to the object into the <see cref="Streebog512"/> hash algorithm for computing the hash.
         /// </summary>
-        /// <param name="data">
+        /// <param name="array">
         /// The input data. 
         /// </param>
-        /// <param name="dataOffset">
+        /// <param name="ibStart">
         /// The offset into the byte array from which to begin using data. 
         /// </param>
-        /// <param name="dataSize">
+        /// <param name="cbSize">
         /// The number of bytes in the array to use as data. 
         /// </param>
-        protected override void HashCore(byte[] data, int dataOffset, int dataSize)
+        protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
             // Compute length of buffer 
             int bufferLen = (int)(_count & 0x3f);
 
             // Update number of bytes
-            _count += dataSize;
+            _count += cbSize;
 
-            if ((bufferLen > 0) && (bufferLen + dataSize >= 64))
+            if ((bufferLen > 0) && (bufferLen + cbSize >= 64))
             {
                 int bytesToCopy = 64 - bufferLen;
-                BlockCopy(data, dataOffset, _buffer, bufferLen, bytesToCopy);
-                dataOffset += bytesToCopy;
-                dataSize -= bytesToCopy;
+                BlockCopy(array, ibStart, _buffer, bufferLen, bytesToCopy);
+                ibStart += bytesToCopy;
+                cbSize -= bytesToCopy;
                 DoTransform(_buffer, 512);
                 bufferLen = 0;
             }
 
             // Copy input to temporary buffer and hash
-            while (dataSize >= 64)
+            while (cbSize >= 64)
             {
-                BlockCopy(data, dataOffset, _buffer, 0, 64);
-                dataOffset += 64;
-                dataSize -= 64;
+                BlockCopy(array, ibStart, _buffer, 0, 64);
+                ibStart += 64;
+                cbSize -= 64;
                 DoTransform(_buffer, 512);
             }
 
-            if (dataSize > 0)
-                BlockCopy(data, dataOffset, _buffer, bufferLen, dataSize);
+            if (cbSize > 0)
+                BlockCopy(array, ibStart, _buffer, bufferLen, cbSize);
         }
 
         /// <summary>
@@ -418,5 +388,20 @@ namespace Gost.Security.Cryptography
                 i++;
             }
         }
+
+        private static ulong[] InitializeLookupTable(int tableNumber)
+        {
+            var lookupTable = new ulong[256];
+
+            for (int b = 0; b < 256; b++)
+                for (int j = 0; j < 8; j++)
+                    if (((b << j) & 0x80) == 0x80)
+                        lookupTable[s_backwardSubstitutionBox[b]] ^=
+                            s_linearTransformTable[(7 - tableNumber) * 8 + j];
+
+            return lookupTable;
+        }
+
+
     }
 }

@@ -9,15 +9,18 @@ namespace Gost.Security.Cryptography
 
     internal abstract class SymmetricTransform : ICryptoTransform
     {
+        private readonly object _lock = new object();
         private readonly SymmetricTransformMode _transformMode;
         private readonly CipherMode _cipherMode;
         private readonly PaddingMode _paddingMode;
         private readonly int _blockSize;
 
+        private byte[] _rgbKey;
         private byte[] _rgbIV;
         private byte[] _depadBuffer;
         private byte[] _stateBuffer;
         private byte[] _tempBuffer;
+        private bool _keyExpanded;
 
         public bool CanReuseTransform => true;
 
@@ -30,8 +33,6 @@ namespace Gost.Security.Cryptography
         protected SymmetricTransform(byte[] key, byte[] iv, int blockSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-
-            GenerateKeyExpansion(key);
 
             _transformMode = transformMode;
             _blockSize = blockSize / 8;
@@ -56,6 +57,8 @@ namespace Gost.Security.Cryptography
                 default:
                     throw new CryptographicException(InvalidCipherMode);
             }
+
+            _rgbKey = (byte[])key.Clone();
         }
 
         protected abstract void GenerateKeyExpansion(byte[] rgbKey);
@@ -83,6 +86,8 @@ namespace Gost.Security.Cryptography
             if (inputCount <= 0) throw new ArgumentOutOfRangeException(nameof(inputCount), inputCount, ArgumentOutOfRangeNeedPositiveNum);
             if (inputCount % InputBlockSize != 0) throw new ArgumentException(InvalidDataSize, nameof(inputCount));
             if (inputBuffer.Length - inputCount < inputOffset) throw new ArgumentException(ArgumentInvalidOffLen);
+
+            EnsureKeyExpanded();
 
             if (_transformMode == SymmetricTransformMode.Encrypt)
                 return EncryptData(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset, false);
@@ -120,6 +125,8 @@ namespace Gost.Security.Cryptography
             if (inputOffset < 0) throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
             if (inputBuffer.Length - inputCount < inputOffset) throw new ArgumentException(ArgumentInvalidOffLen);
 
+            EnsureKeyExpanded();
+
             byte[] transformedBytes = null;
             if (_transformMode == SymmetricTransformMode.Encrypt)
                 EncryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes, 0, true);
@@ -154,11 +161,25 @@ namespace Gost.Security.Cryptography
         {
             if (disposing)
             {
+                EraseData(ref _rgbKey);
                 EraseData(ref _rgbIV);
                 EraseData(ref _depadBuffer);
                 EraseData(ref _stateBuffer);
                 EraseData(ref _tempBuffer);
             }
+        }
+
+        private void EnsureKeyExpanded()
+        {
+            if (!_keyExpanded)
+                lock (_lock)
+                {
+                    if (_keyExpanded)
+                        return;
+
+                    GenerateKeyExpansion(_rgbKey);
+                    _keyExpanded = true;
+                }
         }
 
         private int EncryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[] outputBuffer, int outputOffset, bool isFinalTransform)
@@ -167,61 +188,13 @@ namespace Gost.Security.Cryptography
                 padSize = 0,
                 lonelyBytes = inputCount % InputBlockSize;
 
-            // check the padding mode and make sure we have enough outputBuffer to handle any padding we have to do
             byte[] padBytes = null;
 
             if (isFinalTransform)
             {
-                switch (_paddingMode)
-                {
-                    case PaddingMode.None:
-                        if (lonelyBytes != 0)
-                            throw new CryptographicException(InvalidDataSize);
-                        break;
-
-                    case PaddingMode.Zeros:
-                        if (lonelyBytes != 0)
-                            padSize = InputBlockSize - lonelyBytes;
-                        break;
-
-                    case PaddingMode.PKCS7:
-                    case PaddingMode.ANSIX923:
-                    case PaddingMode.ISO10126:
-                        padSize = InputBlockSize - lonelyBytes;
-                        break;
-                }
-
-                if (padSize != 0)
-                {
-                    padBytes = new byte[padSize];
-
-                    switch (_paddingMode)
-                    {
-                        case PaddingMode.None:
-                            break;
-
-                        case PaddingMode.Zeros:
-                            // padBytes is already initialized with zeros
-                            break;
-
-                        case PaddingMode.PKCS7:
-                            for (int index = 0; index < padSize; index++)
-                                padBytes[index] = (byte)padSize;
-                            break;
-
-                        case PaddingMode.ANSIX923:
-                            // padBytes is already initialized with zeros. Simply change the last byte
-                            padBytes[padSize - 1] = (byte)padSize;
-                            break;
-
-                        case PaddingMode.ISO10126:
-                            // generate random bytes
-                            StaticRandomNumberGenerator.GetBytes(padBytes);
-                            // and change the last byte
-                            padBytes[padSize - 1] = (byte)padSize;
-                            break;
-                    }
-                }
+                padBytes = CreatePadding(lonelyBytes);
+                if (padBytes != null)
+                    padSize = padBytes.Length;
             }
 
             if (outputBuffer == null)
@@ -276,42 +249,105 @@ namespace Gost.Security.Cryptography
             }
 
             if (padSize != 0)
+                EncryptPaddedBlock(inputBuffer, inputOffset, outputBuffer, outputOffset, padSize, lonelyBytes, padBytes, shift);
+
+            return inputCount + padSize;
+        }
+
+        private void EncryptPaddedBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset, int padSize, int lonelyBytes, byte[] padBytes, int shift)
+        {
+            byte[] tmpInputBuffer;
+
+            if (padSize == InputBlockSize)
+                tmpInputBuffer = padBytes;
+            else
             {
-                byte[] tmpInputBuffer;
+                shift -= InputBlockSize;
+                tmpInputBuffer = new byte[InputBlockSize];
+                BlockCopy(inputBuffer, inputOffset + shift, tmpInputBuffer, 0, lonelyBytes);
+                BlockCopy(padBytes, 0, tmpInputBuffer, lonelyBytes, padSize);
+            }
 
-                if (padSize == InputBlockSize)
-                    tmpInputBuffer = padBytes;
-                else
+            switch (_cipherMode)
+            {
+                case CipherMode.ECB:
+                    EncryptBlock(tmpInputBuffer, 0, outputBuffer, outputOffset + shift);
+                    break;
+
+                case CipherMode.CBC:
+                    Xor(_stateBuffer, 0, tmpInputBuffer, 0, _tempBuffer, 0, InputBlockSize);
+                    EncryptBlock(_tempBuffer, 0, outputBuffer, outputOffset + shift);
+                    break;
+
+                case CipherMode.CFB:
+                case CipherMode.OFB:
+                    EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
+                    Xor(_tempBuffer, 0, tmpInputBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
+                    break;
+
+                default:
+                    throw new CryptographicException(InvalidCipherMode);
+            }
+        }
+
+        private byte[] CreatePadding(int lonelyBytes)
+        {
+            int padSize = 0;
+            byte[] padBytes = null;
+
+            // check the padding mode and make sure we have enough outputBuffer to handle any padding we have to do
+            switch (_paddingMode)
+            {
+                case PaddingMode.None:
+                    if (lonelyBytes != 0)
+                        throw new CryptographicException(InvalidDataSize);
+                    break;
+
+                case PaddingMode.Zeros:
+                    if (lonelyBytes != 0)
+                        padSize = InputBlockSize - lonelyBytes;
+                    break;
+
+                case PaddingMode.PKCS7:
+                case PaddingMode.ANSIX923:
+                case PaddingMode.ISO10126:
+                    padSize = InputBlockSize - lonelyBytes;
+                    break;
+            }
+
+            if (padSize != 0)
+            {
+                padBytes = new byte[padSize];
+
+                switch (_paddingMode)
                 {
-                    shift -= InputBlockSize;
-                    tmpInputBuffer = new byte[InputBlockSize];
-                    BlockCopy(inputBuffer, inputOffset + shift, tmpInputBuffer, 0, lonelyBytes);
-                    BlockCopy(padBytes, 0, tmpInputBuffer, lonelyBytes, padSize);
-                }
-
-                switch (_cipherMode)
-                {
-                    case CipherMode.ECB:
-                        EncryptBlock(tmpInputBuffer, 0, outputBuffer, outputOffset + shift);
+                    case PaddingMode.None:
                         break;
 
-                    case CipherMode.CBC:
-                        Xor(_stateBuffer, 0, tmpInputBuffer, 0, _tempBuffer, 0, InputBlockSize);
-                        EncryptBlock(_tempBuffer, 0, outputBuffer, outputOffset + shift);
+                    case PaddingMode.Zeros:
+                        // padBytes is already initialized with zeros
                         break;
 
-                    case CipherMode.CFB:
-                    case CipherMode.OFB:
-                        EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                        Xor(_tempBuffer, 0, tmpInputBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
+                    case PaddingMode.PKCS7:
+                        for (int index = 0; index < padSize; index++)
+                            padBytes[index] = (byte)padSize;
                         break;
 
-                    default:
-                        throw new CryptographicException(InvalidCipherMode);
+                    case PaddingMode.ANSIX923:
+                        // padBytes is already initialized with zeros. Simply change the last byte
+                        padBytes[padSize - 1] = (byte)padSize;
+                        break;
+
+                    case PaddingMode.ISO10126:
+                        // generate random bytes
+                        StaticRandomNumberGenerator.GetBytes(padBytes);
+                        // and change the last byte
+                        padBytes[padSize - 1] = (byte)padSize;
+                        break;
                 }
             }
 
-            return inputCount + padSize;
+            return padBytes;
         }
 
         private int DecryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[] outputBuffer, int outputOffset, bool isFinalTransform)

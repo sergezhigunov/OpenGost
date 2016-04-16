@@ -26,6 +26,7 @@
     <DocumentationFile>bin\Debug\Gost.Security.Cryptography.XML</DocumentationFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,6 +39,7 @@
     <DocumentationFile>bin\Release\Gost.Security.Cryptography.XML</DocumentationFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Security\Cryptography\SecurityCryptographyStrings.resx">

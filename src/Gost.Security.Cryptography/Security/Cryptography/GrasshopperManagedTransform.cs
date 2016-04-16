@@ -63,6 +63,8 @@ namespace Gost.Security.Cryptography
 
         private byte[][] _keyExpansion;
 
+        private byte[] _buffer;
+
         public GrasshopperManagedTransform(
             byte[] rgbKey,
             byte[] rgbIV,
@@ -71,7 +73,9 @@ namespace Gost.Security.Cryptography
             PaddingMode paddingMode,
             SymmetricTransformMode transformMode)
             : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
-        { }
+        {
+            _buffer = new byte[16];
+        }
 
         protected override void GenerateKeyExpansion(byte[] rgbKey)
         {
@@ -93,10 +97,10 @@ namespace Gost.Security.Cryptography
 
                 for (int j = 0; j < 8; j++)
                 {
-                    Xor(s_iterationConstants[i][j], 0, low, 0, temp, 0);
-                    Substitute(s_forwardSubstitutionBox, temp, 0);
-                    DoLinearTransformForward(temp, 0);
-                    Xor(temp, 0, high, 0, temp, 0);
+                    Xor(s_iterationConstants[i][j], low, temp);
+                    Substitute(s_forwardSubstitutionBox, temp);
+                    DoLinearTransformForward(temp);
+                    Xor(temp, high);
 
                     BlockCopy(low, 0, high, 0, 16);
                     BlockCopy(temp, 0, low, 0, 16);
@@ -109,13 +113,8 @@ namespace Gost.Security.Cryptography
         {
             if (disposing)
             {
-                if (_keyExpansion != null)
-                {
-                    for (int i = 0; i < _keyExpansion.Length; i++)
-                        EraseData(ref _keyExpansion[i]);
-
-                    _keyExpansion = null;
-                }
+                EraseData(ref _buffer);
+                EraseData(ref _keyExpansion);
             }
 
             base.Dispose(disposing);
@@ -123,68 +122,72 @@ namespace Gost.Security.Cryptography
 
         protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
-            BlockCopy(inputBuffer, inputOffset, outputBuffer, outputOffset, 16);
+            BlockCopy(inputBuffer, inputOffset, _buffer, 0, 16);
 
             for (int i = 0; i < 9; i++)
             {
-                Xor(outputBuffer, outputOffset, _keyExpansion[i], 0, outputBuffer, outputOffset);
-                Substitute(s_forwardSubstitutionBox, outputBuffer, outputOffset);
-                DoLinearTransformForward(outputBuffer, outputOffset);
+                Xor(_buffer, _keyExpansion[i]);
+                Substitute(s_forwardSubstitutionBox, _buffer);
+                DoLinearTransformForward(_buffer);
             }
-            Xor(outputBuffer, outputOffset, _keyExpansion[9], 0, outputBuffer, outputOffset);
+            CryptoUtils.Xor(_buffer, 0, _keyExpansion[9], 0, outputBuffer, outputOffset, 16);
         }
 
         protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
-            BlockCopy(inputBuffer, inputOffset, outputBuffer, outputOffset, 16);
+            BlockCopy(inputBuffer, inputOffset, _buffer, 0, 16);
 
             for (int i = 0; i < 9; i++)
             {
-                Xor(outputBuffer, outputOffset, _keyExpansion[9 - i], 0, outputBuffer, outputOffset);
-                DoLinearTransformBackward(outputBuffer, outputOffset);
-                Substitute(s_backwardSubstitutionBox, outputBuffer, outputOffset);
+                Xor(_buffer, _keyExpansion[9 - i]);
+                DoLinearTransformBackward(_buffer);
+                Substitute(s_backwardSubstitutionBox, _buffer);
             }
-            Xor(outputBuffer, outputOffset, _keyExpansion[0], 0, outputBuffer, outputOffset);
+
+            CryptoUtils.Xor(_buffer, 0, _keyExpansion[0], 0, outputBuffer, outputOffset, 16);
         }
 
-        private static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] output, int outputOffset)
-            => CryptoUtils.Xor(left, leftOffset, right, rightOffset, output, outputOffset, 16);
+        private static void Xor(byte[] left, byte[] right, byte[] result)
+            => CryptoUtils.Xor(left, 0, right, 0, result, 0, 16);
 
-        private static void Substitute(byte[] substTable, byte[] data, int dataOffset)
+        private static void Xor(byte[] result, byte[] right)
+            => Xor(result, right, result);
+
+        private static void Substitute(byte[] substTable, byte[] data)
         {
             for (int i = 0; i < 16; i++)
-                data[dataOffset + i] = substTable[data[dataOffset + i]];
+                data[i] = substTable[data[i]];
         }
 
-        private static void DoLinearTransformForward(byte[] data, int dataOffset)
+        private static void DoLinearTransformForward(byte[] data)
         {
             for (int i = 0; i < 16; i++)
             {
                 byte sum = 0;
 
                 for (int j = 0; j < 16; j++)
-                    sum ^= s_multiplicationTable[j][data[dataOffset + j]];
+                    sum ^= s_multiplicationTable[j][data[j]];
 
-                BlockCopy(data, dataOffset, data, dataOffset + 1, 15);
-                data[dataOffset] = sum;
+                BlockCopy(data, 0, data, 1, 15);
+                data[0] = sum;
             }
         }
 
-        private static void DoLinearTransformBackward(byte[] data, int dataOffset)
+        private static void DoLinearTransformBackward(byte[] data)
         {
             for (int i = 0; i < 16; i++)
             {
-                byte indata0 = data[dataOffset];
+                byte indata0 = data[0];
 
-                BlockCopy(data, dataOffset + 1, data, dataOffset, 15);
-                data[dataOffset + 15] = indata0;
+                BlockCopy(data, 1, data, 0, 15);
+                data[15] = indata0;
 
                 byte sum = 0;
 
                 for (int j = 0; j < 16; j++)
-                    sum ^= s_multiplicationTable[j][data[dataOffset + j]];
+                    sum ^= s_multiplicationTable[j][data[j]];
 
-                data[dataOffset + 15] = sum;
+                data[15] = sum;
             }
         }
 
@@ -199,7 +202,7 @@ namespace Gost.Security.Cryptography
                 {
                     byte[] iterConst = new byte[16];
                     iterConst[15] = (byte)(i * 8 + j + 1); ;
-                    DoLinearTransformForward(iterConst, 0);
+                    DoLinearTransformForward(iterConst);
                     row[j] = iterConst;
                 }
 

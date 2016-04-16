@@ -28,6 +28,19 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        internal static void EraseData<T>(ref T[][] data)
+            where T : struct
+        {
+            if (data != null)
+            {
+                int length = data.Length;
+                for (int i = 0; i < length; i++)
+                    EraseData(ref data[i]);
+
+                data = null;
+            }
+        }
+
         internal static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] result, int resultOffset, int count)
         {
             for (int i = 0; i < count; i++)

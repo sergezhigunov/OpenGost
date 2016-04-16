@@ -301,7 +301,7 @@ namespace Gost.Security.Cryptography
             Xor(HashValue, _n, _tempKey);
             Transform(_tempKey);
             Encrypt(_tempKey, block, _tempBuffer);
-            Xor(_tempBuffer, HashValue, _tempBuffer);
+            Xor(_tempBuffer, HashValue);
             Xor(_tempBuffer, block, HashValue);
 
             AddModuloLittleEndian(_sigma, block, _sigma);
@@ -316,13 +316,13 @@ namespace Gost.Security.Cryptography
             BlockCopy(HashValue, 0, _tempKey, 0, 64);
             Transform(_tempKey);
             Encrypt(_tempKey, n, _tempBuffer);
-            Xor(_tempBuffer, HashValue, _tempBuffer);
+            Xor(_tempBuffer, HashValue);
             Xor(_tempBuffer, n, HashValue);
 
             BlockCopy(HashValue, 0, _tempKey, 0, 64);
             Transform(_tempKey);
             Encrypt(_tempKey, sigma, _tempBuffer);
-            Xor(_tempBuffer, HashValue, _tempBuffer);
+            Xor(_tempBuffer, HashValue);
             Xor(_tempBuffer, sigma, HashValue);
         }
 
@@ -333,9 +333,9 @@ namespace Gost.Security.Cryptography
             for (int i = 0; i < 12; i++)
             {
                 Transform(result);
-                Xor(key, s_keyExpansionTable[i], key);
+                Xor(key, s_keyExpansionTable[i]);
                 Transform(key);
-                Xor(result, key, result);
+                Xor(result, key);
             }
         }
 
@@ -352,16 +352,42 @@ namespace Gost.Security.Cryptography
                     s_lookupTable6[data[i + 48]] ^
                     s_lookupTable7[data[i + 56]];
 
-                UInt64ToLittleEndian(data, _temp, 8);
+            UInt64ToLittleEndian(data, _temp, 8);
         }
 
         private static void Xor(byte[] left, byte[] right, byte[] result)
-            => CryptoUtils.Xor(left, 0, right, 0, result, 0, 64);
+        {
+            unsafe
+            {
+                fixed (byte* leftPtr = left, rightPtr = right, resultPtr = result)
+                {
+                    for (int i = 0; i < 8; i++)
+                        *(((ulong*)resultPtr) + i) = *(((ulong*)leftPtr) + i) ^ *(((ulong*)rightPtr) + i);
+                }
+            }
+        }
+
+        private static void Xor(byte[] result, byte[] right)
+        {
+            unsafe
+            {
+                fixed (byte* resultPtr = result, rightPtr = right)
+                {
+                    for (int i = 0; i < 8; i++)
+                        *(((ulong*)resultPtr) + i) ^= *(((ulong*)rightPtr) + i);
+                }
+            }
+        }
 
         private static void Xor(byte[] left, ulong right, byte[] result)
         {
-            for (int i = 0; i < 8; i++)
-                result[i] = (byte)(left[i] ^ (byte)(right >> (i * 8)));
+            unsafe
+            {
+                fixed (byte* resultPtr = result, leftPtr = left)
+                {
+                    *(((ulong*)resultPtr)) = *(((ulong*)leftPtr)) ^ right;
+                }
+            }
             BlockCopy(left, 8, result, 8, 56);
         }
 

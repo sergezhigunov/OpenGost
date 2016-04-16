@@ -145,7 +145,45 @@ namespace Gost.Security.Cryptography
 
         #endregion
 
-        private static readonly ulong[][] s_LookupTable = InitializeLookupTable();
+        private static readonly ulong[]
+            s_lookupTable0,
+            s_lookupTable1,
+            s_lookupTable2,
+            s_lookupTable3,
+            s_lookupTable4,
+            s_lookupTable5,
+            s_lookupTable6,
+            s_lookupTable7;
+
+        static Streebog512Managed()
+        {
+            s_lookupTable0 = new ulong[256];
+            s_lookupTable1 = new ulong[256];
+            s_lookupTable2 = new ulong[256];
+            s_lookupTable3 = new ulong[256];
+            s_lookupTable4 = new ulong[256];
+            s_lookupTable5 = new ulong[256];
+            s_lookupTable6 = new ulong[256];
+            s_lookupTable7 = new ulong[256];
+
+            for (int b = 0; b < 256; b++)
+            {
+                int index = s_backwardSubstitutionBox[b];
+
+                for (int j = 0; j < 8; j++)
+                    if (((b << j) & 0x80) == 0x80)
+                    {
+                        s_lookupTable7[index] ^= s_linearTransformTable[j];
+                        s_lookupTable6[index] ^= s_linearTransformTable[8 + j];
+                        s_lookupTable5[index] ^= s_linearTransformTable[16 + j];
+                        s_lookupTable4[index] ^= s_linearTransformTable[24 + j];
+                        s_lookupTable3[index] ^= s_linearTransformTable[32 + j];
+                        s_lookupTable2[index] ^= s_linearTransformTable[40 + j];
+                        s_lookupTable1[index] ^= s_linearTransformTable[48 + j];
+                        s_lookupTable0[index] ^= s_linearTransformTable[56 + j];
+                    }
+            }
+        }
 
         private byte[]
             _sigma,
@@ -305,14 +343,14 @@ namespace Gost.Security.Cryptography
         {
             for (int i = 0; i < 8; i++)
                 _temp[i] =
-                    s_LookupTable[0][data[i]] ^
-                    s_LookupTable[1][data[i + 8]] ^
-                    s_LookupTable[2][data[i + 16]] ^
-                    s_LookupTable[3][data[i + 24]] ^
-                    s_LookupTable[4][data[i + 32]] ^
-                    s_LookupTable[5][data[i + 40]] ^
-                    s_LookupTable[6][data[i + 48]] ^
-                    s_LookupTable[7][data[i + 56]];
+                    s_lookupTable0[data[i]] ^
+                    s_lookupTable1[data[i + 8]] ^
+                    s_lookupTable2[data[i + 16]] ^
+                    s_lookupTable3[data[i + 24]] ^
+                    s_lookupTable4[data[i + 32]] ^
+                    s_lookupTable5[data[i + 40]] ^
+                    s_lookupTable6[data[i + 48]] ^
+                    s_lookupTable7[data[i + 56]];
 
             for (int i = 0; i < 8; i++)
                 UInt64ToLittleEndian(_temp[i], data, (i << 3));
@@ -354,29 +392,6 @@ namespace Gost.Security.Cryptography
                 result[i] = (byte)t;
                 i++;
             }
-        }
-
-        private static ulong[][] InitializeLookupTable()
-        {
-            var result = new ulong[8][];
-
-            for (int j = 0; j < 8; j++)
-            {
-                var row = new ulong[256];
-
-                for (int b = 0; b < 256; b++)
-                {
-                    ulong t = 0;
-                    for (int k = 0; k < 8; k++)
-                        if (((b << k) & 0x80) == 0x80)
-                            t ^= s_linearTransformTable[j * 8 + k];
-                    row[s_backwardSubstitutionBox[b]] = t;
-                }
-
-                result[7 - j] = row;
-            }
-
-            return result;
         }
     }
 }

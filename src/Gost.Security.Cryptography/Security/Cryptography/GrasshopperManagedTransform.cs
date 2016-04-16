@@ -53,11 +53,15 @@ namespace Gost.Security.Cryptography
 
         #endregion
 
+        #region Lookup tables
+
         private static readonly byte[][] s_multiplicationTable = InitializeMultiplicationTable();
 
         private static readonly byte[][][] s_iterationConstants = InitializeIterationConstants();
+        
+        #endregion
 
-        private byte[] _keyExpansion;
+        private byte[][] _keyExpansion;
 
         public GrasshopperManagedTransform(
             byte[] rgbKey,
@@ -71,27 +75,31 @@ namespace Gost.Security.Cryptography
 
         protected override void GenerateKeyExpansion(byte[] rgbKey)
         {
-            _keyExpansion = new byte[160];
-
-            BlockCopy(rgbKey, 0, _keyExpansion, 0, 16);
-            BlockCopy(rgbKey, 16, _keyExpansion, 16, 16);
+            _keyExpansion = new byte[10][]
+            {
+                new byte[16], new byte[16],
+                null, null, null, null, null, null, null, null
+            };
+            BlockCopy(rgbKey, 0, _keyExpansion[0], 0, 16);
+            BlockCopy(rgbKey, 16, _keyExpansion[1], 0, 16);
 
             byte[] temp = new byte[16];
 
             for (int i = 0; i < 4; i++)
             {
-                int expansionPartOffset = (i + 1) * 32;
-                BlockCopy(_keyExpansion, i * 32, _keyExpansion, expansionPartOffset, 32);
+                byte[]
+                    low = _keyExpansion[2 * i + 2] = (byte[])_keyExpansion[2 * i].Clone(),
+                    high = _keyExpansion[2 * i + 3] = (byte[])_keyExpansion[2 * i + 1].Clone();
 
                 for (int j = 0; j < 8; j++)
                 {
-                    Xor(s_iterationConstants[i][j], 0, _keyExpansion, expansionPartOffset, temp, 0);
+                    Xor(s_iterationConstants[i][j], 0, low, 0, temp, 0);
                     Substitute(s_forwardSubstitutionBox, temp, 0);
                     DoLinearTransformForward(temp, 0);
-                    Xor(temp, 0, _keyExpansion, expansionPartOffset + 16, temp, 0);
+                    Xor(temp, 0, high, 0, temp, 0);
 
-                    BlockCopy(_keyExpansion, expansionPartOffset, _keyExpansion, expansionPartOffset + 16, 16);
-                    BlockCopy(temp, 0, _keyExpansion, expansionPartOffset, 16);
+                    BlockCopy(low, 0, high, 0, 16);
+                    BlockCopy(temp, 0, low, 0, 16);
                 }
             }
             Array.Clear(temp, 0, temp.Length);
@@ -101,7 +109,13 @@ namespace Gost.Security.Cryptography
         {
             if (disposing)
             {
-                EraseData(ref _keyExpansion);
+                if (_keyExpansion != null)
+                {
+                    for (int i = 0; i < _keyExpansion.Length; i++)
+                        EraseData(ref _keyExpansion[i]);
+
+                    _keyExpansion = null;
+                }
             }
 
             base.Dispose(disposing);
@@ -113,11 +127,11 @@ namespace Gost.Security.Cryptography
 
             for (int i = 0; i < 9; i++)
             {
-                Xor(outputBuffer, outputOffset, _keyExpansion, 16 * i, outputBuffer, outputOffset);
+                Xor(outputBuffer, outputOffset, _keyExpansion[i], 0, outputBuffer, outputOffset);
                 Substitute(s_forwardSubstitutionBox, outputBuffer, outputOffset);
                 DoLinearTransformForward(outputBuffer, outputOffset);
             }
-            Xor(outputBuffer, outputOffset, _keyExpansion, 16 * 9, outputBuffer, outputOffset);
+            Xor(outputBuffer, outputOffset, _keyExpansion[9], 0, outputBuffer, outputOffset);
         }
 
         protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
@@ -126,11 +140,11 @@ namespace Gost.Security.Cryptography
 
             for (int i = 0; i < 9; i++)
             {
-                Xor(outputBuffer, outputOffset, _keyExpansion, (9 - i) * 16, outputBuffer, outputOffset);
+                Xor(outputBuffer, outputOffset, _keyExpansion[9 - i], 0, outputBuffer, outputOffset);
                 DoLinearTransformBackward(outputBuffer, outputOffset);
                 Substitute(s_backwardSubstitutionBox, outputBuffer, outputOffset);
             }
-            Xor(outputBuffer, outputOffset, _keyExpansion, 0, outputBuffer, outputOffset);
+            Xor(outputBuffer, outputOffset, _keyExpansion[0], 0, outputBuffer, outputOffset);
         }
 
         private static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] output, int outputOffset)

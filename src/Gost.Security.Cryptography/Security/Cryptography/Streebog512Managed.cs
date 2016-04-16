@@ -154,6 +154,8 @@ namespace Gost.Security.Cryptography
             _tempBuffer,
             _iv;
 
+        private ulong[] _temp;
+
         private ulong _n;
         private long _count;
 
@@ -173,6 +175,7 @@ namespace Gost.Security.Cryptography
             _buffer = new byte[64];
             _tempKey = new byte[64];
             _tempBuffer = new byte[64];
+            _temp = new ulong[8];
         }
 
         /// <summary>
@@ -285,7 +288,7 @@ namespace Gost.Security.Cryptography
             Xor(_tempBuffer, sigma, HashValue);
         }
 
-        private static void Encrypt(byte[] key, byte[] block, byte[] result)
+        private void Encrypt(byte[] key, byte[] block, byte[] result)
         {
             Xor(key, block, result);
 
@@ -298,30 +301,21 @@ namespace Gost.Security.Cryptography
             }
         }
 
-        private static void Transform(byte[] data)
+        private void Transform(byte[] data)
         {
-            // Transposition function
-            for (int i = 0; i < 7; i++)
-                for (int j = i + 1; j < 8; j++)
-                {
-                    int
-                        i1 = i * 8 + j,
-                        i2 = j * 8 + i;
-                    byte tmp = data[i1];
-                    data[i1] = data[i2];
-                    data[i2] = tmp;
-                }
+            for (int i = 0; i < 8; i++)
+                _temp[i] =
+                    s_LookupTable[0][data[i]] ^
+                    s_LookupTable[1][data[i + 8]] ^
+                    s_LookupTable[2][data[i + 16]] ^
+                    s_LookupTable[3][data[i + 24]] ^
+                    s_LookupTable[4][data[i + 32]] ^
+                    s_LookupTable[5][data[i + 40]] ^
+                    s_LookupTable[6][data[i + 48]] ^
+                    s_LookupTable[7][data[i + 56]];
 
-            // Linear transform with precomputed substitution
-            for (int shift = 0; shift < 64; shift += 8)
-            {
-                ulong t = 0;
-
-                for (int j = 0; j < 8; j++)
-                    t ^= s_LookupTable[j][data[shift + (7 - j)]];
-
-                UInt64ToLittleEndian(t, data, shift);
-            }
+            for (int i = 0; i < 8; i++)
+                UInt64ToLittleEndian(_temp[i], data, (i << 3));
         }
 
         private static void Xor(byte[] left, byte[] right, byte[] result)
@@ -374,12 +368,12 @@ namespace Gost.Security.Cryptography
                 {
                     ulong t = 0;
                     for (int k = 0; k < 8; k++)
-                        if (((b >> (7 - k)) & 1) == 1)
-                            t = t ^ s_linearTransformTable[j * 8 + k];
+                        if (((b << k) & 0x80) == 0x80)
+                            t ^= s_linearTransformTable[j * 8 + k];
                     row[s_backwardSubstitutionBox[b]] = t;
                 }
 
-                result[j] = row;
+                result[7 - j] = row;
             }
 
             return result;

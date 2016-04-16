@@ -34,17 +34,36 @@ namespace Gost.Security.Cryptography
                 result[resultOffset + i] = (byte)(left[leftOffset + i] ^ right[rightOffset + i]);
         }
 
-        internal static void UInt64ToLittleEndian(ulong value, byte[] data, int offset)
+        internal static void UInt64ToLittleEndian(byte[] block, ulong[] x, int digits)
         {
-            data[offset] = (byte)value;
-            data[offset + 1] = (byte)(value >> 8);
-            data[offset + 2] = (byte)(value >> 16);
-            data[offset + 3] = (byte)(value >> 24);
-            data[offset + 4] = (byte)(value >> 32);
-            data[offset + 5] = (byte)(value >> 40);
-            data[offset + 6] = (byte)(value >> 48);
-            data[offset + 7] = (byte)(value >> 56);
+            for (int i = 0, j = 0; i < digits; i++, j += 8)
+            {
+                ulong value = x[i];
+                block[j] = (byte)value;
+                block[j + 1] = (byte)(value >> 8);
+                block[j + 2] = (byte)(value >> 16);
+                block[j + 3] = (byte)(value >> 24);
+                block[j + 4] = (byte)(value >> 32);
+                block[j + 5] = (byte)(value >> 40);
+                block[j + 6] = (byte)(value >> 48);
+                block[j + 7] = (byte)(value >> 56);
+            }
         }
+
+        internal static void UInt64FromLittleEndian(ulong[] x, int digits, byte[] block)
+        {
+            for (int i = 0, j = 0; i < digits; i++, j += 8)
+                x[i] =
+                   block[j] |
+                    ((ulong)block[j + 1] << 8) |
+                    ((ulong)block[j + 2] << 16) |
+                    ((ulong)block[j + 3] << 24) |
+                    ((ulong)block[j + 4] << 32) |
+                    ((ulong)block[j + 5] << 40) |
+                    ((ulong)block[j + 6] << 48) |
+                    ((ulong)block[j + 7] << 56);
+        }
+
 
         internal static void UInt32ToBigEndian(uint value, byte[] data, int offset)
         {

@@ -352,8 +352,7 @@ namespace Gost.Security.Cryptography
                     s_lookupTable6[data[i + 48]] ^
                     s_lookupTable7[data[i + 56]];
 
-            for (int i = 0; i < 8; i++)
-                UInt64ToLittleEndian(_temp[i], data, (i << 3));
+                UInt64ToLittleEndian(data, _temp, 8);
         }
 
         private static void Xor(byte[] left, byte[] right, byte[] result)

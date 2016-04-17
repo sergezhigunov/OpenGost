@@ -11,7 +11,7 @@ namespace Gost.Security.Cryptography
         #region Constants
 
         private static readonly byte[]
-            s_multiplicationTableConstants = { 148, 32, 133, 16, 194, 192, 1, 251, 1, 192, 194, 16, 133, 32, 148, 1 },
+            s_linearTransformTableConstants = { 148, 32, 133, 16, 194, 192, 1, 251, 1, 192, 194, 16, 133, 32, 148, 1 },
             s_forwardSubstitutionBox =
             {
                 0xFC, 0xEE, 0xDD, 0x11, 0xCF, 0x6E, 0x31, 0x16, 0xFB, 0xC4, 0xFA, 0xDA, 0x23, 0xC5, 0x04, 0x4D,
@@ -55,7 +55,7 @@ namespace Gost.Security.Cryptography
 
         #region Lookup tables
 
-        private static readonly byte[][] s_multiplicationTable = InitializeMultiplicationTable();
+        private static readonly byte[][] s_linearTransformTable = InitializeLinearTransformTable();
 
         private static readonly byte[][][] s_iterationConstants = InitializeIterationConstants();
         
@@ -166,7 +166,7 @@ namespace Gost.Security.Cryptography
                 byte sum = 0;
 
                 for (int j = 0; j < 16; j++)
-                    sum ^= s_multiplicationTable[j][data[j]];
+                    sum ^= s_linearTransformTable[j][data[j]];
 
                 BlockCopy(data, 0, data, 1, 15);
                 data[0] = sum;
@@ -185,7 +185,7 @@ namespace Gost.Security.Cryptography
                 byte sum = 0;
 
                 for (int j = 0; j < 16; j++)
-                    sum ^= s_multiplicationTable[j][data[j]];
+                    sum ^= s_linearTransformTable[j][data[j]];
 
                 data[15] = sum;
             }
@@ -211,7 +211,7 @@ namespace Gost.Security.Cryptography
             return retval;
         }
 
-        private static byte[][] InitializeMultiplicationTable()
+        private static byte[][] InitializeLinearTransformTable()
         {
             byte[][] table = new byte[16][];
             for (int i = 0; i < 16; i++)
@@ -221,7 +221,7 @@ namespace Gost.Security.Cryptography
                 {
                     int x = j;
                     int z = 0;
-                    int y = s_multiplicationTableConstants[i];
+                    int y = s_linearTransformTableConstants[i];
 
                     while (y != 0)
                     {

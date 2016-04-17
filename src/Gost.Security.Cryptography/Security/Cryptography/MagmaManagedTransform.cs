@@ -22,11 +22,15 @@ namespace Gost.Security.Cryptography
 
         #endregion
 
+        #region Lookup tables
+
         private static readonly uint[]
             s_lookupTable0 = InitializeLookupTable(0),
             s_lookupTable1 = InitializeLookupTable(1),
             s_lookupTable2 = InitializeLookupTable(2),
             s_lookupTable3 = InitializeLookupTable(3);
+
+        #endregion
 
         private uint[] _keyExpansion;
 

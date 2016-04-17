@@ -145,6 +145,8 @@ namespace Gost.Security.Cryptography
 
         #endregion
 
+        #region Lookup tables
+
         private static readonly ulong[]
             s_lookupTable0 = InitializeLookupTable(0),
             s_lookupTable1 = InitializeLookupTable(1),
@@ -154,6 +156,8 @@ namespace Gost.Security.Cryptography
             s_lookupTable5 = InitializeLookupTable(5),
             s_lookupTable6 = InitializeLookupTable(6),
             s_lookupTable7 = InitializeLookupTable(7);
+
+        #endregion
 
         private byte[]
             _sigma,

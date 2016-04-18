@@ -163,31 +163,33 @@ namespace Gost.Security.Cryptography
         {
             for (int i = 0; i < 16; i++)
             {
+                int k = 16 - i;
                 byte sum = 0;
 
-                for (int j = 0; j < 16; j++)
-                    sum ^= s_linearTransformTable[j][data[j]];
+                for (int j = 0; j < i; j++)
+                    sum ^= s_linearTransformTable[j][data[j + k]];
 
-                BlockCopy(data, 0, data, 1, 15);
-                data[0] = sum;
+                for (int j = i; j < 16; j++)
+                    sum ^= s_linearTransformTable[j][data[j - i]];
+
+                data[15 - i] = sum;
             }
         }
 
         private static void DoLinearTransformBackward(byte[] data)
         {
-            for (int i = 0; i < 16; i++)
+            for (int i = 15; i >= 0; i--)
             {
-                byte indata0 = data[0];
-
-                BlockCopy(data, 1, data, 0, 15);
-                data[15] = indata0;
-
+                int k = 16 - i;
                 byte sum = 0;
 
-                for (int j = 0; j < 16; j++)
-                    sum ^= s_linearTransformTable[j][data[j]];
+                for (int j = 0; j < i; j++)
+                    sum ^= s_linearTransformTable[j][data[j + k]];
 
-                data[15] = sum;
+                for (int j = i; j < 16; j++)
+                    sum ^= s_linearTransformTable[j][data[j - i]];
+
+                data[15 - i] = sum;
             }
         }
 

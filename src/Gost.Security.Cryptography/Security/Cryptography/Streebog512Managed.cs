@@ -160,6 +160,7 @@ namespace Gost.Security.Cryptography
         #endregion
 
         private byte[]
+            _state,
             _sigma,
             _buffer,
             _tempKey,
@@ -181,8 +182,8 @@ namespace Gost.Security.Cryptography
         internal Streebog512Managed(byte[] iv)
         {
             _iv = iv;
-            HashValue = new byte[64];
-            BlockCopy(_iv, 0, HashValue, 0, 64);
+            _state = new byte[64];
+            BlockCopy(_iv, 0, _state, 0, 64);
             _sigma = new byte[64];
             _buffer = new byte[64];
             _tempKey = new byte[64];
@@ -198,7 +199,7 @@ namespace Gost.Security.Cryptography
             _count = 0L;
             _n = 0uL;
 
-            BlockCopy(_iv, 0, HashValue, 0, 64);
+            BlockCopy(_iv, 0, _state, 0, 64);
             Array.Clear(_sigma, 0, 64);
             Array.Clear(_buffer, 0, 64);
             Array.Clear(_tempKey, 0, 64);
@@ -267,16 +268,16 @@ namespace Gost.Security.Cryptography
 
             DoFinalTransform(_n, _sigma);
 
-            return HashValue;
+            return _state;
         }
 
         private void DoTransform(byte[] block, uint blockSize)
         {
-            Xor(HashValue, _n, _tempKey);
+            Xor(_state, _n, _tempKey);
             Transform(_tempKey);
             Encrypt(_tempKey, block, _tempBuffer);
-            Xor(_tempBuffer, HashValue);
-            Xor(_tempBuffer, block, HashValue);
+            Xor(_tempBuffer, _state);
+            Xor(_tempBuffer, block, _state);
 
             AddModuloLittleEndian(_sigma, block, _sigma);
             _n += blockSize;
@@ -287,17 +288,17 @@ namespace Gost.Security.Cryptography
             byte[] n = new byte[64];
             AddModuloLittleEndian(n, sizeInBits, n);
 
-            BlockCopy(HashValue, 0, _tempKey, 0, 64);
+            BlockCopy(_state, 0, _tempKey, 0, 64);
             Transform(_tempKey);
             Encrypt(_tempKey, n, _tempBuffer);
-            Xor(_tempBuffer, HashValue);
-            Xor(_tempBuffer, n, HashValue);
+            Xor(_tempBuffer, _state);
+            Xor(_tempBuffer, n, _state);
 
-            BlockCopy(HashValue, 0, _tempKey, 0, 64);
+            BlockCopy(_state, 0, _tempKey, 0, 64);
             Transform(_tempKey);
             Encrypt(_tempKey, sigma, _tempBuffer);
-            Xor(_tempBuffer, HashValue);
-            Xor(_tempBuffer, sigma, HashValue);
+            Xor(_tempBuffer, _state);
+            Xor(_tempBuffer, sigma, _state);
         }
 
         private void Encrypt(byte[] key, byte[] block, byte[] result)

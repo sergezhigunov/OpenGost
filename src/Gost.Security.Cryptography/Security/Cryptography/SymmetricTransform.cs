@@ -55,7 +55,7 @@ namespace Gost.Security.Cryptography
                     break;
 
                 default:
-                    throw new CryptographicException(InvalidCipherMode);
+                    throw new CryptographicException(CryptographicInvalidCipherMode);
             }
 
             _rgbKey = (byte[])key.Clone();
@@ -84,8 +84,8 @@ namespace Gost.Security.Cryptography
             if (inputOffset < 0) throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
             if (outputOffset < 0) throw new ArgumentOutOfRangeException(nameof(outputOffset), outputOffset, ArgumentOutOfRangeNeedNonNegNum);
             if (inputCount <= 0) throw new ArgumentOutOfRangeException(nameof(inputCount), inputCount, ArgumentOutOfRangeNeedPositiveNum);
-            if (inputCount % InputBlockSize != 0) throw new ArgumentException(InvalidDataSize, nameof(inputCount));
             if (inputBuffer.Length - inputCount < inputOffset) throw new ArgumentException(ArgumentInvalidOffLen);
+            if (inputCount % InputBlockSize != 0) throw new CryptographicException(CryptographicInvalidDataSize, nameof(inputCount));
 
             EnsureKeyExpanded();
 
@@ -133,7 +133,7 @@ namespace Gost.Security.Cryptography
             else
             {
                 if (inputCount % InputBlockSize != 0)
-                    throw new CryptographicException(InvalidDataSize);
+                    throw new CryptographicException(CryptographicInvalidDataSize);
 
                 if (_depadBuffer == null)
                     DecryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes, 0, true);
@@ -203,7 +203,7 @@ namespace Gost.Security.Cryptography
                 outputOffset = 0;
             }
             else if ((outputBuffer.Length - outputOffset) < (inputCount + padSize))
-                throw new CryptographicException(InsufficientBuffer);
+                throw new CryptographicException(CryptographicInsufficientBuffer);
 
             int shift;
 
@@ -245,7 +245,7 @@ namespace Gost.Security.Cryptography
                     break;
 
                 default:
-                    throw new CryptographicException(InvalidCipherMode);
+                    throw new CryptographicException(CryptographicInvalidCipherMode);
             }
 
             if (padSize != 0)
@@ -286,7 +286,7 @@ namespace Gost.Security.Cryptography
                     break;
 
                 default:
-                    throw new CryptographicException(InvalidCipherMode);
+                    throw new CryptographicException(CryptographicInvalidCipherMode);
             }
         }
 
@@ -300,7 +300,7 @@ namespace Gost.Security.Cryptography
             {
                 case PaddingMode.None:
                     if (lonelyBytes != 0)
-                        throw new CryptographicException(InvalidDataSize);
+                        throw new CryptographicException(CryptographicInvalidDataSize);
                     break;
 
                 case PaddingMode.Zeros:
@@ -358,7 +358,7 @@ namespace Gost.Security.Cryptography
                 outputOffset = 0;
             }
             else if ((outputBuffer.Length - outputOffset) < inputCount)
-                throw new CryptographicException(InsufficientBuffer);
+                throw new CryptographicException(CryptographicInsufficientBuffer);
 
             switch (_cipherMode)
             {
@@ -398,7 +398,7 @@ namespace Gost.Security.Cryptography
                     break;
 
                 default:
-                    throw new CryptographicException(InvalidCipherMode);
+                    throw new CryptographicException(CryptographicInvalidCipherMode);
             }
 
             if (!isFinalTransform)
@@ -419,7 +419,7 @@ namespace Gost.Security.Cryptography
                     // additional check the validity of the padding
                     for (int index = 1; index <= padSize; index++)
                         if (outputBuffer[inputCount - index] != padSize)
-                            throw new CryptographicException(InvalidPadding);
+                            throw new CryptographicException(CryptographicInvalidPadding);
 
                     RemovePadding(ref outputBuffer, padSize);
                     break;
@@ -430,7 +430,7 @@ namespace Gost.Security.Cryptography
                     // additional check the validity of the padding
                     for (int index = 2; index <= padSize; index++)
                         if (outputBuffer[inputCount - index] != 0)
-                            throw new CryptographicException(InvalidPadding);
+                            throw new CryptographicException(CryptographicInvalidPadding);
 
                     RemovePadding(ref outputBuffer, padSize);
                     break;
@@ -449,10 +449,10 @@ namespace Gost.Security.Cryptography
         {
             int padSize;
             if (inputCount == 0)
-                throw new CryptographicException(InvalidPadding);
+                throw new CryptographicException(CryptographicInvalidPadding);
             padSize = buffer[inputCount - 1];
             if (padSize > buffer.Length || padSize > InputBlockSize || padSize <= 0)
-                throw new CryptographicException(InvalidPadding);
+                throw new CryptographicException(CryptographicInvalidPadding);
             return padSize;
         }
 

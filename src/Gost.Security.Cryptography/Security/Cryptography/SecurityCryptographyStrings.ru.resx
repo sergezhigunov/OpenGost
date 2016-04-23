@@ -126,22 +126,22 @@
   <data name="ArgumentOutOfRangeNeedPositiveNum" xml:space="preserve">
     <value>Требуется положительное число.</value>
   </data>
-  <data name="InsufficientBuffer" xml:space="preserve">
+  <data name="CryptographicInsufficientBuffer" xml:space="preserve">
     <value>Входной буфер содержит недостаточно данных.</value>
   </data>
-  <data name="InvalidCipherMode" xml:space="preserve">
+  <data name="CryptographicInvalidCipherMode" xml:space="preserve">
     <value>Заданный режим шифрования недопустим для этого алгоритма.</value>
   </data>
-  <data name="InvalidDataSize" xml:space="preserve">
+  <data name="CryptographicInvalidDataSize" xml:space="preserve">
     <value>Недопустимая длина данных для выполнения операции.</value>
   </data>
-  <data name="InvalidFeedbackSize" xml:space="preserve">
+  <data name="CryptographicInvalidFeedbackSize" xml:space="preserve">
     <value>Задан недопустимый размер блока обратной связи.</value>
   </data>
-  <data name="InvalidIVSize" xml:space="preserve">
+  <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Заданный вектор инициализации (IV) не соответствует размеру блоков для этого алгоритма.</value>
   </data>
-  <data name="InvalidPadding" xml:space="preserve">
+  <data name="CryptographicInvalidPadding" xml:space="preserve">
     <value>Допонение имеет недопустимый формат и не может быть удалено.</value>
   </data>
 </root>

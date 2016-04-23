@@ -41,7 +41,7 @@ namespace Gost.Security.Cryptography
         {
             set
             {
-                if (value == 0 || value % (BlockSizeValue / 8) != 0) throw new CryptographicException(InvalidFeedbackSize);
+                if (value == 0 || value % (BlockSizeValue / 8) != 0) throw new CryptographicException(CryptographicInvalidFeedbackSize);
 
                 FeedbackSizeValue = value;
             }
@@ -64,7 +64,7 @@ namespace Gost.Security.Cryptography
             set
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
-                if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0) throw new CryptographicException(InvalidIVSize);
+                if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0) throw new CryptographicException(CryptographicInvalidIVSize);
 
                 FeedbackSize = value.Length;
 

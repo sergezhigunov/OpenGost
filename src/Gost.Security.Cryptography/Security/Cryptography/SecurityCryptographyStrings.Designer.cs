@@ -90,54 +90,54 @@ namespace Gost.Security.Cryptography {
         /// <summary>
         ///   Looks up a localized string similar to Input buffer contains insufficient data..
         /// </summary>
-        internal static string InsufficientBuffer {
+        internal static string CryptographicInsufficientBuffer {
             get {
-                return ResourceManager.GetString("InsufficientBuffer", resourceCulture);
+                return ResourceManager.GetString("CryptographicInsufficientBuffer", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Specified cipher mode is not valid for this algorithm..
         /// </summary>
-        internal static string InvalidCipherMode {
+        internal static string CryptographicInvalidCipherMode {
             get {
-                return ResourceManager.GetString("InvalidCipherMode", resourceCulture);
+                return ResourceManager.GetString("CryptographicInvalidCipherMode", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Length of the data to transform is invalid..
         /// </summary>
-        internal static string InvalidDataSize {
+        internal static string CryptographicInvalidDataSize {
             get {
-                return ResourceManager.GetString("InvalidDataSize", resourceCulture);
+                return ResourceManager.GetString("CryptographicInvalidDataSize", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Specified feedback is not a valid for this algorithm..
         /// </summary>
-        internal static string InvalidFeedbackSize {
+        internal static string CryptographicInvalidFeedbackSize {
             get {
-                return ResourceManager.GetString("InvalidFeedbackSize", resourceCulture);
+                return ResourceManager.GetString("CryptographicInvalidFeedbackSize", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Specified initialization vector (IV) does not match allowed size for this algorithm..
         /// </summary>
-        internal static string InvalidIVSize {
+        internal static string CryptographicInvalidIVSize {
             get {
-                return ResourceManager.GetString("InvalidIVSize", resourceCulture);
+                return ResourceManager.GetString("CryptographicInvalidIVSize", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Padding is invalid and cannot be removed..
         /// </summary>
-        internal static string InvalidPadding {
+        internal static string CryptographicInvalidPadding {
             get {
-                return ResourceManager.GetString("InvalidPadding", resourceCulture);
+                return ResourceManager.GetString("CryptographicInvalidPadding", resourceCulture);
             }
         }
     }

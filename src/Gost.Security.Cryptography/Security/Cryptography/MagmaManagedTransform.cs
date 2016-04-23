@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
@@ -57,10 +58,16 @@ namespace Gost.Security.Cryptography
                 a0 = UInt32FromBigEndian(inputBuffer, inputOffset + 4),
                 a1 = UInt32FromBigEndian(inputBuffer, inputOffset);
 
-            ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
+            unsafe
+            {
+                fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
+                {
+                    ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                    ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                    ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                    ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                }
+            }
 
             UInt32ToBigEndian(a0, outputBuffer, outputOffset);
             UInt32ToBigEndian(a1, outputBuffer, outputOffset + 4);
@@ -72,10 +79,16 @@ namespace Gost.Security.Cryptography
                 a0 = UInt32FromBigEndian(inputBuffer, inputOffset + 4),
                 a1 = UInt32FromBigEndian(inputBuffer, inputOffset);
 
-            ComputeEightRoundsForwardKeyOrder(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
-            ComputeEightRoundsBackwardKeyOrder(_keyExpansion, ref a0, ref a1);
+            unsafe
+            {
+                fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
+                {
+                    ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                    ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                    ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                    ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                }
+            }
 
             UInt32ToBigEndian(a0, outputBuffer, outputOffset);
             UInt32ToBigEndian(a1, outputBuffer, outputOffset + 4);
@@ -90,28 +103,30 @@ namespace Gost.Security.Cryptography
             base.Dispose(disposing);
         }
 
-        private static void ComputeEightRoundsForwardKeyOrder(uint[] k, ref uint a0, ref uint a1)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void ComputeEightRoundsForwardKeyOrder(uint* k, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3, ref uint a0, ref uint a1)
         {
-            a1 ^= SubstituteAndRotateElevenBits(a0 + k[0]);
-            a0 ^= SubstituteAndRotateElevenBits(a1 + k[1]);
-            a1 ^= SubstituteAndRotateElevenBits(a0 + k[2]);
-            a0 ^= SubstituteAndRotateElevenBits(a1 + k[3]);
-            a1 ^= SubstituteAndRotateElevenBits(a0 + k[4]);
-            a0 ^= SubstituteAndRotateElevenBits(a1 + k[5]);
-            a1 ^= SubstituteAndRotateElevenBits(a0 + k[6]);
-            a0 ^= SubstituteAndRotateElevenBits(a1 + k[7]);
+            a1 ^= SubstituteAndRotateElevenBits(a0 + k[0], lookup0, lookup1, lookup2, lookup3);
+            a0 ^= SubstituteAndRotateElevenBits(a1 + k[1], lookup0, lookup1, lookup2, lookup3);
+            a1 ^= SubstituteAndRotateElevenBits(a0 + k[2], lookup0, lookup1, lookup2, lookup3);
+            a0 ^= SubstituteAndRotateElevenBits(a1 + k[3], lookup0, lookup1, lookup2, lookup3);
+            a1 ^= SubstituteAndRotateElevenBits(a0 + k[4], lookup0, lookup1, lookup2, lookup3);
+            a0 ^= SubstituteAndRotateElevenBits(a1 + k[5], lookup0, lookup1, lookup2, lookup3);
+            a1 ^= SubstituteAndRotateElevenBits(a0 + k[6], lookup0, lookup1, lookup2, lookup3);
+            a0 ^= SubstituteAndRotateElevenBits(a1 + k[7], lookup0, lookup1, lookup2, lookup3);
         }
 
-        private static void ComputeEightRoundsBackwardKeyOrder(uint[] k, ref uint a0, ref uint a1)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe static void ComputeEightRoundsBackwardKeyOrder(uint* k, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3, ref uint a0, ref uint a1)
         {
-            a1 ^= SubstituteAndRotateElevenBits(a0 + k[7]);
-            a0 ^= SubstituteAndRotateElevenBits(a1 + k[6]);
-            a1 ^= SubstituteAndRotateElevenBits(a0 + k[5]);
-            a0 ^= SubstituteAndRotateElevenBits(a1 + k[4]);
-            a1 ^= SubstituteAndRotateElevenBits(a0 + k[3]);
-            a0 ^= SubstituteAndRotateElevenBits(a1 + k[2]);
-            a1 ^= SubstituteAndRotateElevenBits(a0 + k[1]);
-            a0 ^= SubstituteAndRotateElevenBits(a1 + k[0]);
+            a1 ^= SubstituteAndRotateElevenBits(a0 + k[7], lookup0, lookup1, lookup2, lookup3);
+            a0 ^= SubstituteAndRotateElevenBits(a1 + k[6], lookup0, lookup1, lookup2, lookup3);
+            a1 ^= SubstituteAndRotateElevenBits(a0 + k[5], lookup0, lookup1, lookup2, lookup3);
+            a0 ^= SubstituteAndRotateElevenBits(a1 + k[4], lookup0, lookup1, lookup2, lookup3);
+            a1 ^= SubstituteAndRotateElevenBits(a0 + k[3], lookup0, lookup1, lookup2, lookup3);
+            a0 ^= SubstituteAndRotateElevenBits(a1 + k[2], lookup0, lookup1, lookup2, lookup3);
+            a1 ^= SubstituteAndRotateElevenBits(a0 + k[1], lookup0, lookup1, lookup2, lookup3);
+            a0 ^= SubstituteAndRotateElevenBits(a1 + k[0], lookup0, lookup1, lookup2, lookup3);
         }
 
         private static uint RotateElevenBitsLeft(uint input)
@@ -119,14 +134,15 @@ namespace Gost.Security.Cryptography
             return input << 11 | input >> 21;
         }
 
-        private static uint SubstituteAndRotateElevenBits(uint data)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe static uint SubstituteAndRotateElevenBits(uint data, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3)
         {
             // Substitution and rotation precomputed in the lookup tables
             return
-                s_lookupTable0[data & 0xff] |
-                s_lookupTable1[(data >> 8) & 0xff] |
-                s_lookupTable2[(data >> 16) & 0xff] |
-                s_lookupTable3[(data >> 24) & 0xff];
+                lookup0[(byte)data] |
+                lookup1[(byte)(data >> 8)] |
+                lookup2[(byte)(data >> 16)] |
+                lookup3[data >> 24];
         }
 
         private static uint[] InitializeLookupTable(int tableNumber)

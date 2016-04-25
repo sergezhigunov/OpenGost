@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -11,7 +12,6 @@ namespace Gost.Security.Cryptography
         #region Constants
 
         private static readonly byte[]
-            s_linearTransformTableConstants = { 148, 32, 133, 16, 194, 192, 1, 251, 1, 192, 194, 16, 133, 32, 148, 1 },
             s_forwardSubstitutionBox =
             {
                 0xFC, 0xEE, 0xDD, 0x11, 0xCF, 0x6E, 0x31, 0x16, 0xFB, 0xC4, 0xFA, 0xDA, 0x23, 0xC5, 0x04, 0x4D,
@@ -55,15 +55,20 @@ namespace Gost.Security.Cryptography
 
         #region Lookup tables
 
-        private static readonly byte[][] s_linearTransformTable = InitializeLinearTransformTable();
+        private static readonly byte[]
+            s_lookupTable16 = InitializeLookupTable(16),
+            s_lookupTable32 = InitializeLookupTable(32),
+            s_lookupTable133 = InitializeLookupTable(133),
+            s_lookupTable148 = InitializeLookupTable(148),
+            s_lookupTable192 = InitializeLookupTable(192),
+            s_lookupTable194 = InitializeLookupTable(194),
+            s_lookupTable251 = InitializeLookupTable(251);
 
         private static readonly byte[][][] s_iterationConstants = InitializeIterationConstants();
-        
+
         #endregion
 
         private byte[][] _keyExpansion;
-
-        private byte[] _buffer;
 
         public GrasshopperManagedTransform(
             byte[] rgbKey,
@@ -73,9 +78,7 @@ namespace Gost.Security.Cryptography
             PaddingMode paddingMode,
             SymmetricTransformMode transformMode)
             : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
-        {
-            _buffer = new byte[16];
-        }
+        { }
 
         protected override void GenerateKeyExpansion(byte[] rgbKey)
         {
@@ -87,33 +90,47 @@ namespace Gost.Security.Cryptography
             BlockCopy(rgbKey, 0, _keyExpansion[0], 0, 16);
             BlockCopy(rgbKey, 16, _keyExpansion[1], 0, 16);
 
-            byte[] temp = new byte[16];
-
-            for (int i = 0; i < 4; i++)
+            unsafe
             {
-                byte[]
-                    low = _keyExpansion[2 * i + 2] = (byte[])_keyExpansion[2 * i].Clone(),
-                    high = _keyExpansion[2 * i + 3] = (byte[])_keyExpansion[2 * i + 1].Clone();
+                byte* t = stackalloc byte[16];
 
-                for (int j = 0; j < 8; j++)
+                fixed (byte* s = s_forwardSubstitutionBox,
+                    t16 = s_lookupTable16,
+                    t32 = s_lookupTable32,
+                    t133 = s_lookupTable133,
+                    t148 = s_lookupTable148,
+                    t192 = s_lookupTable192,
+                    t194 = s_lookupTable194,
+                    t251 = s_lookupTable251)
                 {
-                    Xor(s_iterationConstants[i][j], low, temp);
-                    Substitute(s_forwardSubstitutionBox, temp);
-                    DoLinearTransformForward(temp);
-                    Xor(temp, high);
+                    for (int i = 0; i < 4; i++)
+                    {
+                        _keyExpansion[2 * i + 2] = (byte[])_keyExpansion[2 * i].Clone();
+                        _keyExpansion[2 * i + 3] = (byte[])_keyExpansion[2 * i + 1].Clone();
 
-                    BlockCopy(low, 0, high, 0, 16);
-                    BlockCopy(temp, 0, low, 0, 16);
+                        fixed (byte* l = _keyExpansion[2 * i + 2], h = _keyExpansion[2 * i + 3])
+                        {
+                            for (int j = 0; j < 8; j++)
+                            {
+                                fixed (byte* c = s_iterationConstants[i][j])
+                                    Xor(c, l, t);
+
+                                Substitute(s, t);
+                                DoLinearTransformForward(t, t16, t32, t133, t148, t192, t194, t251);
+                                Xor(t, h);
+                                Copy(l, h);
+                                Copy(t, l);
+                            }
+                        }
+                    }
                 }
             }
-            Array.Clear(temp, 0, temp.Length);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                EraseData(ref _buffer);
                 EraseData(ref _keyExpansion);
             }
 
@@ -122,122 +139,419 @@ namespace Gost.Security.Cryptography
 
         protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
-            BlockCopy(inputBuffer, inputOffset, _buffer, 0, 16);
-
-            for (int i = 0; i < 9; i++)
+            unsafe
             {
-                Xor(_buffer, _keyExpansion[i]);
-                Substitute(s_forwardSubstitutionBox, _buffer);
-                DoLinearTransformForward(_buffer);
+                fixed (byte* output = outputBuffer)
+                {
+                    byte* block = output + outputOffset;
+
+                    fixed (byte* input = inputBuffer, k = _keyExpansion[0])
+                        Xor(input + inputOffset, k, block);
+
+                    fixed (byte* s = s_forwardSubstitutionBox,
+                        t16 = s_lookupTable16,
+                        t32 = s_lookupTable32,
+                        t133 = s_lookupTable133,
+                        t148 = s_lookupTable148,
+                        t192 = s_lookupTable192,
+                        t194 = s_lookupTable194,
+                        t251 = s_lookupTable251)
+                    {
+                        for (int i = 1; i < 10; i++)
+                        {
+                            Substitute(s, block);
+                            DoLinearTransformForward(block, t16, t32, t133, t148, t192, t194, t251);
+
+                            fixed (byte* k = _keyExpansion[i])
+                                Xor(block, k);
+                        }
+                    }
+                }
             }
-            CryptoUtils.Xor(_buffer, 0, _keyExpansion[9], 0, outputBuffer, outputOffset, 16);
         }
 
         protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
-            BlockCopy(inputBuffer, inputOffset, _buffer, 0, 16);
-
-            for (int i = 0; i < 9; i++)
+            unsafe
             {
-                Xor(_buffer, _keyExpansion[9 - i]);
-                DoLinearTransformBackward(_buffer);
-                Substitute(s_backwardSubstitutionBox, _buffer);
-            }
+                fixed (byte* output = outputBuffer)
+                {
+                    byte* b = output + outputOffset;
 
-            CryptoUtils.Xor(_buffer, 0, _keyExpansion[0], 0, outputBuffer, outputOffset, 16);
+                    fixed (byte* input = inputBuffer, k = _keyExpansion[9])
+                        Xor(input + inputOffset, k, b);
+
+                    fixed (byte* s = s_backwardSubstitutionBox,
+                        t16 = s_lookupTable16,
+                        t32 = s_lookupTable32,
+                        t133 = s_lookupTable133,
+                        t148 = s_lookupTable148,
+                        t192 = s_lookupTable192,
+                        t194 = s_lookupTable194,
+                        t251 = s_lookupTable251)
+                    {
+                        for (int i = 8; i >= 0; i--)
+                        {
+                            DoLinearTransformBackward(b, t16, t32, t133, t148, t192, t194, t251);
+                            Substitute(s, b);
+
+                            fixed (byte* k = _keyExpansion[i])
+                                Xor(b, k);
+                        }
+                    }
+                }
+            }
         }
 
-        private static void Xor(byte[] left, byte[] right, byte[] result)
-            => CryptoUtils.Xor(left, 0, right, 0, result, 0, 16);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Copy(byte* source, byte* destination)
+        {
+            *(ulong*)destination = *(ulong*)source;
+            *(((ulong*)destination) + 1) = *(((ulong*)source) + 1);
+        }
 
-        private static void Xor(byte[] result, byte[] right)
-            => Xor(result, right, result);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Xor(byte* left, byte* right, byte* result)
+        {
+            *(ulong*)result = *(ulong*)left ^ *(ulong*)right;
+            *(((ulong*)result) + 1) = *(((ulong*)left) + 1) ^ *(((ulong*)right) + 1);
+        }
 
-        private static void Substitute(byte[] substTable, byte[] data)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Xor(byte* result, byte* right)
+        {
+            *(ulong*)result ^= *(ulong*)right;
+            *(((ulong*)result) + 1) ^= *(((ulong*)right) + 1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Substitute(byte* substTable, byte* data)
         {
             for (int i = 0; i < 16; i++)
                 data[i] = substTable[data[i]];
         }
 
-        private static void DoLinearTransformForward(byte[] data)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void DoLinearTransformForward(byte* data, byte* t16, byte* t32, byte* t133, byte* t148, byte* t192, byte* t194, byte* t251)
         {
-            for (int i = 0; i < 16; i++)
-            {
-                int k = 16 - i;
-                byte sum = 0;
+            data[15] ^= (byte)(data[6] ^ t251[data[7]] ^ data[8] ^
+                t148[data[0]] ^ t148[data[14]] ^
+                t32[data[1]] ^ t32[data[13]] ^
+                t133[data[2]] ^ t133[data[12]] ^
+                t16[data[3]] ^ t16[data[11]] ^
+                t194[data[4]] ^ t194[data[10]] ^
+                t192[data[5]] ^ t192[data[9]]);
 
-                for (int j = 0; j < i; j++)
-                    sum ^= s_linearTransformTable[j][data[j + k]];
+            data[14] ^= (byte)(data[5] ^ t251[data[6]] ^ data[7] ^
+                t148[data[15]] ^ t148[data[13]] ^
+                t32[data[0]] ^ t32[data[12]] ^
+                t133[data[1]] ^ t133[data[11]] ^
+                t16[data[2]] ^ t16[data[10]] ^
+                t194[data[3]] ^ t194[data[9]] ^
+                t192[data[4]] ^ t192[data[8]]);
 
-                for (int j = i; j < 16; j++)
-                    sum ^= s_linearTransformTable[j][data[j - i]];
+            data[13] ^= (byte)(data[4] ^ t251[data[5]] ^ data[6] ^
+                t148[data[14]] ^ t148[data[12]] ^
+                t32[data[15]] ^ t32[data[11]] ^
+                t133[data[0]] ^ t133[data[10]] ^
+                t16[data[1]] ^ t16[data[9]] ^
+                t194[data[2]] ^ t194[data[8]] ^
+                t192[data[3]] ^ t192[data[7]]);
 
-                data[15 - i] = sum;
-            }
+            data[12] ^= (byte)(data[3] ^ t251[data[4]] ^ data[5] ^
+                t148[data[13]] ^ t148[data[11]] ^
+                t32[data[14]] ^ t32[data[10]] ^
+                t133[data[15]] ^ t133[data[9]] ^
+                t16[data[0]] ^ t16[data[8]] ^
+                t194[data[1]] ^ t194[data[7]] ^
+                t192[data[2]] ^ t192[data[6]]);
+
+            data[11] ^= (byte)(data[2] ^ t251[data[3]] ^ data[4] ^
+                t148[data[12]] ^ t148[data[10]] ^
+                t32[data[13]] ^ t32[data[9]] ^
+                t133[data[14]] ^ t133[data[8]] ^
+                t16[data[15]] ^ t16[data[7]] ^
+                t194[data[0]] ^ t194[data[6]] ^
+                t192[data[1]] ^ t192[data[5]]);
+
+            data[10] ^= (byte)(data[1] ^ t251[data[2]] ^ data[3] ^
+                t148[data[11]] ^ t148[data[9]] ^
+                t32[data[12]] ^ t32[data[8]] ^
+                t133[data[13]] ^ t133[data[7]] ^
+                t16[data[14]] ^ t16[data[6]] ^
+                t194[data[15]] ^ t194[data[5]] ^
+                t192[data[0]] ^ t192[data[4]]);
+
+            data[9] ^= (byte)(data[0] ^ t251[data[1]] ^ data[2] ^
+                t148[data[10]] ^ t148[data[8]] ^
+                t32[data[11]] ^ t32[data[7]] ^
+                t133[data[12]] ^ t133[data[6]] ^
+                t16[data[13]] ^ t16[data[5]] ^
+                t194[data[14]] ^ t194[data[4]] ^
+                t192[data[15]] ^ t192[data[3]]);
+
+            data[8] ^= (byte)(data[15] ^ t251[data[0]] ^ data[1] ^
+                t148[data[9]] ^ t148[data[7]] ^
+                t32[data[10]] ^ t32[data[6]] ^
+                t133[data[11]] ^ t133[data[5]] ^
+                t16[data[12]] ^ t16[data[4]] ^
+                t194[data[13]] ^ t194[data[3]] ^
+                t192[data[14]] ^ t192[data[2]]);
+
+            data[7] ^= (byte)(data[14] ^ t251[data[15]] ^ data[0] ^
+                t148[data[8]] ^ t148[data[6]] ^
+                t32[data[9]] ^ t32[data[5]] ^
+                t133[data[10]] ^ t133[data[4]] ^
+                t16[data[11]] ^ t16[data[3]] ^
+                t194[data[12]] ^ t194[data[2]] ^
+                t192[data[13]] ^ t192[data[1]]);
+
+            data[6] ^= (byte)(data[13] ^ t251[data[14]] ^ data[15] ^
+                t148[data[7]] ^ t148[data[5]] ^
+                t32[data[8]] ^ t32[data[4]] ^
+                t133[data[9]] ^ t133[data[3]] ^
+                t16[data[10]] ^ t16[data[2]] ^
+                t194[data[11]] ^ t194[data[1]] ^
+                t192[data[12]] ^ t192[data[0]]);
+
+            data[5] ^= (byte)(data[12] ^ t251[data[13]] ^ data[14] ^
+                t148[data[6]] ^ t148[data[4]] ^
+                t32[data[7]] ^ t32[data[3]] ^
+                t133[data[8]] ^ t133[data[2]] ^
+                t16[data[9]] ^ t16[data[1]] ^
+                t194[data[10]] ^ t194[data[0]] ^
+                t192[data[11]] ^ t192[data[15]]);
+
+            data[4] ^= (byte)(data[11] ^ t251[data[12]] ^ data[13] ^
+                t148[data[5]] ^ t148[data[3]] ^
+                t32[data[6]] ^ t32[data[2]] ^
+                t133[data[7]] ^ t133[data[1]] ^
+                t16[data[8]] ^ t16[data[0]] ^
+                t194[data[9]] ^ t194[data[15]] ^
+                t192[data[10]] ^ t192[data[14]]);
+
+            data[3] ^= (byte)(data[10] ^ t251[data[11]] ^ data[12] ^
+                t148[data[4]] ^ t148[data[2]] ^
+                t32[data[5]] ^ t32[data[1]] ^
+                t133[data[6]] ^ t133[data[0]] ^
+                t16[data[7]] ^ t16[data[15]] ^
+                t194[data[8]] ^ t194[data[14]] ^
+                t192[data[9]] ^ t192[data[13]]);
+
+            data[2] ^= (byte)(data[9] ^ t251[data[10]] ^ data[11] ^
+                t148[data[3]] ^ t148[data[1]] ^
+                t32[data[4]] ^ t32[data[0]] ^
+                t133[data[5]] ^ t133[data[15]] ^
+                t16[data[6]] ^ t16[data[14]] ^
+                t194[data[7]] ^ t194[data[13]] ^
+                t192[data[8]] ^ t192[data[12]]);
+
+            data[1] ^= (byte)(data[8] ^ t251[data[9]] ^ data[10] ^
+                t148[data[2]] ^ t148[data[0]] ^
+                t32[data[3]] ^ t32[data[15]] ^
+                t133[data[4]] ^ t133[data[14]] ^
+                t16[data[5]] ^ t16[data[13]] ^
+                t194[data[6]] ^ t194[data[12]] ^
+                t192[data[7]] ^ t192[data[11]]);
+
+            data[0] ^= (byte)(data[7] ^ t251[data[8]] ^ data[9] ^
+                t148[data[1]] ^ t148[data[15]] ^
+                t32[data[2]] ^ t32[data[14]] ^
+                t133[data[3]] ^ t133[data[13]] ^
+                t16[data[4]] ^ t16[data[12]] ^
+                t194[data[5]] ^ t194[data[11]] ^
+                t192[data[6]] ^ t192[data[10]]);
         }
 
-        private static void DoLinearTransformBackward(byte[] data)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void DoLinearTransformBackward(byte* data, byte* t16, byte* t32, byte* t133, byte* t148, byte* t192, byte* t194, byte* t251)
         {
-            for (int i = 15; i >= 0; i--)
-            {
-                int k = 16 - i;
-                byte sum = 0;
+            data[0] ^= (byte)(data[7] ^ t251[data[8]] ^ data[9] ^
+                t148[data[1]] ^ t148[data[15]] ^
+                t32[data[2]] ^ t32[data[14]] ^
+                t133[data[3]] ^ t133[data[13]] ^
+                t16[data[4]] ^ t16[data[12]] ^
+                t194[data[5]] ^ t194[data[11]] ^
+                t192[data[6]] ^ t192[data[10]]);
 
-                for (int j = 0; j < i; j++)
-                    sum ^= s_linearTransformTable[j][data[j + k]];
+            data[1] ^= (byte)(data[8] ^ t251[data[9]] ^ data[10] ^
+                t148[data[2]] ^ t148[data[0]] ^
+                t32[data[3]] ^ t32[data[15]] ^
+                t133[data[4]] ^ t133[data[14]] ^
+                t16[data[5]] ^ t16[data[13]] ^
+                t194[data[6]] ^ t194[data[12]] ^
+                t192[data[7]] ^ t192[data[11]]);
 
-                for (int j = i; j < 16; j++)
-                    sum ^= s_linearTransformTable[j][data[j - i]];
+            data[2] ^= (byte)(data[9] ^ t251[data[10]] ^ data[11] ^
+                t148[data[3]] ^ t148[data[1]] ^
+                t32[data[4]] ^ t32[data[0]] ^
+                t133[data[5]] ^ t133[data[15]] ^
+                t16[data[6]] ^ t16[data[14]] ^
+                t194[data[7]] ^ t194[data[13]] ^
+                t192[data[8]] ^ t192[data[12]]);
 
-                data[15 - i] = sum;
-            }
+            data[3] ^= (byte)(data[10] ^ t251[data[11]] ^ data[12] ^
+                t148[data[4]] ^ t148[data[2]] ^
+                t32[data[5]] ^ t32[data[1]] ^
+                t133[data[6]] ^ t133[data[0]] ^
+                t16[data[7]] ^ t16[data[15]] ^
+                t194[data[8]] ^ t194[data[14]] ^
+                t192[data[9]] ^ t192[data[13]]);
+
+            data[4] ^= (byte)(data[11] ^ t251[data[12]] ^ data[13] ^
+                t148[data[5]] ^ t148[data[3]] ^
+                t32[data[6]] ^ t32[data[2]] ^
+                t133[data[7]] ^ t133[data[1]] ^
+                t16[data[8]] ^ t16[data[0]] ^
+                t194[data[9]] ^ t194[data[15]] ^
+                t192[data[10]] ^ t192[data[14]]);
+
+            data[5] ^= (byte)(data[12] ^ t251[data[13]] ^ data[14] ^
+                t148[data[6]] ^ t148[data[4]] ^
+                t32[data[7]] ^ t32[data[3]] ^
+                t133[data[8]] ^ t133[data[2]] ^
+                t16[data[9]] ^ t16[data[1]] ^
+                t194[data[10]] ^ t194[data[0]] ^
+                t192[data[11]] ^ t192[data[15]]);
+
+            data[6] ^= (byte)(data[13] ^ t251[data[14]] ^ data[15] ^
+                t148[data[7]] ^ t148[data[5]] ^
+                t32[data[8]] ^ t32[data[4]] ^
+                t133[data[9]] ^ t133[data[3]] ^
+                t16[data[10]] ^ t16[data[2]] ^
+                t194[data[11]] ^ t194[data[1]] ^
+                t192[data[12]] ^ t192[data[0]]);
+
+            data[7] ^= (byte)(data[14] ^ t251[data[15]] ^ data[0] ^
+                t148[data[8]] ^ t148[data[6]] ^
+                t32[data[9]] ^ t32[data[5]] ^
+                t133[data[10]] ^ t133[data[4]] ^
+                t16[data[11]] ^ t16[data[3]] ^
+                t194[data[12]] ^ t194[data[2]] ^
+                t192[data[13]] ^ t192[data[1]]);
+
+            data[8] ^= (byte)(data[15] ^ t251[data[0]] ^ data[1] ^
+                t148[data[9]] ^ t148[data[7]] ^
+                t32[data[10]] ^ t32[data[6]] ^
+                t133[data[11]] ^ t133[data[5]] ^
+                t16[data[12]] ^ t16[data[4]] ^
+                t194[data[13]] ^ t194[data[3]] ^
+                t192[data[14]] ^ t192[data[2]]);
+
+            data[9] ^= (byte)(data[0] ^ t251[data[1]] ^ data[2] ^
+                t148[data[10]] ^ t148[data[8]] ^
+                t32[data[11]] ^ t32[data[7]] ^
+                t133[data[12]] ^ t133[data[6]] ^
+                t16[data[13]] ^ t16[data[5]] ^
+                t194[data[14]] ^ t194[data[4]] ^
+                t192[data[15]] ^ t192[data[3]]);
+
+            data[10] ^= (byte)(data[1] ^ t251[data[2]] ^ data[3] ^
+                t148[data[11]] ^ t148[data[9]] ^
+                t32[data[12]] ^ t32[data[8]] ^
+                t133[data[13]] ^ t133[data[7]] ^
+                t16[data[14]] ^ t16[data[6]] ^
+                t194[data[15]] ^ t194[data[5]] ^
+                t192[data[0]] ^ t192[data[4]]);
+
+            data[11] ^= (byte)(data[2] ^ t251[data[3]] ^ data[4] ^
+                t148[data[12]] ^ t148[data[10]] ^
+                t32[data[13]] ^ t32[data[9]] ^
+                t133[data[14]] ^ t133[data[8]] ^
+                t16[data[15]] ^ t16[data[7]] ^
+                t194[data[0]] ^ t194[data[6]] ^
+                t192[data[1]] ^ t192[data[5]]);
+
+            data[12] ^= (byte)(data[3] ^ t251[data[4]] ^ data[5] ^
+                t148[data[13]] ^ t148[data[11]] ^
+                t32[data[14]] ^ t32[data[10]] ^
+                t133[data[15]] ^ t133[data[9]] ^
+                t16[data[0]] ^ t16[data[8]] ^
+                t194[data[1]] ^ t194[data[7]] ^
+                t192[data[2]] ^ t192[data[6]]);
+
+            data[13] ^= (byte)(data[4] ^ t251[data[5]] ^ data[6] ^
+                t148[data[14]] ^ t148[data[12]] ^
+                t32[data[15]] ^ t32[data[11]] ^
+                t133[data[0]] ^ t133[data[10]] ^
+                t16[data[1]] ^ t16[data[9]] ^
+                t194[data[2]] ^ t194[data[8]] ^
+                t192[data[3]] ^ t192[data[7]]);
+
+            data[14] ^= (byte)(data[5] ^ t251[data[6]] ^ data[7] ^
+                t148[data[15]] ^ t148[data[13]] ^
+                t32[data[0]] ^ t32[data[12]] ^
+                t133[data[1]] ^ t133[data[11]] ^
+                t16[data[2]] ^ t16[data[10]] ^
+                t194[data[3]] ^ t194[data[9]] ^
+                t192[data[4]] ^ t192[data[8]]);
+
+            data[15] ^= (byte)(data[6] ^ t251[data[7]] ^ data[8] ^
+                t148[data[0]] ^ t148[data[14]] ^
+                t32[data[1]] ^ t32[data[13]] ^
+                t133[data[2]] ^ t133[data[12]] ^
+                t16[data[3]] ^ t16[data[11]] ^
+                t194[data[4]] ^ t194[data[10]] ^
+                t192[data[5]] ^ t192[data[9]]);
         }
 
         private static byte[][][] InitializeIterationConstants()
         {
             byte[][][] retval = new byte[4][][];
-            for (int i = 0; i < 4; i++)
+
+            unsafe
             {
-                byte[][] row = new byte[8][];
-
-                for (int j = 0; j < 8; j++)
+                fixed (byte*
+                    t16 = s_lookupTable16,
+                    t32 = s_lookupTable32,
+                    t133 = s_lookupTable133,
+                    t148 = s_lookupTable148,
+                    t192 = s_lookupTable192,
+                    t194 = s_lookupTable194,
+                    t251 = s_lookupTable251)
                 {
-                    byte[] iterConst = new byte[16];
-                    iterConst[15] = (byte)(i * 8 + j + 1); ;
-                    DoLinearTransformForward(iterConst);
-                    row[j] = iterConst;
-                }
+                    for (int i = 0; i < 4; i++)
+                    {
+                        byte[][] row = new byte[8][];
 
-                retval[i] = row;
+                        for (int j = 0; j < 8; j++)
+                        {
+                            byte[] iterConst = new byte[16];
+                            iterConst[15] = (byte)(i * 8 + j + 1); ;
+                            fixed (byte* c = iterConst)
+                                DoLinearTransformForward(c, t16, t32, t133, t148, t192, t194, t251);
+                            row[j] = iterConst;
+                        }
+
+                        retval[i] = row;
+                    }
+                }
             }
+
             return retval;
         }
 
-        private static byte[][] InitializeLinearTransformTable()
+        private static byte[] InitializeLookupTable(byte c)
         {
-            byte[][] table = new byte[16][];
-            for (int i = 0; i < 16; i++)
+            byte[] row = new byte[256];
+            for (int j = 0; j < 256; j++)
             {
-                byte[] row = new byte[256];
-                for (int j = 0; j < 256; j++)
+                int x = j;
+                int z = 0;
+                int y = c;
+
+                while (y != 0)
                 {
-                    int x = j;
-                    int z = 0;
-                    int y = s_linearTransformTableConstants[i];
-
-                    while (y != 0)
-                    {
-                        if ((y & 1) != 0)
-                            z ^= x;
-                        x = x << 1 ^ (((x & 0x80) != 0) ? 0xC3 : 0x00);
-                        y >>= 1;
-                    }
-
-                    row[j] = (byte)z;
+                    if ((y & 1) != 0)
+                        z ^= x;
+                    x = x << 1 ^ (((x & 0x80) != 0) ? 0xC3 : 0x00);
+                    y >>= 1;
                 }
-                table[i] = row;
+
+                row[j] = (byte)z;
             }
-            return table;
+
+            return row;
         }
     }
 }

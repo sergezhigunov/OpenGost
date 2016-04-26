@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading;
 
@@ -47,7 +48,8 @@ namespace Gost.Security.Cryptography
                 result[resultOffset + i] = (byte)(left[leftOffset + i] ^ right[rightOffset + i]);
         }
 
-        internal static void UInt64ToLittleEndian(byte[] block, ulong[] x, int digits)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void UInt64ToLittleEndian(byte* block, ulong* x, int digits)
         {
             for (int i = 0, j = 0; i < digits; i++, j += 8)
             {
@@ -62,21 +64,6 @@ namespace Gost.Security.Cryptography
                 block[j + 7] = (byte)(value >> 56);
             }
         }
-
-        internal static void UInt64FromLittleEndian(ulong[] x, int digits, byte[] block)
-        {
-            for (int i = 0, j = 0; i < digits; i++, j += 8)
-                x[i] =
-                   block[j] |
-                    ((ulong)block[j + 1] << 8) |
-                    ((ulong)block[j + 2] << 16) |
-                    ((ulong)block[j + 3] << 24) |
-                    ((ulong)block[j + 4] << 32) |
-                    ((ulong)block[j + 5] << 40) |
-                    ((ulong)block[j + 6] << 48) |
-                    ((ulong)block[j + 7] << 56);
-        }
-
 
         internal static void UInt32ToBigEndian(uint value, byte[] data, int offset)
         {

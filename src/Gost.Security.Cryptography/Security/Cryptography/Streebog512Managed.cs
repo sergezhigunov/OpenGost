@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Gost.Security.Cryptography
 {
@@ -163,11 +164,7 @@ namespace Gost.Security.Cryptography
             _state,
             _sigma,
             _buffer,
-            _tempKey,
-            _tempBuffer,
             _iv;
-
-        private ulong[] _temp;
 
         private ulong _n;
         private long _count;
@@ -186,9 +183,6 @@ namespace Gost.Security.Cryptography
             BlockCopy(_iv, 0, _state, 0, 64);
             _sigma = new byte[64];
             _buffer = new byte[64];
-            _tempKey = new byte[64];
-            _tempBuffer = new byte[64];
-            _temp = new ulong[8];
         }
 
         /// <summary>
@@ -202,8 +196,6 @@ namespace Gost.Security.Cryptography
             BlockCopy(_iv, 0, _state, 0, 64);
             Array.Clear(_sigma, 0, 64);
             Array.Clear(_buffer, 0, 64);
-            Array.Clear(_tempKey, 0, 64);
-            Array.Clear(_tempBuffer, 0, 64);
         }
 
         /// <summary>
@@ -273,100 +265,133 @@ namespace Gost.Security.Cryptography
 
         private void DoTransform(byte[] block, uint blockSize)
         {
-            Xor(_state, _n, _tempKey);
-            Transform(_tempKey);
-            Encrypt(_tempKey, block, _tempBuffer);
-            Xor(_tempBuffer, _state);
-            Xor(_tempBuffer, block, _state);
+            unsafe
+            {
+                byte*
+                    tempKey = stackalloc byte[64],
+                    tempBuffer = stackalloc byte[64];
 
-            AddModuloLittleEndian(_sigma, block, _sigma);
-            _n += blockSize;
+                fixed (byte* state = _state, b = block, s = _sigma)
+                {
+                    Xor(state, _n, tempKey);
+
+                    fixed (ulong*
+                        t0 = s_lookupTable0, t1 = s_lookupTable1, t2 = s_lookupTable2, t3 = s_lookupTable3,
+                        t4 = s_lookupTable4, t5 = s_lookupTable5, t6 = s_lookupTable6, t7 = s_lookupTable7)
+                    {
+                        Transform(tempKey, t0, t1, t2, t3, t4, t5, t6, t7);
+                        Encrypt(tempKey, b, tempBuffer, t0, t1, t2, t3, t4, t5, t6, t7);
+                    }
+
+                    Xor(tempBuffer, state);
+                    Xor(tempBuffer, b, state);
+
+                    AddModuloLittleEndian(s, b, s);
+                    _n += blockSize;
+                }
+            }
         }
 
         private void DoFinalTransform(ulong sizeInBits, byte[] sigma)
         {
-            byte[] n = new byte[64];
-            AddModuloLittleEndian(n, sizeInBits, n);
+            unsafe
+            {
+                byte*
+                    tempKey = stackalloc byte[64],
+                    tempBuffer = stackalloc byte[64];
 
-            BlockCopy(_state, 0, _tempKey, 0, 64);
-            Transform(_tempKey);
-            Encrypt(_tempKey, n, _tempBuffer);
-            Xor(_tempBuffer, _state);
-            Xor(_tempBuffer, n, _state);
+                fixed (byte* state = _state, s = sigma)
+                {
+                    byte* n = stackalloc byte[64];
+                    AddModuloLittleEndian(n, sizeInBits, n);
 
-            BlockCopy(_state, 0, _tempKey, 0, 64);
-            Transform(_tempKey);
-            Encrypt(_tempKey, sigma, _tempBuffer);
-            Xor(_tempBuffer, _state);
-            Xor(_tempBuffer, sigma, _state);
+                    Copy(state, tempKey);
+
+                    fixed (ulong*
+                        t0 = s_lookupTable0, t1 = s_lookupTable1, t2 = s_lookupTable2, t3 = s_lookupTable3,
+                        t4 = s_lookupTable4, t5 = s_lookupTable5, t6 = s_lookupTable6, t7 = s_lookupTable7)
+                    {
+                        Transform(tempKey, t0, t1, t2, t3, t4, t5, t6, t7);
+                        Encrypt(tempKey, n, tempBuffer, t0, t1, t2, t3, t4, t5, t6, t7);
+                        Xor(tempBuffer, state);
+                        Xor(tempBuffer, n, state);
+
+                        Copy(state, tempKey);
+                        Transform(tempKey, t0, t1, t2, t3, t4, t5, t6, t7);
+                        Encrypt(tempKey, s, tempBuffer, t0, t1, t2, t3, t4, t5, t6, t7);
+                    }
+
+                    Xor(tempBuffer, state);
+                    Xor(tempBuffer, s, state);
+
+                }
+            }
         }
 
-        private void Encrypt(byte[] key, byte[] block, byte[] result)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Encrypt(byte* key, byte* block, byte* result,
+            ulong* t0, ulong* t1, ulong* t2, ulong* t3,
+            ulong* t4, ulong* t5, ulong* t6, ulong* t7)
         {
             Xor(key, block, result);
 
             for (int i = 0; i < 12; i++)
             {
-                Transform(result);
-                Xor(key, s_keyExpansionTable[i]);
-                Transform(key);
+                Transform(result, t0, t1, t2, t3, t4, t5, t6, t7);
+                fixed (byte* keyExpansion = s_keyExpansionTable[i])
+                    Xor(key, keyExpansion);
+                Transform(key, t0, t1, t2, t3, t4, t5, t6, t7);
                 Xor(result, key);
             }
         }
 
-        private void Transform(byte[] data)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Transform(byte* data,
+            ulong* t0, ulong* t1, ulong* t2, ulong* t3,
+            ulong* t4, ulong* t5, ulong* t6, ulong* t7)
+        {
+            ulong* temp = stackalloc ulong[8];
+
+            for (int i = 0; i < 8; i++)
+                temp[i] =
+                    t0[data[i]] ^ t1[data[i + 8]] ^ t2[data[i + 16]] ^ t3[data[i + 24]] ^
+                    t4[data[i + 32]] ^ t5[data[i + 40]] ^ t6[data[i + 48]] ^ t7[data[i + 56]];
+
+            UInt64ToLittleEndian(data, temp, 8);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Copy(byte* source, byte* destination)
         {
             for (int i = 0; i < 8; i++)
-                _temp[i] =
-                    s_lookupTable0[data[i]] ^
-                    s_lookupTable1[data[i + 8]] ^
-                    s_lookupTable2[data[i + 16]] ^
-                    s_lookupTable3[data[i + 24]] ^
-                    s_lookupTable4[data[i + 32]] ^
-                    s_lookupTable5[data[i + 40]] ^
-                    s_lookupTable6[data[i + 48]] ^
-                    s_lookupTable7[data[i + 56]];
-
-            UInt64ToLittleEndian(data, _temp, 8);
+                *(((ulong*)destination) + i) = *(((ulong*)source) + i);
         }
 
-        private static void Xor(byte[] left, byte[] right, byte[] result)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Xor(byte* left, byte* right, byte* result)
         {
-            unsafe
-            {
-                fixed (byte* leftPtr = left, rightPtr = right, resultPtr = result)
-                {
-                    for (int i = 0; i < 8; i++)
-                        *(((ulong*)resultPtr) + i) = *(((ulong*)leftPtr) + i) ^ *(((ulong*)rightPtr) + i);
-                }
-            }
+            for (int i = 0; i < 8; i++)
+                *(((ulong*)result) + i) = *(((ulong*)left) + i) ^ *(((ulong*)right) + i);
         }
 
-        private static void Xor(byte[] result, byte[] right)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Xor(byte* result, byte* right)
         {
-            unsafe
-            {
-                fixed (byte* resultPtr = result, rightPtr = right)
-                {
-                    for (int i = 0; i < 8; i++)
-                        *(((ulong*)resultPtr) + i) ^= *(((ulong*)rightPtr) + i);
-                }
-            }
+            for (int i = 0; i < 8; i++)
+                *(((ulong*)result) + i) ^= *(((ulong*)right) + i);
         }
 
-        private static void Xor(byte[] left, ulong right, byte[] result)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void Xor(byte* left, ulong right, byte* result)
         {
-            unsafe
-            {
-                fixed (byte* resultPtr = result, leftPtr = left)
-                {
-                    *(((ulong*)resultPtr)) = *(((ulong*)leftPtr)) ^ right;
-                }
-            }
-            BlockCopy(left, 8, result, 8, 56);
+            *(((ulong*)result)) = *(((ulong*)left)) ^ right;
+
+            for (int i = 1; i < 8; i++)
+                *(((ulong*)result) + i) = *(((ulong*)left) + i);
         }
 
-        private static void AddModuloLittleEndian(byte[] left, byte[] right, byte[] result)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void AddModuloLittleEndian(byte* left, byte* right, byte* result)
         {
             int t = 0;
             for (int i = 0; i < 64; i++)
@@ -376,21 +401,22 @@ namespace Gost.Security.Cryptography
             }
         }
 
-        private static void AddModuloLittleEndian(byte[] left, ulong right, byte[] result)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void AddModuloLittleEndian(byte* left, ulong right, byte* result)
         {
-            int i = 0, t = 0;
-            while (i < 8)
+            int t = 0;
+
+            for (int i = 0; i < 8; i++)
             {
                 byte rightByte = (byte)(right >> (i * 8));
                 t = left[i] + rightByte + (t >> 8);
                 result[i] = (byte)t;
-                i++;
             }
-            while (i < 64)
+
+            for (int i = 8; i < 64; i++)
             {
                 t = left[i] + (t >> 8);
                 result[i] = (byte)t;
-                i++;
             }
         }
 
@@ -406,7 +432,5 @@ namespace Gost.Security.Cryptography
 
             return lookupTable;
         }
-
-
     }
 }

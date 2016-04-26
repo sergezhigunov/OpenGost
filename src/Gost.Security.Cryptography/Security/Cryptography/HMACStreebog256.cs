@@ -28,7 +28,7 @@ namespace Gost.Security.Cryptography
         /// The secret key for <see cref="HMACStreebog256"/> encryption.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="key"/> parameter is null. 
+        /// The <paramref name="key"/> parameter is <c>null</c>. 
         /// </exception>
         public HMACStreebog256(byte[] key)
         {

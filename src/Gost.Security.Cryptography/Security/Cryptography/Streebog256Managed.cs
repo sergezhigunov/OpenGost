@@ -72,8 +72,8 @@ namespace Gost.Security.Cryptography
         /// Releases the unmanaged resources used by the <see cref="Streebog256"/> and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">
-        /// true to release both managed and unmanaged resources;
-        /// false to release only unmanaged resources.
+        /// <c>true</c> to release both managed and unmanaged resources;
+        /// <c>false</c> to release only unmanaged resources.
         /// </param>
         protected override void Dispose(bool disposing)
         {

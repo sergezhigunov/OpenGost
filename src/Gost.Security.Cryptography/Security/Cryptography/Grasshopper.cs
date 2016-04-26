@@ -54,7 +54,7 @@ namespace Gost.Security.Cryptography
         /// The initialization vector.
         /// </value>
         /// <exception cref="ArgumentNullException">
-        /// An attempt was made to set the initialization vector to null.
+        /// An attempt was made to set the initialization vector to <c>null</c>.
         /// </exception>
         /// <exception cref="CryptographicException">
         /// The initialization vector length is zero or not evenly devisable by block size.

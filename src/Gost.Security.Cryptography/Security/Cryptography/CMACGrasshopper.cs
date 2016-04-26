@@ -64,7 +64,7 @@ namespace Gost.Security.Cryptography
         /// The secret key for <see cref="CMACGrasshopper"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="key"/> parameter is null. 
+        /// The <paramref name="key"/> parameter is <c>null</c>.
         /// </exception>
         public CMACGrasshopper(byte[] key)
             : this(GrasshopperAlgorithmName, key)
@@ -81,7 +81,7 @@ namespace Gost.Security.Cryptography
         /// The secret key for <see cref="CMACGrasshopper"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="key"/> parameter is null. 
+        /// The <paramref name="key"/> parameter is <c>null</c>. 
         /// </exception>
         public CMACGrasshopper(string algorithmName, byte[] key)
         {
@@ -130,8 +130,8 @@ namespace Gost.Security.Cryptography
         /// and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">
-        /// true to release both managed and unmanaged resources;
-        /// false to release only unmanaged resources.
+        /// <c>true</c> to release both managed and unmanaged resources;
+        /// <c>false</c> to release only unmanaged resources.
         /// </param>
         protected override void Dispose(bool disposing)
         {

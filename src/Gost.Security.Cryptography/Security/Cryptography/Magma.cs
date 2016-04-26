@@ -72,6 +72,8 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        #region Creation factory methods
+        
         /// <summary>
         /// Creates an instance of the default implementation of <see cref="Magma"/> algorithm.
         /// </summary>
@@ -92,5 +94,7 @@ namespace Gost.Security.Cryptography
         /// </returns>
         public new static Magma Create(string algorithmName)
             => (Magma)CreateFromName(algorithmName);
+
+        #endregion
     }
 }

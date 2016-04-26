@@ -18,6 +18,8 @@ namespace Gost.Security.Cryptography
             HashSizeValue = 512;
         }
 
+        #region Creation factory methods
+
         /// <summary>
         /// Creates an instance of the default implementation of <see cref="Streebog512"/> algorithm.
         /// </summary>
@@ -38,5 +40,7 @@ namespace Gost.Security.Cryptography
         /// </returns>
         public new static Streebog512 Create(string algorithmName)
             => (Streebog512)CreateFromName(algorithmName);
+
+        #endregion
     }
 }

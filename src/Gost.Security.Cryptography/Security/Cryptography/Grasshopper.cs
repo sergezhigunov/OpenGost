@@ -72,6 +72,8 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        #region Creation factory methods 
+
         /// <summary>
         /// Creates an instance of the default implementation of <see cref="Grasshopper"/> algorithm.
         /// </summary>
@@ -92,5 +94,7 @@ namespace Gost.Security.Cryptography
         /// </returns>
         public new static Grasshopper Create(string algorithmName)
             => (Grasshopper)CreateFromName(algorithmName);
+
+        #endregion
     }
 }

@@ -16,6 +16,8 @@ This repository stores unoffical .Net implementation of modern Russian national 
 ## Algorithms in Development
 
 * GOST Elliptic Curve Digital Signature Algorithm (GOST R 34.10-2012)
+* GOST 28147-89 block cipher algorithm (similar to Magma, but has another endianness)
+* GOST R 34.11-94 Hash Function Algorithm
 
 
 ## Normative References

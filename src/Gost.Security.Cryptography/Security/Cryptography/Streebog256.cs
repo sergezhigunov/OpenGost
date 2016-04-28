@@ -27,7 +27,7 @@ namespace Gost.Security.Cryptography
         /// A new instance of <see cref="Streebog256"/>.
         /// </returns>
         public new static Streebog256 Create()
-            => Create(Streebog256AlgorithmName);
+            => Create(Streebog256AlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Streebog256"/> algorithm.

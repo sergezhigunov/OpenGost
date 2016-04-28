@@ -35,7 +35,7 @@ namespace Gost.Security.Cryptography
             if (key == null) throw new ArgumentNullException(nameof(key));
 
             HashSizeValue = 512;
-            HashName = Streebog512AlgorithmName;
+            HashName = Streebog512AlgorithmFullName;
             base.Key = key;
         }
     }

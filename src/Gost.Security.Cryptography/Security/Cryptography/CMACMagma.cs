@@ -67,7 +67,7 @@ namespace Gost.Security.Cryptography
         /// The <paramref name="key"/> parameter is <c>null</c>. 
         /// </exception>
         public CMACMagma(byte[] key)
-            : this(MagmaAlgorithmName, key)
+            : this(MagmaAlgorithmFullName, key)
         { }
 
         /// <summary>

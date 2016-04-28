@@ -35,7 +35,7 @@ namespace Gost.Security.Cryptography
             if (key == null) throw new ArgumentNullException(nameof(key));
 
             HashSizeValue = 256;
-            HashName = Streebog256AlgorithmName;
+            HashName = Streebog256AlgorithmFullName;
             base.Key = key;
         }
     }

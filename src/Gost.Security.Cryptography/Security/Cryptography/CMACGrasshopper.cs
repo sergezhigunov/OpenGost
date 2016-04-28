@@ -67,7 +67,7 @@ namespace Gost.Security.Cryptography
         /// The <paramref name="key"/> parameter is <c>null</c>.
         /// </exception>
         public CMACGrasshopper(byte[] key)
-            : this(GrasshopperAlgorithmName, key)
+            : this(GrasshopperAlgorithmFullName, key)
         { }
 
         /// <summary>

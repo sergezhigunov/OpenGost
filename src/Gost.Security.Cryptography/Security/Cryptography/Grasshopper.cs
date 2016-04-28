@@ -81,7 +81,7 @@ namespace Gost.Security.Cryptography
         /// A new instance of <see cref="Grasshopper"/>.
         /// </returns>
         public new static Grasshopper Create()
-            => Create(GrasshopperAlgorithmName);
+            => Create(GrasshopperAlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Grasshopper"/> algorithm.

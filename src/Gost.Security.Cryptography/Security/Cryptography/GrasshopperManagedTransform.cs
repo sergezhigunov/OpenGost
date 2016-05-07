@@ -141,32 +141,8 @@ namespace Gost.Security.Cryptography
         {
             unsafe
             {
-                fixed (byte* output = outputBuffer)
-                {
-                    byte* block = output + outputOffset;
-
-                    fixed (byte* input = inputBuffer, k = _keyExpansion[0])
-                        Xor(input + inputOffset, k, block);
-
-                    fixed (byte* s = s_forwardSubstitutionBox,
-                        t16 = s_lookupTable16,
-                        t32 = s_lookupTable32,
-                        t133 = s_lookupTable133,
-                        t148 = s_lookupTable148,
-                        t192 = s_lookupTable192,
-                        t194 = s_lookupTable194,
-                        t251 = s_lookupTable251)
-                    {
-                        for (int i = 1; i < 10; i++)
-                        {
-                            Substitute(s, block);
-                            DoLinearTransformForward(block, t16, t32, t133, t148, t192, t194, t251);
-
-                            fixed (byte* k = _keyExpansion[i])
-                                Xor(block, k);
-                        }
-                    }
-                }
+                fixed (byte* input = inputBuffer, output = outputBuffer)
+                    EncryptBlock(_keyExpansion, input + inputOffset, output + outputOffset);
             }
         }
 
@@ -174,31 +150,58 @@ namespace Gost.Security.Cryptography
         {
             unsafe
             {
-                fixed (byte* output = outputBuffer)
+                fixed (byte* input = inputBuffer, output = outputBuffer)
+                    DecryptBlock(_keyExpansion, input + inputOffset, output + outputOffset);
+            }
+        }
+
+        private static unsafe void EncryptBlock(byte[][] keyExpansion, byte* input, byte* output)
+        {
+
+            fixed (byte* k = keyExpansion[0])
+                Xor(input, k, output);
+
+            fixed (byte* s = s_forwardSubstitutionBox,
+                t16 = s_lookupTable16,
+                t32 = s_lookupTable32,
+                t133 = s_lookupTable133,
+                t148 = s_lookupTable148,
+                t192 = s_lookupTable192,
+                t194 = s_lookupTable194,
+                t251 = s_lookupTable251)
+            {
+                for (int i = 1; i < 10; i++)
                 {
-                    byte* b = output + outputOffset;
+                    Substitute(s, output);
+                    DoLinearTransformForward(output, t16, t32, t133, t148, t192, t194, t251);
 
-                    fixed (byte* input = inputBuffer, k = _keyExpansion[9])
-                        Xor(input + inputOffset, k, b);
+                    fixed (byte* k = keyExpansion[i])
+                        Xor(output, k);
+                }
+            }
+        }
 
-                    fixed (byte* s = s_backwardSubstitutionBox,
-                        t16 = s_lookupTable16,
-                        t32 = s_lookupTable32,
-                        t133 = s_lookupTable133,
-                        t148 = s_lookupTable148,
-                        t192 = s_lookupTable192,
-                        t194 = s_lookupTable194,
-                        t251 = s_lookupTable251)
-                    {
-                        for (int i = 8; i >= 0; i--)
-                        {
-                            DoLinearTransformBackward(b, t16, t32, t133, t148, t192, t194, t251);
-                            Substitute(s, b);
+        private static unsafe void DecryptBlock(byte[][] keyExpansion, byte* input, byte* output)
+        {
+            fixed (byte* k = keyExpansion[9])
+                Xor(input, k, output);
 
-                            fixed (byte* k = _keyExpansion[i])
-                                Xor(b, k);
-                        }
-                    }
+            fixed (byte* s = s_backwardSubstitutionBox,
+                t16 = s_lookupTable16,
+                t32 = s_lookupTable32,
+                t133 = s_lookupTable133,
+                t148 = s_lookupTable148,
+                t192 = s_lookupTable192,
+                t194 = s_lookupTable194,
+                t251 = s_lookupTable251)
+            {
+                for (int i = 8; i >= 0; i--)
+                {
+                    DoLinearTransformBackward(output, t16, t32, t133, t148, t192, t194, t251);
+                    Substitute(s, output);
+
+                    fixed (byte* k = keyExpansion[i])
+                        Xor(output, k);
                 }
             }
         }

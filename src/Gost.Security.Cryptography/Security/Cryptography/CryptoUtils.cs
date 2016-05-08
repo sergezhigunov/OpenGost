@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Security;
 using System.Security.Cryptography;
 using System.Threading;
 
@@ -48,6 +49,7 @@ namespace Gost.Security.Cryptography
                 result[resultOffset + i] = (byte)(left[leftOffset + i] ^ right[rightOffset + i]);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe void UInt64ToLittleEndian(byte* block, ulong* x, int digits)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Security;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -80,6 +81,7 @@ namespace Gost.Security.Cryptography
             : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
         { }
 
+        [SecuritySafeCritical]
         protected override void GenerateKeyExpansion(byte[] rgbKey)
         {
             _keyExpansion = new byte[10][]
@@ -137,6 +139,7 @@ namespace Gost.Security.Cryptography
             base.Dispose(disposing);
         }
 
+        [SecuritySafeCritical]
         protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
             unsafe
@@ -146,6 +149,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [SecuritySafeCritical]
         protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
             unsafe
@@ -155,6 +159,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [SecurityCritical]
         private static unsafe void EncryptBlock(byte[][] keyExpansion, byte* input, byte* output)
         {
 
@@ -181,6 +186,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [SecurityCritical]
         private static unsafe void DecryptBlock(byte[][] keyExpansion, byte* input, byte* output)
         {
             fixed (byte* k = keyExpansion[9])
@@ -206,6 +212,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Copy(byte* source, byte* destination)
         {
@@ -213,6 +220,7 @@ namespace Gost.Security.Cryptography
             *(((ulong*)destination) + 1) = *(((ulong*)source) + 1);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Xor(byte* left, byte* right, byte* result)
         {
@@ -220,6 +228,7 @@ namespace Gost.Security.Cryptography
             *(((ulong*)result) + 1) = *(((ulong*)left) + 1) ^ *(((ulong*)right) + 1);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Xor(byte* result, byte* right)
         {
@@ -227,6 +236,7 @@ namespace Gost.Security.Cryptography
             *(((ulong*)result) + 1) ^= *(((ulong*)right) + 1);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Substitute(byte* substTable, byte* data)
         {
@@ -234,6 +244,7 @@ namespace Gost.Security.Cryptography
                 data[i] = substTable[data[i]];
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void DoLinearTransformForward(byte* data, byte* t16, byte* t32, byte* t133, byte* t148, byte* t192, byte* t194, byte* t251)
         {
@@ -366,6 +377,7 @@ namespace Gost.Security.Cryptography
                 t192[data[6]] ^ t192[data[10]]);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void DoLinearTransformBackward(byte* data, byte* t16, byte* t32, byte* t133, byte* t148, byte* t192, byte* t194, byte* t251)
         {
@@ -498,6 +510,7 @@ namespace Gost.Security.Cryptography
                 t192[data[5]] ^ t192[data[9]]);
         }
 
+        [SecuritySafeCritical]
         private static byte[][][] InitializeIterationConstants()
         {
             byte[][][] retval = new byte[4][][];

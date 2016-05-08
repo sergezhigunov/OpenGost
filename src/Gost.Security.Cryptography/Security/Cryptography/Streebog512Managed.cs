@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Security;
 
 namespace Gost.Security.Cryptography
 {
@@ -265,6 +266,7 @@ namespace Gost.Security.Cryptography
             return _state;
         }
 
+        [SecuritySafeCritical]
         private void DoTransform(byte[] block, uint blockSize)
         {
             unsafe
@@ -294,6 +296,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [SecuritySafeCritical]
         private void DoFinalTransform(ulong sizeInBits, byte[] sigma)
         {
             unsafe
@@ -330,6 +333,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Encrypt(byte* key, byte* block, byte* result,
             ulong* t0, ulong* t1, ulong* t2, ulong* t3,
@@ -347,6 +351,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Transform(byte* data,
             ulong* t0, ulong* t1, ulong* t2, ulong* t3,
@@ -362,6 +367,7 @@ namespace Gost.Security.Cryptography
             UInt64ToLittleEndian(data, temp, 8);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Copy(byte* source, byte* destination)
         {
@@ -369,6 +375,7 @@ namespace Gost.Security.Cryptography
                 *(((ulong*)destination) + i) = *(((ulong*)source) + i);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Xor(byte* left, byte* right, byte* result)
         {
@@ -376,6 +383,7 @@ namespace Gost.Security.Cryptography
                 *(((ulong*)result) + i) = *(((ulong*)left) + i) ^ *(((ulong*)right) + i);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Xor(byte* result, byte* right)
         {
@@ -383,6 +391,7 @@ namespace Gost.Security.Cryptography
                 *(((ulong*)result) + i) ^= *(((ulong*)right) + i);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Xor(byte* left, ulong right, byte* result)
         {
@@ -392,6 +401,7 @@ namespace Gost.Security.Cryptography
                 *(((ulong*)result) + i) = *(((ulong*)left) + i);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void AddModuloLittleEndian(byte* left, byte* right, byte* result)
         {
@@ -403,6 +413,7 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void AddModuloLittleEndian(byte* left, ulong right, byte* result)
         {

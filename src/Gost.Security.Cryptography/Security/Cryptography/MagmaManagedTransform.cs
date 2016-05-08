@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Security;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -52,6 +53,7 @@ namespace Gost.Security.Cryptography
                 _keyExpansion[i] = UInt32FromBigEndian(rgbKey, i * 4);
         }
 
+        [SecuritySafeCritical]
         protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
             uint
@@ -73,6 +75,7 @@ namespace Gost.Security.Cryptography
             UInt32ToBigEndian(a1, outputBuffer, outputOffset + 4);
         }
 
+        [SecuritySafeCritical]
         protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
             uint
@@ -103,6 +106,7 @@ namespace Gost.Security.Cryptography
             base.Dispose(disposing);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void ComputeEightRoundsForwardKeyOrder(uint* k, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3, ref uint a0, ref uint a1)
         {
@@ -116,6 +120,7 @@ namespace Gost.Security.Cryptography
             a0 ^= SubstituteAndRotateElevenBits(a1 + k[7], lookup0, lookup1, lookup2, lookup3);
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe static void ComputeEightRoundsBackwardKeyOrder(uint* k, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3, ref uint a0, ref uint a1)
         {
@@ -134,6 +139,7 @@ namespace Gost.Security.Cryptography
             return input << 11 | input >> 21;
         }
 
+        [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe static uint SubstituteAndRotateElevenBits(uint data, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3)
         {

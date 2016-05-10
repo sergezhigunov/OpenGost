@@ -141,7 +141,16 @@
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Заданный вектор инициализации (IV) не соответствует размеру блоков для этого алгоритма.</value>
   </data>
+  <data name="CryptographicInvalidOperation" xml:space="preserve">
+    <value>Данная операция не поддерживается для этого класса.</value>
+  </data>
   <data name="CryptographicInvalidPadding" xml:space="preserve">
     <value>Допонение имеет недопустимый формат и не может быть удалено.</value>
+  </data>
+  <data name="CryptographicMissingKey" xml:space="preserve">
+    <value>Этому объекту средства форматирования не соответствует ни один объект с асимметричным ключом.</value>
+  </data>
+  <data name="CryptographicMissingOid" xml:space="preserve">
+    <value>Не удалось найти требуемый идентификатор объекта (OID).</value>
   </data>
 </root>

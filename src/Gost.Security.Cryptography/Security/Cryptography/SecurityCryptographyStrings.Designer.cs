@@ -133,11 +133,38 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This operation is not supported for this class..
+        /// </summary>
+        internal static string CryptographicInvalidOperation {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Padding is invalid and cannot be removed..
         /// </summary>
         internal static string CryptographicInvalidPadding {
             get {
                 return ResourceManager.GetString("CryptographicInvalidPadding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No asymmetric key object has been associated with this formatter object..
+        /// </summary>
+        internal static string CryptographicMissingKey {
+            get {
+                return ResourceManager.GetString("CryptographicMissingKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required object identifier (OID) cannot be found..
+        /// </summary>
+        internal static string CryptographicMissingOid {
+            get {
+                return ResourceManager.GetString("CryptographicMissingOid", resourceCulture);
             }
         }
     }

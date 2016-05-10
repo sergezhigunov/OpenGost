@@ -141,7 +141,16 @@
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Specified initialization vector (IV) does not match allowed size for this algorithm.</value>
   </data>
+  <data name="CryptographicInvalidOperation" xml:space="preserve">
+    <value>This operation is not supported for this class.</value>
+  </data>
   <data name="CryptographicInvalidPadding" xml:space="preserve">
     <value>Padding is invalid and cannot be removed.</value>
+  </data>
+  <data name="CryptographicMissingKey" xml:space="preserve">
+    <value>No asymmetric key object has been associated with this formatter object.</value>
+  </data>
+  <data name="CryptographicMissingOid" xml:space="preserve">
+    <value>Required object identifier (OID) cannot be found.</value>
   </data>
 </root>

@@ -46,55 +46,76 @@ namespace Gost.Security.Cryptography
             : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
         { }
 
-        protected override void GenerateKeyExpansion(byte[] rgbKey)
+        [SecuritySafeCritical]
+        protected unsafe override void GenerateKeyExpansion(byte[] rgbKey)
         {
             _keyExpansion = new uint[8];
-            for (int i = 0; i < 8; i++)
-                _keyExpansion[i] = UInt32FromBigEndian(rgbKey, i * 4);
+
+            fixed (uint* keyExpansion = _keyExpansion)
+                fixed (byte* key = rgbKey)
+                    UInt32FromBigEndian(keyExpansion, 8, key);
         }
 
         [SecuritySafeCritical]
-        protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
+        protected unsafe override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
-            uint
-                a0 = UInt32FromBigEndian(inputBuffer, inputOffset + 4),
-                a1 = UInt32FromBigEndian(inputBuffer, inputOffset);
+            uint a0, a1;
 
-            unsafe
+            LoadRegisters(inputBuffer, inputOffset, out a0, out a1);
+
+            fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
             {
-                fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
-                {
-                    ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
-                    ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
-                    ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
-                    ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
-                }
+                ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
             }
 
-            UInt32ToBigEndian(a0, outputBuffer, outputOffset);
-            UInt32ToBigEndian(a1, outputBuffer, outputOffset + 4);
+            FlushRegisters(outputBuffer, outputOffset, a0, a1);
         }
 
         [SecuritySafeCritical]
-        protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
+        protected unsafe override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
-            uint
-                a0 = UInt32FromBigEndian(inputBuffer, inputOffset + 4),
-                a1 = UInt32FromBigEndian(inputBuffer, inputOffset);
+            uint a0, a1;
 
-            unsafe
+            LoadRegisters(inputBuffer, inputOffset, out a0, out a1);
+
+            fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
             {
-                fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
-                {
-                    ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
-                    ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
-                    ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
-                    ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
-                }
+                ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
+                ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
             }
 
-            UInt32ToBigEndian(a0, outputBuffer, outputOffset);
-            UInt32ToBigEndian(a1, outputBuffer, outputOffset + 4);
+            FlushRegisters(outputBuffer, outputOffset, a0, a1);
+        }
+
+        [SecurityCritical]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void LoadRegisters(byte[] inputBuffer, int inputOffset, out uint a0, out uint a1)
+        {
+            fixed (byte* input = inputBuffer)
+            {
+                byte* block = input + inputOffset;
+
+                a0 = UInt32FromBigEndian(block + sizeof(uint));
+                a1 = UInt32FromBigEndian(block);
+            }
+        }
+
+        [SecurityCritical]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void FlushRegisters(byte[] outputBuffer, int outputOffset, uint a0, uint a1)
+        {
+            fixed (byte* output = outputBuffer)
+            {
+                byte* block = output + outputOffset;
+
+                UInt32ToBigEndian(block, a0);
+                UInt32ToBigEndian(block + sizeof(uint), a1);
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -53,35 +53,53 @@ namespace Gost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe void UInt64ToLittleEndian(byte* block, ulong* x, int digits)
         {
-            for (int i = 0, j = 0; i < digits; i++, j += 8)
-            {
-                ulong value = x[i];
-                block[j] = (byte)value;
-                block[j + 1] = (byte)(value >> 8);
-                block[j + 2] = (byte)(value >> 16);
-                block[j + 3] = (byte)(value >> 24);
-                block[j + 4] = (byte)(value >> 32);
-                block[j + 5] = (byte)(value >> 40);
-                block[j + 6] = (byte)(value >> 48);
-                block[j + 7] = (byte)(value >> 56);
-            }
+            for (int i = 0, j = 0; i < digits; i++, j += sizeof(ulong))
+                UInt64ToLittleEndian(block + j, x[i]);
         }
 
-        internal static void UInt32ToBigEndian(uint value, byte[] data, int offset)
+        [SecurityCritical]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void UInt64ToLittleEndian(byte* block, ulong value)
         {
-            data[offset] = (byte)(value >> 24);
-            data[offset + 1] = (byte)(value >> 16);
-            data[offset + 2] = (byte)(value >> 8);
-            data[offset + 3] = (byte)value;
+            *block = (byte)value;
+            block[1] = (byte)(value >> 8);
+            block[2] = (byte)(value >> 16);
+            block[3] = (byte)(value >> 24);
+            block[4] = (byte)(value >> 32);
+            block[5] = (byte)(value >> 40);
+            block[6] = (byte)(value >> 48);
+            block[7] = (byte)(value >> 56);
         }
 
-        internal static uint UInt32FromBigEndian(byte[] data, int offset)
+        [SecurityCritical]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void UInt32ToBigEndian(byte* block, uint* x, int digits)
         {
-            return
-                data[offset + 3] |
-                ((uint)data[offset + 2]) << 8 |
-                ((uint)data[offset + 1]) << 16 |
-                ((uint)data[offset]) << 24;
+            for (int i = 0, j = 0; i < digits; i++, j += sizeof(uint))
+                UInt32ToBigEndian(block + j, x[i]);
         }
+
+        [SecurityCritical]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void UInt32ToBigEndian(byte* block, uint value)
+        {
+            *block = (byte)(value >> 24);
+            block[1] = (byte)(value >> 16);
+            block[2] = (byte)(value >> 8);
+            block[3] = (byte)value;
+        }
+
+        [SecurityCritical]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal unsafe static void UInt32FromBigEndian(uint* x, int digits, byte* block)
+        {
+            for (int i = 0, j = 0; i < digits; i++, j += sizeof(uint))
+                x[i] = UInt32FromBigEndian(block + j);
+        }
+
+        [SecurityCritical]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe uint UInt32FromBigEndian(byte* block)
+            => (uint)(*block << 24) | (uint)(block[1] << 16) | (uint)(block[2] << 8) | (block[3]);
     }
 }

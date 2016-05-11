@@ -54,6 +54,7 @@
     <Compile Include="Security\Cryptography\CryptoConstants.cs" />
     <Compile Include="Security\Cryptography\EmptyArray.cs" />
     <Compile Include="Security\Cryptography\GostECDsa.cs" />
+    <Compile Include="Security\Cryptography\GostECDsaManaged.cs" />
     <Compile Include="Security\Cryptography\Grasshopper.cs" />
     <Compile Include="Security\Cryptography\GrasshopperManaged.cs" />
     <Compile Include="Security\Cryptography\GrasshopperManagedTransform.cs" />

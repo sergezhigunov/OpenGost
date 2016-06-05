@@ -147,10 +147,25 @@
   <data name="CryptographicInvalidPadding" xml:space="preserve">
     <value>Padding is invalid and cannot be removed.</value>
   </data>
+  <data name="CryptographicMissingDomainParameters" xml:space="preserve">
+    <value>Could not read the domain parameters from the XML string.</value>
+  </data>
   <data name="CryptographicMissingKey" xml:space="preserve">
     <value>No asymmetric key object has been associated with this formatter object.</value>
   </data>
   <data name="CryptographicMissingOid" xml:space="preserve">
     <value>Required object identifier (OID) cannot be found.</value>
+  </data>
+  <data name="CryptographicMissingPublicKey" xml:space="preserve">
+    <value>Could not read the public key from the XML string.</value>
+  </data>
+  <data name="CryptographicUnexpectedXmlNamespace" xml:space="preserve">
+    <value>The XML namespace '{0}' was unexpected, expected '{1}'.</value>
+  </data>
+  <data name="CryptographicUnknownEllipticCurve" xml:space="preserve">
+    <value>Unknown elliptic curve.</value>
+  </data>
+  <data name="CryptographicUnknownEllipticCurveAlgorithm" xml:space="preserve">
+    <value>Unknown elliptic curve algorithm.</value>
   </data>
 </root>

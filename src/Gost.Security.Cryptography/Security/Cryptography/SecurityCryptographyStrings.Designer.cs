@@ -151,6 +151,15 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not read the domain parameters from the XML string..
+        /// </summary>
+        internal static string CryptographicMissingDomainParameters {
+            get {
+                return ResourceManager.GetString("CryptographicMissingDomainParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No asymmetric key object has been associated with this formatter object..
         /// </summary>
         internal static string CryptographicMissingKey {
@@ -165,6 +174,42 @@ namespace Gost.Security.Cryptography {
         internal static string CryptographicMissingOid {
             get {
                 return ResourceManager.GetString("CryptographicMissingOid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not read the public key from the XML string..
+        /// </summary>
+        internal static string CryptographicMissingPublicKey {
+            get {
+                return ResourceManager.GetString("CryptographicMissingPublicKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XML namespace &apos;{0}&apos; was unexpected, expected &apos;{1}&apos;..
+        /// </summary>
+        internal static string CryptographicUnexpectedXmlNamespace {
+            get {
+                return ResourceManager.GetString("CryptographicUnexpectedXmlNamespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown elliptic curve..
+        /// </summary>
+        internal static string CryptographicUnknownEllipticCurve {
+            get {
+                return ResourceManager.GetString("CryptographicUnknownEllipticCurve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown elliptic curve algorithm..
+        /// </summary>
+        internal static string CryptographicUnknownEllipticCurveAlgorithm {
+            get {
+                return ResourceManager.GetString("CryptographicUnknownEllipticCurveAlgorithm", resourceCulture);
             }
         }
     }

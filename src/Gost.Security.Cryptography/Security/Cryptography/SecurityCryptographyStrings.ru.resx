@@ -147,10 +147,25 @@
   <data name="CryptographicInvalidPadding" xml:space="preserve">
     <value>Допонение имеет недопустимый формат и не может быть удалено.</value>
   </data>
+  <data name="CryptographicMissingDomainParameters" xml:space="preserve">
+    <value>Не удалось считать параметры домена из XML-строки.</value>
+  </data>
   <data name="CryptographicMissingKey" xml:space="preserve">
     <value>Этому объекту средства форматирования не соответствует ни один объект с асимметричным ключом.</value>
   </data>
   <data name="CryptographicMissingOid" xml:space="preserve">
     <value>Не удалось найти требуемый идентификатор объекта (OID).</value>
+  </data>
+  <data name="CryptographicMissingPublicKey" xml:space="preserve">
+    <value>Не удалось считать открытый ключ из XML-строки.</value>
+  </data>
+  <data name="CryptographicUnexpectedXmlNamespace" xml:space="preserve">
+    <value>Непредвиденное пространство имен XML "{0}", ожидается "{1}".</value>
+  </data>
+  <data name="CryptographicUnknownEllipticCurve" xml:space="preserve">
+    <value>Неизвестная эллиптическая кривая.</value>
+  </data>
+  <data name="CryptographicUnknownEllipticCurveAlgorithm" xml:space="preserve">
+    <value>Неизвестный алгоритм эллиптической кривой.</value>
   </data>
 </root>

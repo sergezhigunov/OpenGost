@@ -68,5 +68,39 @@ namespace Gost.Security.Cryptography
         /// The <paramref name="signature"/> parameter is <c>null</c>.
         /// </exception>
         public abstract bool VerifyHash(byte[] hash, byte[] signature);
+
+        /// <summary>
+        /// Reconstructs a <see cref="GostECDsa"/> object from an XML string.
+        /// </summary>
+        /// <param name="xmlString">
+        /// The XML string to use to reconstruct the <see cref="GostECDsa"/> object.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// The <paramref name="xmlString"/> parameter is <c>null</c>. 
+        /// </exception>
+        /// <exception cref="CryptographicException">
+        /// The format of the <paramref name="xmlString"/> parameter is not valid. 
+        /// </exception>
+        public sealed override void FromXmlString(string xmlString)
+        {
+            if (xmlString == null) throw new ArgumentNullException(nameof(xmlString));
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates and returns an XML string representation of the current
+        /// <see cref="GostECDsa"/> object.
+        /// </summary>
+        /// <param name="includePrivateParameters">
+        /// <c>true</c> to include private parameters; otherwise, <c>false</c>. 
+        /// </param>
+        /// <returns>
+        /// An XML string encoding of the current <see cref="GostECDsa"/> object.
+        /// </returns>
+        public sealed override string ToXmlString(bool includePrivateParameters)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

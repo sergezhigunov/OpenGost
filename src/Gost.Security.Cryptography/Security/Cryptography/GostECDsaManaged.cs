@@ -37,40 +37,6 @@ namespace Gost.Security.Cryptography
         }
 
         /// <summary>
-        /// Reconstructs a <see cref="GostECDsaManaged"/> object from an XML string.
-        /// </summary>
-        /// <param name="xmlString">
-        /// The XML string to use to reconstruct the <see cref="GostECDsaManaged"/> object.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// The <paramref name="xmlString"/> parameter is <c>null</c>. 
-        /// </exception>
-        /// <exception cref="CryptographicException">
-        /// The format of the <paramref name="xmlString"/> parameter is not valid. 
-        /// </exception>
-        public override void FromXmlString(string xmlString)
-        {
-            if (xmlString == null) throw new ArgumentNullException(nameof(xmlString));
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Creates and returns an XML string representation of the current
-        /// <see cref="GostECDsaManaged"/> object.
-        /// </summary>
-        /// <param name="includePrivateParameters">
-        /// <c>true</c> to include private parameters; otherwise, <c>false</c>. 
-        /// </param>
-        /// <returns>
-        /// An XML string encoding of the current <see cref="GostECDsaManaged"/> object.
-        /// </returns>
-        public override string ToXmlString(bool includePrivateParameters)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Generates a digital signature for the specified hash value.
         /// </summary>
         /// <param name="hash">

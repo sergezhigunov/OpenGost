@@ -20,7 +20,7 @@ namespace Gost.Security.Cryptography
 
         #endregion
 
-        private readonly CMACAlgorithm _cmacAlgorithm;
+        private readonly CMAC _cmac;
 
         /// <summary>
         /// Gets the size, in bits, of the computed hash code.
@@ -28,7 +28,7 @@ namespace Gost.Security.Cryptography
         /// <value>
         /// The size, in bits, of the computed hash code.
         /// </value>
-        public override int HashSize => _cmacAlgorithm.HashSize;
+        public override int HashSize => _cmac.HashSize;
 
         /// <summary>
         /// Gets or sets the key to use in the hash algorithm.
@@ -42,11 +42,11 @@ namespace Gost.Security.Cryptography
         /// </exception>
         public override byte[] Key
         {
-            get { return _cmacAlgorithm.Key; }
+            get { return _cmac.Key; }
             set
             {
                 base.Key = value;
-                _cmacAlgorithm.Key = value;
+                _cmac.Key = value;
             }
         }
 
@@ -87,14 +87,14 @@ namespace Gost.Security.Cryptography
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            _cmacAlgorithm = new CMACAlgorithm(algorithmName, key, s_irreduciblePolynomial, Grasshopper.Create);
+            _cmac = new CMAC(algorithmName, key, s_irreduciblePolynomial, Grasshopper.Create);
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="CMACGrasshopper"/>.
         /// </summary>
         public override void Initialize()
-            => _cmacAlgorithm.Initialize();
+            => _cmac.Initialize();
 
         /// <summary>
         /// Routes data written to the object into the <see cref="Grasshopper"/>
@@ -110,7 +110,7 @@ namespace Gost.Security.Cryptography
         /// The number of bytes in the array to use as data.
         /// </param>
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
-            => _cmacAlgorithm.TransformBlock(array, ibStart, cbSize, null, 0);
+            => _cmac.TransformBlock(array, ibStart, cbSize, null, 0);
 
         /// <summary>
         /// Returns the computed Cipher-based Message Authentication Code (CMAC)
@@ -121,8 +121,8 @@ namespace Gost.Security.Cryptography
         /// </returns>
         protected override byte[] HashFinal()
         {
-            _cmacAlgorithm.TransformFinalBlock(EmptyArray<byte>.Value, 0, 0);
-            return _cmacAlgorithm.Hash;
+            _cmac.TransformFinalBlock(EmptyArray<byte>.Value, 0, 0);
+            return _cmac.Hash;
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Gost.Security.Cryptography
         {
             if (disposing)
             {
-                _cmacAlgorithm.Dispose();
+                _cmac.Dispose();
             }
 
             base.Dispose(disposing);

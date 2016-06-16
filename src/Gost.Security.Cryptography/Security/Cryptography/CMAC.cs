@@ -8,7 +8,7 @@ namespace Gost.Security.Cryptography
 
     // Computes Cipher-based Message Authentication Code (CMAC)
     // using any symmetric algorithm
-    internal class CMACAlgorithm : KeyedHashAlgorithm
+    internal class CMAC : KeyedHashAlgorithm
     {
         private readonly SymmetricAlgorithm _symmetricAlgorithm;
         private ICryptoTransform _encryptor;
@@ -22,12 +22,12 @@ namespace Gost.Security.Cryptography
         private readonly int _bytesPerBlock;
         private int _bufferLength;
 
-        public CMACAlgorithm(string algorithmName, byte[] key, byte[] irreduciblePolynomial, Func<SymmetricAlgorithm> defaultFactory)
+        public CMAC(string algorithmName, byte[] key, byte[] irreduciblePolynomial, Func<SymmetricAlgorithm> defaultFactory)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (irreduciblePolynomial == null) throw new ArgumentNullException(nameof(irreduciblePolynomial));
 
-            _symmetricAlgorithm = 
+            _symmetricAlgorithm =
                 algorithmName == null ?
                 defaultFactory.Invoke() :
                 SymmetricAlgorithm.Create(algorithmName);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -46,6 +47,9 @@ namespace Gost.Security.Cryptography
         /// <value>
         /// The key to use in the hash algorithm.
         /// </value>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="value"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="CryptographicException">
         /// An attempt is made to change the <see cref="Key"/> property after hashing has begun. 
         /// </exception>
@@ -54,6 +58,7 @@ namespace Gost.Security.Cryptography
             get { return (byte[])KeyValue.Clone(); }
             set
             {
+                if (value == null) throw new ArgumentNullException(nameof(value));
                 if (_hashing)
                     throw new CryptographicException(CryptographicSymmetricAlgorithmKeySet);
 
@@ -90,7 +95,7 @@ namespace Gost.Security.Cryptography
                 _symmetricAlgorithm = SymmetricAlgorithm.Create(value);
 
                 if (_symmetricAlgorithm == null)
-                    throw new CryptographicException(string.Format(CryptographicUnknownSymmetricAlgorithm, value));
+                    throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicUnknownSymmetricAlgorithm, value));
 
                 _symmetricAlgorithmName = value;
 
@@ -140,46 +145,46 @@ namespace Gost.Security.Cryptography
         /// Routes data written to the object into the default <see cref="CMAC"/> hash algorithm
         /// for computing the hash value.
         /// </summary>
-        /// <param name="data">
+        /// <param name="array">
         /// The input data.
         /// </param>
-        /// <param name="dataOffset">
+        /// <param name="ibStart">
         /// The offset into the byte array from which to begin using data.
         /// </param>
-        /// <param name="dataSize">
+        /// <param name="cbSize">
         /// The number of bytes in the array to use as data. 
         /// </param>
-        protected override void HashCore(byte[] data, int dataOffset, int dataSize)
+        protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
             EnsureEncryptorInitialized();
 
-            if (_bufferLength > 0 && _bufferLength + dataSize > _bytesPerBlock)
+            if (_bufferLength > 0 && _bufferLength + cbSize > _bytesPerBlock)
             {
                 int bytesToCopy = _bytesPerBlock - _bufferLength;
-                BlockCopy(data, dataOffset, _buffer, _bufferLength, bytesToCopy);
-                dataOffset += bytesToCopy;
-                dataSize -= bytesToCopy;
+                BlockCopy(array, ibStart, _buffer, _bufferLength, bytesToCopy);
+                ibStart += bytesToCopy;
+                cbSize -= bytesToCopy;
                 _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
                 _bufferLength = 0;
             }
 
-            if (dataSize >= _bytesPerBlock && _bufferLength == _bytesPerBlock)
+            if (cbSize >= _bytesPerBlock && _bufferLength == _bytesPerBlock)
             {
                 _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
                 _bufferLength = 0;
             }
 
-            while (dataSize > _bytesPerBlock)
+            while (cbSize > _bytesPerBlock)
             {
-                _encryptor.TransformBlock(data, dataOffset, _bytesPerBlock, _temp, 0);
-                dataOffset += _bytesPerBlock;
-                dataSize -= _bytesPerBlock;
+                _encryptor.TransformBlock(array, ibStart, _bytesPerBlock, _temp, 0);
+                ibStart += _bytesPerBlock;
+                cbSize -= _bytesPerBlock;
             }
 
-            if (dataSize > 0)
+            if (cbSize > 0)
             {
-                BlockCopy(data, dataOffset, _buffer, _bufferLength, dataSize);
-                _bufferLength += dataSize;
+                BlockCopy(array, ibStart, _buffer, _bufferLength, cbSize);
+                _bufferLength += cbSize;
             }
         }
 

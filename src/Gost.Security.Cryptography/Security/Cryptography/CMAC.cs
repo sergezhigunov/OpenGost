@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 namespace Gost.Security.Cryptography
 {
     using static Buffer;
+    using static CryptoConstants;
+    using static CryptoConfig;
     using static CryptoUtils;
     using static SecurityCryptographyStrings;
 
@@ -233,6 +235,32 @@ namespace Gost.Security.Cryptography
 
             base.Dispose(disposing);
         }
+
+        #region Creation factory methods
+
+        /// <summary>
+        /// Creates an instance of the default implementation of <see cref="CMAC"/> algorithm.
+        /// </summary>
+        /// <returns>
+        /// A new instance of <see cref="CMAC"/>.
+        /// </returns>
+        public new static CMAC Create()
+            => Create(CMACGrasshopperAlgorithmFullName);
+
+        /// <summary>
+        /// Creates an instance of a specified implementation of <see cref="CMAC"/> algorithm.
+        /// </summary>
+        /// <param name="algorithmName">
+        /// The name of the specific implementation of <see cref="CMAC"/> to be used. 
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="CMAC"/> using the specified implementation.
+        /// </returns>
+        public new static CMAC Create(string algorithmName)
+            => (CMAC)CreateFromName(algorithmName);
+
+        #endregion
+
 
         private void EnsureEncryptorInitialized()
         {

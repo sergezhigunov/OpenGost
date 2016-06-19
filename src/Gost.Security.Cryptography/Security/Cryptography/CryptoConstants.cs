@@ -7,8 +7,10 @@
         internal const string GostECDsaAlgorithmName = nameof(GostECDsa);
 
         internal const string GrasshopperAlgorithmFullName = FullNamePrefix + nameof(Grasshopper);
+        internal const string CMACGrasshopperAlgorithmFullName = FullNamePrefix + nameof(CMACGrasshopper);
 
         internal const string MagmaAlgorithmFullName = FullNamePrefix + nameof(Magma);
+        internal const string CMACMagmaAlgorithmFullName = FullNamePrefix + nameof(CMACMagma);
 
         internal const string Streebog512AlgorithmFullName = FullNamePrefix + nameof(Streebog512);
         internal const string HMACStreebog512AlgorithmFullName = FullNamePrefix + nameof(HMACStreebog512);

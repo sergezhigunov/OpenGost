@@ -9,7 +9,6 @@ namespace Gost.Security.Cryptography
 
     internal abstract class SymmetricTransform : ICryptoTransform
     {
-        private readonly object _lock = new object();
         private readonly SymmetricTransformMode _transformMode;
         private readonly CipherMode _cipherMode;
         private readonly PaddingMode _paddingMode;
@@ -172,14 +171,10 @@ namespace Gost.Security.Cryptography
         private void EnsureKeyExpanded()
         {
             if (!_keyExpanded)
-                lock (_lock)
-                {
-                    if (_keyExpanded)
-                        return;
-
-                    GenerateKeyExpansion(_rgbKey);
-                    _keyExpanded = true;
-                }
+            {
+                GenerateKeyExpansion(_rgbKey);
+                _keyExpanded = true;
+            }
         }
 
         private int EncryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[] outputBuffer, int outputOffset, bool isFinalTransform)

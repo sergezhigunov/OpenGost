@@ -67,20 +67,32 @@ namespace Gost.Security.Cryptography
         /// <value>
         /// The name of the symmetric algorithm.
         /// </value>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="value"/> is <c>null</c> or empty.
+        /// </exception>
         /// <exception cref="CryptographicException">
         /// The current symmetric algorithm cannot be changed.
+        /// -or-
+        /// Unknown symmetric algorithm.
+        /// -or-
+        /// Specified symmetric block size is not valid for this algorithm.
         /// </exception>
         public string SymmetricAlgorithmName
         {
             get { return _symmetricAlgorithmName; }
             set
             {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException(CryptographicSymmetricAlgorithmNameNullOrEmpty, nameof(value));
                 if (_hashing)
                     throw new CryptographicException(CryptographicSymmetricAlgorithmNameSet);
 
-                _symmetricAlgorithmName = value;
+                _symmetricAlgorithm = SymmetricAlgorithm.Create(value);
 
-                _symmetricAlgorithm = SymmetricAlgorithm.Create(_symmetricAlgorithmName);
+                if (_symmetricAlgorithm == null)
+                    throw new CryptographicException(string.Format(CryptographicUnknownSymmetricAlgorithm, value));
+
+                _symmetricAlgorithmName = value;
 
                 HashSizeValue = _symmetricAlgorithm.BlockSize;
 
@@ -206,7 +218,7 @@ namespace Gost.Security.Cryptography
         {
             if (disposing)
             {
-                _symmetricAlgorithm.Clear();
+                _symmetricAlgorithm?.Clear();
                 _encryptor?.Dispose();
                 EraseData(ref _subkey1);
                 EraseData(ref _subkey2);

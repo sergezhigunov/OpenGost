@@ -135,8 +135,14 @@
   <data name="CryptographicInvalidCipherMode" xml:space="preserve">
     <value>Заданный режим шифрования недопустим для этого алгоритма.</value>
   </data>
+  <data name="CryptographicInvalidCurveKeyParameters" xml:space="preserve">
+    <value>Заданные параметры ключа или эллиптической кривой недопустимы.</value>
+  </data>
   <data name="CryptographicInvalidDataSize" xml:space="preserve">
     <value>Недопустимая длина данных для выполнения операции.</value>
+  </data>
+  <data name="CryptographicInvalidECCurve" xml:space="preserve">
+    <value>Заданные параметры эллиптической кривой недопустимы.</value>
   </data>
   <data name="CryptographicInvalidFeedbackSize" xml:space="preserve">
     <value>Задан недопустимый размер блока обратной связи.</value>
@@ -165,6 +171,9 @@
   <data name="CryptographicSymmetricAlgorithmKeySet" xml:space="preserve">
     <value>После первой записи в поток ключ симметричного алгоритма изменить невозможно.</value>
   </data>
+  <data name="CryptographicSymmetricAlgorithmNameNullOrEmpty" xml:space="preserve">
+    <value>Имя симметричного алгоритма не может быть NULL или пустым.</value>
+  </data>
   <data name="CryptographicSymmetricAlgorithmNameSet" xml:space="preserve">
     <value>После первой записи в поток имя симметричного алгоритма изменить невозможно.</value>
   </data>
@@ -176,5 +185,8 @@
   </data>
   <data name="CryptographicUnknownEllipticCurveAlgorithm" xml:space="preserve">
     <value>Неизвестный алгоритм эллиптической кривой.</value>
+  </data>
+  <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
+    <value>"{0}" - неизвестный симметричный алгоритм.</value>
   </data>
 </root>

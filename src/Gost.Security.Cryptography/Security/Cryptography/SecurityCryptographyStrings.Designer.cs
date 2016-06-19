@@ -115,11 +115,29 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified key or curve parameters are not valid..
+        /// </summary>
+        internal static string CryptographicInvalidCurveKeyParameters {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidCurveKeyParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Length of the data to transform is invalid..
         /// </summary>
         internal static string CryptographicInvalidDataSize {
             get {
                 return ResourceManager.GetString("CryptographicInvalidDataSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified elliptic curve parameters are not valid..
+        /// </summary>
+        internal static string CryptographicInvalidECCurve {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidECCurve", resourceCulture);
             }
         }
         
@@ -205,6 +223,15 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The symmetric algorithm name cannot be null or empty..
+        /// </summary>
+        internal static string CryptographicSymmetricAlgorithmNameNullOrEmpty {
+            get {
+                return ResourceManager.GetString("CryptographicSymmetricAlgorithmNameNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Symmetric algorithm name cannot be changed after the first write to the stream..
         /// </summary>
         internal static string CryptographicSymmetricAlgorithmNameSet {
@@ -237,6 +264,15 @@ namespace Gost.Security.Cryptography {
         internal static string CryptographicUnknownEllipticCurveAlgorithm {
             get {
                 return ResourceManager.GetString("CryptographicUnknownEllipticCurveAlgorithm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a known symmetric algorithm..
+        /// </summary>
+        internal static string CryptographicUnknownSymmetricAlgorithm {
+            get {
+                return ResourceManager.GetString("CryptographicUnknownSymmetricAlgorithm", resourceCulture);
             }
         }
     }

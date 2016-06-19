@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\AsymmetricAlgorithmTest.cs" />
+    <Compile Include="Security\Cryptography\CmacAlgorithmTests.cs" />
     <Compile Include="Security\Cryptography\CmacTest.cs" />
     <Compile Include="Security\Cryptography\CmacGrasshopperTests.cs" />
     <Compile Include="Security\Cryptography\CmacMagmaTests.cs" />

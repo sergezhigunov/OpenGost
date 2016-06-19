@@ -1,12 +1,13 @@
-﻿using System.Security.Cryptography;
-using Xunit;
+﻿using Xunit;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConstants;
+
     public class CmacGrasshopperTests : CmacTest
     {
         protected override CMAC Create()
-            => new CMACGrasshopper();
+            => CMAC.Create(CMACGrasshopperAlgorithmFullName);
 
         [Theory(DisplayName = nameof(Grasshopper) + "_" + nameof(ComputeCmac))]
         [InlineData(

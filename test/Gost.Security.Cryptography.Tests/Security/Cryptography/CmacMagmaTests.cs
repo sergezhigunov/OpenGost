@@ -1,12 +1,13 @@
-﻿using System.Security.Cryptography;
-using Xunit;
+﻿using Xunit;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConstants;
+
     public class CmacMagmaTests : CmacTest
     {
         protected override CMAC Create()
-            => new CMACMagma();
+            => CMAC.Create(CMACMagmaAlgorithmFullName);
 
         [Theory(DisplayName = nameof(Magma) + "_" + nameof(ComputeCmac))]
         [InlineData(

@@ -3,9 +3,9 @@ using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    public class CmacGrasshopperTests : CmacAlgorithmTest
+    public class CmacGrasshopperTests : CmacTest
     {
-        protected override KeyedHashAlgorithm Create()
+        protected override CMAC Create()
             => new CMACGrasshopper();
 
         [Theory(DisplayName = nameof(Grasshopper) + "_" + nameof(ComputeCmac))]

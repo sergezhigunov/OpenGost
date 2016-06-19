@@ -5,12 +5,29 @@ namespace Gost.Security.Cryptography
 {
     using static Buffer;
     using static CryptoUtils;
+    using static SecurityCryptographyStrings;
 
-    // Computes Cipher-based Message Authentication Code (CMAC)
-    // using any symmetric algorithm
-    internal class CMAC : KeyedHashAlgorithm
+    /// <summary>
+    /// Represents the abstract class from which implementations of Cipher-based Message Authentication Code
+    /// (<see cref="CMAC"/>) can derive.
+    /// </summary>
+    public abstract class CMAC : KeyedHashAlgorithm
     {
-        private readonly SymmetricAlgorithm _symmetricAlgorithm;
+        #region Constants
+
+        private static readonly byte[]
+            s_64BitIrreduciblePolynomial =
+            {
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1B
+            },
+            s_128BitIrreduciblePolynomial =
+            {
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x87
+            };
+
+        #endregion
+
+        private SymmetricAlgorithm _symmetricAlgorithm;
         private ICryptoTransform _encryptor;
         private byte[]
             _subkey1,
@@ -18,36 +35,80 @@ namespace Gost.Security.Cryptography
             _buffer,
             _temp,
             _irreduciblePolynomial;
-
-        private readonly int _bytesPerBlock;
+        private string _symmetricAlgorithmName;
+        private int _bytesPerBlock;
         private int _bufferLength;
+        private bool _hashing = false;
 
-        public CMAC(string algorithmName, byte[] key, byte[] irreduciblePolynomial, Func<SymmetricAlgorithm> defaultFactory)
+        /// <summary>
+        /// Gets or sets the key to use in the hash algorithm.
+        /// </summary>
+        /// <value>
+        /// The key to use in the hash algorithm.
+        /// </value>
+        /// <exception cref="CryptographicException">
+        /// An attempt is made to change the <see cref="Key"/> property after hashing has begun. 
+        /// </exception>
+        public override byte[] Key
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (irreduciblePolynomial == null) throw new ArgumentNullException(nameof(irreduciblePolynomial));
+            get { return (byte[])KeyValue.Clone(); }
+            set
+            {
+                if (_hashing)
+                    throw new CryptographicException(CryptographicSymmetricAlgorithmKeySet);
 
-            _symmetricAlgorithm =
-                algorithmName == null ?
-                defaultFactory.Invoke() :
-                SymmetricAlgorithm.Create(algorithmName);
-
-            HashSizeValue = _symmetricAlgorithm.BlockSize;
-            KeyValue = (byte[])key.Clone();
-
-            _bytesPerBlock = HashSizeValue / 8;
-
-            // By definition, the symmetric algorithm takes an IV=0
-            _symmetricAlgorithm.IV = new byte[_bytesPerBlock];
-
-            // By definition, special padding (implemented on final hashing)
-            _symmetricAlgorithm.Padding = PaddingMode.None;
-
-            _buffer = new byte[_bytesPerBlock];
-            _temp = new byte[_bytesPerBlock];
-            _irreduciblePolynomial = irreduciblePolynomial;
+                KeyValue = (byte[])value.Clone();
+            }
         }
 
+        /// <summary>
+        /// Gets or sets the name of the symmetric algorithm to use for hashing.
+        /// </summary>
+        /// <value>
+        /// The name of the symmetric algorithm.
+        /// </value>
+        /// <exception cref="CryptographicException">
+        /// The current symmetric algorithm cannot be changed.
+        /// </exception>
+        public string SymmetricAlgorithmName
+        {
+            get { return _symmetricAlgorithmName; }
+            set
+            {
+                if (_hashing)
+                    throw new CryptographicException(CryptographicSymmetricAlgorithmNameSet);
+
+                _symmetricAlgorithmName = value;
+
+                _symmetricAlgorithm = SymmetricAlgorithm.Create(_symmetricAlgorithmName);
+
+                HashSizeValue = _symmetricAlgorithm.BlockSize;
+
+                _irreduciblePolynomial = GetIrreduciblePolunomial(HashSizeValue);
+
+                _bytesPerBlock = HashSizeValue / 8;
+
+                // By definition, the symmetric algorithm takes an IV=0
+                _symmetricAlgorithm.IV = new byte[_bytesPerBlock];
+
+                // By definition, special padding (implemented on final hashing)
+                _symmetricAlgorithm.Padding = PaddingMode.None;
+
+                _buffer = new byte[_bytesPerBlock];
+                _temp = new byte[_bytesPerBlock];
+            }
+        }
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CMAC"/> class.
+        /// </summary>
+        protected CMAC()
+        { }
+
+        /// <summary>
+        /// Initializes an instance of the default implementation of <see cref="CMAC"/>.
+        /// </summary>
         public override void Initialize()
         {
             if (_encryptor != null)
@@ -63,6 +124,19 @@ namespace Gost.Security.Cryptography
             Array.Clear(_buffer, 0, _bytesPerBlock);
         }
 
+        /// <summary>
+        /// Routes data written to the object into the default <see cref="CMAC"/> hash algorithm
+        /// for computing the hash value.
+        /// </summary>
+        /// <param name="data">
+        /// The input data.
+        /// </param>
+        /// <param name="dataOffset">
+        /// The offset into the byte array from which to begin using data.
+        /// </param>
+        /// <param name="dataSize">
+        /// The number of bytes in the array to use as data. 
+        /// </param>
         protected override void HashCore(byte[] data, int dataOffset, int dataSize)
         {
             EnsureEncryptorInitialized();
@@ -97,6 +171,12 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        /// <summary>
+        /// Finalizes the hash computation after the last data is processed by the cryptographic stream object.
+        /// </summary>
+        /// <returns>
+        /// The computed hash code in a byte array.
+        /// </returns>
         protected override byte[] HashFinal()
         {
             EnsureEncryptorInitialized();
@@ -114,6 +194,14 @@ namespace Gost.Security.Cryptography
             return _encryptor.TransformFinalBlock(_buffer, 0, _bytesPerBlock);
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="CMAC"/> class when a key change
+        /// is legitimate and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <c>true</c> to release both managed and unmanaged resources;
+        /// <c>false</c> to release only unmanaged resources. 
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -174,6 +262,21 @@ namespace Gost.Security.Cryptography
                 data[i] |= (byte)((data[i + 1] >> 7) & 0x01);
             }
             data[lastByte] <<= 1;
+        }
+
+        private static byte[] GetIrreduciblePolunomial(int blockSize)
+        {
+            switch (blockSize)
+            {
+                case 64:
+                    return s_64BitIrreduciblePolynomial;
+
+                case 128:
+                    return s_128BitIrreduciblePolynomial;
+
+                default:
+                    throw new CryptographicException(CryptographicInvalidBlockSize);
+            }
         }
     }
 }

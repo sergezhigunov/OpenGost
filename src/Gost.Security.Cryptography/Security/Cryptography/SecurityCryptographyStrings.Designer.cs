@@ -97,6 +97,15 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specified block size is not valid for this algorithm..
+        /// </summary>
+        internal static string CryptographicInvalidBlockSize {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidBlockSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specified cipher mode is not valid for this algorithm..
         /// </summary>
         internal static string CryptographicInvalidCipherMode {
@@ -183,6 +192,24 @@ namespace Gost.Security.Cryptography {
         internal static string CryptographicMissingPublicKey {
             get {
                 return ResourceManager.GetString("CryptographicMissingPublicKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The key cannot be changed after the first write to the stream..
+        /// </summary>
+        internal static string CryptographicSymmetricAlgorithmKeySet {
+            get {
+                return ResourceManager.GetString("CryptographicSymmetricAlgorithmKeySet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Symmetric algorithm name cannot be changed after the first write to the stream..
+        /// </summary>
+        internal static string CryptographicSymmetricAlgorithmNameSet {
+            get {
+                return ResourceManager.GetString("CryptographicSymmetricAlgorithmNameSet", resourceCulture);
             }
         }
         

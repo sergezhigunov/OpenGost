@@ -3,16 +3,16 @@ using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    public abstract class CmacAlgorithmTest
+    public abstract class CmacTest
     {
-        protected abstract KeyedHashAlgorithm Create();
+        protected abstract CMAC Create();
 
         protected void VerifyCmac(string dataHex, string keyHex, string digestHex)
         {
             byte[] digestBytes = digestHex.HexToByteArray();
             byte[] computedDigest;
 
-            using (KeyedHashAlgorithm cmac = Create())
+            using (CMAC cmac = Create())
             {
                 Assert.True(cmac.HashSize > 0);
 

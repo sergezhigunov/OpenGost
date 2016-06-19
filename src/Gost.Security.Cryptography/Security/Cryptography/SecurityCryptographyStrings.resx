@@ -129,6 +129,9 @@
   <data name="CryptographicInsufficientBuffer" xml:space="preserve">
     <value>Input buffer contains insufficient data.</value>
   </data>
+  <data name="CryptographicInvalidBlockSize" xml:space="preserve">
+    <value>Specified block size is not valid for this algorithm.</value>
+  </data>
   <data name="CryptographicInvalidCipherMode" xml:space="preserve">
     <value>Specified cipher mode is not valid for this algorithm.</value>
   </data>
@@ -158,6 +161,12 @@
   </data>
   <data name="CryptographicMissingPublicKey" xml:space="preserve">
     <value>Could not read the public key from the XML string.</value>
+  </data>
+  <data name="CryptographicSymmetricAlgorithmKeySet" xml:space="preserve">
+    <value>The key cannot be changed after the first write to the stream.</value>
+  </data>
+  <data name="CryptographicSymmetricAlgorithmNameSet" xml:space="preserve">
+    <value>Symmetric algorithm name cannot be changed after the first write to the stream.</value>
   </data>
   <data name="CryptographicUnexpectedXmlNamespace" xml:space="preserve">
     <value>The XML namespace '{0}' was unexpected, expected '{1}'.</value>

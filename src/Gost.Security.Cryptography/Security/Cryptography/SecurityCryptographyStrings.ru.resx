@@ -129,6 +129,9 @@
   <data name="CryptographicInsufficientBuffer" xml:space="preserve">
     <value>Входной буфер содержит недостаточно данных.</value>
   </data>
+  <data name="CryptographicInvalidBlockSize" xml:space="preserve">
+    <value>Заданный размер блока недопустим для этого алгоритма.</value>
+  </data>
   <data name="CryptographicInvalidCipherMode" xml:space="preserve">
     <value>Заданный режим шифрования недопустим для этого алгоритма.</value>
   </data>
@@ -158,6 +161,12 @@
   </data>
   <data name="CryptographicMissingPublicKey" xml:space="preserve">
     <value>Не удалось считать открытый ключ из XML-строки.</value>
+  </data>
+  <data name="CryptographicSymmetricAlgorithmKeySet" xml:space="preserve">
+    <value>После первой записи в поток ключ симметричного алгоритма изменить невозможно.</value>
+  </data>
+  <data name="CryptographicSymmetricAlgorithmNameSet" xml:space="preserve">
+    <value>После первой записи в поток имя симметричного алгоритма изменить невозможно.</value>
   </data>
   <data name="CryptographicUnexpectedXmlNamespace" xml:space="preserve">
     <value>Непредвиденное пространство имен XML "{0}", ожидается "{1}".</value>

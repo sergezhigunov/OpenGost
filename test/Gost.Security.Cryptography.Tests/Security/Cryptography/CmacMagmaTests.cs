@@ -3,9 +3,9 @@ using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    public class CmacMagmaTests : CmacAlgorithmTest
+    public class CmacMagmaTests : CmacTest
     {
-        protected override KeyedHashAlgorithm Create()
+        protected override CMAC Create()
             => new CMACMagma();
 
         [Theory(DisplayName = nameof(Magma) + "_" + nameof(ComputeCmac))]

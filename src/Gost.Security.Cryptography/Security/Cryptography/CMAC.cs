@@ -103,7 +103,7 @@ namespace Gost.Security.Cryptography
 
                 HashSizeValue = _symmetricAlgorithm.BlockSize;
 
-                _irreduciblePolynomial = GetIrreduciblePolunomial(HashSizeValue);
+                _irreduciblePolynomial = GetIrreduciblePolynomial(HashSizeValue);
 
                 _bytesPerBlock = HashSizeValue / 8;
 
@@ -309,7 +309,7 @@ namespace Gost.Security.Cryptography
             data[lastByte] <<= 1;
         }
 
-        private static byte[] GetIrreduciblePolunomial(int blockSize)
+        private static byte[] GetIrreduciblePolynomial(int blockSize)
         {
             switch (blockSize)
             {

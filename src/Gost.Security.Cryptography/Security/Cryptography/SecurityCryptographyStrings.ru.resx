@@ -154,7 +154,7 @@
     <value>Данная операция не поддерживается для этого класса.</value>
   </data>
   <data name="CryptographicInvalidPadding" xml:space="preserve">
-    <value>Допонение имеет недопустимый формат и не может быть удалено.</value>
+    <value>Дополнение имеет недопустимый формат и не может быть удалено.</value>
   </data>
   <data name="CryptographicMissingDomainParameters" xml:space="preserve">
     <value>Не удалось считать параметры домена из XML-строки.</value>

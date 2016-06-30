@@ -10,6 +10,8 @@ namespace Gost.Security.Cryptography
     {
         private static readonly KeySizes[] s_legalKeySizes = { new KeySizes(256, 512, 256) };
 
+        private ECParameters _parameters;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsaManaged" /> class
         /// with a random key pair.
@@ -34,6 +36,25 @@ namespace Gost.Security.Cryptography
             KeySize = keySize;
 
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GostECDsaManaged" /> class
+        /// with a specified <see cref="ECParameters"/>.
+        /// </summary>
+        /// <param name="parameters">
+        /// The elliptic curve parameters. Valid key sizes are 256 and 512 bits.
+        /// </param>
+        /// <exception cref="CryptographicException">
+        /// <paramref name="parameters"/> specifies an invalid key length.
+        /// </exception>
+        public GostECDsaManaged(ECParameters parameters)
+        {
+            LegalKeySizesValue = s_legalKeySizes;
+            parameters.Validate();
+            KeySize = parameters.Q.X.Length * 8;
+
+            _parameters = parameters;
         }
 
         /// <summary>

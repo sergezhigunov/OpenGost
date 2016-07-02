@@ -1,14 +1,22 @@
 ﻿using System;
+using System.Numerics;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static Buffer;
+
     /// <summary>
     /// Provides a managed implementation of the <see cref="GostECDsa"/> algorithm. 
     /// </summary>
     public sealed class GostECDsaManaged : GostECDsa
     {
         private static readonly KeySizes[] s_legalKeySizes = { new KeySizes(256, 512, 256) };
+        private static BigInteger
+            s_two = 2,
+            s_three = 3,
+            s_twoPow256 = BigInteger.One << 256,
+            s_twoPow512 = BigInteger.One << 512;
 
         private ECParameters _parameters;
 
@@ -99,7 +107,114 @@ namespace Gost.Security.Cryptography
             if (hash == null) throw new ArgumentNullException(nameof(hash));
             if (signature == null) throw new ArgumentNullException(nameof(signature));
 
-            throw new NotImplementedException();
+            int keySizeInByted = KeySize / 8;
+
+            ECCurve curve = _parameters.Curve;
+
+            BigInteger
+                modulus = keySizeInByted == 64 ? s_twoPow512 : s_twoPow256,
+                subgroupOrder = Normalize(new BigInteger(curve.Order), modulus) / Normalize(new BigInteger(curve.Cofactor), modulus);
+
+            byte[] array = new byte[keySizeInByted];
+
+            BlockCopy(signature, 0, array, 0, keySizeInByted);
+            BigInteger s = Normalize(new BigInteger(array), modulus);
+            if (s < BigInteger.One || s > subgroupOrder)
+                return false;
+
+            BlockCopy(signature, keySizeInByted, array, 0, keySizeInByted);
+            BigInteger r = Normalize(new BigInteger(array), modulus);
+            if (r < BigInteger.One || r > subgroupOrder)
+                return false;
+
+            BigInteger e = Normalize(new BigInteger(hash), modulus) % subgroupOrder;
+
+            if (e == BigInteger.Zero)
+                e = BigInteger.One;
+
+            BigInteger
+                v = BigInteger.ModPow(e, subgroupOrder - s_two, subgroupOrder),
+                z1 = (s * v) % subgroupOrder,
+                z2 = (subgroupOrder - r) * v % subgroupOrder,
+                prime = Normalize(new BigInteger(curve.Prime), modulus),
+                a = Normalize(new BigInteger(curve.A), modulus);
+
+            ECPoint c = ECPoint.Add(
+                ECPoint.Multiply(new ECPoint(curve.G, modulus), z1, prime, a),
+                ECPoint.Multiply(new ECPoint(_parameters.Q, modulus), z2, prime, a),
+                prime,
+                a);
+
+            return c.X == r;
+        }
+
+        private static BigInteger Normalize(BigInteger value, BigInteger order)
+            => value >= BigInteger.Zero ? value : value + order;
+
+        private struct ECPoint
+        {
+            public BigInteger X { get; private set; }
+
+            public BigInteger Y { get; private set; }
+
+            public ECPoint(Cryptography.ECPoint point, BigInteger modulus)
+            {
+                X = Normalize(new BigInteger(point.X), modulus);
+                Y = Normalize(new BigInteger(point.Y), modulus);
+            }
+
+            public static ECPoint Add(ECPoint left, ECPoint right, BigInteger prime, BigInteger a)
+            {
+                BigInteger
+                    dy = Normalize(right.Y - left.Y, prime),
+                    dx = Normalize(right.X - left.X, prime),
+                    lambda = Normalize((dy * BigInteger.ModPow(dx, prime - s_two, prime)) % prime, prime),
+                    x = Normalize((BigInteger.Pow(lambda, 2) - left.X - right.X) % prime, prime);
+
+                return new ECPoint()
+                {
+                    X = x,
+                    Y = Normalize((lambda * (left.X - x) - left.Y) % prime, prime),
+                };
+            }
+
+            private static ECPoint MultipleTwo(ECPoint value, BigInteger prime, BigInteger a)
+            {
+                BigInteger
+                    dy = Normalize(s_three * BigInteger.Pow(value.X, 2) + a, prime),
+                    dx = Normalize(s_two * value.Y, prime),
+                    lambda = (dy * BigInteger.ModPow(dx, prime - s_two, prime)) % prime,
+                    x = Normalize((BigInteger.Pow(lambda, 2) - s_two * value.X) % prime, prime);
+
+                return new ECPoint
+                {
+                    X = x,
+                    Y = Normalize((lambda * (value.X - x) - value.Y) % prime, prime)
+                };
+            }
+
+            public static ECPoint Multiply(ECPoint point, BigInteger multiplier, BigInteger prime, BigInteger a)
+            {
+                ECPoint result = point;
+                multiplier--;
+
+                while (multiplier > BigInteger.Zero)
+                {
+                    if ((multiplier % s_two) != BigInteger.Zero)
+                    {
+                        if ((result.X == point.X) && (result.Y == point.Y))
+                            result = MultipleTwo(result, prime, a);
+                        else
+                            result = Add(result, point, prime, a);
+                        multiplier--;
+                    }
+
+                    multiplier /= s_two;
+                    point = MultipleTwo(point, prime, a);
+                }
+
+                return result;
+            }
         }
     }
 }

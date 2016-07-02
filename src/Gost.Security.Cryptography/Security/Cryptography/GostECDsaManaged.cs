@@ -59,6 +59,21 @@ namespace Gost.Security.Cryptography
         public GostECDsaManaged(ECParameters parameters)
         {
             LegalKeySizesValue = s_legalKeySizes;
+
+            ImportParameters(parameters);
+        }
+
+        /// <summary>
+        /// Imports the specified <see cref="ECParameters"/>.
+        /// </summary>
+        /// <param name="parameters">
+        /// The curve parameters.
+        /// </param>
+        /// <exception cref="CryptographicException">
+        /// <paramref name="parameters"/> are invalid.
+        /// </exception>
+        public override void ImportParameters(ECParameters parameters)
+        {
             parameters.Validate();
             KeySize = parameters.Q.X.Length * 8;
 

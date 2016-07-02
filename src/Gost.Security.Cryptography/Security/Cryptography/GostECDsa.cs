@@ -70,6 +70,18 @@ namespace Gost.Security.Cryptography
         public abstract bool VerifyHash(byte[] hash, byte[] signature);
 
         /// <summary>
+        /// When overridden in a derived class, imports the specified <see cref="ECParameters"/>.
+        /// </summary>
+        /// <param name="parameters">
+        /// The curve parameters.
+        /// </param>
+        /// <exception cref="CryptographicException">
+        /// <paramref name="parameters"/> are invalid.
+        /// </exception>
+        public abstract void ImportParameters(ECParameters parameters);
+
+
+        /// <summary>
         /// Reconstructs a <see cref="GostECDsa"/> object from an XML string.
         /// </summary>
         /// <param name="xmlString">

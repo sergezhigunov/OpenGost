@@ -64,6 +64,23 @@ namespace Gost.Security.Cryptography
         }
 
         /// <summary>
+        /// Exports the <see cref="ECParameters"/> for an <see cref="ECCurve"/>.
+        /// </summary>
+        /// <param name="includePrivateParameters">
+        /// <c>true</c> to include private parameters;
+        /// otherwise, <c>false</c>.</param>
+        /// <returns>
+        /// An <see cref="ECParameters"/>.
+        /// </returns>
+        /// <exception cref="CryptographicException">
+        /// The key cannot be exported. 
+        /// </exception>
+        public override ECParameters ExportParameters(bool includePrivateParameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Imports the specified <see cref="ECParameters"/>.
         /// </summary>
         /// <param name="parameters">

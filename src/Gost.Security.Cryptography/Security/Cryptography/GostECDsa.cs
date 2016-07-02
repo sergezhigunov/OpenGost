@@ -70,6 +70,20 @@ namespace Gost.Security.Cryptography
         public abstract bool VerifyHash(byte[] hash, byte[] signature);
 
         /// <summary>
+        /// When overridden in a derived class, exports the <see cref="ECParameters"/> for an <see cref="ECCurve"/>.
+        /// </summary>
+        /// <param name="includePrivateParameters">
+        /// <c>true</c> to include private parameters;
+        /// otherwise, <c>false</c>.</param>
+        /// <returns>
+        /// An <see cref="ECParameters"/>.
+        /// </returns>
+        /// <exception cref="CryptographicException">
+        /// The key cannot be exported. 
+        /// </exception>
+        public abstract ECParameters ExportParameters(bool includePrivateParameters);
+
+        /// <summary>
         /// When overridden in a derived class, imports the specified <see cref="ECParameters"/>.
         /// </summary>
         /// <param name="parameters">

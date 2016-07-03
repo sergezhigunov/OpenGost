@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 namespace Gost.Security.Cryptography
 {
     using static Buffer;
+    using static CryptoUtils;
+    using static Math;
 
     /// <summary>
     /// Provides a managed implementation of the <see cref="GostECDsa"/> algorithm. 
@@ -113,7 +115,52 @@ namespace Gost.Security.Cryptography
         {
             if (hash == null) throw new ArgumentNullException(nameof(hash));
 
-            throw new NotImplementedException();
+            int keySizeInByted = KeySize / 8;
+
+            ECCurve curve = _parameters.Curve;
+
+            BigInteger
+                modulus = keySizeInByted == 64 ? s_twoPow512 : s_twoPow256,
+                subgroupOrder = Normalize(new BigInteger(curve.Order), modulus) / Normalize(new BigInteger(curve.Cofactor), modulus);
+
+            BigInteger e = Normalize(new BigInteger(hash), modulus) % subgroupOrder;
+
+            if (e == BigInteger.Zero)
+                e = BigInteger.One;
+
+            BigInteger
+                prime = Normalize(new BigInteger(curve.Prime), modulus),
+                a = Normalize(new BigInteger(curve.A), modulus),
+                d = Normalize(new BigInteger(_parameters.D), modulus),
+                k, r, s;
+
+            var rgb = new byte[keySizeInByted];
+
+            do
+            {
+                do
+                {
+                    do
+                    {
+                        StaticRandomNumberGenerator.GetBytes(rgb);
+                        k = Normalize(new BigInteger(rgb), modulus);
+                    } while (k <= BigInteger.Zero || k >= subgroupOrder);
+
+                    r = ECPoint.Multiply(new ECPoint(curve.G, modulus), k, prime, a).X;
+                } while (r == BigInteger.Zero);
+
+                s = (r * d + k * e) % subgroupOrder;
+            } while (s == BigInteger.Zero);
+
+            byte[]
+                signature = new byte[keySizeInByted * 2],
+                array = s.ToByteArray();
+
+            BlockCopy(array, 0, signature, 0, Min(array.Length, keySizeInByted));
+            array = r.ToByteArray();
+            BlockCopy(array, 0, signature, keySizeInByted, Min(array.Length, keySizeInByted));
+
+            return signature;
         }
 
         /// <summary>

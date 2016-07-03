@@ -151,6 +151,15 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hash size must be {0} bytes..
+        /// </summary>
+        internal static string CryptographicInvalidHashSize {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidHashSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specified initialization vector (IV) does not match allowed size for this algorithm..
         /// </summary>
         internal static string CryptographicInvalidIVSize {
@@ -174,6 +183,15 @@ namespace Gost.Security.Cryptography {
         internal static string CryptographicInvalidPadding {
             get {
                 return ResourceManager.GetString("CryptographicInvalidPadding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Digital signature size must be {0} bytes..
+        /// </summary>
+        internal static string CryptographicInvalidSignatureSize {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidSignatureSize", resourceCulture);
             }
         }
         

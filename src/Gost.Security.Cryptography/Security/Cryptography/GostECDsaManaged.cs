@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Numerics;
 using System.Security.Cryptography;
 
@@ -7,6 +8,7 @@ namespace Gost.Security.Cryptography
     using static Buffer;
     using static CryptoUtils;
     using static Math;
+    using static SecurityCryptographyStrings;
 
     /// <summary>
     /// Provides a managed implementation of the <see cref="GostECDsa"/> algorithm. 
@@ -14,13 +16,16 @@ namespace Gost.Security.Cryptography
     public sealed class GostECDsaManaged : GostECDsa
     {
         private static readonly KeySizes[] s_legalKeySizes = { new KeySizes(256, 512, 256) };
-        private static BigInteger
+        private static readonly BigInteger
             s_two = 2,
             s_three = 3,
             s_twoPow256 = BigInteger.One << 256,
             s_twoPow512 = BigInteger.One << 512;
 
         private ECParameters _parameters;
+        private bool
+            _parametersSet = false,
+            _disposed = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsaManaged" /> class
@@ -79,6 +84,8 @@ namespace Gost.Security.Cryptography
         /// </exception>
         public override ECParameters ExportParameters(bool includePrivateParameters)
         {
+            ThrowIfDisposed();
+
             throw new NotImplementedException();
         }
 
@@ -93,10 +100,36 @@ namespace Gost.Security.Cryptography
         /// </exception>
         public override void ImportParameters(ECParameters parameters)
         {
+            ThrowIfDisposed();
+
             parameters.Validate();
             KeySize = parameters.Q.X.Length * 8;
 
-            _parameters = parameters;
+            ECCurve curve = parameters.Curve;
+            Cryptography.ECPoint q = parameters.Q, g = curve.G;
+            _parameters = new ECParameters
+            {
+                D = CloneBuffer(parameters.D),
+                Q = new Cryptography.ECPoint
+                {
+                    X = CloneBuffer(q.X),
+                    Y = CloneBuffer(q.Y),
+                },
+                Curve = new ECCurve
+                {
+                    Prime = CloneBuffer(curve.Prime),
+                    A = CloneBuffer(curve.A),
+                    B = CloneBuffer(curve.B),
+                    Order = CloneBuffer(curve.Order),
+                    Cofactor = CloneBuffer(curve.Cofactor),
+                    G = new Cryptography.ECPoint
+                    {
+                        X = CloneBuffer(g.X),
+                        Y = CloneBuffer(g.Y),
+                    },
+                }
+            };
+            _parametersSet = true;
         }
 
         /// <summary>
@@ -115,9 +148,14 @@ namespace Gost.Security.Cryptography
         {
             if (hash == null) throw new ArgumentNullException(nameof(hash));
 
-            int keySizeInByted = KeySize / 8;
+            ThrowIfDisposed();
+
+            if (KeySize / 8 != hash.Length)
+                throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicInvalidHashSize, KeySize / 8));
 
             ECCurve curve = _parameters.Curve;
+
+            int keySizeInByted = KeySize / 8;
 
             BigInteger
                 modulus = keySizeInByted == 64 ? s_twoPow512 : s_twoPow256,
@@ -186,9 +224,20 @@ namespace Gost.Security.Cryptography
             if (hash == null) throw new ArgumentNullException(nameof(hash));
             if (signature == null) throw new ArgumentNullException(nameof(signature));
 
-            int keySizeInByted = KeySize / 8;
+            ThrowIfDisposed();
+
+            if (KeySize / 8 != hash.Length)
+                throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicInvalidHashSize, KeySize / 8));
+            if (KeySize / 4 != signature.Length)
+                throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicInvalidSignatureSize, KeySize / 4));
+
+            // There is no necessity to generate new parameter, just return false
+            if (!_parametersSet)
+                return false;
 
             ECCurve curve = _parameters.Curve;
+
+            int keySizeInByted = KeySize / 8;
 
             BigInteger
                 modulus = keySizeInByted == 64 ? s_twoPow512 : s_twoPow256,
@@ -221,10 +270,49 @@ namespace Gost.Security.Cryptography
             ECPoint c = ECPoint.Add(
                 ECPoint.Multiply(new ECPoint(curve.G, modulus), z1, prime, a),
                 ECPoint.Multiply(new ECPoint(_parameters.Q, modulus), z2, prime, a),
-                prime,
-                a);
+                prime);
 
             return c.X == r;
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="GostECDsaManaged"/> class
+        /// and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <c>true</c>true to release both managed and unmanaged resources;
+        /// <c>false</c> to release only unmanaged resources.
+        /// </param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                EraseData(ref _parameters.D);
+
+                if (disposing)
+                {
+                    ECCurve curve = _parameters.Curve;
+                    EraseData(ref curve.Prime);
+                    EraseData(ref curve.A);
+                    EraseData(ref curve.B);
+                    EraseData(ref curve.Order);
+                    EraseData(ref curve.Cofactor);
+                    Cryptography.ECPoint g = curve.G, q = _parameters.Q;
+                    EraseData(ref g.X);
+                    EraseData(ref g.Y);
+                    EraseData(ref q.X);
+                    EraseData(ref q.Y);
+                }
+            }
+
+            base.Dispose(disposing);
+            _disposed = true;
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
         }
 
         private static BigInteger Normalize(BigInteger value, BigInteger order)
@@ -242,7 +330,7 @@ namespace Gost.Security.Cryptography
                 Y = Normalize(new BigInteger(point.Y), modulus);
             }
 
-            public static ECPoint Add(ECPoint left, ECPoint right, BigInteger prime, BigInteger a)
+            public static ECPoint Add(ECPoint left, ECPoint right, BigInteger prime)
             {
                 BigInteger
                     dy = Normalize(right.Y - left.Y, prime),
@@ -284,7 +372,7 @@ namespace Gost.Security.Cryptography
                         if ((result.X == point.X) && (result.Y == point.Y))
                             result = MultipleTwo(result, prime, a);
                         else
-                            result = Add(result, point, prime, a);
+                            result = Add(result, point, prime);
                         multiplier--;
                     }
 

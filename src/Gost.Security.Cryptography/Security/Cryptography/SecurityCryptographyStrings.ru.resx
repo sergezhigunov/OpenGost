@@ -147,6 +147,9 @@
   <data name="CryptographicInvalidFeedbackSize" xml:space="preserve">
     <value>Задан недопустимый размер блока обратной связи.</value>
   </data>
+  <data name="CryptographicInvalidHashSize" xml:space="preserve">
+    <value>Размер хэша дожен быть равен {0} байт.</value>
+  </data>
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Заданный вектор инициализации (IV) не соответствует размеру блоков для этого алгоритма.</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="CryptographicInvalidPadding" xml:space="preserve">
     <value>Дополнение имеет недопустимый формат и не может быть удалено.</value>
+  </data>
+  <data name="CryptographicInvalidSignatureSize" xml:space="preserve">
+    <value>Размер цифровой подписи дожен быть равен {0} байт.</value>
   </data>
   <data name="CryptographicMissingDomainParameters" xml:space="preserve">
     <value>Не удалось считать параметры домена из XML-строки.</value>

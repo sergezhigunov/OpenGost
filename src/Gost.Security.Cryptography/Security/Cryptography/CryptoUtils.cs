@@ -20,6 +20,9 @@ namespace Gost.Security.Cryptography
             return array;
         }
 
+        internal static byte[] CloneBuffer(byte[] bufferToClone)
+            => bufferToClone == null ? null: (byte[])bufferToClone.Clone();
+
         internal static void EraseData<T>(ref T[] data)
             where T : struct
         {

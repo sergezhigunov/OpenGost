@@ -147,6 +147,9 @@
   <data name="CryptographicInvalidFeedbackSize" xml:space="preserve">
     <value>Specified feedback is not a valid for this algorithm.</value>
   </data>
+  <data name="CryptographicInvalidHashSize" xml:space="preserve">
+    <value>Hash size must be {0} bytes.</value>
+  </data>
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Specified initialization vector (IV) does not match allowed size for this algorithm.</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="CryptographicInvalidPadding" xml:space="preserve">
     <value>Padding is invalid and cannot be removed.</value>
+  </data>
+  <data name="CryptographicInvalidSignatureSize" xml:space="preserve">
+    <value>Digital signature size must be {0} bytes.</value>
   </data>
   <data name="CryptographicMissingDomainParameters" xml:space="preserve">
     <value>Could not read the domain parameters from the XML string.</value>

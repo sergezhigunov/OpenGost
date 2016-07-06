@@ -71,6 +71,20 @@ namespace Gost.Security.Cryptography
         }
 
         /// <summary>
+        /// Generates a new public/private key pair for the specified curve.
+        /// </summary>
+        /// <param name="curve">
+        /// The curve to use.
+        /// </param>
+        /// <exception cref="CryptographicException">
+        /// <paramref name="curve"/> is invalid.
+        /// </exception>
+        public override void GenerateKey(ECCurve curve)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Exports the <see cref="ECParameters"/> for an <see cref="ECCurve"/>.
         /// </summary>
         /// <param name="includePrivateParameters">
@@ -86,7 +100,10 @@ namespace Gost.Security.Cryptography
         {
             ThrowIfDisposed();
 
-            throw new NotImplementedException();
+            if (!_parametersSet)
+                throw new NotImplementedException(); // TODO: replace with parameters generation code
+
+            return CloneECParameters(_parameters, includePrivateParameters);
         }
 
         /// <summary>
@@ -105,30 +122,7 @@ namespace Gost.Security.Cryptography
             parameters.Validate();
             KeySize = parameters.Q.X.Length * 8;
 
-            ECCurve curve = parameters.Curve;
-            Cryptography.ECPoint q = parameters.Q, g = curve.G;
-            _parameters = new ECParameters
-            {
-                D = CloneBuffer(parameters.D),
-                Q = new Cryptography.ECPoint
-                {
-                    X = CloneBuffer(q.X),
-                    Y = CloneBuffer(q.Y),
-                },
-                Curve = new ECCurve
-                {
-                    Prime = CloneBuffer(curve.Prime),
-                    A = CloneBuffer(curve.A),
-                    B = CloneBuffer(curve.B),
-                    Order = CloneBuffer(curve.Order),
-                    Cofactor = CloneBuffer(curve.Cofactor),
-                    G = new Cryptography.ECPoint
-                    {
-                        X = CloneBuffer(g.X),
-                        Y = CloneBuffer(g.Y),
-                    },
-                }
-            };
+            _parameters = CloneECParameters(parameters, true);
             _parametersSet = true;
         }
 
@@ -313,6 +307,35 @@ namespace Gost.Security.Cryptography
         {
             if (_disposed)
                 throw new ObjectDisposedException(GetType().FullName);
+        }
+
+        private static ECParameters CloneECParameters(ECParameters parameters, bool includePrivateParameters)
+        {
+            ECCurve curve = parameters.Curve;
+            Cryptography.ECPoint q = parameters.Q, g = curve.G;
+
+            return new ECParameters
+            {
+                D = includePrivateParameters ? CloneBuffer(parameters.D) : null,
+                Q = new Cryptography.ECPoint
+                {
+                    X = CloneBuffer(q.X),
+                    Y = CloneBuffer(q.Y),
+                },
+                Curve = new ECCurve
+                {
+                    Prime = CloneBuffer(curve.Prime),
+                    A = CloneBuffer(curve.A),
+                    B = CloneBuffer(curve.B),
+                    Order = CloneBuffer(curve.Order),
+                    Cofactor = CloneBuffer(curve.Cofactor),
+                    G = new Cryptography.ECPoint
+                    {
+                        X = CloneBuffer(g.X),
+                        Y = CloneBuffer(g.Y),
+                    },
+                }
+            };
         }
 
         private static BigInteger Normalize(BigInteger value, BigInteger order)

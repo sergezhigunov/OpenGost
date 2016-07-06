@@ -70,6 +70,17 @@ namespace Gost.Security.Cryptography
         public abstract bool VerifyHash(byte[] hash, byte[] signature);
 
         /// <summary>
+        /// When overridden in a derived class, generates a new public/private key pair for the specified curve.
+        /// </summary>
+        /// <param name="curve">
+        /// The curve to use.
+        /// </param>
+        /// <exception cref="CryptographicException">
+        /// <paramref name="curve"/> is invalid.
+        /// </exception>
+        public abstract void GenerateKey(ECCurve curve);
+
+        /// <summary>
         /// When overridden in a derived class, exports the <see cref="ECParameters"/> for an <see cref="ECCurve"/>.
         /// </summary>
         /// <param name="includePrivateParameters">

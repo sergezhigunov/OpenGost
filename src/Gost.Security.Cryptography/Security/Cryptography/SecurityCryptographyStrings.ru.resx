@@ -165,6 +165,9 @@
   <data name="CryptographicMissingDomainParameters" xml:space="preserve">
     <value>Не удалось считать параметры домена из XML-строки.</value>
   </data>
+  <data name="CryptographicMissingECDsaKeyValue" xml:space="preserve">
+    <value>Не удалось считать корневой элемент контейнера ключа эллиптических кривых из XML-строки.</value>
+  </data>
   <data name="CryptographicMissingKey" xml:space="preserve">
     <value>Этому объекту средства форматирования не соответствует ни один объект с асимметричным ключом.</value>
   </data>

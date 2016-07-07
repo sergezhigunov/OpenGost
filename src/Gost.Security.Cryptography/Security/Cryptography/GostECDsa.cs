@@ -122,7 +122,8 @@ namespace Gost.Security.Cryptography
         {
             if (xmlString == null) throw new ArgumentNullException(nameof(xmlString));
 
-            throw new NotImplementedException();
+            ECParameters parameters = ECParametersFormatter.FromXml(xmlString);
+            ImportParameters(parameters);
         }
 
         /// <summary>
@@ -137,7 +138,8 @@ namespace Gost.Security.Cryptography
         /// </returns>
         public sealed override string ToXmlString(bool includePrivateParameters)
         {
-            throw new NotImplementedException();
+            ECParameters parameters = ExportParameters(includePrivateParameters);
+            return ECParametersFormatter.ToXmlString(parameters);
         }
     }
 }

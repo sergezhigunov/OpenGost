@@ -165,6 +165,9 @@
   <data name="CryptographicMissingDomainParameters" xml:space="preserve">
     <value>Could not read the domain parameters from the XML string.</value>
   </data>
+  <data name="CryptographicMissingECDsaKeyValue" xml:space="preserve">
+    <value>Could not read the elliptic curve key value parameters root element from the XML string.</value>
+  </data>
   <data name="CryptographicMissingKey" xml:space="preserve">
     <value>No asymmetric key object has been associated with this formatter object.</value>
   </data>

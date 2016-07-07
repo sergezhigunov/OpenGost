@@ -205,6 +205,15 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not read the elliptic curve key value parameters root element from the XML string..
+        /// </summary>
+        internal static string CryptographicMissingECDsaKeyValue {
+            get {
+                return ResourceManager.GetString("CryptographicMissingECDsaKeyValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No asymmetric key object has been associated with this formatter object..
         /// </summary>
         internal static string CryptographicMissingKey {

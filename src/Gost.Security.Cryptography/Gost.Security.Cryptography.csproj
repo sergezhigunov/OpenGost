@@ -71,6 +71,7 @@
     <Compile Include="Security\Cryptography\Magma.cs" />
     <Compile Include="Security\Cryptography\MagmaManaged.cs" />
     <Compile Include="Security\Cryptography\MagmaManagedTransform.cs" />
+    <Compile Include="Security\Cryptography\ECParametersFormatter.cs" />
     <Compile Include="Security\Cryptography\SecurityCryptographyStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -87,6 +88,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

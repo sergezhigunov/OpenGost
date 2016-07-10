@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
@@ -37,7 +38,7 @@ namespace Gost.Security.Cryptography
         private const string YTag = "Y";
 
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        internal static ECParameters FromXml(string xmlString)
+        internal static ECParameters FromXml(string xmlString, int keySize)
         {
             using (var textReader = new StringReader(xmlString))
             using (XmlReader reader = XmlReader.Create(textReader))
@@ -48,11 +49,11 @@ namespace Gost.Security.Cryptography
 
                 if (!reader.IsStartElement(DomainParametersTag, Namespace))
                     throw new ArgumentException(CryptographicMissingDomainParameters, nameof(xmlString));
-                ECCurve curve = ReadDomainParameters(reader);
+                ECCurve curve = ReadDomainParameters(reader, keySize);
 
                 if (!reader.IsStartElement(PublicKeyTag, Namespace))
                     throw new ArgumentException(CryptographicMissingPublicKey, nameof(xmlString));
-                ECPoint publicKey = ReadECPoint(reader);
+                ECPoint publicKey = ReadECPoint(reader, PublicKeyTag, Namespace, keySize);
 
                 reader.ReadEndElement();
 
@@ -60,14 +61,88 @@ namespace Gost.Security.Cryptography
             }
         }
 
-        private static ECCurve ReadDomainParameters(XmlReader reader)
+        private static ECCurve ReadDomainParameters(XmlReader reader, int keySize)
         {
-            throw new NotImplementedException();
+            reader.ReadStartElement();
+            reader.MoveToContent();
+            reader.ReadStartElement(ExplicitParamsTag, Namespace);
+            reader.MoveToContent();
+            byte[]
+                prime = ReadPrimeFieldParameters(reader, FieldParamsTag, Namespace, keySize),
+                a, b, order, cofactor;
+            reader.MoveToContent();
+            reader.ReadStartElement();
+            reader.MoveToContent();
+            a = ReadPrimeFieldElement(reader, ATag, Namespace, keySize);
+            reader.MoveToContent();
+            b = ReadPrimeFieldElement(reader, BTag, Namespace, keySize);
+            reader.ReadEndElement();
+            reader.MoveToContent();
+            reader.ReadStartElement(BasePointParamsTag, Namespace);
+            reader.MoveToContent();
+            ECPoint baseBoint = ReadECPoint(reader, BasePointTag, Namespace, keySize);
+            reader.MoveToContent();
+            order = BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture).ToByteArray();
+            if (reader.IsStartElement(CofactorTag, Namespace))
+                cofactor = BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture).ToByteArray();
+            else cofactor = null;
+            reader.ReadEndElement();
+            reader.ReadEndElement();
+            reader.ReadEndElement();
+
+            return new ECCurve
+            {
+                Prime = prime,
+                A = a,
+                B = b,
+                G = baseBoint,
+                Order = order,
+                Cofactor = cofactor,
+            };
         }
 
-        private static ECPoint ReadECPoint(XmlReader reader)
+        private static byte[] ReadPrimeFieldParameters(XmlReader reader, string localName, string ns, int keySize)
         {
-            throw new NotImplementedException();
+            reader.ReadStartElement(localName, ns);
+            reader.MoveToContent();
+            byte[] value = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(PTag, Namespace), CultureInfo.InvariantCulture), keySize);
+            reader.ReadEndElement();
+            return value;
+        }
+
+        private static byte[] ReadPrimeFieldElement(XmlReader reader, string localName, string ns, int keySize)
+        {
+            bool isEmpty = reader.IsEmptyElement;
+            if (!reader.MoveToAttribute(TypeTag, XmlSchema.InstanceNamespace))
+                throw new NotImplementedException();
+            reader.ReadAttributeValue();
+            string xsiType = reader.Value;
+            if (xsiType != PrimeFieldElemTypeValue)
+                throw new NotImplementedException();
+            if (!reader.MoveToAttribute(ValueTag))
+                throw new NotImplementedException();
+            reader.ReadAttributeValue();
+            byte[] result = ToNormalizedByteArray(BigInteger.Parse(reader[ValueTag], CultureInfo.InvariantCulture), keySize);
+            reader.MoveToElement();
+            reader.ReadStartElement(localName, ns);
+            if (!isEmpty)
+                reader.ReadEndElement();
+            return result;
+        }
+
+        private static ECPoint ReadECPoint(XmlReader reader, string localName, string ns, int keySize)
+        {
+            reader.ReadStartElement(localName, ns);
+            reader.MoveToContent();
+            byte[] x = ReadPrimeFieldElement(reader, XTag, Namespace, keySize);
+            reader.MoveToContent();
+            byte[] y = ReadPrimeFieldElement(reader, YTag, Namespace, keySize);
+            reader.ReadEndElement();
+            return new ECPoint
+            {
+                X = x,
+                Y = y
+            };
         }
 
         internal static string ToXmlString(ECParameters parameters)
@@ -75,7 +150,7 @@ namespace Gost.Security.Cryptography
             var xml = new StringBuilder();
             var settings = new XmlWriterSettings
             {
-                OmitXmlDeclaration = true
+                OmitXmlDeclaration = true,
             };
 
             using (XmlWriter writer = XmlWriter.Create(xml, settings))
@@ -162,6 +237,22 @@ namespace Gost.Security.Cryptography
             if (numericValue < BigInteger.Zero)
                 numericValue += (BigInteger.One << value.Length * 8);
             return numericValue.ToString("R", CultureInfo.InvariantCulture);
+        }
+
+        private static byte[] ToNormalizedByteArray(BigInteger value, int keySize)
+        {
+            if (value < BigInteger.Zero)
+                value += (BigInteger.One << keySize);
+            keySize /= 8;
+            byte[] result = new byte[keySize];
+            for (int i = 0; i < keySize; i++)
+            {
+                if (value == BigInteger.Zero)
+                    break;
+                result[i] = (byte)(value % 256);
+                value >>= 8;
+            }
+            return result;
         }
     }
 }

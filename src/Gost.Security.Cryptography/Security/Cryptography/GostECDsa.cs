@@ -122,7 +122,7 @@ namespace Gost.Security.Cryptography
         {
             if (xmlString == null) throw new ArgumentNullException(nameof(xmlString));
 
-            ECParameters parameters = ECParametersFormatter.FromXml(xmlString);
+            ECParameters parameters = ECParametersFormatter.FromXml(xmlString, KeySize);
             ImportParameters(parameters);
         }
 

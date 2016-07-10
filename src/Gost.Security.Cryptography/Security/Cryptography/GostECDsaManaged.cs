@@ -81,7 +81,7 @@ namespace Gost.Security.Cryptography
         /// </exception>
         public override void GenerateKey(ECCurve curve)
         {
-            throw new NotImplementedException();
+             throw new NotImplementedException();
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace Gost.Security.Cryptography
                         k = Normalize(new BigInteger(rgb), modulus);
                     } while (k <= BigInteger.Zero || k >= subgroupOrder);
 
-                    r = ECPoint.Multiply(new ECPoint(curve.G, modulus), k, prime, a).X;
+                    r = BigIntegerPoint.Multiply(new BigIntegerPoint(curve.G, modulus), k, prime, a).X;
                 } while (r == BigInteger.Zero);
 
                 s = (r * d + k * e) % subgroupOrder;
@@ -261,9 +261,9 @@ namespace Gost.Security.Cryptography
                 prime = Normalize(new BigInteger(curve.Prime), modulus),
                 a = Normalize(new BigInteger(curve.A), modulus);
 
-            ECPoint c = ECPoint.Add(
-                ECPoint.Multiply(new ECPoint(curve.G, modulus), z1, prime, a),
-                ECPoint.Multiply(new ECPoint(_parameters.Q, modulus), z2, prime, a),
+            BigIntegerPoint c = BigIntegerPoint.Add(
+                BigIntegerPoint.Multiply(new BigIntegerPoint(curve.G, modulus), z1, prime, a),
+                BigIntegerPoint.Multiply(new BigIntegerPoint(_parameters.Q, modulus), z2, prime, a),
                 prime);
 
             return c.X == r;
@@ -291,7 +291,7 @@ namespace Gost.Security.Cryptography
                     EraseData(ref curve.B);
                     EraseData(ref curve.Order);
                     EraseData(ref curve.Cofactor);
-                    Cryptography.ECPoint g = curve.G, q = _parameters.Q;
+                    ECPoint g = curve.G, q = _parameters.Q;
                     EraseData(ref g.X);
                     EraseData(ref g.Y);
                     EraseData(ref q.X);
@@ -311,49 +311,52 @@ namespace Gost.Security.Cryptography
 
         private static ECParameters CloneECParameters(ECParameters parameters, bool includePrivateParameters)
         {
-            ECCurve curve = parameters.Curve;
-            Cryptography.ECPoint q = parameters.Q, g = curve.G;
-
             return new ECParameters
             {
                 D = includePrivateParameters ? CloneBuffer(parameters.D) : null,
-                Q = new Cryptography.ECPoint
-                {
-                    X = CloneBuffer(q.X),
-                    Y = CloneBuffer(q.Y),
-                },
-                Curve = new ECCurve
-                {
-                    Prime = CloneBuffer(curve.Prime),
-                    A = CloneBuffer(curve.A),
-                    B = CloneBuffer(curve.B),
-                    Order = CloneBuffer(curve.Order),
-                    Cofactor = CloneBuffer(curve.Cofactor),
-                    G = new Cryptography.ECPoint
-                    {
-                        X = CloneBuffer(g.X),
-                        Y = CloneBuffer(g.Y),
-                    },
-                }
+                Q = CloneECPoint(parameters.Q),
+                Curve = CloneECCurve(parameters.Curve),
+            };
+        }
+
+        private static ECCurve CloneECCurve(ECCurve curve)
+        {
+            return new ECCurve
+            {
+                Prime = CloneBuffer(curve.Prime),
+                A = CloneBuffer(curve.A),
+                B = CloneBuffer(curve.B),
+                Order = CloneBuffer(curve.Order),
+                Cofactor = CloneBuffer(curve.Cofactor),
+                G = CloneECPoint(curve.G),
+            };
+        }
+
+        private static ECPoint CloneECPoint(ECPoint point)
+        {
+            return new ECPoint
+            {
+                X = CloneBuffer(point.X),
+                Y = CloneBuffer(point.Y)
             };
         }
 
         private static BigInteger Normalize(BigInteger value, BigInteger order)
             => value >= BigInteger.Zero ? value : value + order;
 
-        private struct ECPoint
+        private struct BigIntegerPoint
         {
             public BigInteger X { get; private set; }
 
             public BigInteger Y { get; private set; }
 
-            public ECPoint(Cryptography.ECPoint point, BigInteger modulus)
+            public BigIntegerPoint(ECPoint point, BigInteger modulus)
             {
                 X = Normalize(new BigInteger(point.X), modulus);
                 Y = Normalize(new BigInteger(point.Y), modulus);
             }
 
-            public static ECPoint Add(ECPoint left, ECPoint right, BigInteger prime)
+            public static BigIntegerPoint Add(BigIntegerPoint left, BigIntegerPoint right, BigInteger prime)
             {
                 BigInteger
                     dy = Normalize(right.Y - left.Y, prime),
@@ -361,14 +364,14 @@ namespace Gost.Security.Cryptography
                     lambda = Normalize((dy * BigInteger.ModPow(dx, prime - s_two, prime)) % prime, prime),
                     x = Normalize((BigInteger.Pow(lambda, 2) - left.X - right.X) % prime, prime);
 
-                return new ECPoint()
+                return new BigIntegerPoint()
                 {
                     X = x,
                     Y = Normalize((lambda * (left.X - x) - left.Y) % prime, prime),
                 };
             }
 
-            private static ECPoint MultipleTwo(ECPoint value, BigInteger prime, BigInteger a)
+            private static BigIntegerPoint MultipleTwo(BigIntegerPoint value, BigInteger prime, BigInteger a)
             {
                 BigInteger
                     dy = Normalize(s_three * BigInteger.Pow(value.X, 2) + a, prime),
@@ -376,16 +379,16 @@ namespace Gost.Security.Cryptography
                     lambda = (dy * BigInteger.ModPow(dx, prime - s_two, prime)) % prime,
                     x = Normalize((BigInteger.Pow(lambda, 2) - s_two * value.X) % prime, prime);
 
-                return new ECPoint
+                return new BigIntegerPoint
                 {
                     X = x,
                     Y = Normalize((lambda * (value.X - x) - value.Y) % prime, prime)
                 };
             }
 
-            public static ECPoint Multiply(ECPoint point, BigInteger multiplier, BigInteger prime, BigInteger a)
+            public static BigIntegerPoint Multiply(BigIntegerPoint point, BigInteger multiplier, BigInteger prime, BigInteger a)
             {
-                ECPoint result = point;
+                BigIntegerPoint result = point;
                 multiplier--;
 
                 while (multiplier > BigInteger.Zero)

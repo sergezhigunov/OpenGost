@@ -3,13 +3,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Numerics;
-using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoUtils;
     using static SecurityCryptographyStrings;
 
     internal static class ECParametersFormatter
@@ -237,22 +237,6 @@ namespace Gost.Security.Cryptography
             if (numericValue < BigInteger.Zero)
                 numericValue += (BigInteger.One << value.Length * 8);
             return numericValue.ToString("R", CultureInfo.InvariantCulture);
-        }
-
-        private static byte[] ToNormalizedByteArray(BigInteger value, int keySize)
-        {
-            if (value < BigInteger.Zero)
-                value += (BigInteger.One << keySize);
-            keySize /= 8;
-            byte[] result = new byte[keySize];
-            for (int i = 0; i < keySize; i++)
-            {
-                if (value == BigInteger.Zero)
-                    break;
-                result[i] = (byte)(value % 256);
-                value >>= 8;
-            }
-            return result;
         }
     }
 }

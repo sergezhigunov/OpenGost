@@ -169,6 +169,15 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specified key does not match allowed size for this algorithm..
+        /// </summary>
+        internal static string CryptographicInvalidKeySize {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidKeySize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This operation is not supported for this class..
         /// </summary>
         internal static string CryptographicInvalidOperation {

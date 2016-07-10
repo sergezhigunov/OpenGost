@@ -22,7 +22,9 @@ namespace Gost.Security.Cryptography
             s_twoPow256 = BigInteger.One << 256,
             s_twoPow512 = BigInteger.One << 512;
 
-        private ECParameters _parameters;
+        private ECCurve _curve;
+        private ECPoint _publicKey;
+        private byte[] _privateKey;
         private bool
             _parametersSet = false,
             _disposed = false;
@@ -49,8 +51,6 @@ namespace Gost.Security.Cryptography
         {
             LegalKeySizesValue = s_legalKeySizes;
             KeySize = keySize;
-
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -81,7 +81,36 @@ namespace Gost.Security.Cryptography
         /// </exception>
         public override void GenerateKey(ECCurve curve)
         {
-             throw new NotImplementedException();
+            curve.Validate();
+
+            int
+                keySizeInByted = curve.Prime.Length,
+                keySize = keySizeInByted * 8;
+
+            BigInteger
+                modulus = keySizeInByted == 64 ? s_twoPow512 : s_twoPow256,
+                prime = Normalize(new BigInteger(curve.Prime), modulus),
+                subgroupOrder = Normalize(new BigInteger(curve.Order), modulus) / Normalize(new BigInteger(curve.Cofactor), modulus),
+                a = Normalize(new BigInteger(_curve.A), modulus);
+
+            byte[] privateKey = new byte[keySizeInByted];
+            BigInteger key;
+            do
+            {
+                StaticRandomNumberGenerator.GetBytes(privateKey);
+                key = Normalize(new BigInteger(_curve.Order), modulus);
+            } while (BigInteger.Zero >= key || key >= subgroupOrder);
+
+            var basePoint = new BigIntegerPoint(curve.G, modulus);
+
+            ECPoint publicKey = BigIntegerPoint.Multiply(basePoint, key, prime, a).ToECPoint(KeySize);
+
+            EraseData(ref _privateKey);
+            KeySize = keySize;
+            _curve = CloneECCurve(curve);
+            _publicKey = publicKey;
+            _privateKey = privateKey;
+            _parametersSet = true;
         }
 
         /// <summary>
@@ -101,9 +130,14 @@ namespace Gost.Security.Cryptography
             ThrowIfDisposed();
 
             if (!_parametersSet)
-                throw new NotImplementedException(); // TODO: replace with parameters generation code
+                GenerateKey(GetDefaultCurve());
 
-            return CloneECParameters(_parameters, includePrivateParameters);
+            return new ECParameters
+            {
+                Curve = CloneECCurve(_curve),
+                Q = CloneECPoint(_publicKey),
+                D = includePrivateParameters ? CloneBuffer(_privateKey) : null,
+            };
         }
 
         /// <summary>
@@ -122,7 +156,9 @@ namespace Gost.Security.Cryptography
             parameters.Validate();
             KeySize = parameters.Q.X.Length * 8;
 
-            _parameters = CloneECParameters(parameters, true);
+            _curve = CloneECCurve(parameters.Curve);
+            _publicKey = CloneECPoint(parameters.Q);
+            _privateKey = CloneBuffer(parameters.D);
             _parametersSet = true;
         }
 
@@ -147,13 +183,14 @@ namespace Gost.Security.Cryptography
             if (KeySize / 8 != hash.Length)
                 throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicInvalidHashSize, KeySize / 8));
 
-            ECCurve curve = _parameters.Curve;
-
             int keySizeInByted = KeySize / 8;
+
+            if (!_parametersSet)
+                GenerateKey(GetDefaultCurve());
 
             BigInteger
                 modulus = keySizeInByted == 64 ? s_twoPow512 : s_twoPow256,
-                subgroupOrder = Normalize(new BigInteger(curve.Order), modulus) / Normalize(new BigInteger(curve.Cofactor), modulus);
+                subgroupOrder = Normalize(new BigInteger(_curve.Order), modulus) / Normalize(new BigInteger(_curve.Cofactor), modulus);
 
             BigInteger e = Normalize(new BigInteger(hash), modulus) % subgroupOrder;
 
@@ -161,9 +198,9 @@ namespace Gost.Security.Cryptography
                 e = BigInteger.One;
 
             BigInteger
-                prime = Normalize(new BigInteger(curve.Prime), modulus),
-                a = Normalize(new BigInteger(curve.A), modulus),
-                d = Normalize(new BigInteger(_parameters.D), modulus),
+                prime = Normalize(new BigInteger(_curve.Prime), modulus),
+                a = Normalize(new BigInteger(_curve.A), modulus),
+                d = Normalize(new BigInteger(_privateKey), modulus),
                 k, r, s;
 
             var rgb = new byte[keySizeInByted];
@@ -178,7 +215,7 @@ namespace Gost.Security.Cryptography
                         k = Normalize(new BigInteger(rgb), modulus);
                     } while (k <= BigInteger.Zero || k >= subgroupOrder);
 
-                    r = BigIntegerPoint.Multiply(new BigIntegerPoint(curve.G, modulus), k, prime, a).X;
+                    r = BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, modulus), k, prime, a).X;
                 } while (r == BigInteger.Zero);
 
                 s = (r * d + k * e) % subgroupOrder;
@@ -229,13 +266,11 @@ namespace Gost.Security.Cryptography
             if (!_parametersSet)
                 return false;
 
-            ECCurve curve = _parameters.Curve;
-
             int keySizeInByted = KeySize / 8;
 
             BigInteger
                 modulus = keySizeInByted == 64 ? s_twoPow512 : s_twoPow256,
-                subgroupOrder = Normalize(new BigInteger(curve.Order), modulus) / Normalize(new BigInteger(curve.Cofactor), modulus);
+                subgroupOrder = Normalize(new BigInteger(_curve.Order), modulus) / Normalize(new BigInteger(_curve.Cofactor), modulus);
 
             byte[] array = new byte[keySizeInByted];
 
@@ -258,12 +293,12 @@ namespace Gost.Security.Cryptography
                 v = BigInteger.ModPow(e, subgroupOrder - s_two, subgroupOrder),
                 z1 = (s * v) % subgroupOrder,
                 z2 = (subgroupOrder - r) * v % subgroupOrder,
-                prime = Normalize(new BigInteger(curve.Prime), modulus),
-                a = Normalize(new BigInteger(curve.A), modulus);
+                prime = Normalize(new BigInteger(_curve.Prime), modulus),
+                a = Normalize(new BigInteger(_curve.A), modulus);
 
             BigIntegerPoint c = BigIntegerPoint.Add(
-                BigIntegerPoint.Multiply(new BigIntegerPoint(curve.G, modulus), z1, prime, a),
-                BigIntegerPoint.Multiply(new BigIntegerPoint(_parameters.Q, modulus), z2, prime, a),
+                BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, modulus), z1, prime, a),
+                BigIntegerPoint.Multiply(new BigIntegerPoint(_publicKey, modulus), z2, prime, a),
                 prime);
 
             return c.X == r;
@@ -281,21 +316,20 @@ namespace Gost.Security.Cryptography
         {
             if (!_disposed)
             {
-                EraseData(ref _parameters.D);
+                EraseData(ref _privateKey);
 
                 if (disposing)
                 {
-                    ECCurve curve = _parameters.Curve;
-                    EraseData(ref curve.Prime);
-                    EraseData(ref curve.A);
-                    EraseData(ref curve.B);
-                    EraseData(ref curve.Order);
-                    EraseData(ref curve.Cofactor);
-                    ECPoint g = curve.G, q = _parameters.Q;
+                    EraseData(ref _curve.Prime);
+                    EraseData(ref _curve.A);
+                    EraseData(ref _curve.B);
+                    EraseData(ref _curve.Order);
+                    EraseData(ref _curve.Cofactor);
+                    EraseData(ref _publicKey.X);
+                    EraseData(ref _publicKey.Y);
+                    ECPoint g = _curve.G;
                     EraseData(ref g.X);
                     EraseData(ref g.Y);
-                    EraseData(ref q.X);
-                    EraseData(ref q.Y);
                 }
             }
 
@@ -309,14 +343,19 @@ namespace Gost.Security.Cryptography
                 throw new ObjectDisposedException(GetType().FullName);
         }
 
-        private static ECParameters CloneECParameters(ECParameters parameters, bool includePrivateParameters)
+        private ECCurve GetDefaultCurve()
         {
-            return new ECParameters
+            switch (KeySize)
             {
-                D = includePrivateParameters ? CloneBuffer(parameters.D) : null,
-                Q = CloneECPoint(parameters.Q),
-                Curve = CloneECCurve(parameters.Curve),
-            };
+                case 512:
+                    throw new NotImplementedException();
+
+                case 256:
+                    throw new NotImplementedException();
+
+                default:
+                    throw new CryptographicException(CryptographicInvalidKeySize);
+            }
         }
 
         private static ECCurve CloneECCurve(ECCurve curve)
@@ -346,14 +385,28 @@ namespace Gost.Security.Cryptography
 
         private struct BigIntegerPoint
         {
+            private readonly BigInteger _modulus;
+
             public BigInteger X { get; private set; }
 
             public BigInteger Y { get; private set; }
 
             public BigIntegerPoint(ECPoint point, BigInteger modulus)
             {
+                _modulus = modulus;
                 X = Normalize(new BigInteger(point.X), modulus);
                 Y = Normalize(new BigInteger(point.Y), modulus);
+            }
+
+            public ECPoint ToECPoint(int keySize)
+            {
+                int size = keySize / 8;
+
+                return new ECPoint
+                {
+                    X = ToNormalizedByteArray(X, size),
+                    Y = ToNormalizedByteArray(Y, size),
+                };
             }
 
             public static BigIntegerPoint Add(BigIntegerPoint left, BigIntegerPoint right, BigInteger prime)

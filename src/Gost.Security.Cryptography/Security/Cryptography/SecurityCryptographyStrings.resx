@@ -153,6 +153,9 @@
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Specified initialization vector (IV) does not match allowed size for this algorithm.</value>
   </data>
+  <data name="CryptographicInvalidKeySize" xml:space="preserve">
+    <value>Specified key does not match allowed size for this algorithm.</value>
+  </data>
   <data name="CryptographicInvalidOperation" xml:space="preserve">
     <value>This operation is not supported for this class.</value>
   </data>

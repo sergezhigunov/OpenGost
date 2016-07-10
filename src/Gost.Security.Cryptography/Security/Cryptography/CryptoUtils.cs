@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography;
@@ -104,5 +105,23 @@ namespace Gost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe uint UInt32FromBigEndian(byte* block)
             => (uint)(*block << 24) | (uint)(block[1] << 16) | (uint)(block[2] << 8) | (block[3]);
+
+        internal static byte[] ToNormalizedByteArray(BigInteger value, int size)
+        {
+            if (value < BigInteger.Zero)
+                value += (BigInteger.One << size * 8);
+
+            byte[] result = new byte[size];
+            for (int i = 0; i < size; i++)
+            {
+                if (value == BigInteger.Zero)
+                    break;
+                result[i] = (byte)(value % 256);
+                value >>= 8;
+            }
+
+            return result;
+        }
+
     }
 }

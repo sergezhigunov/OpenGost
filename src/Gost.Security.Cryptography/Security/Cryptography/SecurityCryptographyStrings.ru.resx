@@ -153,6 +153,9 @@
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Заданный вектор инициализации (IV) не соответствует размеру блоков для этого алгоритма.</value>
   </data>
+  <data name="CryptographicInvalidKeySize" xml:space="preserve">
+    <value>Заданный размер ключа не соответствует допустимому размеру для этого алгоритма.</value>
+  </data>
   <data name="CryptographicInvalidOperation" xml:space="preserve">
     <value>Данная операция не поддерживается для этого класса.</value>
   </data>

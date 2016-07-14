@@ -305,14 +305,14 @@ namespace Gost.Security.Cryptography
                 modulus = keySizeInByted == 64 ? s_twoPow512 : s_twoPow256,
                 prime = Normalize(new BigInteger(curve.Prime), modulus),
                 subgroupOrder = Normalize(new BigInteger(curve.Order), modulus) / Normalize(new BigInteger(curve.Cofactor), modulus),
-                a = Normalize(new BigInteger(_curve.A), modulus);
+                a = Normalize(new BigInteger(curve.A), modulus);
 
             byte[] privateKey = new byte[keySizeInByted];
             BigInteger key;
             do
             {
                 StaticRandomNumberGenerator.GetBytes(privateKey);
-                key = Normalize(new BigInteger(_curve.Order), modulus);
+                key = Normalize(new BigInteger(privateKey), modulus);
             } while (BigInteger.Zero >= key || key >= subgroupOrder);
 
             var basePoint = new BigIntegerPoint(curve.G, modulus);

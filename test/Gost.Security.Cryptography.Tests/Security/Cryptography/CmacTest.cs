@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using Xunit;
+﻿using Xunit;
 
 namespace Gost.Security.Cryptography
 {

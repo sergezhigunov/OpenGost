@@ -4,7 +4,8 @@
     {
         private const string FullNamePrefix = nameof(Gost) + "." + nameof(Security) + "." + nameof(Cryptography) + ".";
 
-        internal const string GostECDsaAlgorithmName = nameof(GostECDsa);
+        internal const string GostECDsa512AlgorithmName = nameof(GostECDsa512);
+        internal const string GostECDsa256AlgorithmName = nameof(GostECDsa256);
 
         internal const string GrasshopperAlgorithmFullName = FullNamePrefix + nameof(Grasshopper);
         internal const string CMACGrasshopperAlgorithmFullName = FullNamePrefix + nameof(CMACGrasshopper);

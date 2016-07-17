@@ -3,8 +3,6 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
-    using static CryptoConstants;
-
     /// <summary>
     /// Provides an abstract base class that encapsulates the GOST
     /// Elliptic Curve Digital Signature Algorithm (GOST R 34.10-2012).
@@ -18,14 +16,6 @@ namespace Gost.Security.Cryptography
         /// Always <c>null</c>.
         /// </value>
         public override string KeyExchangeAlgorithm => null;
-
-        /// <summary>
-        /// Gets the name of the signature algorithm.
-        /// </summary>
-        /// <value>
-        /// Always <c>"GostECDsa"</c>.
-        /// </value>
-        public override string SignatureAlgorithm => GostECDsaAlgorithmName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsa"/> class.

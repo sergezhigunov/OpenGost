@@ -19,6 +19,7 @@ namespace Gost.Security.Cryptography
 
         private static ECCurve ECCurve256ParamsetA { get; } = new ECCurve
         {
+            CurveType = ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0x97, 0xfd, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,

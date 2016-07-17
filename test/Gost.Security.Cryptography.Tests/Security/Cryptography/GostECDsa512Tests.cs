@@ -13,6 +13,7 @@ namespace Gost.Security.Cryptography
         {
             Curve = new ECCurve
             {
+                CurveType = ECCurveType.PrimeShortWeierstrass,
                 Prime = "7363be28f5bb6416d84d22ac6f33b8356d54e4807e0458044a70f41a7452d8f15dd1d2b5097cebd4040fb9ffb2142b9280ee2f6b7b260d55c72300fed1ac3145".HexToByteArray(),
                 A = "07000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000".HexToByteArray(),
                 B = "dc2a304f08a3d0fa9768dd2a0c549ebc74cfe058ca890a482273adb21340836143aca1ec49b688d7fd0094e477f3c58b74eb574ea5cfd829da1611a30608ff1c".HexToByteArray(),

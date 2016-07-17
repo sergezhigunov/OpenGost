@@ -88,6 +88,15 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified curve &apos;{0}&apos; or its parameters are not valid for this platform..
+        /// </summary>
+        internal static string CryptographicCurveNotSupported {
+            get {
+                return ResourceManager.GetString("CryptographicCurveNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input buffer contains insufficient data..
         /// </summary>
         internal static string CryptographicInsufficientBuffer {
@@ -102,6 +111,15 @@ namespace Gost.Security.Cryptography {
         internal static string CryptographicInvalidBlockSize {
             get {
                 return ResourceManager.GetString("CryptographicInvalidBlockSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified Characteristic2 curve parameters are not valid. Polynomial, A, B, G.X, G.Y, and Order are required. A, B, G.X, G.Y must be the same length, and the same length as Q.X, Q.Y and D if those are specified. Seed, Cofactor and Hash are optional. Other parameters are not allowed..
+        /// </summary>
+        internal static string CryptographicInvalidCharacteristic2Curve {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidCharacteristic2Curve", resourceCulture);
             }
         }
         
@@ -124,20 +142,20 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified OID is not valid. The friendly name or value must be set.
+        /// </summary>
+        internal static string CryptographicInvalidCurveOid {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidCurveOid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Length of the data to transform is invalid..
         /// </summary>
         internal static string CryptographicInvalidDataSize {
             get {
                 return ResourceManager.GetString("CryptographicInvalidDataSize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified elliptic curve parameters are not valid..
-        /// </summary>
-        internal static string CryptographicInvalidECCurve {
-            get {
-                return ResourceManager.GetString("CryptographicInvalidECCurve", resourceCulture);
             }
         }
         
@@ -178,6 +196,15 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified named curve parameters are not valid. Only the OID parameter must be set..
+        /// </summary>
+        internal static string CryptographicInvalidNamedCurve {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidNamedCurve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This operation is not supported for this class..
         /// </summary>
         internal static string CryptographicInvalidOperation {
@@ -192,6 +219,15 @@ namespace Gost.Security.Cryptography {
         internal static string CryptographicInvalidPadding {
             get {
                 return ResourceManager.GetString("CryptographicInvalidPadding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified prime curve parameters are not valid. Prime, A, B, G.X, G.Y and Order are required and must be the same length, and the same length as Q.X, Q.Y and D if those are specified. Seed, Cofactor and Hash are optional. Other parameters are not allowed..
+        /// </summary>
+        internal static string CryptographicInvalidPrimeCurve {
+            get {
+                return ResourceManager.GetString("CryptographicInvalidPrimeCurve", resourceCulture);
             }
         }
         
@@ -282,15 +318,6 @@ namespace Gost.Security.Cryptography {
         internal static string CryptographicUnexpectedXmlNamespace {
             get {
                 return ResourceManager.GetString("CryptographicUnexpectedXmlNamespace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown elliptic curve..
-        /// </summary>
-        internal static string CryptographicUnknownEllipticCurve {
-            get {
-                return ResourceManager.GetString("CryptographicUnknownEllipticCurve", resourceCulture);
             }
         }
         

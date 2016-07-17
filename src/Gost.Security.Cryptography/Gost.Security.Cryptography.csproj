@@ -54,6 +54,7 @@
     <Compile Include="Security\Cryptography\BigIntegerPoint.cs" />
     <Compile Include="Security\Cryptography\CryptoConstants.cs" />
     <Compile Include="Security\Cryptography\ECCurve.cs" />
+    <Compile Include="Security\Cryptography\ECCurveType.cs" />
     <Compile Include="Security\Cryptography\ECParameters.cs" />
     <Compile Include="Security\Cryptography\ECPoint.cs" />
     <Compile Include="Security\Cryptography\EmptyArray.cs" />

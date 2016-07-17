@@ -126,11 +126,17 @@
   <data name="ArgumentOutOfRangeNeedPositiveNum" xml:space="preserve">
     <value>Требуется положительное число.</value>
   </data>
+  <data name="CryptographicCurveNotSupported" xml:space="preserve">
+    <value>Заданная эллиптическая кривая "{0}" или её параметры недопустимы для текущей платформы.</value>
+  </data>
   <data name="CryptographicInsufficientBuffer" xml:space="preserve">
     <value>Входной буфер содержит недостаточно данных.</value>
   </data>
   <data name="CryptographicInvalidBlockSize" xml:space="preserve">
     <value>Заданный размер блока недопустим для этого алгоритма.</value>
+  </data>
+  <data name="CryptographicInvalidCharacteristic2Curve" xml:space="preserve">
+    <value>Заданные параметры кривой над полем характеристики 2 недопустимы. Prime, A, B, G.X, G.Y и Order являются обязательными и должны быть одинаковой длины, что и Q.X, Q.Y и D, если они заданы. Seed, Cofactor и Hash необязательны. Прочие параметры не допускаются.</value>
   </data>
   <data name="CryptographicInvalidCipherMode" xml:space="preserve">
     <value>Заданный режим шифрования недопустим для этого алгоритма.</value>
@@ -138,11 +144,11 @@
   <data name="CryptographicInvalidCurveKeyParameters" xml:space="preserve">
     <value>Заданные параметры ключа или эллиптической кривой недопустимы.</value>
   </data>
+  <data name="CryptographicInvalidCurveOid" xml:space="preserve">
+    <value>Заданный идентификатор объекта (OID) кривой недопустим. Должно быть установлено значение объекта или понятное имя.</value>
+  </data>
   <data name="CryptographicInvalidDataSize" xml:space="preserve">
     <value>Недопустимая длина данных для выполнения операции.</value>
-  </data>
-  <data name="CryptographicInvalidECCurve" xml:space="preserve">
-    <value>Заданные параметры эллиптической кривой недопустимы.</value>
   </data>
   <data name="CryptographicInvalidFeedbackSize" xml:space="preserve">
     <value>Задан недопустимый размер блока обратной связи.</value>
@@ -156,11 +162,17 @@
   <data name="CryptographicInvalidKeySize" xml:space="preserve">
     <value>Заданный размер ключа не соответствует допустимому размеру для этого алгоритма.</value>
   </data>
+  <data name="CryptographicInvalidNamedCurve" xml:space="preserve">
+    <value>Заданные параметры именованной кривой недопустимы. Должен быть задан только идентификатор объекта (OID).</value>
+  </data>
   <data name="CryptographicInvalidOperation" xml:space="preserve">
     <value>Данная операция не поддерживается для этого класса.</value>
   </data>
   <data name="CryptographicInvalidPadding" xml:space="preserve">
     <value>Дополнение имеет недопустимый формат и не может быть удалено.</value>
+  </data>
+  <data name="CryptographicInvalidPrimeCurve" xml:space="preserve">
+    <value>Заданные параметры простой кривой недопустимы. Prime, A, B, G.X, G.Y и Order являются обязательными и должны быть одинаковой длины, что и Q.X, Q.Y и D, если они заданы. Seed, Cofactor и Hash необязательны. Прочие параметры не допускаются.</value>
   </data>
   <data name="CryptographicInvalidSignatureSize" xml:space="preserve">
     <value>Размер цифровой подписи должен быть равен {0} байт.</value>
@@ -191,9 +203,6 @@
   </data>
   <data name="CryptographicUnexpectedXmlNamespace" xml:space="preserve">
     <value>Непредвиденное пространство имен XML "{0}", ожидается "{1}".</value>
-  </data>
-  <data name="CryptographicUnknownEllipticCurve" xml:space="preserve">
-    <value>Неизвестная эллиптическая кривая.</value>
   </data>
   <data name="CryptographicUnknownEllipticCurveAlgorithm" xml:space="preserve">
     <value>Неизвестный алгоритм эллиптической кривой.</value>

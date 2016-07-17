@@ -231,8 +231,6 @@ namespace Gost.Security.Cryptography
 
         private static readonly KeySizes[] s_legalKeySizes = { new KeySizes(256, 512, 256) };
         private static readonly BigInteger
-            s_two = 2,
-            s_three = 3,
             s_twoPow256 = BigInteger.One << 256,
             s_twoPow512 = BigInteger.One << 512;
 
@@ -321,7 +319,7 @@ namespace Gost.Security.Cryptography
 
             EraseData(ref _privateKey);
             KeySize = keySize;
-            _curve = CloneECCurve(curve);
+            _curve = curve.Clone();
             _publicKey = publicKey;
             _privateKey = privateKey;
             _parametersSet = true;
@@ -348,9 +346,9 @@ namespace Gost.Security.Cryptography
 
             return new ECParameters
             {
-                Curve = CloneECCurve(_curve),
-                Q = CloneECPoint(_publicKey),
-                D = includePrivateParameters ? CloneBuffer(_privateKey) : null,
+                Curve = _curve.Clone(),
+                Q = _publicKey.Clone(),
+                D = includePrivateParameters ? CloneArray(_privateKey) : null,
             };
         }
 
@@ -370,9 +368,9 @@ namespace Gost.Security.Cryptography
             parameters.Validate();
             KeySize = parameters.Q.X.Length * 8;
 
-            _curve = CloneECCurve(parameters.Curve);
-            _publicKey = CloneECPoint(parameters.Q);
-            _privateKey = CloneBuffer(parameters.D);
+            _curve = parameters.Curve.Clone();
+            _publicKey = parameters.Q.Clone();
+            _privateKey = CloneArray(parameters.D);
             _parametersSet = true;
         }
 
@@ -504,7 +502,7 @@ namespace Gost.Security.Cryptography
                 e = BigInteger.One;
 
             BigInteger
-                v = BigInteger.ModPow(e, subgroupOrder - s_two, subgroupOrder),
+                v = BigInteger.ModPow(e, subgroupOrder - 2, subgroupOrder),
                 z1 = (s * v) % subgroupOrder,
                 z2 = (subgroupOrder - r) * v % subgroupOrder,
                 prime = Normalize(new BigInteger(_curve.Prime), modulus),
@@ -562,118 +560,13 @@ namespace Gost.Security.Cryptography
             switch (KeySize)
             {
                 case 512:
-                    return CloneECCurve(ECCurve512ParamsetA);
+                    return ECCurve512ParamsetA.Clone();
 
                 case 256:
-                    return CloneECCurve(ECCurve256ParamsetA);
+                    return ECCurve256ParamsetA.Clone();
 
                 default:
                     throw new CryptographicException(CryptographicInvalidKeySize);
-            }
-        }
-
-        private static ECCurve CloneECCurve(ECCurve curve)
-        {
-            return new ECCurve
-            {
-                Prime = CloneBuffer(curve.Prime),
-                A = CloneBuffer(curve.A),
-                B = CloneBuffer(curve.B),
-                Order = CloneBuffer(curve.Order),
-                Cofactor = CloneBuffer(curve.Cofactor),
-                G = CloneECPoint(curve.G),
-            };
-        }
-
-        private static ECPoint CloneECPoint(ECPoint point)
-        {
-            return new ECPoint
-            {
-                X = CloneBuffer(point.X),
-                Y = CloneBuffer(point.Y)
-            };
-        }
-
-        private static BigInteger Normalize(BigInteger value, BigInteger order)
-            => value >= BigInteger.Zero ? value : value + order;
-
-        private struct BigIntegerPoint
-        {
-            private readonly BigInteger _modulus;
-
-            public BigInteger X { get; private set; }
-
-            public BigInteger Y { get; private set; }
-
-            public BigIntegerPoint(ECPoint point, BigInteger modulus)
-            {
-                _modulus = modulus;
-                X = Normalize(new BigInteger(point.X), modulus);
-                Y = Normalize(new BigInteger(point.Y), modulus);
-            }
-
-            public ECPoint ToECPoint(int keySize)
-            {
-                int size = keySize / 8;
-
-                return new ECPoint
-                {
-                    X = ToNormalizedByteArray(X, size),
-                    Y = ToNormalizedByteArray(Y, size),
-                };
-            }
-
-            public static BigIntegerPoint Add(BigIntegerPoint left, BigIntegerPoint right, BigInteger prime)
-            {
-                BigInteger
-                    dy = Normalize(right.Y - left.Y, prime),
-                    dx = Normalize(right.X - left.X, prime),
-                    lambda = Normalize((dy * BigInteger.ModPow(dx, prime - s_two, prime)) % prime, prime),
-                    x = Normalize((BigInteger.Pow(lambda, 2) - left.X - right.X) % prime, prime);
-
-                return new BigIntegerPoint()
-                {
-                    X = x,
-                    Y = Normalize((lambda * (left.X - x) - left.Y) % prime, prime),
-                };
-            }
-
-            private static BigIntegerPoint MultipleTwo(BigIntegerPoint value, BigInteger prime, BigInteger a)
-            {
-                BigInteger
-                    dy = Normalize(s_three * BigInteger.Pow(value.X, 2) + a, prime),
-                    dx = Normalize(s_two * value.Y, prime),
-                    lambda = (dy * BigInteger.ModPow(dx, prime - s_two, prime)) % prime,
-                    x = Normalize((BigInteger.Pow(lambda, 2) - s_two * value.X) % prime, prime);
-
-                return new BigIntegerPoint
-                {
-                    X = x,
-                    Y = Normalize((lambda * (value.X - x) - value.Y) % prime, prime)
-                };
-            }
-
-            public static BigIntegerPoint Multiply(BigIntegerPoint point, BigInteger multiplier, BigInteger prime, BigInteger a)
-            {
-                BigIntegerPoint result = point;
-                multiplier--;
-
-                while (multiplier > BigInteger.Zero)
-                {
-                    if ((multiplier % s_two) != BigInteger.Zero)
-                    {
-                        if ((result.X == point.X) && (result.Y == point.Y))
-                            result = MultipleTwo(result, prime, a);
-                        else
-                            result = Add(result, point, prime);
-                        multiplier--;
-                    }
-
-                    multiplier /= s_two;
-                    point = MultipleTwo(point, prime, a);
-                }
-
-                return result;
             }
         }
     }

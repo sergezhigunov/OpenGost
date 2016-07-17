@@ -21,8 +21,8 @@ namespace Gost.Security.Cryptography
             return array;
         }
 
-        internal static byte[] CloneBuffer(byte[] bufferToClone)
-            => bufferToClone == null ? null: (byte[])bufferToClone.Clone();
+        internal static T[] CloneArray<T>(T[] source)
+            => source == null ? null: (T[])source.Clone();
 
         internal static void EraseData<T>(ref T[] data)
             where T : struct
@@ -123,5 +123,29 @@ namespace Gost.Security.Cryptography
             return result;
         }
 
+        internal static ECCurve Clone(this ECCurve curve)
+        {
+            return new ECCurve
+            {
+                Prime = CloneArray(curve.Prime),
+                A = CloneArray(curve.A),
+                B = CloneArray(curve.B),
+                Order = CloneArray(curve.Order),
+                Cofactor = CloneArray(curve.Cofactor),
+                G = Clone(curve.G),
+            };
+        }
+
+        internal static ECPoint Clone(this ECPoint point)
+        {
+            return new ECPoint
+            {
+                X = CloneArray(point.X),
+                Y = CloneArray(point.Y)
+            };
+        }
+
+        internal static BigInteger Normalize(BigInteger value, BigInteger modulus)
+            => value >= BigInteger.Zero ? value : value + modulus;
     }
 }

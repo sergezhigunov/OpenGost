@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 namespace Gost.Security.Cryptography
 {
     /// <summary>
-    /// Verifies a <see cref="GostECDsa"/> PKCS#1 v1.5 signature.
+    /// Verifies a <see cref="GostECDsa"/> signature.
     /// </summary>
     public class GostECDsaSignatureDeformatter : AsymmetricSignatureDeformatter
     {

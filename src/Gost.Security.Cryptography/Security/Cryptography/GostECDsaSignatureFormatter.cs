@@ -33,7 +33,7 @@ namespace Gost.Security.Cryptography
         }
 
         /// <summary>
-        /// Creates the <see cref="GostECDsa"/> PKCS #1 signature for the specified data.
+        /// Creates the <see cref="GostECDsa"/> signature for the specified data.
         /// </summary>
         /// <param name="rgbHash">
         /// The data to be signed.

@@ -2,6 +2,7 @@
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConfig;
     using static CryptoConstants;
 
     /// <summary>
@@ -28,5 +29,30 @@ namespace Gost.Security.Cryptography
             LegalKeySizesValue = s_legalKeySizes;
             KeySizeValue = 256;
         }
+
+        #region Creation factory methods
+
+        /// <summary>
+        /// Creates an instance of the default implementation of <see cref="GostECDsa256"/> algorithm.
+        /// </summary>
+        /// <returns>
+        /// A new instance of <see cref="GostECDsa256"/>.
+        /// </returns>
+        public new static GostECDsa256 Create()
+            => Create(GostECDsa256AlgorithmFullName);
+
+        /// <summary>
+        /// Creates an instance of a specified implementation of <see cref="GostECDsa256"/> algorithm.
+        /// </summary>
+        /// <param name="algorithmName">
+        /// The name of the specific implementation of <see cref="GostECDsa256"/> to be used. 
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="GostECDsa256"/> using the specified implementation.
+        /// </returns>
+        public new static GostECDsa256 Create(string algorithmName)
+            => (GostECDsa256)CreateFromName(algorithmName);
+
+        #endregion
     }
 }

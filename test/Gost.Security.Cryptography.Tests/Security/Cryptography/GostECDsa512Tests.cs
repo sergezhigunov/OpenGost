@@ -35,7 +35,11 @@ namespace Gost.Security.Cryptography
         #endregion
 
         protected GostECDsa512 Create(ECParameters parameters)
-            => new GostECDsa512Managed(parameters);
+        {
+            GostECDsa512 algorithm = GostECDsa512.Create();
+            algorithm.ImportParameters(parameters);
+            return algorithm;
+        }
 
         protected bool VerifyHash(ECParameters parameters, byte[] hash, byte[] signature)
         {

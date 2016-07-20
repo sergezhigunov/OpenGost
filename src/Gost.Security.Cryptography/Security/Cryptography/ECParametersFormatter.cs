@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
@@ -24,6 +25,7 @@ namespace Gost.Security.Cryptography
         private const string ECDsaKeyValueTag = "ECDSAKeyValue";
         private const string ExplicitParamsTag = "ExplicitParams";
         private const string FieldParamsTag = "FieldParams";
+        private const string NamedCurveTag = "NamedCurve";
         private const string Namespace = "http://www.w3.org/2001/04/xmldsig-more#";
         private const string OrderTag = "Order";
         private const string PrimeFieldElemTypeValue = "PrimeFieldElemType";
@@ -31,6 +33,8 @@ namespace Gost.Security.Cryptography
         private const string PTag = "P";
         private const string PublicKeyTag = "PublicKey";
         private const string TypeTag = "type";
+        private const string UrnPrefix = "urn:oid:";
+        private const string UrnTag = "URN";
         private const string ValueTag = "Value";
         private const string XsiPrefix = "xsi";
         private const string XmlnsPrefix = "xmlns";
@@ -64,12 +68,43 @@ namespace Gost.Security.Cryptography
         private static ECCurve ReadDomainParameters(XmlReader reader, int keySize)
         {
             reader.ReadStartElement();
-            reader.MoveToContent();
+
+            ECCurve result;
+            if (reader.IsStartElement(ExplicitParamsTag, Namespace))
+                result = ReadExplicitParameters(reader, keySize);
+            if (reader.IsStartElement(NamedCurveTag, Namespace))
+                result = ReadNamedCurveParameters(reader, keySize);
+            else throw new ArgumentException(CryptographicMissingDomainParameters, nameof(reader));
+
+            reader.ReadEndElement();
+
+            return result;
+        }
+
+        private static ECCurve ReadNamedCurveParameters(XmlReader reader, int keySize)
+        {
+            bool isEmpty = reader.IsEmptyElement;
+
+            if (!reader.MoveToAttribute(UrnTag))
+                throw new NotImplementedException();
+            reader.ReadAttributeValue();
+            string urn = reader[UrnTag];
+            if (!urn.StartsWith(UrnPrefix))
+                throw new NotImplementedException();
+            string oidValue = urn.Substring(UrnPrefix.Length);
+            reader.MoveToElement();
+            reader.ReadStartElement(NamedCurveTag, Namespace);
+            if (!isEmpty)
+                reader.ReadEndElement();
+            return ECCurve.CreateFromValue(oidValue);
+        }
+
+        private static ECCurve ReadExplicitParameters(XmlReader reader, int keySize)
+        {
             reader.ReadStartElement(ExplicitParamsTag, Namespace);
             reader.MoveToContent();
             byte[]
-                prime = ReadPrimeFieldParameters(reader, FieldParamsTag, Namespace, keySize),
-                a, b, order, cofactor;
+                prime = ReadPrimeFieldParameters(reader, FieldParamsTag, Namespace, keySize), a, b, order, cofactor;
             reader.MoveToContent();
             reader.ReadStartElement();
             reader.MoveToContent();
@@ -88,10 +123,10 @@ namespace Gost.Security.Cryptography
             else cofactor = null;
             reader.ReadEndElement();
             reader.ReadEndElement();
-            reader.ReadEndElement();
 
             return new ECCurve
             {
+                CurveType = ECCurveType.PrimeShortWeierstrass,
                 Prime = prime,
                 A = a,
                 B = b,
@@ -158,7 +193,7 @@ namespace Gost.Security.Cryptography
                 writer.WriteStartElement(ECDsaKeyValueTag, Namespace);
                 writer.WriteAttributeString(null, XmlnsPrefix, null, Namespace);
                 writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
-                WriteDomainParameters(writer, parameters);
+                WriteDomainParameters(writer, parameters.Curve);
                 WriteECPoint(writer, PublicKeyTag, Namespace, parameters.Q);
                 writer.WriteEndElement();
             }
@@ -166,10 +201,31 @@ namespace Gost.Security.Cryptography
             return xml.ToString();
         }
 
-        private static void WriteDomainParameters(XmlWriter writer, ECParameters parameters)
+        private static void WriteDomainParameters(XmlWriter writer, ECCurve curve)
         {
             writer.WriteStartElement(DomainParametersTag, Namespace);
-            WriteExplicitParameters(writer, parameters.Curve);
+
+            switch (curve.CurveType)
+            {
+                case ECCurveType.PrimeShortWeierstrass:
+                    WriteExplicitParameters(writer, curve);
+                    break;
+
+                case ECCurveType.Named:
+                    WriteNamedCurveParameters(writer, curve.Oid);
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            writer.WriteEndElement();
+        }
+
+        private static void WriteNamedCurveParameters(XmlWriter writer, Oid oid)
+        {
+            writer.WriteStartElement(ExplicitParamsTag, Namespace);
+            writer.WriteAttributeString(UrnTag, UrnPrefix + oid.Value);
             writer.WriteEndElement();
         }
 

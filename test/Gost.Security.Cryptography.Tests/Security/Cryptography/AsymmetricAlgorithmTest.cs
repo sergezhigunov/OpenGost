@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    public abstract class AsymmetricAlgorithmTest<T>
+    public abstract class AsymmetricAlgorithmTest<T> : CryptoConfigRequiredTest
         where T : AsymmetricAlgorithm
     {
         protected abstract T Create();

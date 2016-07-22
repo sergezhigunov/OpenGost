@@ -2,7 +2,7 @@
 
 namespace Gost.Security.Cryptography
 {
-    public abstract class CmacTest
+    public abstract class CmacTest : CryptoConfigRequiredTest
     {
         protected abstract CMAC Create();
 

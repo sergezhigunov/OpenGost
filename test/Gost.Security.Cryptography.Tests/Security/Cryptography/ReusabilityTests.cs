@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    public class ReusabilityTests
+    public class ReusabilityTests : CryptoConfigRequiredTest
     {
         [Theory(DisplayName = nameof(ReusabilityTests) + "_" + nameof(ReuseHashAlgorithm))]
         [MemberData(nameof(ReusabilityHashAlgorithms))]
-        public void ReuseHashAlgorithm(HashAlgorithm hashAlgorithm)
+        public void ReuseHashAlgorithm(Func<HashAlgorithm> hashAlgorithmFactory)
         {
-            using (hashAlgorithm)
+            using (var hashAlgorithm = hashAlgorithmFactory.Invoke())
             {
                 byte[] input = { 0x08, 0x06, 0x07, 0x05, 0x03, 0x00, 0x09, };
                 byte[] hash1 = hashAlgorithm.ComputeHash(input);
@@ -24,10 +25,10 @@ namespace Gost.Security.Cryptography
         {
             return new[]
             {
-                new object[] { Streebog512.Create(), },
-                new object[] { Streebog256.Create(), },
-                new object[] { new CMACGrasshopper(), },
-                new object[] { new CMACMagma(), },
+                new Func<HashAlgorithm>[] { Streebog512.Create, },
+                new Func<HashAlgorithm>[] { Streebog256.Create, },
+                new Func<HashAlgorithm>[] { () => new CMACGrasshopper(), },
+                new Func<HashAlgorithm>[] { () => new CMACMagma(), },
             };
         }
     }

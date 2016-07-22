@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    public abstract class HashAlgorithmTest
+    public abstract class HashAlgorithmTest : CryptoConfigRequiredTest
     {
         protected abstract HashAlgorithm Create();
 

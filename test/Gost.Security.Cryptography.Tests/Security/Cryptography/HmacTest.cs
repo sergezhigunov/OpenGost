@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    public abstract class HmacTest
+    public abstract class HmacTest : CryptoConfigRequiredTest
     {
         protected abstract int BlockSize { get; }
 

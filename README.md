@@ -45,8 +45,3 @@ This repository stores unoffical .Net implementation of modern Russian national 
 * [RFC 5831](https://tools.ietf.org/html/rfc5831) GOST R 34.11-94: Hash Function Algorithm
 * [RFC 5832](https://tools.ietf.org/html/rfc5832) GOST R 34.10-2001: Digital Signature Algorithm
 
-
-## Before the use
-
-Before the use you have to merge the target host .Net v4.0.30319 machine.config's with the [Crypto.config](./tools/Crypto.config).
-

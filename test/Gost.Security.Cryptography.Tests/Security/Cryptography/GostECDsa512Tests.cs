@@ -5,7 +5,7 @@ namespace Gost.Security.Cryptography
 {
     using static CryptoUtils;
 
-    public class GostECDsa512Tests
+    public class GostECDsa512Tests : CryptoConfigRequiredTest
     {
         #region 512-bit test domain parameters as described in GOST 34.10-2012
 

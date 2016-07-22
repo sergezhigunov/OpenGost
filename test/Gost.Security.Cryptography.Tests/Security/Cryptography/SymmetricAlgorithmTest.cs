@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    public abstract class SymmetricAlgorithmTest
+    public abstract class SymmetricAlgorithmTest : CryptoConfigRequiredTest
     {
         protected abstract SymmetricAlgorithm Create();
 

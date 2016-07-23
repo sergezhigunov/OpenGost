@@ -3,9 +3,7 @@ using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    using static CryptoUtils;
-
-    public class GostECDsa512Tests : CryptoConfigRequiredTest
+    public class GostECDsa512Tests : GostECDsaTest
     {
         #region 512-bit test domain parameters as described in GOST 34.10-2012
 
@@ -35,35 +33,17 @@ namespace Gost.Security.Cryptography
 
         #endregion
 
-        protected GostECDsa512 Create(ECParameters parameters)
+        protected override GostECDsa Create(ECParameters parameters)
         {
             GostECDsa512 algorithm = GostECDsa512.Create();
             algorithm.ImportParameters(parameters);
             return algorithm;
         }
 
-        protected bool VerifyHash(ECParameters parameters, byte[] hash, byte[] signature)
-        {
-            using (GostECDsa512 algorithm = Create(parameters))
-                return algorithm.VerifyHash(hash, signature);
-        }
-
-        protected bool VerifyHash(ECParameters parameters, string hashHex, string signatureHex)
-            => VerifyHash(parameters, hashHex.HexToByteArray(), signatureHex.HexToByteArray());
-
         [Theory(DisplayName = nameof(GostECDsa512Tests) + "_" + nameof(SignAndVerifyHash))]
         [MemberData(nameof(TestDomainParameters))]
-        public void SignAndVerifyHash(ECParameters parameters)
-        {
-            byte[] hash, signature;
-            using (GostECDsa512 algorithm = Create(parameters))
-            {
-                hash = GenerateRandomBytes(algorithm.KeySize / 8);
-                signature = algorithm.SignHash(hash);
-            }
-
-            Assert.True(VerifyHash(parameters, hash, signature));
-        }
+        public new void SignAndVerifyHash(ECParameters parameters)
+            => base.SignAndVerifyHash(parameters);
 
         [Theory(DisplayName = nameof(GostECDsa512Tests) + "_" + nameof(VerifyHashTestCases))]
         [MemberData(nameof(TestCases))]

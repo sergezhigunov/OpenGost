@@ -4,6 +4,9 @@
     {
         private const string FullNamePrefix = nameof(Gost) + "." + nameof(Security) + "." + nameof(Cryptography) + ".";
 
+        internal const string GostECDsaSignatureFormatterFullName = FullNamePrefix + nameof(GostECDsaSignatureFormatter);
+        internal const string GostECDsaSignatureDeformatterFullName = FullNamePrefix + nameof(GostECDsaSignatureDeformatter);
+
         internal const string GostECDsa512AlgorithmName = nameof(GostECDsa512);
         internal const string GostECDsa512AlgorithmFullName = FullNamePrefix + GostECDsa512AlgorithmName;
 

@@ -60,9 +60,11 @@
     <Compile Include="Security\Cryptography\EmptyArray.cs" />
     <Compile Include="Security\Cryptography\GostECDsa256.cs" />
     <Compile Include="Security\Cryptography\GostECDsa256Managed.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa256SignatureDescription.cs" />
     <Compile Include="Security\Cryptography\GostECDsa512.cs" />
     <Compile Include="Security\Cryptography\GostECDsa.cs" />
     <Compile Include="Security\Cryptography\GostECDsa512Managed.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa512SignatureDescription.cs" />
     <Compile Include="Security\Cryptography\GostECDsaSignatureDeformatter.cs" />
     <Compile Include="Security\Cryptography\GostECDsaSignatureFormatter.cs" />
     <Compile Include="Security\Cryptography\Grasshopper.cs" />

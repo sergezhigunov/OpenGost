@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -9,7 +8,6 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Represents the public and private key of the specified elliptic curve.
     /// </summary>
-    [Serializable]
     [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
     public struct ECParameters
     {
@@ -22,7 +20,6 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Private Key. Not always present.
         /// </summary>
-        [NonSerialized]
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public byte[] D;
 

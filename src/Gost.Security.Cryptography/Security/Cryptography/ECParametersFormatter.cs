@@ -73,7 +73,7 @@ namespace Gost.Security.Cryptography
             if (reader.IsStartElement(ExplicitParamsTag, Namespace))
                 result = ReadExplicitParameters(reader, keySize);
             if (reader.IsStartElement(NamedCurveTag, Namespace))
-                result = ReadNamedCurveParameters(reader, keySize);
+                result = ReadNamedCurveParameters(reader);
             else throw new ArgumentException(CryptographicMissingDomainParameters, nameof(reader));
 
             reader.ReadEndElement();
@@ -81,7 +81,7 @@ namespace Gost.Security.Cryptography
             return result;
         }
 
-        private static ECCurve ReadNamedCurveParameters(XmlReader reader, int keySize)
+        private static ECCurve ReadNamedCurveParameters(XmlReader reader)
         {
             bool isEmpty = reader.IsEmptyElement;
 
@@ -89,7 +89,7 @@ namespace Gost.Security.Cryptography
                 throw new NotImplementedException();
             reader.ReadAttributeValue();
             string urn = reader[UrnTag];
-            if (!urn.StartsWith(UrnPrefix))
+            if (!urn.StartsWith(UrnPrefix, StringComparison.Ordinal))
                 throw new NotImplementedException();
             string oidValue = urn.Substring(UrnPrefix.Length);
             reader.MoveToElement();

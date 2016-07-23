@@ -1,12 +1,10 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Gost.Security.Cryptography
 {
     /// <summary>
     /// Represents a point on an elliptic curve.
     /// </summary>
-    [Serializable]
     [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
     public struct ECPoint
     {

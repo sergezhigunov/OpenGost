@@ -9,7 +9,6 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// An elliptic curve.
     /// </summary>
-    [Serializable]
     [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
     public struct ECCurve
     {
@@ -236,17 +235,7 @@ namespace Gost.Security.Cryptography
             }
             else if (IsExplicit)
             {
-                bool hasErrors = false;
-
-                if (A == null ||
-                    B == null || B.Length != A.Length ||
-                    G.X == null || G.X.Length != A.Length ||
-                    G.Y == null || G.Y.Length != A.Length ||
-                    Order == null || Order.Length == 0 ||
-                    Cofactor == null || Cofactor.Length == 0)
-                {
-                    hasErrors = true;
-                }
+                bool hasErrors = HasCommonExplicitCurveErrors();
 
                 if (IsPrime)
                 {
@@ -273,6 +262,21 @@ namespace Gost.Security.Cryptography
                 if (HasAnyExplicitParameters() || Oid != null)
                     throw new CryptographicException(string.Format(Culture, CryptographicCurveNotSupported, CurveType.ToString()));
             }
+        }
+
+        private bool HasCommonExplicitCurveErrors()
+        {
+            if (A == null ||
+                B == null || B.Length != A.Length ||
+                G.X == null || G.X.Length != A.Length ||
+                G.Y == null || G.Y.Length != A.Length ||
+                Order == null || Order.Length == 0 ||
+                Cofactor == null || Cofactor.Length == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private bool HasAnyExplicitParameters()

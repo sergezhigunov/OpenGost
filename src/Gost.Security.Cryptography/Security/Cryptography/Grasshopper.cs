@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -10,6 +11,7 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Represents the base class from which all implementations of the <see cref="Grasshopper"/> symmetric encryption algorithm must inherit.
     /// </summary>
+    [ComVisible(true)]
     public abstract class Grasshopper : SymmetricAlgorithm
     {
         private static readonly KeySizes[]
@@ -80,6 +82,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="Grasshopper"/>.
         /// </returns>
+        [ComVisible(false)]
         public new static Grasshopper Create()
             => Create(GrasshopperAlgorithmFullName);
 
@@ -92,6 +95,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="Grasshopper"/> using the specified implementation.
         /// </returns>
+        [ComVisible(false)]
         public new static Grasshopper Create(string algorithmName)
             => (Grasshopper)CreateFromName(algorithmName);
 

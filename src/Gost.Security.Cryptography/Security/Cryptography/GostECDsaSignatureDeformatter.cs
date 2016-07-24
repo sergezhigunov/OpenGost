@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -6,6 +7,7 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Verifies a <see cref="GostECDsa"/> signature.
     /// </summary>
+    [ComVisible(true)]
     public class GostECDsaSignatureDeformatter : AsymmetricSignatureDeformatter
     {
         /// <summary>

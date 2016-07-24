@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
     using static Buffer;
-    using static CryptoConstants;
     using static CryptoConfig;
+    using static CryptoConstants;
     using static CryptoUtils;
     using static SecurityCryptographyStrings;
 
@@ -14,6 +15,7 @@ namespace Gost.Security.Cryptography
     /// Represents the abstract class from which implementations of Cipher-based Message Authentication Code
     /// (<see cref="CMAC"/>) can derive.
     /// </summary>
+    [ComVisible(true)]
     public abstract class CMAC : KeyedHashAlgorithm
     {
         #region Constants
@@ -244,6 +246,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="CMAC"/>.
         /// </returns>
+        [ComVisible(false)]
         public new static CMAC Create()
             => Create(CMACGrasshopperAlgorithmFullName);
 
@@ -256,6 +259,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="CMAC"/> using the specified implementation.
         /// </returns>
+        [ComVisible(false)]
         public new static CMAC Create(string algorithmName)
             => (CMAC)CreateFromName(algorithmName);
 

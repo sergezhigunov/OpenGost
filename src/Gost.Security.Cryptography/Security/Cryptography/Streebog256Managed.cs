@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Gost.Security.Cryptography
 {
@@ -7,6 +8,7 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Computes the <see cref="Streebog256"/> hash for the input data using the managed implementation. 
     /// </summary>
+    [ComVisible(true)]
     public class Streebog256Managed : Streebog256
     {
         #region Constants

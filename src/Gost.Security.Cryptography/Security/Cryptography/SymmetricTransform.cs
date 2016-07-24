@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -11,6 +12,7 @@ namespace Gost.Security.Cryptography
     /// Represents the abstract class from which implementations of symmetric algorithm
     /// (<see cref="SymmetricAlgorithm"/>) can derive.
     /// </summary>
+    [ComVisible(true)]
     public abstract class SymmetricTransform : ICryptoTransform
     {
         private readonly SymmetricTransformMode _transformMode;

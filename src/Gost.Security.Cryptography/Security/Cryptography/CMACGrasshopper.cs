@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Gost.Security.Cryptography
 {
@@ -8,6 +9,7 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Computes a Cipher-based Message Authentication Code (CMAC) using <see cref="Grasshopper"/> algorithm.
     /// </summary>
+    [ComVisible(true)]
     public class CMACGrasshopper : CMAC
     {
         /// <summary>

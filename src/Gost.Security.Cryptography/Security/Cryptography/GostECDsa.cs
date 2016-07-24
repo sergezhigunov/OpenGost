@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -10,6 +11,7 @@ namespace Gost.Security.Cryptography
     /// Provides an abstract base class that encapsulates the GOST
     /// Elliptic Curve Digital Signature Algorithm (GOST R 34.10-2012).
     /// </summary>
+    [ComVisible(true)]
     public abstract class GostECDsa : AsymmetricAlgorithm
     {
         /// <summary>
@@ -71,6 +73,7 @@ namespace Gost.Security.Cryptography
         /// <exception cref="CryptographicException">
         /// <paramref name="curve"/> is invalid.
         /// </exception>
+        [ComVisible(false)]
         public abstract void GenerateKey(ECCurve curve);
 
         /// <summary>
@@ -85,6 +88,7 @@ namespace Gost.Security.Cryptography
         /// <exception cref="CryptographicException">
         /// The key cannot be exported. 
         /// </exception>
+        [ComVisible(false)]
         public abstract ECParameters ExportParameters(bool includePrivateParameters);
 
         /// <summary>
@@ -96,6 +100,7 @@ namespace Gost.Security.Cryptography
         /// <exception cref="CryptographicException">
         /// <paramref name="parameters"/> are invalid.
         /// </exception>
+        [ComVisible(false)]
         public abstract void ImportParameters(ECParameters parameters);
 
 
@@ -143,6 +148,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="GostECDsa"/>.
         /// </returns>
+        [ComVisible(false)]
         public new static GostECDsa Create()
             => Create(GostECDsa512AlgorithmFullName);
 
@@ -155,6 +161,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="GostECDsa"/> using the specified implementation.
         /// </returns>
+        [ComVisible(false)]
         public new static GostECDsa Create(string algorithmName)
             => (GostECDsa)CreateFromName(algorithmName);
 

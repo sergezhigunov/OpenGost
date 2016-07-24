@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Gost.Security.Cryptography
 {
@@ -6,6 +7,7 @@ namespace Gost.Security.Cryptography
     /// Specifies the direction of the symmetric transform. 
     /// </summary>
     [Serializable]
+    [ComVisible(true)]
     public enum SymmetricTransformMode
     {
         /// <summary>

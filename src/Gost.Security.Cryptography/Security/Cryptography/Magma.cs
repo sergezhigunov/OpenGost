@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -10,6 +11,7 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Represents the base class from which all implementations of the <see cref="Magma"/> symmetric encryption algorithm must inherit.
     /// </summary>
+    [ComVisible(true)]
     public abstract class Magma : SymmetricAlgorithm
     {
         private static readonly KeySizes[]
@@ -73,13 +75,14 @@ namespace Gost.Security.Cryptography
         }
 
         #region Creation factory methods
-        
+
         /// <summary>
         /// Creates an instance of the default implementation of <see cref="Magma"/> algorithm.
         /// </summary>
         /// <returns>
         /// A new instance of <see cref="Magma"/>.
         /// </returns>
+        [ComVisible(false)]
         public new static Magma Create()
             => Create(MagmaAlgorithmFullName);
 
@@ -92,6 +95,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="Magma"/> using the specified implementation.
         /// </returns>
+        [ComVisible(false)]
         public new static Magma Create(string algorithmName)
             => (Magma)CreateFromName(algorithmName);
 

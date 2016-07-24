@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
@@ -7,6 +8,7 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Accesses the managed version of the <see cref="Magma"/> algorithm. This class cannot be inherited.
     /// </summary>
+    [ComVisible(true)]
     public sealed class MagmaManaged : Magma
     {
         /// <summary>

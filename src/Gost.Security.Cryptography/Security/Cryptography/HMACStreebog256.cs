@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -10,6 +11,7 @@ namespace Gost.Security.Cryptography
     /// Computes a Hash-based Message Authentication Code (HMAC)
     /// by using the <see cref="Streebog256"/> hash function.
     /// </summary>
+    [ComVisible(true)]
     public class HMACStreebog256 : HMAC
     {
         /// <summary>

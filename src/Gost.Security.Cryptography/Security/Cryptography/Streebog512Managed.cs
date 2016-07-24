@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security;
 
 namespace Gost.Security.Cryptography
@@ -11,6 +12,7 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Computes the <see cref="Streebog512"/> hash for the input data using the managed implementation. 
     /// </summary>
+    [ComVisible(true)]
     public class Streebog512Managed : Streebog512
     {
         #region Constants

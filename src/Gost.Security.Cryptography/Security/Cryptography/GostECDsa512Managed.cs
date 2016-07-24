@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
@@ -13,6 +14,7 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Provides a managed implementation of the <see cref="GostECDsa512"/> algorithm. 
     /// </summary>
+    [ComVisible(true)]
     public sealed class GostECDsa512Managed : GostECDsa512
     {
         #region Constants
@@ -230,6 +232,7 @@ namespace Gost.Security.Cryptography
         /// <exception cref="CryptographicException">
         /// <paramref name="curve"/> is invalid.
         /// </exception>
+        [ComVisible(false)]
         public override void GenerateKey(ECCurve curve)
         {
             curve.Validate();
@@ -272,6 +275,7 @@ namespace Gost.Security.Cryptography
         /// <exception cref="CryptographicException">
         /// The key cannot be exported. 
         /// </exception>
+        [ComVisible(false)]
         public override ECParameters ExportParameters(bool includePrivateParameters)
         {
             ThrowIfDisposed();
@@ -296,6 +300,7 @@ namespace Gost.Security.Cryptography
         /// <exception cref="CryptographicException">
         /// <paramref name="parameters"/> are invalid.
         /// </exception>
+        [ComVisible(false)]
         public override void ImportParameters(ECParameters parameters)
         {
             ThrowIfDisposed();

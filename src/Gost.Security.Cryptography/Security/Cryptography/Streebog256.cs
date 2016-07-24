@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
@@ -8,6 +9,7 @@ namespace Gost.Security.Cryptography
     /// <summary>
     /// Computes the <see cref="Streebog256"/> hash for the input data. 
     /// </summary>
+    [ComVisible(true)]
     public abstract class Streebog256 : HashAlgorithm
     {
         /// <summary>
@@ -26,6 +28,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="Streebog256"/>.
         /// </returns>
+        [ComVisible(false)]
         public new static Streebog256 Create()
             => Create(Streebog256AlgorithmFullName);
 
@@ -38,6 +41,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="Streebog256"/> using the specified implementation.
         /// </returns>
+        [ComVisible(false)]
         public new static Streebog256 Create(string algorithmName)
             => (Streebog256)CreateFromName(algorithmName);
 

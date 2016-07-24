@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
@@ -9,6 +10,7 @@ namespace Gost.Security.Cryptography
     /// Provides an abstract base class that encapsulates the 512-bit version of
     /// the <see cref="GostECDsa"/> algorithm.
     /// </summary>
+    [ComVisible(true)]
     public abstract class GostECDsa512 : GostECDsa
     {
         private static readonly KeySizes[] s_legalKeySizes = { new KeySizes(512, 512, 0) };
@@ -38,6 +40,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="GostECDsa512"/>.
         /// </returns>
+        [ComVisible(false)]
         public new static GostECDsa512 Create()
             => Create(GostECDsa512AlgorithmFullName);
 
@@ -50,6 +53,7 @@ namespace Gost.Security.Cryptography
         /// <returns>
         /// A new instance of <see cref="GostECDsa512"/> using the specified implementation.
         /// </returns>
+        [ComVisible(false)]
         public new static GostECDsa512 Create(string algorithmName)
             => (GostECDsa512)CreateFromName(algorithmName);
 

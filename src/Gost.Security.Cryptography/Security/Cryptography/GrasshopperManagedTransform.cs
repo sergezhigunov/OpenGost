@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 
@@ -12,6 +14,8 @@ namespace Gost.Security.Cryptography
     /// Performs a cryptographic transformation of data using the <see cref="Grasshopper"/>
     /// algorithm. This class cannot be inherited.
     /// </summary>
+    [ComVisible(true)]
+    [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
     public sealed class GrasshopperManagedTransform : SymmetricTransform
     {
         #region Constants

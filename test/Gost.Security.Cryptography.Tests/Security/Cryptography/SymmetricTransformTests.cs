@@ -39,6 +39,54 @@ namespace Gost.Security.Cryptography
             GenerateRandomBytes(3 * BlockSizeBytes + 3),
         };
 
+        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(ConstructorInvalidArgumentsTest))]
+        public void ConstructorInvalidArgumentsTest()
+        {
+            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(null, new byte[BlockSizeBytes], BlockSizeBits, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], new byte[BlockSizeBytes], 0, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
+            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.CBC, PaddingMode.None, SymmetricTransformMode.Encrypt));
+            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.CFB, PaddingMode.None, SymmetricTransformMode.Encrypt));
+            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.OFB, PaddingMode.None, SymmetricTransformMode.Encrypt));
+            Assert.Throws<CryptographicException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], new byte[BlockSizeBytes], BlockSizeBytes, CipherMode.CTS, PaddingMode.None, SymmetricTransformMode.Encrypt));
+        }
+
+        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(TransformBlockInvalidArgumentsTest))]
+        public void TransformBlockInvalidArgumentsTest()
+        {
+            using (var transform = new SimpleSymmetricAlgorithm())
+            {
+                using (var encryptor = transform.CreateEncryptor())
+                {
+                    Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(null, 0, BlockSizeBytes, new byte[BlockSizeBytes], 0));
+                    Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, null, 0));
+                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes, new byte[BlockSizeBytes], 0));
+                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, new byte[BlockSizeBytes], -1));
+                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, 0, new byte[BlockSizeBytes], 0));
+                    Assert.Throws<ArgumentException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], BlockSizeBytes, BlockSizeBytes, new byte[BlockSizeBytes], 0));
+                    Assert.Throws<CryptographicException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes - 1, new byte[BlockSizeBytes], 0));
+                }
+            }
+        }
+
+        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(TransformFinalBlockInvalidArgumentsTest))]
+        public void TransformFinalBlockInvalidArgumentsTest()
+        {
+            using (var transform = new SimpleSymmetricAlgorithm())
+            {
+                using (var encryptor = transform.CreateDecryptor())
+                {
+                    Assert.Throws<ArgumentNullException>(() => encryptor.TransformFinalBlock(null, 0, BlockSizeBytes));
+                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes));
+                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], 0, -1));
+                    Assert.Throws<ArgumentException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], BlockSizeBytes, BlockSizeBytes));
+                }
+                using (var decryptor = transform.CreateDecryptor())
+                {
+                    Assert.Throws<CryptographicException>(() => decryptor.TransformFinalBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes - 1));
+                }
+            }
+        }
+
         [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(CheckLifecycle))]
         public void CheckLifecycle()
         {

@@ -226,7 +226,6 @@ namespace Gost.Security.Cryptography
             if (inputOffset < 0) throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
             if (outputOffset < 0) throw new ArgumentOutOfRangeException(nameof(outputOffset), outputOffset, ArgumentOutOfRangeNeedNonNegNum);
             if (inputCount <= 0) throw new ArgumentOutOfRangeException(nameof(inputCount), inputCount, ArgumentOutOfRangeNeedPositiveNum);
-            if (inputCount > inputBuffer.Length) throw new ArgumentException(ArgumentInvalidOffLen);
             if (inputBuffer.Length - inputCount < inputOffset) throw new ArgumentException(ArgumentInvalidOffLen);
             if (inputCount % InputBlockSize != 0) throw new CryptographicException(CryptographicInvalidDataSize);
 

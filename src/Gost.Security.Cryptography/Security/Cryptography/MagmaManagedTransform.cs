@@ -6,7 +6,11 @@ namespace Gost.Security.Cryptography
 {
     using static CryptoUtils;
 
-    internal sealed class MagmaManagedTransform : SymmetricTransform
+    /// <summary>
+    /// Performs a cryptographic transformation of data using the <see cref="Magma"/> algorithm.
+    /// This class cannot be inherited.
+    /// </summary>
+    public sealed class MagmaManagedTransform : SymmetricTransform
     {
         #region Constants
 
@@ -36,7 +40,7 @@ namespace Gost.Security.Cryptography
 
         private uint[] _keyExpansion;
 
-        public MagmaManagedTransform(
+        internal MagmaManagedTransform(
             byte[] rgbKey,
             byte[] rgbIV,
             int blockSize,
@@ -46,6 +50,12 @@ namespace Gost.Security.Cryptography
             : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
         { }
 
+        /// <summary>
+        /// Initializes the private key expansion.
+        /// </summary>
+        /// <param name="rgbKey">
+        /// The private key to be used for the key expansion.
+        /// </param>
         [SecuritySafeCritical]
         protected unsafe override void GenerateKeyExpansion(byte[] rgbKey)
         {
@@ -56,6 +66,21 @@ namespace Gost.Security.Cryptography
                     UInt32FromBigEndian(keyExpansion, 8, key);
         }
 
+        /// <summary>
+        /// Implements the block cipher encryption function of <see cref="MagmaManaged"/> algorithm.
+        /// </summary>
+        /// <param name="inputBuffer">
+        /// The input to perform the operation on.
+        /// </param>
+        /// <param name="inputOffset">
+        /// The offset into the input byte array to begin using data from.
+        /// </param>
+        /// <param name="outputBuffer">
+        /// The output to write the data to.
+        /// </param>
+        /// <param name="outputOffset">
+        /// The offset into the output byte array to begin writing data to.
+        /// </param>
         [SecuritySafeCritical]
         protected unsafe override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
@@ -74,6 +99,21 @@ namespace Gost.Security.Cryptography
             FlushRegisters(outputBuffer, outputOffset, a0, a1);
         }
 
+        /// <summary>
+        /// Implements the block cipher decryption function of <see cref="MagmaManaged"/> algorithm.
+        /// </summary>
+        /// <param name="inputBuffer">
+        /// The input to perform the operation on.
+        /// </param>
+        /// <param name="inputOffset">
+        /// The offset into the input byte array to begin using data from.
+        /// </param>
+        /// <param name="outputBuffer">
+        /// The output to write the data to.
+        /// </param>
+        /// <param name="outputOffset">
+        /// The offset into the output byte array to begin writing data to.
+        /// </param>
         [SecuritySafeCritical]
         protected unsafe override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
@@ -118,6 +158,14 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="MagmaManagedTransform" />
+        /// class and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <c>true</c> to release both managed and unmanaged resources;
+        /// <c>false</c> to release only unmanaged resources.
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)

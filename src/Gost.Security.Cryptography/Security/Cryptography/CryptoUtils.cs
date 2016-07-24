@@ -125,14 +125,21 @@ namespace Gost.Security.Cryptography
 
         internal static ECCurve Clone(this ECCurve curve)
         {
+            if (curve.IsNamed)
+                return ECCurve.CreateFromOid(curve.Oid);
+
             return new ECCurve
             {
-                Prime = CloneArray(curve.Prime),
                 A = CloneArray(curve.A),
                 B = CloneArray(curve.B),
+                G = Clone(curve.G),
                 Order = CloneArray(curve.Order),
                 Cofactor = CloneArray(curve.Cofactor),
-                G = Clone(curve.G),
+                Seed = CloneArray(curve.Seed),
+                CurveType = curve.CurveType,
+                Hash = curve.Hash,
+                Prime = CloneArray(curve.Prime),
+                Polynomial = CloneArray(curve.Polynomial),
             };
         }
 

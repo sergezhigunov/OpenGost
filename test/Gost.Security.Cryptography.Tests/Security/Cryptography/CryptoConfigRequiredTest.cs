@@ -1,48 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.XPath;
+using Gost.Properties;
 
 namespace Gost.Security.Cryptography
 {
     public abstract class CryptoConfigRequiredTest
     {
-        private static string s_mscorlibVersion;
-
-        private static object SyncRoot { get; } = new object();
-
-        private static bool Configured { get; set; } = false;
-
-        private static string MscorlibVersion
+        static CryptoConfigRequiredTest()
         {
-            get
-            {
-                if (s_mscorlibVersion == null)
-                    s_mscorlibVersion = typeof(CryptoConfig).Assembly.GetName().Version.ToString();
-                return s_mscorlibVersion;
-            }
-        }
-
-        protected CryptoConfigRequiredTest()
-        {
-            EnsureCryptographyConfigured();
-        }
-
-        private static void EnsureCryptographyConfigured()
-        {
-            if (!Configured)
-                lock (SyncRoot)
-                    if (!Configured)
-                    {
-                        ConfigureCryptography();
-                        Configured = true;
-                    }
+            ConfigureCryptography();
         }
 
         private static void ConfigureCryptography()
         {
-            using (XmlReader reader = XmlReader.Create("Crypto.config"))
+            string mscorlibVersion = typeof(CryptoConfig).Assembly.GetName().Version.ToString();
+
+            using (var stream = new MemoryStream(Resources.CryptoConfig))
+            using (XmlReader reader = XmlReader.Create(stream))
             {
                 var document = new XPathDocument(reader);
                 XPathNavigator navigator = document.CreateNavigator();
@@ -57,7 +35,7 @@ namespace Gost.Security.Cryptography
                     {
                         versionSpecificMscorlib = true;
 
-                        if (MscorlibVersion == versionAttributeIterator.Current.Value)
+                        if (mscorlibVersion == versionAttributeIterator.Current.Value)
                         {
                             mscorlib = current;
                             break;

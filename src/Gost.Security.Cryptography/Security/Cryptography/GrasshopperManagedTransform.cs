@@ -88,19 +88,19 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Initializes the private key expansion.
         /// </summary>
-        /// <param name="rgbKey">
+        /// <param name="key">
         /// The private key to be used for the key expansion.
         /// </param>
         [SecuritySafeCritical]
-        protected override void GenerateKeyExpansion(byte[] rgbKey)
+        protected override void GenerateKeyExpansion(byte[] key)
         {
             _keyExpansion = new byte[10][]
             {
                 new byte[16], new byte[16],
                 null, null, null, null, null, null, null, null
             };
-            BlockCopy(rgbKey, 0, _keyExpansion[0], 0, 16);
-            BlockCopy(rgbKey, 16, _keyExpansion[1], 0, 16);
+            BlockCopy(key, 0, _keyExpansion[0], 0, 16);
+            BlockCopy(key, 16, _keyExpansion[1], 0, 16);
 
             unsafe
             {

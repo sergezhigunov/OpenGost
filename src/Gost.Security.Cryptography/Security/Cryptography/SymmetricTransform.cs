@@ -126,10 +126,10 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// When overridden in a derived class, initializes the private key expansion.
         /// </summary>
-        /// <param name="rgbKey">
+        /// <param name="key">
         /// The private key to be used for the key expansion.
         /// </param>
-        protected abstract void GenerateKeyExpansion(byte[] rgbKey);
+        protected abstract void GenerateKeyExpansion(byte[] key);
 
         /// <summary>
         /// When overridden in a derived class, implements the block cipher encryption function.
@@ -332,7 +332,10 @@ namespace Gost.Security.Cryptography
         /// <see cref="SymmetricTransform"/> class.
         /// </summary>
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         /// <summary>
         /// Releases the unmanaged resources used by the <see cref="SymmetricTransform" /> class

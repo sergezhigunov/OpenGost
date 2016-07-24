@@ -53,17 +53,17 @@ namespace Gost.Security.Cryptography
         /// <summary>
         /// Initializes the private key expansion.
         /// </summary>
-        /// <param name="rgbKey">
+        /// <param name="key">
         /// The private key to be used for the key expansion.
         /// </param>
         [SecuritySafeCritical]
-        protected unsafe override void GenerateKeyExpansion(byte[] rgbKey)
+        protected unsafe override void GenerateKeyExpansion(byte[] key)
         {
             _keyExpansion = new uint[8];
 
             fixed (uint* keyExpansion = _keyExpansion)
-                fixed (byte* key = rgbKey)
-                    UInt32FromBigEndian(keyExpansion, 8, key);
+                fixed (byte* keyPtr = key)
+                    UInt32FromBigEndian(keyExpansion, 8, keyPtr);
         }
 
         /// <summary>

@@ -129,8 +129,8 @@
   <data name="CryptographicCurveNotSupported" xml:space="preserve">
     <value>Заданная эллиптическая кривая "{0}" или её параметры недопустимы для текущей платформы.</value>
   </data>
-  <data name="CryptographicInsufficientBuffer" xml:space="preserve">
-    <value>Входной буфер содержит недостаточно данных.</value>
+  <data name="CryptographicInsufficientOutputBuffer" xml:space="preserve">
+    <value>Выходной буфер содержит недостаточно места.</value>
   </data>
   <data name="CryptographicInvalidBlockSize" xml:space="preserve">
     <value>Заданный размер блока недопустим для этого алгоритма.</value>

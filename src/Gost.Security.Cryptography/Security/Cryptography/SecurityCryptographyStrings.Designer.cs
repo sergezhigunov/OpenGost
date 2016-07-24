@@ -97,11 +97,11 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input buffer contains insufficient data..
+        ///   Looks up a localized string similar to Output buffer contains insufficient data size..
         /// </summary>
-        internal static string CryptographicInsufficientBuffer {
+        internal static string CryptographicInsufficientOutputBuffer {
             get {
-                return ResourceManager.GetString("CryptographicInsufficientBuffer", resourceCulture);
+                return ResourceManager.GetString("CryptographicInsufficientOutputBuffer", resourceCulture);
             }
         }
         

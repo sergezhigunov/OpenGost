@@ -129,8 +129,8 @@
   <data name="CryptographicCurveNotSupported" xml:space="preserve">
     <value>The specified curve '{0}' or its parameters are not valid for this platform.</value>
   </data>
-  <data name="CryptographicInsufficientBuffer" xml:space="preserve">
-    <value>Input buffer contains insufficient data.</value>
+  <data name="CryptographicInsufficientOutputBuffer" xml:space="preserve">
+    <value>Output buffer contains insufficient data size.</value>
   </data>
   <data name="CryptographicInvalidBlockSize" xml:space="preserve">
     <value>Specified block size is not valid for this algorithm.</value>

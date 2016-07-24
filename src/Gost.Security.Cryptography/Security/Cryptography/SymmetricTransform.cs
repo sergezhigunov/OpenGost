@@ -7,7 +7,11 @@ namespace Gost.Security.Cryptography
     using static SecurityCryptographyStrings;
     using static CryptoUtils;
 
-    internal abstract class SymmetricTransform : ICryptoTransform
+    /// <summary>
+    /// Represents the abstract class from which implementations of symmetric algorithm
+    /// (<see cref="SymmetricAlgorithm"/>) can derive.
+    /// </summary>
+    public abstract class SymmetricTransform : ICryptoTransform
     {
         private readonly SymmetricTransformMode _transformMode;
         private readonly CipherMode _cipherMode;
@@ -21,17 +25,76 @@ namespace Gost.Security.Cryptography
         private byte[] _tempBuffer;
         private bool _keyExpanded;
 
+        /// <summary>
+        /// Gets a value indicating whether the current transform can be reused.
+        /// </summary>
+        /// <value>
+        /// Always <c>true</c>.
+        /// </value>
         public bool CanReuseTransform => true;
 
+        /// <summary>
+        /// Gets a value indicating whether multiple blocks can be transformed.
+        /// </summary>
+        /// <value>
+        /// Always <c>true</c>.
+        /// </value>
         public bool CanTransformMultipleBlocks => true;
 
+        /// <summary>
+        /// Gets the input block size.
+        /// </summary>
+        /// <value>
+        /// The size of the input data blocks in bytes.
+        /// </value>
         public int InputBlockSize => _blockSize;
 
+        /// <summary>
+        /// Gets the output block size.
+        /// </summary>
+        /// <value>
+        /// The size of the output data blocks in bytes.
+        /// </value>
         public int OutputBlockSize => _blockSize;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SymmetricTransform" /> class.
+        /// </summary>
+        /// <param name="key">
+        /// The secret key to be used for the symmetric algorithm.
+        /// </param>
+        /// <param name="iv">
+        /// The initialization vector (<see cref="SymmetricAlgorithm.IV" />) to be used
+        /// for the symmetric algorithm.
+        /// </param>
+        /// <param name="blockSize">
+        /// The block size, in bits, of the cryptographic operation.
+        /// </param>
+        /// <param name="cipherMode">
+        /// The mode for operation of the symmetric transform.
+        /// </param>
+        /// <param name="paddingMode">
+        /// The padding mode used in the symmetric transform.
+        /// </param>
+        /// <param name="transformMode">
+        /// The direction mode of the symmetric transform.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="key"/> parameter is <c>null</c>.
+        /// -or-
+        /// <paramref name="iv"/> parameter is <c>null</c> when <paramref name="cipherMode"/> value is
+        /// <see cref="CipherMode.CBC"/>, <see cref="CipherMode.CFB"/> or <see cref="CipherMode.OFB"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="blockSize"/> parameter is non-positive.
+        /// </exception>
+        /// <exception cref="CryptographicException">
+        /// <paramref name="cipherMode"/> parameter value is not supported.
+        /// </exception>
         protected SymmetricTransform(byte[] key, byte[] iv, int blockSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
+            if (blockSize <= 0) throw new ArgumentOutOfRangeException(nameof(key), ArgumentOutOfRangeNeedPositiveNum);
 
             _transformMode = transformMode;
             _blockSize = blockSize / 8;
@@ -60,10 +123,46 @@ namespace Gost.Security.Cryptography
             _rgbKey = (byte[])key.Clone();
         }
 
+        /// <summary>
+        /// When overridden in a derived class, initializes the private key expansion.
+        /// </summary>
+        /// <param name="rgbKey">
+        /// The private key to be used for the key expansion.
+        /// </param>
         protected abstract void GenerateKeyExpansion(byte[] rgbKey);
 
+        /// <summary>
+        /// When overridden in a derived class, implements the block cipher encryption function.
+        /// </summary>
+        /// <param name="inputBuffer">
+        /// The input to perform the operation on.
+        /// </param>
+        /// <param name="inputOffset">
+        /// The offset into the input byte array to begin using data from.
+        /// </param>
+        /// <param name="outputBuffer">
+        /// The output to write the data to.
+        /// </param>
+        /// <param name="outputOffset">
+        /// The offset into the output byte array to begin writing data to.
+        /// </param>
         protected abstract void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset);
 
+        /// <summary>
+        /// When overridden in a derived class, implements the block cipher decryption function.
+        /// </summary>
+        /// <param name="inputBuffer">
+        /// The input to perform the operation on.
+        /// </param>
+        /// <param name="inputOffset">
+        /// The offset into the input byte array to begin using data from.
+        /// </param>
+        /// <param name="outputBuffer">
+        /// The output to write the data to.
+        /// </param>
+        /// <param name="outputOffset">
+        /// The offset into the output byte array to begin writing data to.
+        /// </param>
         protected abstract void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset);
 
         private void Reset()
@@ -76,6 +175,48 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        /// <summary>
+        /// Computes the transformation for the specified region of the input byte array and
+        /// copies the resulting transformation to the specified region of the output byte array.
+        /// </summary>
+        /// <param name="inputBuffer">
+        /// The input to perform the operation on.
+        /// </param>
+        /// <param name="inputOffset">
+        /// The offset into the input byte array to begin using data from.
+        /// </param>
+        /// <param name="inputCount">
+        /// The number of bytes in the input byte array to use as data.
+        /// </param>
+        /// <param name="outputBuffer">
+        /// The output to write the data to.
+        /// </param>
+        /// <param name="outputOffset">
+        /// The offset into the output byte array to begin writing data to.
+        /// </param>
+        /// <returns>
+        /// The number of bytes written.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// The <paramref name="inputBuffer" /> parameter is <c>null</c>.
+        /// -or-
+        /// The <paramref name="outputBuffer" /> parameter is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// The value of the <paramref name="inputOffset" /> parameter is negative.
+        /// -or-
+        /// The value of the <paramref name="inputCount" /> parameter is non-positive.
+        /// -or-
+        /// The value of the <paramref name="outputOffset" /> parameter is negative.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The length of the input buffer is less than the sum of the input offset and the input count.
+        /// -or-
+        /// The value of the <paramref name="inputCount" /> parameter is greater than the length of the <paramref name="inputBuffer" /> parameter.
+        /// </exception>
+        /// <exception cref="CryptographicException">
+        /// The length of the <paramref name="inputCount" /> parameter is not evenly devisable by input block size.
+        /// </exception>
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
         {
             if (inputBuffer == null) throw new ArgumentNullException(nameof(inputBuffer));
@@ -83,8 +224,9 @@ namespace Gost.Security.Cryptography
             if (inputOffset < 0) throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
             if (outputOffset < 0) throw new ArgumentOutOfRangeException(nameof(outputOffset), outputOffset, ArgumentOutOfRangeNeedNonNegNum);
             if (inputCount <= 0) throw new ArgumentOutOfRangeException(nameof(inputCount), inputCount, ArgumentOutOfRangeNeedPositiveNum);
+            if (inputCount > inputBuffer.Length) throw new ArgumentException(ArgumentInvalidOffLen);
             if (inputBuffer.Length - inputCount < inputOffset) throw new ArgumentException(ArgumentInvalidOffLen);
-            if (inputCount % InputBlockSize != 0) throw new CryptographicException(CryptographicInvalidDataSize, nameof(inputCount));
+            if (inputCount % InputBlockSize != 0) throw new CryptographicException(CryptographicInvalidDataSize);
 
             EnsureKeyExpanded();
 
@@ -118,10 +260,42 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        /// <summary>
+        /// Computes the transformation for the specified region of the specified byte array.
+        /// </summary>
+        /// <param name="inputBuffer">
+        /// The input to perform the operation on.
+        /// </param>
+        /// <param name="inputOffset">
+        /// The offset into the input byte array to begin using data from.
+        /// </param>
+        /// <param name="inputCount">
+        /// The number of bytes in the input byte array to use as data.
+        /// </param>
+        /// <returns>
+        /// The computed transformation.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// The <paramref name="inputBuffer" /> parameter is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// The value of the <paramref name="inputOffset" /> parameter is negative.
+        /// -or-
+        /// The value of the <paramref name="inputCount" /> parameter is negative.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The length of the input buffer is less than the sum of the input offset and the input count.
+        /// </exception>
+        /// <exception cref="CryptographicException">
+        /// The length of the <paramref name="inputCount" /> parameter is not evenly devisable by input block size.
+        /// -or-
+        /// The padding is invalid and cannot be removed.
+        /// </exception>
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
             if (inputBuffer == null) throw new ArgumentNullException(nameof(inputBuffer));
             if (inputOffset < 0) throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
+            if (inputCount < 0) throw new ArgumentOutOfRangeException(nameof(inputCount), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
             if (inputBuffer.Length - inputCount < inputOffset) throw new ArgumentException(ArgumentInvalidOffLen);
 
             EnsureKeyExpanded();
@@ -153,9 +327,21 @@ namespace Gost.Security.Cryptography
             return transformedBytes;
         }
 
+        /// <summary>
+        /// Releases all resources used by the current instance of the
+        /// <see cref="SymmetricTransform"/> class.
+        /// </summary>
         public void Dispose()
             => Dispose(true);
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="SymmetricTransform" /> class
+        /// and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <c>true</c> to release both managed and unmanaged resources;
+        /// <c>false</c> to release only unmanaged resources.
+        /// </param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -198,7 +384,7 @@ namespace Gost.Security.Cryptography
                 outputOffset = 0;
             }
             else if ((outputBuffer.Length - outputOffset) < (inputCount + padSize))
-                throw new CryptographicException(CryptographicInsufficientBuffer);
+                throw new CryptographicException(CryptographicInsufficientOutputBuffer);
 
             int shift;
 
@@ -353,7 +539,7 @@ namespace Gost.Security.Cryptography
                 outputOffset = 0;
             }
             else if ((outputBuffer.Length - outputOffset) < inputCount)
-                throw new CryptographicException(CryptographicInsufficientBuffer);
+                throw new CryptographicException(CryptographicInsufficientOutputBuffer);
 
             switch (_cipherMode)
             {

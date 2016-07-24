@@ -74,6 +74,7 @@
     <Compile Include="Security\Cryptography\CmacMagmaTests.cs" />
     <Compile Include="Security\Cryptography\CreationFactoriesTests.cs" />
     <Compile Include="Security\Cryptography\CryptoConfigRequiredTest.cs" />
+    <Compile Include="Security\Cryptography\ECHelper.cs" />
     <Compile Include="Security\Cryptography\GostECDsa256Tests.cs" />
     <Compile Include="Security\Cryptography\GostECDsa512Tests.cs" />
     <Compile Include="Security\Cryptography\GostECDsaTest.cs" />

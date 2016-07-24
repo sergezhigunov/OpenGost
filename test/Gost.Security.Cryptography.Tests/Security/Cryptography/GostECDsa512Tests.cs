@@ -50,6 +50,11 @@ namespace Gost.Security.Cryptography
         public void VerifyHashTestCases(ECParameters parameters, string hashHex, string signatureHex)
             => Assert.True(VerifyHash(parameters, hashHex, signatureHex));
 
+        [Theory(DisplayName = nameof(GostECDsa512Tests) + "_" + nameof(ExportParametersTest))]
+        [MemberData(nameof(TestDomainParameters))]
+        public void ExportParametersTest(ECParameters parameters)
+            => CheckExportParameters(parameters);
+
         public static IEnumerable<object[]> TestDomainParameters()
         {
             return new[]

@@ -3,10 +3,31 @@
 namespace Gost.Security.Cryptography
 {
     using static CryptoUtils;
+    using static ECHelper;
 
     public abstract class GostECDsaTest : CryptoConfigRequiredTest
     {
         protected abstract GostECDsa Create(ECParameters parameters);
+
+        protected void CheckExportParameters(ECParameters parameters)
+        {
+            ECParameters exportedParameters;
+            using (GostECDsa algorithm = Create(parameters))
+            {
+                exportedParameters = algorithm.ExportParameters(false);
+
+                exportedParameters.Validate();
+                AssertEqual(parameters, exportedParameters, false);
+                Assert.Null(exportedParameters.D);
+
+                if (parameters.D != null)
+                {
+                    exportedParameters = algorithm.ExportParameters(true);
+                    exportedParameters.Validate();
+                    AssertEqual(parameters, exportedParameters, true);
+                }
+            }
+        }
 
         protected bool VerifyHash(ECParameters parameters, byte[] hash, byte[] signature)
         {

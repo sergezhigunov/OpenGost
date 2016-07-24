@@ -8,7 +8,11 @@ namespace Gost.Security.Cryptography
     using static Buffer;
     using static CryptoUtils;
 
-    internal sealed class GrasshopperManagedTransform : SymmetricTransform
+    /// <summary>
+    /// Performs a cryptographic transformation of data using the <see cref="Grasshopper"/>
+    /// algorithm. This class cannot be inherited.
+    /// </summary>
+    public sealed class GrasshopperManagedTransform : SymmetricTransform
     {
         #region Constants
 
@@ -71,7 +75,7 @@ namespace Gost.Security.Cryptography
 
         private byte[][] _keyExpansion;
 
-        public GrasshopperManagedTransform(
+        internal GrasshopperManagedTransform(
             byte[] rgbKey,
             byte[] rgbIV,
             int blockSize,
@@ -81,6 +85,12 @@ namespace Gost.Security.Cryptography
             : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
         { }
 
+        /// <summary>
+        /// Initializes the private key expansion.
+        /// </summary>
+        /// <param name="rgbKey">
+        /// The private key to be used for the key expansion.
+        /// </param>
         [SecuritySafeCritical]
         protected override void GenerateKeyExpansion(byte[] rgbKey)
         {
@@ -129,6 +139,14 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="GrasshopperManagedTransform" />
+        /// class and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <c>true</c> to release both managed and unmanaged resources;
+        /// <c>false</c> to release only unmanaged resources.
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -139,6 +157,21 @@ namespace Gost.Security.Cryptography
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Implements the block cipher encryption function of <see cref="GrasshopperManaged"/> algorithm.
+        /// </summary>
+        /// <param name="inputBuffer">
+        /// The input to perform the operation on.
+        /// </param>
+        /// <param name="inputOffset">
+        /// The offset into the input byte array to begin using data from.
+        /// </param>
+        /// <param name="outputBuffer">
+        /// The output to write the data to.
+        /// </param>
+        /// <param name="outputOffset">
+        /// The offset into the output byte array to begin writing data to.
+        /// </param>
         [SecuritySafeCritical]
         protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
@@ -149,6 +182,21 @@ namespace Gost.Security.Cryptography
             }
         }
 
+        /// <summary>
+        /// Implements the block cipher decryption function of <see cref="GrasshopperManaged"/> algorithm.
+        /// </summary>
+        /// <param name="inputBuffer">
+        /// The input to perform the operation on.
+        /// </param>
+        /// <param name="inputOffset">
+        /// The offset into the input byte array to begin using data from.
+        /// </param>
+        /// <param name="outputBuffer">
+        /// The output to write the data to.
+        /// </param>
+        /// <param name="outputOffset">
+        /// The offset into the output byte array to begin writing data to.
+        /// </param>
         [SecuritySafeCritical]
         protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {

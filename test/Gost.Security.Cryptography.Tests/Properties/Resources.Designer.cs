@@ -69,5 +69,15 @@ namespace Gost.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ECDsaXmlSchema {
+            get {
+                object obj = ResourceManager.GetObject("ECDsaXmlSchema", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

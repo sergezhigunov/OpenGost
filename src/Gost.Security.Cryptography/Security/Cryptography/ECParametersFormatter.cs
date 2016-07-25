@@ -72,7 +72,7 @@ namespace Gost.Security.Cryptography
             ECCurve result;
             if (reader.IsStartElement(ExplicitParamsTag, Namespace))
                 result = ReadExplicitParameters(reader, keySize);
-            if (reader.IsStartElement(NamedCurveTag, Namespace))
+            else if (reader.IsStartElement(NamedCurveTag, Namespace))
                 result = ReadNamedCurveParameters(reader);
             else throw new ArgumentException(CryptographicMissingDomainParameters, nameof(reader));
 
@@ -106,7 +106,7 @@ namespace Gost.Security.Cryptography
             byte[]
                 prime = ReadPrimeFieldParameters(reader, FieldParamsTag, Namespace, keySize), a, b, order, cofactor;
             reader.MoveToContent();
-            reader.ReadStartElement();
+            reader.ReadStartElement(CurveParamsTag, Namespace);
             reader.MoveToContent();
             a = ReadPrimeFieldElement(reader, ATag, Namespace, keySize);
             reader.MoveToContent();
@@ -117,9 +117,9 @@ namespace Gost.Security.Cryptography
             reader.MoveToContent();
             ECPoint baseBoint = ReadECPoint(reader, BasePointTag, Namespace, keySize);
             reader.MoveToContent();
-            order = BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture).ToByteArray();
+            order = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture), keySize);
             if (reader.IsStartElement(CofactorTag, Namespace))
-                cofactor = BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture).ToByteArray();
+                cofactor = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture), keySize);
             else cofactor = null;
             reader.ReadEndElement();
             reader.ReadEndElement();
@@ -186,6 +186,10 @@ namespace Gost.Security.Cryptography
             var settings = new XmlWriterSettings
             {
                 OmitXmlDeclaration = true,
+#if DEBUG
+                Indent = true,
+                IndentChars = "  ",
+#endif
             };
 
             using (XmlWriter writer = XmlWriter.Create(xml, settings))
@@ -224,7 +228,7 @@ namespace Gost.Security.Cryptography
 
         private static void WriteNamedCurveParameters(XmlWriter writer, Oid oid)
         {
-            writer.WriteStartElement(ExplicitParamsTag, Namespace);
+            writer.WriteStartElement(NamedCurveTag, Namespace);
             writer.WriteAttributeString(UrnTag, UrnPrefix + oid.Value);
             writer.WriteEndElement();
         }

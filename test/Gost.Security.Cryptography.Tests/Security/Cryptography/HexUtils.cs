@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Gost.Security.Cryptography
 {
+    [ExcludeFromCodeCoverage]
     internal static class HexUtils
     {
         private static readonly string HexAlphabet = "0123456789abcdef";

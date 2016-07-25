@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security.Cryptography;
 using System.Xml;
@@ -8,6 +9,7 @@ using Gost.Properties;
 
 namespace Gost.Security.Cryptography
 {
+    [ExcludeFromCodeCoverage]
     public abstract class CryptoConfigRequiredTest
     {
         static CryptoConfigRequiredTest()

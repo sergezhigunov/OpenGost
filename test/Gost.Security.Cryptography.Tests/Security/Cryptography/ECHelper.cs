@@ -1,8 +1,10 @@
-﻿using System.Security.Cryptography;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
 using Xunit;
 
 namespace Gost.Security.Cryptography
 {
+    [ExcludeFromCodeCoverage]
     internal static class ECHelper
     {
         internal static void AssertEqual(ECPoint expected, ECPoint actual)

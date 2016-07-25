@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
@@ -13,8 +12,10 @@ namespace Gost.Security.Cryptography
 
     public class ECParametersFormatterTests
     {
+        [ExcludeFromCodeCoverage]
         private static XmlSchemaSet ECDsaXmlSchemaSet { get; } = LoadECDsaXmlSchemaSet();
 
+        [ExcludeFromCodeCoverage]
         private static XmlSchemaSet LoadECDsaXmlSchemaSet()
         {
             var schemas = new XmlSchemaSet();

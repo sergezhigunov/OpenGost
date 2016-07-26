@@ -4,38 +4,44 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConfig;
+    using static CryptoConstants;
+
     /// <summary>
-    /// Verifies a <see cref="GostECDsa"/> signature.
+    /// Verifies a <see cref="GostECDsa512"/> signature.
     /// </summary>
     [ComVisible(true)]
-    public class GostECDsaSignatureDeformatter : AsymmetricSignatureDeformatter
+    public class GostECDsa512SignatureDeformatter : AsymmetricSignatureDeformatter
     {
+        private GostECDsa512 _key;
+        private string _oid;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="GostECDsaSignatureDeformatter"/> class.
+        /// Initializes a new instance of the <see cref="GostECDsa512SignatureDeformatter"/> class.
         /// </summary>
-        public GostECDsaSignatureDeformatter()
+        public GostECDsa512SignatureDeformatter()
         {
-            throw new NotImplementedException();
+            _oid = MapNameToOID(Streebog512AlgorithmFullName);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GostECDsaSignatureDeformatter"/> class with the specified key.
+        /// Initializes a new instance of the <see cref="GostECDsa512SignatureDeformatter"/> class with the specified key.
         /// </summary>
         /// <param name="key">
-        /// The instance of <see cref="GostECDsa"/> that holds the key.
+        /// The instance of <see cref="GostECDsa512"/> that holds the key.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="key"/> is <c>null</c>.
         /// </exception>
-        public GostECDsaSignatureDeformatter(AsymmetricAlgorithm key)
+        public GostECDsa512SignatureDeformatter(AsymmetricAlgorithm key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            throw new NotImplementedException();
+            _key = (GostECDsa512)key;
         }
 
         /// <summary>
-        /// Specifies the hash algorithm for the <see cref="GostECDsa"/> signature deformatter.
+        /// Specifies the hash algorithm for the <see cref="GostECDsa512"/> signature deformatter.
         /// </summary>
         /// <param name="strName">
         /// The name of the hash algorithm to use for the signature deformatter. 
@@ -54,10 +60,10 @@ namespace Gost.Security.Cryptography
         }
 
         /// <summary>
-        /// Specifies the key to be used for the <see cref="GostECDsa"/> signature deformatter.
+        /// Specifies the key to be used for the <see cref="GostECDsa512"/> signature deformatter.
         /// </summary>
         /// <param name="key">
-        /// The instance of <see cref="GostECDsa"/> that holds the key. 
+        /// The instance of <see cref="GostECDsa512"/> that holds the key. 
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="key"/> is <c>null</c>.
@@ -66,11 +72,11 @@ namespace Gost.Security.Cryptography
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            throw new NotImplementedException();
+            _key = (GostECDsa512)key;
         }
 
         /// <summary>
-        /// Verifies the <see cref="GostECDsa"/> signature on the data.
+        /// Verifies the <see cref="GostECDsa512"/> signature on the data.
         /// </summary>
         /// <param name="rgbHash">
         /// The data signed with <paramref name="rgbSignature"/>.
@@ -88,7 +94,7 @@ namespace Gost.Security.Cryptography
         /// <paramref name="rgbSignature"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="CryptographicUnexpectedOperationException">
-        /// The <see cref="GostECDsa"/> key is missing.
+        /// The <see cref="GostECDsa512"/> key is missing.
         /// </exception>
         public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature)
         {

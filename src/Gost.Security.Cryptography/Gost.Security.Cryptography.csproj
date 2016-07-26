@@ -64,9 +64,11 @@
     <Compile Include="Security\Cryptography\GostECDsa512.cs" />
     <Compile Include="Security\Cryptography\GostECDsa.cs" />
     <Compile Include="Security\Cryptography\GostECDsa512Managed.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa256SignatureDeformatter.cs" />
     <Compile Include="Security\Cryptography\GostECDsa512SignatureDescription.cs" />
-    <Compile Include="Security\Cryptography\GostECDsaSignatureDeformatter.cs" />
-    <Compile Include="Security\Cryptography\GostECDsaSignatureFormatter.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa512SignatureDeformatter.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa256SignatureFormatter.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa512SignatureFormatter.cs" />
     <Compile Include="Security\Cryptography\Grasshopper.cs" />
     <Compile Include="Security\Cryptography\GrasshopperManaged.cs" />
     <Compile Include="Security\Cryptography\GrasshopperManagedTransform.cs" />

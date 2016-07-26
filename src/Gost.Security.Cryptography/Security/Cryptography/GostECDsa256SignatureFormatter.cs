@@ -4,38 +4,44 @@ using System.Security.Cryptography;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConfig;
+    using static CryptoConstants;
+
     /// <summary>
-    /// Creates a <see cref="GostECDsa"/> signature.
+    /// Creates a <see cref="GostECDsa256"/> signature.
     /// </summary>
     [ComVisible(true)]
-    public class GostECDsaSignatureFormatter : AsymmetricSignatureFormatter
+    public class GostECDsa256SignatureFormatter : AsymmetricSignatureFormatter
     {
+        private GostECDsa256 _key;
+        private string _oid;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="GostECDsaSignatureFormatter"/> class.
+        /// Initializes a new instance of the <see cref="GostECDsa256SignatureFormatter"/> class.
         /// </summary>
-        public GostECDsaSignatureFormatter()
+        public GostECDsa256SignatureFormatter()
         {
-            throw new NotImplementedException();
+            _oid = MapNameToOID(Streebog256AlgorithmFullName);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GostECDsaSignatureFormatter"/> class with the specified key.
+        /// Initializes a new instance of the <see cref="GostECDsa256SignatureFormatter"/> class with the specified key.
         /// </summary>
         /// <param name="key">
-        /// The instance of <see cref="GostECDsa"/> that holds the key.
+        /// The instance of <see cref="GostECDsa256"/> that holds the key.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="key"/> is <c>null</c>.
         /// </exception>
-        public GostECDsaSignatureFormatter(AsymmetricAlgorithm key)
+        public GostECDsa256SignatureFormatter(AsymmetricAlgorithm key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            throw new NotImplementedException();
+            _key = (GostECDsa256)key;
         }
 
         /// <summary>
-        /// Creates the <see cref="GostECDsa"/> signature for the specified data.
+        /// Creates the <see cref="GostECDsa256"/> signature for the specified data.
         /// </summary>
         /// <param name="rgbHash">
         /// The data to be signed.
@@ -49,7 +55,7 @@ namespace Gost.Security.Cryptography
         /// <exception cref="CryptographicUnexpectedOperationException">
         /// The OID is <c>null</c>.
         /// -or-
-        /// The <see cref="GostECDsa"/> key is <c>null</c>.
+        /// The <see cref="GostECDsa256"/> key is <c>null</c>.
         /// </exception>
         public override byte[] CreateSignature(byte[] rgbHash)
         {
@@ -59,7 +65,7 @@ namespace Gost.Security.Cryptography
         }
 
         /// <summary>
-        /// Specifies the hash algorithm for the <see cref="GostECDsa"/> signature formatter.
+        /// Specifies the hash algorithm for the <see cref="GostECDsa256"/> signature formatter.
         /// </summary>
         /// <param name="strName">
         /// The name of the hash algorithm to use for the signature formatter. 
@@ -78,10 +84,10 @@ namespace Gost.Security.Cryptography
         }
 
         /// <summary>
-        /// Specifies the key to be used for the <see cref="GostECDsa"/> signature formatter.
+        /// Specifies the key to be used for the <see cref="GostECDsa256"/> signature formatter.
         /// </summary>
         /// <param name="key">
-        /// The instance of <see cref="GostECDsa"/> that holds the key. 
+        /// The instance of <see cref="GostECDsa256"/> that holds the key. 
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="key"/> is <c>null</c>.
@@ -90,7 +96,7 @@ namespace Gost.Security.Cryptography
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            throw new NotImplementedException();
+            _key = (GostECDsa256)key;
         }
     }
 }

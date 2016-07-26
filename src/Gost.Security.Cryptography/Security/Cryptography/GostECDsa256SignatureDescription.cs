@@ -17,8 +17,8 @@ namespace Gost.Security.Cryptography
         {
             KeyAlgorithm = GostECDsa256AlgorithmFullName;
             DigestAlgorithm = Streebog256AlgorithmFullName;
-            FormatterAlgorithm = GostECDsaSignatureFormatterFullName;
-            DeformatterAlgorithm = GostECDsaSignatureDeformatterFullName;
+            FormatterAlgorithm = GostECDsa256SignatureFormatterFullName;
+            DeformatterAlgorithm = GostECDsa256SignatureDeformatterFullName;
         }
     }
 }

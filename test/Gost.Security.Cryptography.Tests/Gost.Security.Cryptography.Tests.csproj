@@ -81,6 +81,8 @@
     <Compile Include="Security\Cryptography\CryptoConfigRequiredTest.cs" />
     <Compile Include="Security\Cryptography\ECHelper.cs" />
     <Compile Include="Security\Cryptography\ECParametersFormatterTests.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa256SignatureDescriptionTests.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa512SignatureDescriptionTests.cs" />
     <Compile Include="Security\Cryptography\GostECDsa256Tests.cs" />
     <Compile Include="Security\Cryptography\GostECDsa512Tests.cs" />
     <Compile Include="Security\Cryptography\GostECDsaTest.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Security\Cryptography\HmacTest.cs" />
     <Compile Include="Security\Cryptography\MagmaTests.cs" />
     <Compile Include="Security\Cryptography\ReusabilityTests.cs" />
+    <Compile Include="Security\Cryptography\SignatureDescriptionTest.cs" />
     <Compile Include="Security\Cryptography\Streebog256Tests.cs" />
     <Compile Include="Security\Cryptography\Streebog512Tests.cs" />
     <Compile Include="Security\Cryptography\SymmetricAlgorithmTest.cs" />

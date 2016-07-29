@@ -6,6 +6,7 @@ namespace Gost.Security.Cryptography
 {
     using static CryptoConfig;
     using static CryptoConstants;
+    using static SecurityCryptographyStrings;
 
     /// <summary>
     /// Verifies a <see cref="GostECDsa256"/> signature.
@@ -50,13 +51,15 @@ namespace Gost.Security.Cryptography
         /// <paramref name="strName"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="CryptographicUnexpectedOperationException">
-        /// The <paramref name="strName"/> parameter does not map to the hash algorithm.
+        /// The <paramref name="strName"/> parameter does not map to the <see cref="Streebog256"/>
+        /// hash algorithm.
         /// </exception>
         public override void SetHashAlgorithm(string strName)
         {
             if (strName == null) throw new ArgumentNullException(nameof(strName));
 
-            throw new NotImplementedException();
+            if (MapNameToOID(strName) != _oid)
+                throw new CryptographicUnexpectedOperationException(CryptographicInvalidOperation);
         }
 
         /// <summary>
@@ -101,7 +104,10 @@ namespace Gost.Security.Cryptography
             if (rgbHash == null) throw new ArgumentNullException(nameof(rgbHash));
             if (rgbSignature == null) throw new ArgumentNullException(nameof(rgbSignature));
 
-            throw new NotImplementedException();
+            if (_key == null)
+                throw new CryptographicUnexpectedOperationException(CryptographicMissingKey);
+
+            return _key.VerifyHash(rgbHash, rgbSignature);
         }
     }
 }

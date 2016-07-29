@@ -72,5 +72,17 @@ namespace Gost.Security.Cryptography
 
             AssertEqual(parameters, newParameters, false);
         }
+
+        protected void CheckKeyExchangeAlgorithmProperty()
+        {
+            using (T algorithm = Create())
+                Assert.Null(algorithm.KeyExchangeAlgorithm);
+        }
+
+        protected void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
+        {
+            using (T algorithm = Create())
+                Assert.Equal(expectedSignatureAlgorithm, algorithm.SignatureAlgorithm);
+        }
     }
 }

@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Xunit;
 
 namespace Gost.Security.Cryptography
 {
+    using static CryptoConstants;
+
     public class GostECDsa256Tests : GostECDsaTest<GostECDsa256>
     {
         #region 256-bit test domain parameters as described in GOST 34.10-2012
@@ -55,6 +56,14 @@ namespace Gost.Security.Cryptography
         [MemberData(nameof(TestDomainParameters))]
         public void CheckWriteAndReadXmlString(ECParameters parameters)
             => WriteAndReadXmlString(parameters);
+
+        [Fact(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(CheckKeyExchangeAlgorithmProperty))]
+        public new void CheckKeyExchangeAlgorithmProperty()
+            => base.CheckKeyExchangeAlgorithmProperty();
+
+        [Fact(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(CheckSignatureAlgorithmProperty))]
+        public void CheckSignatureAlgorithmProperty()
+            => CheckSignatureAlgorithmProperty(GostECDsa256AlgorithmName);
 
         public static IEnumerable<object[]> TestDomainParameters()
         {

@@ -5,14 +5,20 @@ namespace Gost.Security.Cryptography
     using static CryptoUtils;
     using static ECHelper;
 
-    public abstract class GostECDsaTest : CryptoConfigRequiredTest
+    public abstract class GostECDsaTest<T> : AsymmetricAlgorithmTest<T>
+        where T : GostECDsa
     {
-        protected abstract GostECDsa Create(ECParameters parameters);
+        protected T Create(ECParameters parameters)
+        {
+            T algorithm = Create();
+            algorithm.ImportParameters(parameters);
+            return algorithm;
+        }
 
         protected void CheckExportParameters(ECParameters parameters)
         {
             ECParameters exportedParameters;
-            using (GostECDsa algorithm = Create(parameters))
+            using (T algorithm = Create(parameters))
             {
                 exportedParameters = algorithm.ExportParameters(false);
 
@@ -31,7 +37,7 @@ namespace Gost.Security.Cryptography
 
         protected bool VerifyHash(ECParameters parameters, byte[] hash, byte[] signature)
         {
-            using (GostECDsa algorithm = Create(parameters))
+            using (T algorithm = Create(parameters))
                 return algorithm.VerifyHash(hash, signature);
         }
 
@@ -41,13 +47,30 @@ namespace Gost.Security.Cryptography
         protected void SignAndVerifyHash(ECParameters parameters)
         {
             byte[] hash, signature;
-            using (GostECDsa algorithm = Create(parameters))
+            using (T algorithm = Create(parameters))
             {
                 hash = GenerateRandomBytes(algorithm.KeySize / 8);
                 signature = algorithm.SignHash(hash);
             }
 
             Assert.True(VerifyHash(parameters, hash, signature));
+        }
+
+        protected void WriteAndReadXmlString(ECParameters parameters)
+        {
+            parameters.Validate();
+
+            string xmlString;
+            using (T algorithm = Create(parameters))
+                xmlString = algorithm.ToXmlString(false);
+
+            Assert.False(string.IsNullOrEmpty(xmlString));
+
+            ECParameters newParameters;
+            using (T algorithm = Create(xmlString))
+                newParameters = algorithm.ExportParameters(false);
+
+            AssertEqual(parameters, newParameters, false);
         }
     }
 }

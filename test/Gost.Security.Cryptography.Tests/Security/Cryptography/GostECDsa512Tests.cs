@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Gost.Security.Cryptography
 {
-    public class GostECDsa512Tests : GostECDsaTest
+    public class GostECDsa512Tests : GostECDsaTest<GostECDsa512>
     {
         #region 512-bit test domain parameters as described in GOST 34.10-2012
 
@@ -33,12 +34,7 @@ namespace Gost.Security.Cryptography
 
         #endregion
 
-        protected override GostECDsa Create(ECParameters parameters)
-        {
-            GostECDsa512 algorithm = GostECDsa512.Create();
-            algorithm.ImportParameters(parameters);
-            return algorithm;
-        }
+        protected override GostECDsa512 Create() => GostECDsa512.Create();
 
         [Theory(DisplayName = nameof(GostECDsa512Tests) + "_" + nameof(SignAndVerifyHash))]
         [MemberData(nameof(TestDomainParameters))]
@@ -54,6 +50,11 @@ namespace Gost.Security.Cryptography
         [MemberData(nameof(TestDomainParameters))]
         public void ExportParametersTest(ECParameters parameters)
             => CheckExportParameters(parameters);
+
+        [Theory(DisplayName = nameof(GostECDsa512Tests) + "_" + nameof(CheckWriteAndReadXmlString))]
+        [MemberData(nameof(TestDomainParameters))]
+        public void CheckWriteAndReadXmlString(ECParameters parameters)
+            => WriteAndReadXmlString(parameters);
 
         public static IEnumerable<object[]> TestDomainParameters()
         {

@@ -42,7 +42,7 @@ namespace Gost.Security.Cryptography
         private const string YTag = "Y";
 
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        internal static ECParameters FromXml(string xmlString, int keySize)
+        internal static ECParameters FromXml(string xmlString, int keyLength)
         {
             using (var textReader = new StringReader(xmlString))
             using (XmlReader reader = XmlReader.Create(textReader))
@@ -53,11 +53,11 @@ namespace Gost.Security.Cryptography
 
                 if (!reader.IsStartElement(DomainParametersTag, Namespace))
                     throw new ArgumentException(CryptographicMissingDomainParameters, nameof(xmlString));
-                ECCurve curve = ReadDomainParameters(reader, keySize);
+                ECCurve curve = ReadDomainParameters(reader, keyLength);
 
                 if (!reader.IsStartElement(PublicKeyTag, Namespace))
                     throw new ArgumentException(CryptographicMissingPublicKey, nameof(xmlString));
-                ECPoint publicKey = ReadECPoint(reader, PublicKeyTag, Namespace, keySize);
+                ECPoint publicKey = ReadECPoint(reader, PublicKeyTag, Namespace, keyLength);
 
                 reader.ReadEndElement();
 
@@ -65,13 +65,13 @@ namespace Gost.Security.Cryptography
             }
         }
 
-        private static ECCurve ReadDomainParameters(XmlReader reader, int keySize)
+        private static ECCurve ReadDomainParameters(XmlReader reader, int keyLength)
         {
             reader.ReadStartElement();
 
             ECCurve result;
             if (reader.IsStartElement(ExplicitParamsTag, Namespace))
-                result = ReadExplicitParameters(reader, keySize);
+                result = ReadExplicitParameters(reader, keyLength);
             else if (reader.IsStartElement(NamedCurveTag, Namespace))
                 result = ReadNamedCurveParameters(reader);
             else throw new ArgumentException(CryptographicMissingDomainParameters, nameof(reader));
@@ -99,27 +99,27 @@ namespace Gost.Security.Cryptography
             return ECCurve.CreateFromValue(oidValue);
         }
 
-        private static ECCurve ReadExplicitParameters(XmlReader reader, int keySize)
+        private static ECCurve ReadExplicitParameters(XmlReader reader, int keyLength)
         {
             reader.ReadStartElement(ExplicitParamsTag, Namespace);
             reader.MoveToContent();
             byte[]
-                prime = ReadPrimeFieldParameters(reader, FieldParamsTag, Namespace, keySize), a, b, order, cofactor;
+                prime = ReadPrimeFieldParameters(reader, FieldParamsTag, Namespace, keyLength), a, b, order, cofactor;
             reader.MoveToContent();
             reader.ReadStartElement(CurveParamsTag, Namespace);
             reader.MoveToContent();
-            a = ReadPrimeFieldElement(reader, ATag, Namespace, keySize);
+            a = ReadPrimeFieldElement(reader, ATag, Namespace, keyLength);
             reader.MoveToContent();
-            b = ReadPrimeFieldElement(reader, BTag, Namespace, keySize);
+            b = ReadPrimeFieldElement(reader, BTag, Namespace, keyLength);
             reader.ReadEndElement();
             reader.MoveToContent();
             reader.ReadStartElement(BasePointParamsTag, Namespace);
             reader.MoveToContent();
-            ECPoint baseBoint = ReadECPoint(reader, BasePointTag, Namespace, keySize);
+            ECPoint baseBoint = ReadECPoint(reader, BasePointTag, Namespace, keyLength);
             reader.MoveToContent();
-            order = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture), keySize);
+            order = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture), keyLength);
             if (reader.IsStartElement(CofactorTag, Namespace))
-                cofactor = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture), keySize);
+                cofactor = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture), keyLength);
             else cofactor = null;
             reader.ReadEndElement();
             reader.ReadEndElement();
@@ -136,16 +136,16 @@ namespace Gost.Security.Cryptography
             };
         }
 
-        private static byte[] ReadPrimeFieldParameters(XmlReader reader, string localName, string ns, int keySize)
+        private static byte[] ReadPrimeFieldParameters(XmlReader reader, string localName, string ns, int keyLength)
         {
             reader.ReadStartElement(localName, ns);
             reader.MoveToContent();
-            byte[] value = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(PTag, Namespace), CultureInfo.InvariantCulture), keySize);
+            byte[] value = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(PTag, Namespace), CultureInfo.InvariantCulture), keyLength);
             reader.ReadEndElement();
             return value;
         }
 
-        private static byte[] ReadPrimeFieldElement(XmlReader reader, string localName, string ns, int keySize)
+        private static byte[] ReadPrimeFieldElement(XmlReader reader, string localName, string ns, int keyLength)
         {
             bool isEmpty = reader.IsEmptyElement;
             if (!reader.MoveToAttribute(TypeTag, XmlSchema.InstanceNamespace))
@@ -157,7 +157,7 @@ namespace Gost.Security.Cryptography
             if (!reader.MoveToAttribute(ValueTag))
                 throw new NotImplementedException();
             reader.ReadAttributeValue();
-            byte[] result = ToNormalizedByteArray(BigInteger.Parse(reader[ValueTag], CultureInfo.InvariantCulture), keySize);
+            byte[] result = ToNormalizedByteArray(BigInteger.Parse(reader[ValueTag], CultureInfo.InvariantCulture), keyLength);
             reader.MoveToElement();
             reader.ReadStartElement(localName, ns);
             if (!isEmpty)
@@ -165,13 +165,13 @@ namespace Gost.Security.Cryptography
             return result;
         }
 
-        private static ECPoint ReadECPoint(XmlReader reader, string localName, string ns, int keySize)
+        private static ECPoint ReadECPoint(XmlReader reader, string localName, string ns, int keyLength)
         {
             reader.ReadStartElement(localName, ns);
             reader.MoveToContent();
-            byte[] x = ReadPrimeFieldElement(reader, XTag, Namespace, keySize);
+            byte[] x = ReadPrimeFieldElement(reader, XTag, Namespace, keyLength);
             reader.MoveToContent();
-            byte[] y = ReadPrimeFieldElement(reader, YTag, Namespace, keySize);
+            byte[] y = ReadPrimeFieldElement(reader, YTag, Namespace, keyLength);
             reader.ReadEndElement();
             return new ECPoint
             {

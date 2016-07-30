@@ -11,20 +11,7 @@ namespace Gost.Security.Cryptography
 
         private static ECParameters TestDomainParameters512 { get; } = new ECParameters
         {
-            Curve = new ECCurve
-            {
-                CurveType = ECCurveType.PrimeShortWeierstrass,
-                Prime = "7363be28f5bb6416d84d22ac6f33b8356d54e4807e0458044a70f41a7452d8f15dd1d2b5097cebd4040fb9ffb2142b9280ee2f6b7b260d55c72300fed1ac3145".HexToByteArray(),
-                A = "07000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000".HexToByteArray(),
-                B = "dc2a304f08a3d0fa9768dd2a0c549ebc74cfe058ca890a482273adb21340836143aca1ec49b688d7fd0094e477f3c58b74eb574ea5cfd829da1611a30608ff1c".HexToByteArray(),
-                Order = "dfe6e687f1aa44d695c523beed256ed8f123c4ec5e5c9019c7ba1dcb7e2d2fa85dd1d2b5097cebd4040fb9ffb2142b9280ee2f6b7b260d55c72300fed1ac3145".HexToByteArray(),
-                Cofactor = "01000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000".HexToByteArray(),
-                G = new ECPoint
-                {
-                    X = "9a8a2420b1f130b5b433ac7f9749c88be204e8eea70ab6c68d83cd62126160fd62d78ca69310f925c87c05d7b3b313526c7afdbb6ebf96f330ee7245c69cd124".HexToByteArray(),
-                    Y = "1e37dd1acb92bb6d0b64241bb9181adc434eeee15133ebf76b49f1776d15ab832c9bf359c24724f3c3f2e5911e06bfcfddac57c81306020d6eced23ba412b32b".HexToByteArray(),
-                }
-            },
+            Curve = ECCurveOidMap.GetExplicitCurveByOid("1.2.643.7.1.2.1.2.0"),
             Q = new ECPoint
             {
                 X = "e1ef30d52c6133ddd99d1d5c41455cf7df4d8b4c925bbc69af1433d15658515add2146850c325c5b81c133be655aa8c4d440e7b98a8d59487b0c7696bcc55d11".HexToByteArray(),

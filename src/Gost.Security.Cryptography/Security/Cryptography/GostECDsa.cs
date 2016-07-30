@@ -103,7 +103,6 @@ namespace Gost.Security.Cryptography
         [ComVisible(false)]
         public abstract void ImportParameters(ECParameters parameters);
 
-
         /// <summary>
         /// Reconstructs a <see cref="GostECDsa"/> object from an XML string.
         /// </summary>

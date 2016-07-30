@@ -120,7 +120,6 @@ namespace Gost.Security.Cryptography
             }
         }
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CMAC"/> class.
         /// </summary>
@@ -264,7 +263,6 @@ namespace Gost.Security.Cryptography
             => (CMAC)CreateFromName(algorithmName);
 
         #endregion
-
 
         private void EnsureEncryptorInitialized()
         {

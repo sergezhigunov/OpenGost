@@ -41,6 +41,7 @@ This repository stores unoffical .Net implementation of modern Russian national 
 * [RFC 2104](https://tools.ietf.org/html/rfc2104) HMAC: Keyed-Hashing for Message Authentication
 * [RFC 4357](https://tools.ietf.org/html/rfc4357) Additional Cryptographic Algorithms for Use with GOST 28147-89, GOST R 34.10-94, GOST R 34.10-2001, and GOST R 34.11-94 Algorithms
 * [RFC 4490](https://tools.ietf.org/html/rfc4490) Using the GOST 28147-89, GOST R 34.11-94, GOST R 34.10-94, and GOST R 34.10-2001 Algorithms with Cryptographic Message Syntax (CMS)
+* [RFC 4491](https://tools.ietf.org/html/rfc4491) Using the GOST R 34.10-94, GOST R 34.10-2001, and GOST R 34.11-94 Algorithms with the Internet X.509 Public Key Infrastructure Certificate and CRL Profile
 * [RFC 5830](https://tools.ietf.org/html/rfc5830) GOST 28147-89: Encryption, Decryption, and Message Authentication Code (MAC) Algorithms
 * [RFC 5831](https://tools.ietf.org/html/rfc5831) GOST R 34.11-94: Hash Function Algorithm
 * [RFC 5832](https://tools.ietf.org/html/rfc5832) GOST R 34.10-2001: Digital Signature Algorithm

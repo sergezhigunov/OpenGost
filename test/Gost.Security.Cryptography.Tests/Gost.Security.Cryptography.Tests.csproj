@@ -99,12 +99,15 @@
     <Compile Include="Security\Cryptography\Streebog512Tests.cs" />
     <Compile Include="Security\Cryptography\SymmetricAlgorithmTest.cs" />
     <Compile Include="Security\Cryptography\SymmetricTransformTests.cs" />
+    <Compile Include="Security\Cryptography\X509Certificates\GostECDsaCertificateExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="..\..\tools\Crypto.config">
       <Link>Resources\Crypto.config</Link>
     </None>
+    <None Include="Resources\GostECDsa256.cer" />
+    <None Include="Resources\GostECDsa512.cer" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -113,6 +116,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

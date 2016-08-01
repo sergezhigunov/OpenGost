@@ -30,5 +30,8 @@
 
         internal const string Streebog256AlgorithmFullName = FullNamePrefix + nameof(Streebog256);
         internal const string HMACStreebog256AlgorithmFullName = FullNamePrefix + nameof(HMACStreebog256);
+
+        internal const string GostECDsa256OidValue = "1.2.643.7.1.1.1.1";
+        internal const string GostECDsa512OidValue = "1.2.643.7.1.1.1.2";
     }
 }

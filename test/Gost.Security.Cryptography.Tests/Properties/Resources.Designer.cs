@@ -79,5 +79,25 @@ namespace Gost.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] GostECDsa256Certificate {
+            get {
+                object obj = ResourceManager.GetObject("GostECDsa256Certificate", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] GostECDsa512Certificate {
+            get {
+                object obj = ResourceManager.GetObject("GostECDsa512Certificate", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

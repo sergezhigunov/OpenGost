@@ -94,12 +94,14 @@
     <Compile Include="Security\Cryptography\SymmetricTransform.cs" />
     <Compile Include="Security\Cryptography\SymmetricTransformMode.cs" />
     <Compile Include="Security\Cryptography\CryptoUtils.cs" />
+    <Compile Include="Security\Cryptography\X509Certificates\GostECDsaCertificateExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

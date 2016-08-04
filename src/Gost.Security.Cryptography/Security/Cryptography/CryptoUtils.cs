@@ -7,6 +7,8 @@ using System.Threading;
 
 namespace Gost.Security.Cryptography
 {
+    using static SecurityCryptographyStrings;
+
     internal static class CryptoUtils
     {
         private static RandomNumberGenerator s_randomNumberGenerator;
@@ -22,7 +24,31 @@ namespace Gost.Security.Cryptography
         }
 
         internal static T[] CloneArray<T>(T[] source)
-            => source == null ? null: (T[])source.Clone();
+            => source == null ? null : (T[])source.Clone();
+
+        internal static T[] Subarray<T>(this T[] value, int startIndex)
+            => value.Subarray(startIndex, value.Length - startIndex);
+
+        internal static T[] Subarray<T>(this T[] value, int startIndex, int length)
+        {
+            if (startIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), ArgumentOutOfRangeStartIndex);
+            if (startIndex > value.Length)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), ArgumentOutOfRangeStartIndexLargerThanLength);
+            if (length < 0)
+                throw new ArgumentOutOfRangeException(nameof(length), ArgumentOutOfRangeNegativeLength);
+            if (startIndex > value.Length - length)
+                throw new ArgumentOutOfRangeException(nameof(length), ArgumentOutOfRangeIndexLength);
+
+            if (length == 0)
+                return EmptyArray<T>.Value;
+            if (startIndex == 0 && length == value.Length)
+                return CloneArray(value);
+
+            T[] result = new T[length];
+            Array.Copy(value, startIndex, result, 0, length);
+            return result;
+        }
 
         internal static void EraseData<T>(ref T[] data)
             where T : struct

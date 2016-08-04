@@ -4,7 +4,10 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Gost.Security.Cryptography.X509Certificates
 {
+    using static AsnUtils;
     using static CryptoConstants;
+    using static CryptoUtils;
+    using static ECCurveOidMap;
 
     /// <summary>
     /// Provides extension methods for retrieving <see cref="GostECDsa"/> implementations for the
@@ -36,7 +39,55 @@ namespace Gost.Security.Cryptography.X509Certificates
             if (!IsGostECDsa(certificate))
                 return null;
 
-            throw new NotImplementedException();
+            AsnEncodedData encodedKeyValue = certificate.PublicKey.EncodedKeyValue;
+            GostECDsa result;
+            switch (encodedKeyValue.Oid.Value)
+            {
+                case GostECDsa256OidValue:
+                    result = GostECDsa256.Create();
+                    break;
+
+                case GostECDsa512OidValue:
+                    result = GostECDsa512.Create();
+                    break;
+
+                default:
+                    return null;
+            }
+            byte[] publicKeyValue = DecodeOctetString(encodedKeyValue);
+            int keySize = publicKeyValue.Length / 2;
+            var publicKey = new ECPoint
+            {
+                X = publicKeyValue.Subarray(0, keySize),
+                Y = publicKeyValue.Subarray(keySize),
+            };
+
+            EraseData(ref publicKeyValue);
+            ECCurve curve = default(ECCurve);
+
+            foreach (AsnEncodedData item in DecodeSequence(certificate.PublicKey.EncodedParameters))
+            {
+                AsnTag tag = GetAsnTag(item);
+                if (tag == AsnTag.ObjectIdentifier)
+                {
+                    string oidValue = DecodeOidValue(item);
+                    if (OidValueRegistered(oidValue))
+                    {
+                        curve = ECCurve.CreateFromValue(oidValue);
+                        continue;
+                    }
+                    else if (oidValue == Streebog256OidValue || oidValue == Streebog512OidValue)
+                        continue;
+                    else
+                        throw new NotImplementedException();
+                }
+                else
+                    throw new NotImplementedException();
+            }
+
+            result.ImportParameters(new ECParameters { Curve = curve, Q = publicKey });
+
+            return result;
         }
 
         /// <summary>

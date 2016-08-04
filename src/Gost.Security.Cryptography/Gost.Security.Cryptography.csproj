@@ -94,6 +94,8 @@
     <Compile Include="Security\Cryptography\SymmetricTransform.cs" />
     <Compile Include="Security\Cryptography\SymmetricTransformMode.cs" />
     <Compile Include="Security\Cryptography\CryptoUtils.cs" />
+    <Compile Include="Security\Cryptography\X509Certificates\AsnTag.cs" />
+    <Compile Include="Security\Cryptography\X509Certificates\AsnUtils.cs" />
     <Compile Include="Security\Cryptography\X509Certificates\GostECDsaCertificateExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

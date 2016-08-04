@@ -70,6 +70,15 @@ namespace Gost.Security.Cryptography {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Index and length must refer to a location within the array..
+        /// </summary>
+        internal static string ArgumentOutOfRangeIndexLength {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRangeIndexLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Non-negative number required..
         /// </summary>
         internal static string ArgumentOutOfRangeNeedNonNegNum {
@@ -84,6 +93,33 @@ namespace Gost.Security.Cryptography {
         internal static string ArgumentOutOfRangeNeedPositiveNum {
             get {
                 return ResourceManager.GetString("ArgumentOutOfRangeNeedPositiveNum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Length cannot be less than zero..
+        /// </summary>
+        internal static string ArgumentOutOfRangeNegativeLength {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRangeNegativeLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start index cannot be less than zero..
+        /// </summary>
+        internal static string ArgumentOutOfRangeStartIndex {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRangeStartIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start index cannot be larger than length of array..
+        /// </summary>
+        internal static string ArgumentOutOfRangeStartIndexLargerThanLength {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRangeStartIndexLargerThanLength", resourceCulture);
             }
         }
         

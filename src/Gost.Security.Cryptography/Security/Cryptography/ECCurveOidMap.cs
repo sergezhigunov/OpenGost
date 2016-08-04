@@ -468,6 +468,7 @@ namespace Gost.Security.Cryptography
                         { "1.2.643.2.2.35.1", ECCurve256CryptoProParamsetA },
                         { "1.2.643.2.2.35.2", ECCurve256CryptoProParamsetB },
                         { "1.2.643.2.2.35.3", ECCurve256CryptoProParamsetC },
+                        { "1.2.643.2.2.36.0", ECCurve256CryptoProParamsetA },
                         { "1.2.643.7.1.2.1.2.0", ECCurve512ParamsetTest },
                         { "1.2.643.7.1.2.1.2.1", ECCurve512ParamsetA },
                         { "1.2.643.7.1.2.1.2.2", ECCurve512ParamsetB },
@@ -479,6 +480,21 @@ namespace Gost.Security.Cryptography
 
                 return s_ecCurveOidDictionary;
             }
+        }
+
+        internal static bool OidValueRegistered(string oidValue)
+        {
+            if (oidValue == null) throw new ArgumentNullException(nameof(oidValue));
+            return ECCurveOidDictionary.ContainsKey(oidValue);
+        }
+
+        internal static ECCurve GetNamedCurveByOid(string oidValue)
+        {
+            if (oidValue == null) throw new ArgumentNullException(nameof(oidValue));
+            if (!ECCurveOidDictionary.ContainsKey(oidValue))
+                throw new NotImplementedException();
+
+            return ECCurve.CreateFromValue(oidValue);
         }
 
         internal static ECCurve GetExplicitCurveByOid(string oidValue)

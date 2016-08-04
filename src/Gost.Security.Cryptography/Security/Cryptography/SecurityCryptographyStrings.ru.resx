@@ -120,11 +120,23 @@
   <data name="ArgumentInvalidOffLen" xml:space="preserve">
     <value>Смещение и длина вышли за границы массива или значение счетчика превышает количество элементов от указателя до конца исходной коллекции.</value>
   </data>
+  <data name="ArgumentOutOfRangeIndexLength" xml:space="preserve">
+    <value>Индекс и длина должны указывать на позицию в массиве.</value>
+  </data>
   <data name="ArgumentOutOfRangeNeedNonNegNum" xml:space="preserve">
     <value>Требуется неотрицательное число.</value>
   </data>
   <data name="ArgumentOutOfRangeNeedPositiveNum" xml:space="preserve">
     <value>Требуется положительное число.</value>
+  </data>
+  <data name="ArgumentOutOfRangeNegativeLength" xml:space="preserve">
+    <value>Длина не может быть меньше нуля.</value>
+  </data>
+  <data name="ArgumentOutOfRangeStartIndex" xml:space="preserve">
+    <value>Индекс начала массива не может быть меньше нуля.</value>
+  </data>
+  <data name="ArgumentOutOfRangeStartIndexLargerThanLength" xml:space="preserve">
+    <value>Индекс начала подмассива не может быть больше, чем длина массива.</value>
   </data>
   <data name="CryptographicCurveNotSupported" xml:space="preserve">
     <value>Заданная эллиптическая кривая "{0}" или её параметры недопустимы для текущей платформы.</value>

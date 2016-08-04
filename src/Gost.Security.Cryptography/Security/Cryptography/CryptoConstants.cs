@@ -33,5 +33,8 @@
 
         internal const string GostECDsa256OidValue = "1.2.643.7.1.1.1.1";
         internal const string GostECDsa512OidValue = "1.2.643.7.1.1.1.2";
+
+        internal const string Streebog256OidValue = "1.2.643.7.1.1.2.2";
+        internal const string Streebog512OidValue = "1.2.643.7.1.1.2.3";
     }
 }

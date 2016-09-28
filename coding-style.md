@@ -1,5 +1,4 @@
-﻿C# Coding Style
-===============
+﻿# C# Coding Style
 
 The general rule should follow is "use Visual Studio defaults".
 
@@ -18,8 +17,7 @@ The general rule should follow is "use Visual Studio defaults".
 13. Should use english for comments and XML-documentation.
 
 
-Non-C# Coding Style
-===================
+# Non-C# Coding Style
 
 There is current best guidance is consistency for non code files (XML etc). When editing files, keep new code and changes consistent with the style in the files. For new files, it should conform to the style for that component. Last, if there's a completely new component, anything that is reasonably broadly accepted is fine.
 

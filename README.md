@@ -1,6 +1,6 @@
-# Gost
+# OpenGost
 
-This repository stores unofficial .Net implementation of modern Russian national standard cryptographic algorithms
+An open-source .Net library providing the modern Russian national standard cryptographic algorithms
 
 
 ## Supported Algorithms

@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\..\tools\Gost.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{11B37B75-A816-4FE6-B621-DAC618D6C49F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenGost</RootNamespace>
+    <AssemblyName>OpenGost.Security.Cryptography</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\OpenGost.Security.Cryptography.xml</DocumentationFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\OpenGost.Security.Cryptography.xml</DocumentationFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Security\Cryptography\SecurityCryptographyStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SecurityCryptographyStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security\Cryptography\SecurityCryptographyStrings.ru.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\InternalsVisibleTo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Cryptography\BigIntegerPoint.cs" />
+    <Compile Include="Security\Cryptography\CryptoConstants.cs" />
+    <Compile Include="Security\Cryptography\ECCurve.cs" />
+    <Compile Include="Security\Cryptography\ECCurveOidMap.cs" />
+    <Compile Include="Security\Cryptography\ECCurveType.cs" />
+    <Compile Include="Security\Cryptography\ECParameters.cs" />
+    <Compile Include="Security\Cryptography\ECPoint.cs" />
+    <Compile Include="Security\Cryptography\EmptyArray.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa256.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa256Managed.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa256SignatureDescription.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa512.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa512Managed.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa256SignatureDeformatter.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa512SignatureDescription.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa512SignatureDeformatter.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa256SignatureFormatter.cs" />
+    <Compile Include="Security\Cryptography\GostECDsa512SignatureFormatter.cs" />
+    <Compile Include="Security\Cryptography\Grasshopper.cs" />
+    <Compile Include="Security\Cryptography\GrasshopperManaged.cs" />
+    <Compile Include="Security\Cryptography\GrasshopperManagedTransform.cs" />
+    <Compile Include="Security\Cryptography\CMAC.cs" />
+    <Compile Include="Security\Cryptography\CMACGrasshopper.cs" />
+    <Compile Include="Security\Cryptography\CMACMagma.cs" />
+    <Compile Include="Security\Cryptography\HMACStreebog256.cs" />
+    <Compile Include="Security\Cryptography\HMACStreebog512.cs" />
+    <Compile Include="Security\Cryptography\Magma.cs" />
+    <Compile Include="Security\Cryptography\MagmaManaged.cs" />
+    <Compile Include="Security\Cryptography\MagmaManagedTransform.cs" />
+    <Compile Include="Security\Cryptography\ECParametersFormatter.cs" />
+    <Compile Include="Security\Cryptography\SecurityCryptographyStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SecurityCryptographyStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Security\Cryptography\Streebog256.cs" />
+    <Compile Include="Security\Cryptography\Streebog256Managed.cs" />
+    <Compile Include="Security\Cryptography\Streebog512.cs" />
+    <Compile Include="Security\Cryptography\Streebog512Managed.cs" />
+    <Compile Include="Security\Cryptography\SymmetricTransform.cs" />
+    <Compile Include="Security\Cryptography\SymmetricTransformMode.cs" />
+    <Compile Include="Security\Cryptography\CryptoUtils.cs" />
+    <Compile Include="Security\Cryptography\X509Certificates\AsnTag.cs" />
+    <Compile Include="Security\Cryptography\X509Certificates\AsnUtils.cs" />
+    <Compile Include="Security\Cryptography\X509Certificates\GostECDsaCertificateExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

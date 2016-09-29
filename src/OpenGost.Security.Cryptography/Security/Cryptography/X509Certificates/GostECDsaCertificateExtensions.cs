@@ -39,9 +39,10 @@ namespace OpenGost.Security.Cryptography.X509Certificates
             if (!IsGostECDsa(certificate))
                 return null;
 
-            AsnEncodedData encodedKeyValue = certificate.PublicKey.EncodedKeyValue;
+            PublicKey publicKey = certificate.PublicKey;
+
             GostECDsa result;
-            switch (encodedKeyValue.Oid.Value)
+            switch (publicKey.EncodedKeyValue.Oid.Value)
             {
                 case GostECDsa256OidValue:
                     result = GostECDsa256.Create();
@@ -54,18 +55,36 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                 default:
                     return null;
             }
-            byte[] publicKeyValue = DecodeOctetString(encodedKeyValue);
+
+            try
+            {
+                ECParameters parameters = ReadParameters(publicKey);
+                result.ImportParameters(parameters);
+            }
+            catch
+            {
+                result.Dispose();
+                throw;
+            }
+
+            return result;
+        }
+
+        private static ECParameters ReadParameters(PublicKey publicKey)
+        {
+            byte[] publicKeyValue = DecodeOctetString(publicKey.EncodedKeyValue);
             int keySize = publicKeyValue.Length / 2;
-            var publicKey = new ECPoint
+            var publicPoint = new ECPoint
             {
                 X = publicKeyValue.Subarray(0, keySize),
                 Y = publicKeyValue.Subarray(keySize),
             };
 
             EraseData(ref publicKeyValue);
+
             ECCurve curve = default(ECCurve);
 
-            foreach (AsnEncodedData item in DecodeSequence(certificate.PublicKey.EncodedParameters))
+            foreach (AsnEncodedData item in DecodeSequence(publicKey.EncodedParameters))
             {
                 AsnTag tag = GetAsnTag(item);
                 if (tag == AsnTag.ObjectIdentifier)
@@ -85,9 +104,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                     throw new NotImplementedException();
             }
 
-            result.ImportParameters(new ECParameters { Curve = curve, Q = publicKey });
-
-            return result;
+            return new ECParameters { Curve = curve, Q = publicPoint };
         }
 
         /// <summary>
@@ -116,10 +133,10 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
         private static bool IsGostECDsa(X509Certificate2 certificate)
         {
-            string algName = certificate.PublicKey.Oid.FriendlyName;
             string value = certificate.PublicKey.Oid.Value;
             if (value != GostECDsa256OidValue && value != GostECDsa512OidValue)
                 return false;
+
             foreach (X509Extension extension in certificate.Extensions)
             {
                 if (extension.Oid.Value == "2.5.29.15")

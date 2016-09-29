@@ -81,7 +81,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         private static byte[] ReadTriplet(byte[] rawData, ref int position)
         {
             int start = position;
-            AsnTag tag = ReadTag(rawData, ref position);
+            ReadTag(rawData, ref position);
             int length = ReadLength(rawData, ref position);
             position += length;
             byte[] result = new byte[position - start];

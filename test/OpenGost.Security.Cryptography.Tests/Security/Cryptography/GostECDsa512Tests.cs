@@ -60,6 +60,21 @@ namespace OpenGost.Security.Cryptography
         public new void CheckDefaultKeyGeneration()
             => base.CheckDefaultKeyGeneration();
 
+        [Theory(DisplayName = nameof(GostECDsa512Tests) + "_" + nameof(SignHashNullHashThrowsArgumentNullException))]
+        [MemberData(nameof(RealImplementations))]
+        protected new void SignHashNullHashThrowsArgumentNullException(GostECDsa512 algorithm)
+            => base.SignHashNullHashThrowsArgumentNullException(algorithm);
+
+        [Theory(DisplayName = nameof(GostECDsa512Tests) + "_" + nameof(VerifyHashNullHashThrowsArgumentNullException))]
+        [MemberData(nameof(RealImplementations))]
+        protected new void VerifyHashNullHashThrowsArgumentNullException(GostECDsa512 algorithm)
+            => base.VerifyHashNullHashThrowsArgumentNullException(algorithm);
+
+        [Theory(DisplayName = nameof(GostECDsa512Tests) + "_" + nameof(VerifyHashNullSignatureThrowsArgumentNullException))]
+        [MemberData(nameof(RealImplementations))]
+        protected new void VerifyHashNullSignatureThrowsArgumentNullException(GostECDsa512 algorithm)
+            => base.VerifyHashNullSignatureThrowsArgumentNullException(algorithm);
+
         public static IEnumerable<object[]> TestDomainParameters()
         {
             return new[]
@@ -81,6 +96,11 @@ namespace OpenGost.Security.Cryptography
                     "36ae73e14493e117335c9ccdcb3bc96002859906c997c19e1c0fb28684559254d3acfca8ee783c64c2dce02ec8a312e59e683c1e5e79dd231a0981a060fa862f" // r
                 },
             };
+        }
+
+        public static IEnumerable<object[]> RealImplementations()
+        {
+            yield return new[] { new GostECDsa512Managed() };
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System;
+using System.Security.Cryptography;
+using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -103,5 +105,14 @@ namespace OpenGost.Security.Cryptography
                 parameters.Validate();
             }
         }
+
+        protected void SignHashNullHashThrowsArgumentNullException(T algorithm)
+            => Assert.Throws<ArgumentNullException>("hash", () => algorithm.SignHash(null));
+
+        protected void VerifyHashNullHashThrowsArgumentNullException(T algorithm)
+            => Assert.Throws<ArgumentNullException>("hash", () => algorithm.VerifyHash(null, null));
+
+        protected void VerifyHashNullSignatureThrowsArgumentNullException(T algorithm)
+            => Assert.Throws<ArgumentNullException>("signature", () => algorithm.VerifyHash(new byte[0], null));
     }
 }

@@ -84,5 +84,24 @@ namespace OpenGost.Security.Cryptography
             using (T algorithm = Create())
                 Assert.Equal(expectedSignatureAlgorithm, algorithm.SignatureAlgorithm);
         }
+
+        protected void CheckKeyGeneration(ECCurve curve)
+        {
+            using (T algorithm = Create())
+            {
+                algorithm.GenerateKey(curve);
+                ECParameters parameters = algorithm.ExportParameters(true);
+                parameters.Validate();
+            }
+        }
+
+        protected void CheckDefaultKeyGeneration()
+        {
+            using (T algorithm = Create())
+            {
+                ECParameters parameters = algorithm.ExportParameters(true);
+                parameters.Validate();
+            }
+        }
     }
 }

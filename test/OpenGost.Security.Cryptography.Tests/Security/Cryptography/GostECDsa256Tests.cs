@@ -52,6 +52,14 @@ namespace OpenGost.Security.Cryptography
         public void CheckSignatureAlgorithmProperty()
             => CheckSignatureAlgorithmProperty(GostECDsa256AlgorithmName);
 
+        [Fact(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(CheckKeyGeneration))]
+        public void CheckKeyGeneration()
+            => CheckKeyGeneration(TestDomainParameters256.Curve);
+
+        [Fact(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(CheckDefaultKeyGeneration))]
+        public new void CheckDefaultKeyGeneration()
+           => base.CheckDefaultKeyGeneration();
+
         public static IEnumerable<object[]> TestDomainParameters()
         {
             return new[]

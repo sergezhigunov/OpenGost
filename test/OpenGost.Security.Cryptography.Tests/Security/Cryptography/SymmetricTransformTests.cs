@@ -374,14 +374,7 @@ namespace OpenGost.Security.Cryptography
             }
 
             private ICryptoTransform CreateTransform(byte[] rgbKey, byte[] rgbIV, SymmetricTransformMode transformMode)
-            {
-                if (rgbKey == null)
-                    rgbKey = GenerateRandomBytes(KeySizeValue / 8);
-                if (rgbIV == null)
-                    rgbIV = GenerateRandomBytes(BlockSizeValue / 8);
-
-                return new SimpleSymmetricTransform(rgbKey, rgbIV, BlockSizeValue, ModeValue, PaddingValue, transformMode);
-            }
+                => new SimpleSymmetricTransform(rgbKey, rgbIV, BlockSizeValue, ModeValue, PaddingValue, transformMode);
         }
 
         private class SimpleSymmetricTransform : SymmetricTransform
@@ -399,6 +392,7 @@ namespace OpenGost.Security.Cryptography
             { }
 
             private bool GenerateKeyExpansionCalled { get; set; }
+
             internal bool DisposeCalled { get; private set; }
 
             protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)

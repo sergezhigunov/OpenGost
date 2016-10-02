@@ -20,12 +20,14 @@
   "dependencies": {
     "OpenGost.Security.Cryptography": {
       "target": "project"
-    },
-    "xunit": "2.1.0",
-    "xunit.runner.visualstudio": "2.1.0"
+    }
   },
   "frameworks": {
     "net45": {
+      "dependencies": {
+        "xunit": "2.1.0",
+        "xunit.runner.visualstudio": "2.1.0"
+      },
       "frameworkAssemblies": {
         "System.Runtime": "4.0.0.0",
         "System.Threading.Tasks": "4.0.0.0"

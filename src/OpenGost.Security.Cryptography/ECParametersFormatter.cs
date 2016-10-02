@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET45
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -299,4 +300,5 @@ namespace OpenGost.Security.Cryptography
             return numericValue.ToString("R", CultureInfo.InvariantCulture);
         }
     }
-}
+} 
+#endif

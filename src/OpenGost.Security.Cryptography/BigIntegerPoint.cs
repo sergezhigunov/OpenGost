@@ -1,4 +1,7 @@
 ﻿using System.Numerics;
+#if NETCOREAPP1_0
+using System.Security.Cryptography;
+#endif
 
 namespace OpenGost.Security.Cryptography
 {

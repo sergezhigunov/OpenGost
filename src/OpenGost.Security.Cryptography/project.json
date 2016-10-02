@@ -18,6 +18,14 @@
         "System.Numerics": "4.0.0.0",
         "System.Xml": "4.0.0.0"
       }
+    },
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      }
     }
   }
 }

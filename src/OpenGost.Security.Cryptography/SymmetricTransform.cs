@@ -84,8 +84,7 @@ namespace OpenGost.Security.Cryptography
         /// <exception cref="ArgumentNullException">
         /// <paramref name="key"/> parameter is <c>null</c>.
         /// -or-
-        /// <paramref name="iv"/> parameter is <c>null</c> when <paramref name="cipherMode"/> value is
-        /// <see cref="CipherMode.CBC"/>, <see cref="CipherMode.CFB"/> or <see cref="CipherMode.OFB"/>.
+        /// <paramref name="iv"/> parameter is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="blockSize"/> parameter is non-positive.
@@ -109,8 +108,10 @@ namespace OpenGost.Security.Cryptography
                     break;
 
                 case CipherMode.CBC:
+#if NET45
                 case CipherMode.CFB:
                 case CipherMode.OFB:
+#endif
                     if (iv == null) throw new ArgumentNullException(nameof(iv));
                     _rgbIV = (byte[])iv.Clone();
                     _stateBuffer = new byte[_rgbIV.Length];
@@ -171,7 +172,11 @@ namespace OpenGost.Security.Cryptography
         {
             EraseData(ref _depadBuffer);
 
+#if NET45
             if (_cipherMode == CipherMode.CBC || _cipherMode == CipherMode.CFB || _cipherMode == CipherMode.OFB)
+#elif NETCOREAPP1_0
+            if (_cipherMode == CipherMode.CBC)
+#endif
             {
                 BlockCopy(_rgbIV, 0, _stateBuffer, 0, _rgbIV.Length);
             }
@@ -409,6 +414,7 @@ namespace OpenGost.Security.Cryptography
                     }
                     break;
 
+#if NET45
                 case CipherMode.CFB:
                     for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
@@ -427,7 +433,8 @@ namespace OpenGost.Security.Cryptography
                         BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
                         BlockCopy(_tempBuffer, 0, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
                     }
-                    break;
+                    break; 
+#endif
 
                 default:
                     throw new CryptographicException(CryptographicInvalidCipherMode);
@@ -464,11 +471,13 @@ namespace OpenGost.Security.Cryptography
                     EncryptBlock(_tempBuffer, 0, outputBuffer, outputOffset + shift);
                     break;
 
+#if NET45
                 case CipherMode.CFB:
                 case CipherMode.OFB:
                     EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
                     Xor(_tempBuffer, 0, tmpInputBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
-                    break;
+                    break; 
+#endif
 
                 default:
                     throw new CryptographicException(CryptographicInvalidCipherMode);
@@ -494,8 +503,10 @@ namespace OpenGost.Security.Cryptography
                     break;
 
                 case PaddingMode.PKCS7:
+#if NET45
                 case PaddingMode.ANSIX923:
-                case PaddingMode.ISO10126:
+                case PaddingMode.ISO10126: 
+#endif
                     padSize = InputBlockSize - lonelyBytes;
                     break;
             }
@@ -518,6 +529,7 @@ namespace OpenGost.Security.Cryptography
                             padBytes[index] = (byte)padSize;
                         break;
 
+#if NET45
                     case PaddingMode.ANSIX923:
                         // padBytes is already initialized with zeros. Simply change the last byte
                         padBytes[padSize - 1] = (byte)padSize;
@@ -528,7 +540,8 @@ namespace OpenGost.Security.Cryptography
                         StaticRandomNumberGenerator.GetBytes(padBytes);
                         // and change the last byte
                         padBytes[padSize - 1] = (byte)padSize;
-                        break;
+                        break; 
+#endif
                 }
             }
 
@@ -562,6 +575,7 @@ namespace OpenGost.Security.Cryptography
                     }
                     break;
 
+#if NET45
                 case CipherMode.CFB:
                     for (int shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
@@ -580,7 +594,8 @@ namespace OpenGost.Security.Cryptography
                         BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
                         BlockCopy(_tempBuffer, 0, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
                     }
-                    break;
+                    break; 
+#endif
 
                 default:
                     throw new CryptographicException(CryptographicInvalidCipherMode);
@@ -609,6 +624,7 @@ namespace OpenGost.Security.Cryptography
                     RemovePadding(ref outputBuffer, padSize);
                     break;
 
+#if NET45
                 case PaddingMode.ANSIX923:
                     padSize = GetValidPadSize(inputCount, outputBuffer);
 
@@ -624,7 +640,8 @@ namespace OpenGost.Security.Cryptography
                     padSize = GetValidPadSize(inputCount, outputBuffer);
                     // no additional check, just ignore the random bytes
                     RemovePadding(ref outputBuffer, padSize);
-                    break;
+                    break; 
+#endif
             }
 
             return outputBuffer.Length;

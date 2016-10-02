@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿#if NET45
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
 namespace OpenGost.Security.Cryptography
@@ -58,3 +59,4 @@ namespace OpenGost.Security.Cryptography
     }
 }
 
+#endif

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿#if NET45
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -20,4 +21,5 @@ namespace OpenGost.Security.Cryptography
         [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public byte[] Y;
     }
-}
+} 
+#endif

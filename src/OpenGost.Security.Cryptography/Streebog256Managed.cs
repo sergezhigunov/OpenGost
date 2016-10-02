@@ -36,10 +36,7 @@ namespace OpenGost.Security.Cryptography
         /// <summary>
         /// Initializes an instance of <see cref="Streebog256Managed"/>.
         /// </summary>
-        public override void Initialize()
-        {
-            _innerAlgorithm.Initialize();
-        }
+        public override void Initialize() => _innerAlgorithm.Initialize();
 
         /// <summary>
         /// Routes data written to the object into the <see cref="Streebog256"/> hash algorithm for computing the hash.
@@ -54,7 +51,7 @@ namespace OpenGost.Security.Cryptography
         /// The number of bytes in the array to use as data. 
         /// </param>
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
-            => _innerAlgorithm.TransformBlock(array, ibStart, cbSize, null, 0);
+            => _innerAlgorithm.InternalHashCore(array, ibStart, cbSize);
 
         /// <summary>
         /// Returns the computed <see cref="Streebog256"/> hash value after all data has been written to the object.
@@ -64,9 +61,9 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         protected override byte[] HashFinal()
         {
-            _innerAlgorithm.TransformFinalBlock(EmptyArray<byte>.Value, 0, 0);
+            byte[] innerHash = _innerAlgorithm.InternalHashFinal();
             byte[] hash = new byte[32];
-            BlockCopy(_innerAlgorithm.Hash, 32, hash, 0, 32);
+            BlockCopy(innerHash, 32, hash, 0, 32);
             return hash;
         }
 
@@ -81,7 +78,8 @@ namespace OpenGost.Security.Cryptography
         {
             base.Dispose(disposing);
 
-            _innerAlgorithm.Dispose();
+            if (disposing)
+                _innerAlgorithm.Dispose();
         }
     }
 }

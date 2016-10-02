@@ -6,7 +6,9 @@ using System.Security.Cryptography;
 namespace OpenGost.Security.Cryptography
 {
     using static Buffer;
-    using static CryptoConfig;
+#if NET45
+    using static CryptoConfig; 
+#endif
     using static CryptoConstants;
     using static CryptoUtils;
     using static SecurityCryptographyStrings;
@@ -45,6 +47,7 @@ namespace OpenGost.Security.Cryptography
         private int _bufferLength;
         private bool _hashing = false;
 
+#if NET45
         /// <summary>
         /// Gets or sets the key to use in the hash algorithm.
         /// </summary>
@@ -69,6 +72,7 @@ namespace OpenGost.Security.Cryptography
                 KeyValue = (byte[])value.Clone();
             }
         }
+#endif
 
         /// <summary>
         /// Gets or sets the name of the symmetric algorithm to use for hashing.
@@ -96,6 +100,9 @@ namespace OpenGost.Security.Cryptography
                 if (_hashing)
                     throw new CryptographicException(CryptographicSymmetricAlgorithmNameSet);
 
+#if NETCOREAPP1_0
+                throw new PlatformNotSupportedException(CryptoConfigNotSupportedCmac);
+#elif NET45
                 _symmetricAlgorithm = SymmetricAlgorithm.Create(value);
 
                 if (_symmetricAlgorithm == null)
@@ -117,6 +124,7 @@ namespace OpenGost.Security.Cryptography
 
                 _buffer = new byte[_bytesPerBlock];
                 _temp = new byte[_bytesPerBlock];
+#endif
             }
         }
 
@@ -226,7 +234,11 @@ namespace OpenGost.Security.Cryptography
         {
             if (disposing)
             {
+#if NETCOREAPP1_0
+                _symmetricAlgorithm?.Dispose();
+#elif NET45
                 _symmetricAlgorithm?.Clear();
+#endif
                 _encryptor?.Dispose();
                 EraseData(ref _subkey1);
                 EraseData(ref _subkey2);
@@ -237,6 +249,7 @@ namespace OpenGost.Security.Cryptography
             base.Dispose(disposing);
         }
 
+#if NET45
         #region Creation factory methods
 
         /// <summary>
@@ -263,6 +276,7 @@ namespace OpenGost.Security.Cryptography
             => (CMAC)CreateFromName(algorithmName);
 
         #endregion
+#endif
 
         private void EnsureEncryptorInitialized()
         {

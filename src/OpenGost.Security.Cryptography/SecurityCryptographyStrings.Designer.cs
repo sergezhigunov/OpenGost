@@ -123,6 +123,15 @@ namespace OpenGost.Security.Cryptography {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Accessing a symmetric algorithm by manipulating the SymmetricAlgorithmName property is not supported on this platform. Instead, you must instantiate one of the supplied subtypes (such as CMACGrasshopper.).
+        /// </summary>
+        public static string CryptoConfigNotSupportedCmac {
+            get {
+                return ResourceManager.GetString("CryptoConfigNotSupportedCmac", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to The specified curve &apos;{0}&apos; or its parameters are not valid for this platform..
         /// </summary>
         public static string CryptographicCurveNotSupported {

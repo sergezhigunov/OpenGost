@@ -1,4 +1,5 @@
-﻿namespace OpenGost.Security.Cryptography
+﻿#if NET45
+namespace OpenGost.Security.Cryptography
 {
     /// <summary>
     /// Represents the type of elliptic curve.
@@ -35,4 +36,5 @@
         /// </summary>
         Named = 5,
     }
-}
+} 
+#endif

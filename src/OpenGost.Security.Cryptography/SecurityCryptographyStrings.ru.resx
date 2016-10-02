@@ -138,6 +138,9 @@
   <data name="ArgumentOutOfRangeStartIndexLargerThanLength" xml:space="preserve">
     <value>Индекс начала подмассива не может быть больше, чем длина массива.</value>
   </data>
+  <data name="CryptoConfigNotSupportedCmac" xml:space="preserve">
+    <value>Доступ к симметричному алгоритму путем задания значения свойства SymmetricAlgorithmName не аоддерживается платформой. Вместо этого, необходимо создать экземпляр класса-наследника (например, CMACGrasshopper.)</value>
+  </data>
   <data name="CryptographicCurveNotSupported" xml:space="preserve">
     <value>Заданная эллиптическая кривая "{0}" или её параметры недопустимы для текущей платформы.</value>
   </data>

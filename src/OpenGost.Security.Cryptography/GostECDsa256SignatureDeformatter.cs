@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET45
+using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
@@ -111,3 +112,4 @@ namespace OpenGost.Security.Cryptography
         }
     }
 }
+#endif

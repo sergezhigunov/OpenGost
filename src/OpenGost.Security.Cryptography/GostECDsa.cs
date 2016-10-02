@@ -4,8 +4,10 @@ using System.Security.Cryptography;
 
 namespace OpenGost.Security.Cryptography
 {
+#if NET45
     using static CryptoConfig;
-    using static CryptoConstants;
+    using static CryptoConstants; 
+#endif
 
     /// <summary>
     /// Provides an abstract base class that encapsulates the GOST
@@ -14,13 +16,15 @@ namespace OpenGost.Security.Cryptography
     [ComVisible(true)]
     public abstract class GostECDsa : AsymmetricAlgorithm
     {
+#if NET45
         /// <summary>
         /// Gets the name of the key exchange algorithm.
         /// </summary>
         /// <value>
         /// Always <c>null</c>.
         /// </value>
-        public override string KeyExchangeAlgorithm => null;
+        public override string KeyExchangeAlgorithm => null; 
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsa"/> class.
@@ -103,6 +107,7 @@ namespace OpenGost.Security.Cryptography
         [ComVisible(false)]
         public abstract void ImportParameters(ECParameters parameters);
 
+#if NET45
         /// <summary>
         /// Reconstructs a <see cref="GostECDsa"/> object from an XML string.
         /// </summary>
@@ -165,5 +170,6 @@ namespace OpenGost.Security.Cryptography
             => (GostECDsa)CreateFromName(algorithmName);
 
         #endregion
+#endif
     }
 }

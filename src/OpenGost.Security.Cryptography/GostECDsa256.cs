@@ -3,8 +3,10 @@ using System.Security.Cryptography;
 
 namespace OpenGost.Security.Cryptography
 {
+#if NET45
     using static CryptoConfig;
-    using static CryptoConstants;
+    using static CryptoConstants; 
+#endif
 
     /// <summary>
     /// Provides an abstract base class that encapsulates the 256-bit version of
@@ -15,13 +17,15 @@ namespace OpenGost.Security.Cryptography
     {
         private static readonly KeySizes[] s_legalKeySizes = { new KeySizes(256, 256, 0) };
 
+#if NET45
         /// <summary>
         /// Gets the name of the signature algorithm.
         /// </summary>
         /// <value>
         /// Always <c>"GostECDsa256"</c>.
         /// </value>
-        public override string SignatureAlgorithm => GostECDsa256AlgorithmName;
+        public override string SignatureAlgorithm => GostECDsa256AlgorithmName; 
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsa256"/> class.
@@ -32,6 +36,7 @@ namespace OpenGost.Security.Cryptography
             KeySizeValue = 256;
         }
 
+#if NET45
         #region Creation factory methods
 
         /// <summary>
@@ -57,6 +62,7 @@ namespace OpenGost.Security.Cryptography
         public new static GostECDsa256 Create(string algorithmName)
             => (GostECDsa256)CreateFromName(algorithmName);
 
-        #endregion
+        #endregion  
+#endif
     }
 }

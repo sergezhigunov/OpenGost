@@ -214,8 +214,19 @@ namespace OpenGost.Security.Cryptography
         /// <param name="cbSize">
         /// The number of bytes in the array to use as data. 
         /// </param>
-        [SuppressMessage("Microsoft.Usage", "CA2233:OperationsShouldNotOverflow", MessageId = "ibStart+64")]
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
+            => InternalHashCore(array, ibStart, cbSize);
+
+        /// <summary>
+        /// Returns the computed <see cref="Streebog512"/> hash value after all data has been written to the object.
+        /// </summary>
+        /// <returns>
+        /// The computed hash code.
+        /// </returns>
+        protected override byte[] HashFinal() => InternalHashFinal();
+
+        [SuppressMessage("Microsoft.Usage", "CA2233:OperationsShouldNotOverflow", MessageId = "ibStart+64")]
+        internal void InternalHashCore(byte[] array, int ibStart, int cbSize)
         {
             // Compute length of buffer 
             int bufferLen = (int)(_count & 0x3f);
@@ -246,13 +257,7 @@ namespace OpenGost.Security.Cryptography
                 BlockCopy(array, ibStart, _buffer, bufferLen, cbSize);
         }
 
-        /// <summary>
-        /// Returns the computed <see cref="Streebog512"/> hash value after all data has been written to the object.
-        /// </summary>
-        /// <returns>
-        /// The computed hash code.
-        /// </returns>
-        protected override byte[] HashFinal()
+        internal byte[] InternalHashFinal()
         {
             // Compute length of buffer 
             int bufferLen = (int)(_count & 0x3f);

@@ -70,43 +70,6 @@ namespace OpenGost.Security.Cryptography.X509Certificates
             return result;
         }
 
-        private static ECParameters ReadParameters(PublicKey publicKey)
-        {
-            byte[] publicKeyValue = DecodeOctetString(publicKey.EncodedKeyValue);
-            int keySize = publicKeyValue.Length / 2;
-            var publicPoint = new ECPoint
-            {
-                X = publicKeyValue.Subarray(0, keySize),
-                Y = publicKeyValue.Subarray(keySize),
-            };
-
-            EraseData(ref publicKeyValue);
-
-            ECCurve curve = default(ECCurve);
-
-            foreach (AsnEncodedData item in DecodeSequence(publicKey.EncodedParameters))
-            {
-                AsnTag tag = GetAsnTag(item);
-                if (tag == AsnTag.ObjectIdentifier)
-                {
-                    string oidValue = DecodeOidValue(item);
-                    if (OidValueRegistered(oidValue))
-                    {
-                        curve = ECCurve.CreateFromValue(oidValue);
-                        continue;
-                    }
-                    else if (oidValue == Streebog256OidValue || oidValue == Streebog512OidValue)
-                        continue;
-                    else
-                        throw new NotImplementedException();
-                }
-                else
-                    throw new NotImplementedException();
-            }
-
-            return new ECParameters { Curve = curve, Q = publicPoint };
-        }
-
         /// <summary>
         /// Gets the <see cref="GostECDsa"/> private key from the <see cref="X509Certificate2"/>
         /// certificate.
@@ -157,6 +120,43 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                 }
             }
             return true;
+        }
+
+        private static ECParameters ReadParameters(PublicKey publicKey)
+        {
+            byte[] publicKeyValue = DecodeOctetString(publicKey.EncodedKeyValue);
+            int keySize = publicKeyValue.Length / 2;
+            var publicPoint = new ECPoint
+            {
+                X = publicKeyValue.Subarray(0, keySize),
+                Y = publicKeyValue.Subarray(keySize),
+            };
+
+            EraseData(ref publicKeyValue);
+
+            ECCurve curve = default(ECCurve);
+
+            foreach (AsnEncodedData item in DecodeSequence(publicKey.EncodedParameters))
+            {
+                AsnTag tag = GetAsnTag(item);
+                if (tag == AsnTag.ObjectIdentifier)
+                {
+                    string oidValue = DecodeOidValue(item);
+                    if (OidValueRegistered(oidValue))
+                    {
+                        curve = ECCurve.CreateFromValue(oidValue);
+                        continue;
+                    }
+                    else if (oidValue == Streebog256OidValue || oidValue == Streebog512OidValue)
+                        continue;
+                    else
+                        throw new NotImplementedException();
+                }
+                else
+                    throw new NotImplementedException();
+            }
+
+            return new ECParameters { Curve = curve, Q = publicPoint };
         }
     }
 }

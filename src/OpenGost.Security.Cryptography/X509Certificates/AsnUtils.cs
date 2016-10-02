@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
-    using System.Text;
     using static Buffer;
 
     internal static class AsnUtils

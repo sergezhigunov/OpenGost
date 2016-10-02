@@ -5,7 +5,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.XPath;
-using OpenGost.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -22,8 +21,7 @@ namespace OpenGost.Security.Cryptography
         {
             string mscorlibVersion = typeof(CryptoConfig).Assembly.GetName().Version.ToString();
 
-            using (var stream = new MemoryStream(Resources.CryptoConfig))
-            using (XmlReader reader = XmlReader.Create(stream))
+            using (XmlReader reader = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Tests.Crypto.config"))
             {
                 var document = new XPathDocument(reader);
                 XPathNavigator navigator = document.CreateNavigator();

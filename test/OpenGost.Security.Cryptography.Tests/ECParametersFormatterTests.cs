@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
-using OpenGost.Properties;
 using Xunit;
 
 namespace OpenGost.Security.Cryptography
@@ -19,7 +18,7 @@ namespace OpenGost.Security.Cryptography
         private static XmlSchemaSet LoadECDsaXmlSchemaSet()
         {
             var schemas = new XmlSchemaSet();
-            using (var stream = new MemoryStream(Resources.ECDsaXmlSchema))
+            using (var stream = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Tests.ECDsa.xsd"))
                 schemas.Add(XmlSchema.Read(stream, null));
             schemas.Compile();
             return schemas;

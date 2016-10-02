@@ -1,0 +1,20 @@
+﻿{
+  "buildOptions": {
+    "allowUnsafe": true,
+    "keyFile": "..\\..\\tools\\key.snk",
+    "warningsAsErrors": true,
+    "xmlDoc": true
+  },
+  "dependencies": {
+  },
+  "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Numerics": "4.0.0.0",
+        "System.Xml": "4.0.0.0"
+      }
+    }
+  },
+  "language": "en-US",
+  "version": "0.0.1-*"
+}

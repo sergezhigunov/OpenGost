@@ -1,11 +1,16 @@
 ﻿{
+  "name": "OpenGost.Security.Cryptography",
+  "version": "0.0.1-*",
+  "description": "OpenGost.Security.Cryptography.dll",
+  "copyright": "Copyright © 2016 Serge Zhigunov",
+  "title": "OpenGost.Security.Cryptography.dll",
+  "authors": [ "Serge Zhigunov" ],
+  "language": "en-US",
   "buildOptions": {
     "allowUnsafe": true,
     "keyFile": "..\\..\\tools\\key.snk",
     "warningsAsErrors": true,
     "xmlDoc": true
-  },
-  "dependencies": {
   },
   "frameworks": {
     "net45": {
@@ -14,7 +19,5 @@
         "System.Xml": "4.0.0.0"
       }
     }
-  },
-  "language": "en-US",
-  "version": "0.0.1-*"
+  }
 }

@@ -6,6 +6,7 @@ namespace OpenGost.Security.Cryptography
 {
     using static SecurityCryptographyStrings;
 
+
     /// <summary>
     /// Represents the public and private key of the specified elliptic curve.
     /// </summary>

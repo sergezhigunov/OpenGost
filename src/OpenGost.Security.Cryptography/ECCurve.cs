@@ -11,7 +11,7 @@ namespace OpenGost.Security.Cryptography
     /// An elliptic curve.
     /// </summary>
     [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
-    public struct ECCurve
+    public partial struct ECCurve
     {
         private Oid _oid;
 

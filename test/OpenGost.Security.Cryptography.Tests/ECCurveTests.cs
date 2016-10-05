@@ -5,6 +5,8 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
+    using static ECCurve;
+
     public class ECCurveTests : CryptoConfigRequiredTest
     {
         [Theory(DisplayName = nameof(ECCurveTests) + "_" + nameof(CreateFromValue))]

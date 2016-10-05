@@ -6,9 +6,7 @@ using System.Security.Cryptography;
 
 namespace OpenGost.Security.Cryptography
 {
-#if NETCOREAPP1_0
     using static ECCurve;
-#endif
 
     internal static class ECCurveOidMap
     {

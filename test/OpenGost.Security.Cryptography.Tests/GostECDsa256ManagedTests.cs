@@ -5,7 +5,7 @@ namespace OpenGost.Security.Cryptography
 {
     using static CryptoConstants;
 
-    public class GostECDsa256Tests : GostECDsaTest<GostECDsa256>
+    public class GostECDsa256ManagedTests : GostECDsaTest<GostECDsa256Managed>
     {
         #region 256-bit test domain parameters as described in GOST 34.10-2012
 
@@ -22,57 +22,55 @@ namespace OpenGost.Security.Cryptography
 
         #endregion
 
-        protected override GostECDsa256 Create() => GostECDsa256.Create();
-
-        [Theory(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(SignAndVerifyHash))]
+        [Theory(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(SignAndVerifyHash))]
         [MemberData(nameof(TestDomainParameters))]
         public new void SignAndVerifyHash(ECParameters parameters)
             => base.SignAndVerifyHash(parameters);
 
-        [Theory(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(VerifyHashTestCases))]
+        [Theory(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(VerifyHashTestCases))]
         [MemberData(nameof(TestCases))]
         public void VerifyHashTestCases(ECParameters parameters, string hashHex, string signatureHex)
             => Assert.True(VerifyHash(parameters, hashHex, signatureHex));
 
-        [Theory(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(ExportParametersTest))]
+        [Theory(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(ExportParametersTest))]
         [MemberData(nameof(TestDomainParameters))]
         public void ExportParametersTest(ECParameters parameters)
             => CheckExportParameters(parameters);
 
-        [Theory(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(CheckWriteAndReadXmlString))]
+        [Theory(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(CheckWriteAndReadXmlString))]
         [MemberData(nameof(TestDomainParameters))]
         public void CheckWriteAndReadXmlString(ECParameters parameters)
             => WriteAndReadXmlString(parameters);
 
-        [Fact(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(CheckKeyExchangeAlgorithmProperty))]
+        [Fact(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(CheckKeyExchangeAlgorithmProperty))]
         public new void CheckKeyExchangeAlgorithmProperty()
             => base.CheckKeyExchangeAlgorithmProperty();
 
-        [Fact(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(CheckSignatureAlgorithmProperty))]
+        [Fact(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(CheckSignatureAlgorithmProperty))]
         public void CheckSignatureAlgorithmProperty()
             => CheckSignatureAlgorithmProperty(GostECDsa256AlgorithmName);
 
-        [Fact(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(CheckKeyGeneration))]
+        [Fact(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(CheckKeyGeneration))]
         public void CheckKeyGeneration()
             => CheckKeyGeneration(TestDomainParameters256.Curve);
 
-        [Fact(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(CheckDefaultKeyGeneration))]
+        [Fact(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(CheckDefaultKeyGeneration))]
         public new void CheckDefaultKeyGeneration()
            => base.CheckDefaultKeyGeneration();
 
-        [Theory(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(SignHashNullHashThrowsArgumentNullException))]
+        [Theory(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(SignHashNullHashThrowsArgumentNullException))]
         [MemberData(nameof(RealImplementations))]
-        protected new void SignHashNullHashThrowsArgumentNullException(GostECDsa256 algorithm)
+        protected new void SignHashNullHashThrowsArgumentNullException(GostECDsa256Managed algorithm)
            => base.SignHashNullHashThrowsArgumentNullException(algorithm);
 
-        [Theory(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(VerifyHashNullHashThrowsArgumentNullException))]
+        [Theory(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(VerifyHashNullHashThrowsArgumentNullException))]
         [MemberData(nameof(RealImplementations))]
-        protected new void VerifyHashNullHashThrowsArgumentNullException(GostECDsa256 algorithm)
+        protected new void VerifyHashNullHashThrowsArgumentNullException(GostECDsa256Managed algorithm)
             => base.VerifyHashNullHashThrowsArgumentNullException(algorithm);
 
-        [Theory(DisplayName = nameof(GostECDsa256Tests) + "_" + nameof(VerifyHashNullSignatureThrowsArgumentNullException))]
+        [Theory(DisplayName = nameof(GostECDsa256ManagedTests) + "_" + nameof(VerifyHashNullSignatureThrowsArgumentNullException))]
         [MemberData(nameof(RealImplementations))]
-        protected new void VerifyHashNullSignatureThrowsArgumentNullException(GostECDsa256 algorithm)
+        protected new void VerifyHashNullSignatureThrowsArgumentNullException(GostECDsa256Managed algorithm)
             => base.VerifyHashNullSignatureThrowsArgumentNullException(algorithm);
 
         public static IEnumerable<object[]> TestDomainParameters()

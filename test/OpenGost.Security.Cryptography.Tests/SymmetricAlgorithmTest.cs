@@ -4,10 +4,9 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public abstract class SymmetricAlgorithmTest : CryptoConfigRequiredTest
+    public abstract class SymmetricAlgorithmTest<T>
+        where T : SymmetricAlgorithm, new()
     {
-        protected abstract SymmetricAlgorithm Create();
-
         protected void Verify(CipherMode mode, PaddingMode padding, string plainTextHex, string cipherTextHex, string keyHex, string ivHex)
         {
             byte[]
@@ -15,37 +14,34 @@ namespace OpenGost.Security.Cryptography
                 keyBytes = keyHex.HexToByteArray(),
                 ivBytes = ivHex.HexToByteArray();
 
-            SymmetricAlgorithm algorithm = Create();
-            algorithm.Mode = mode;
-            algorithm.Padding = padding;
-            algorithm.Key = keyBytes;
-            algorithm.IV = ivBytes;
-
-            byte[] encryptedBytes;
-            var input = new MemoryStream(plainTextBytes);
-            using (CryptoStream cryptoStream = new CryptoStream(input, algorithm.CreateEncryptor(), CryptoStreamMode.Read))
-            using (MemoryStream output = new MemoryStream())
+            using (var algorithm = new T { Mode = mode, Padding = padding, Key = keyBytes, IV = ivBytes })
             {
-                cryptoStream.CopyTo(output);
-                encryptedBytes = output.ToArray();
+                byte[] encryptedBytes;
+                var input = new MemoryStream(plainTextBytes);
+                using (CryptoStream cryptoStream = new CryptoStream(input, algorithm.CreateEncryptor(), CryptoStreamMode.Read))
+                using (MemoryStream output = new MemoryStream())
+                {
+                    cryptoStream.CopyTo(output);
+                    encryptedBytes = output.ToArray();
+                }
+
+                Assert.NotEqual(plainTextBytes, encryptedBytes);
+
+                byte[] cipherTextBytes = cipherTextHex.HexToByteArray();
+
+                Assert.Equal(cipherTextBytes, encryptedBytes);
+
+                byte[] decryptedBytes;
+                input = new MemoryStream(encryptedBytes);
+                using (CryptoStream cryptoStream = new CryptoStream(input, algorithm.CreateDecryptor(), CryptoStreamMode.Read))
+                using (MemoryStream output = new MemoryStream())
+                {
+                    cryptoStream.CopyTo(output);
+                    decryptedBytes = output.ToArray();
+                }
+
+                Assert.Equal(plainTextBytes, decryptedBytes);
             }
-
-            Assert.NotEqual(plainTextBytes, encryptedBytes);
-
-            byte[] cipherTextBytes = cipherTextHex.HexToByteArray();
-
-            Assert.Equal(cipherTextBytes, encryptedBytes);
-
-            byte[] decryptedBytes;
-            input = new MemoryStream(encryptedBytes);
-            using (CryptoStream cryptoStream = new CryptoStream(input, algorithm.CreateDecryptor(), CryptoStreamMode.Read))
-            using (MemoryStream output = new MemoryStream())
-            {
-                cryptoStream.CopyTo(output);
-                decryptedBytes = output.ToArray();
-            }
-
-            Assert.Equal(plainTextBytes, decryptedBytes);
         }
     }
 }

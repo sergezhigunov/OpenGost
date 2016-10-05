@@ -3,14 +3,11 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class MagmaTests : SymmetricAlgorithmTest
+    public class MagmaTests : SymmetricAlgorithmTest<MagmaManaged>
     {
         private const string
             PlainText = "92def06b3c130a59db54c704f8189d204a98fb2e67a8024c8912409b17b57e41",
             Key = "ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff";
-
-        protected override SymmetricAlgorithm Create()
-            => Magma.Create();
 
         [Theory(DisplayName = nameof(Magma) + "_" + nameof(EncryptAndDecrypt))]
         [InlineData(CipherMode.ECB, PaddingMode.None, "1234567890abcdef234567890abcdef134567890abcdef12",

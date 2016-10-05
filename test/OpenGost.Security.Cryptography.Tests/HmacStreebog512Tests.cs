@@ -3,14 +3,9 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConstants;
-
-    public class HmacStreebog512Tests : HmacTest
+    public class HmacStreebog512Tests : HmacTest<HMACStreebog512>
     {
         protected override int BlockSize => 64;
-
-        protected override HMAC Create()
-            => HMAC.Create(HMACStreebog512AlgorithmFullName);
 
         protected override HashAlgorithm CreateHashAlgorithm()
             => Streebog512.Create();

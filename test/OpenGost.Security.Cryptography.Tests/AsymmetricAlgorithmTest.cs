@@ -2,14 +2,12 @@
 
 namespace OpenGost.Security.Cryptography
 {
-    public abstract class AsymmetricAlgorithmTest<T> : CryptoConfigRequiredTest
-        where T : AsymmetricAlgorithm
+    public abstract class AsymmetricAlgorithmTest<T>
+        where T : AsymmetricAlgorithm, new()
     {
-        protected abstract T Create();
-
         protected T Create(string xmlString)
         {
-            var algorithm = Create();
+            var algorithm = new T();
             algorithm.FromXmlString(xmlString);
             return algorithm;
         }

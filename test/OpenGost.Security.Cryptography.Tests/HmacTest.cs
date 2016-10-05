@@ -3,11 +3,10 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public abstract class HmacTest : CryptoConfigRequiredTest
+    public abstract class HmacTest<T> : CryptoConfigRequiredTest
+        where T : HMAC, new()
     {
         protected abstract int BlockSize { get; }
-
-        protected abstract HMAC Create();
 
         protected abstract HashAlgorithm CreateHashAlgorithm();
 
@@ -16,7 +15,7 @@ namespace OpenGost.Security.Cryptography
             byte[] digestBytes = digestHex.HexToByteArray();
             byte[] computedDigest;
 
-            using (HMAC hmac = Create())
+            using (var hmac = new T())
             {
                 Assert.True(hmac.HashSize > 0);
 
@@ -40,7 +39,7 @@ namespace OpenGost.Security.Cryptography
         protected void VerifyHmacRfc2104()
         {
             // Ensure that keys shorter than the threshold don't get altered.
-            using (HMAC hmac = Create())
+            using (var hmac = new T())
             {
                 byte[] key = new byte[BlockSize];
                 hmac.Key = key;
@@ -49,7 +48,7 @@ namespace OpenGost.Security.Cryptography
             }
 
             // Ensure that keys longer than the threshold are adjusted via Rfc2104 Section 2.
-            using (HMAC hmac = Create())
+            using (var hmac = new T())
             {
                 byte[] overSizedKey = new byte[BlockSize + 1];
                 hmac.Key = overSizedKey;

@@ -1,15 +1,11 @@
 ﻿using System.Text;
-using System.Security.Cryptography;
 using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class Streebog256Tests : HashAlgorithmTest
+    public class Streebog256ManagedTests : HashAlgorithmTest<Streebog256Managed>
     {
         private static readonly Encoding CurrentEncoding = Encoding.GetEncoding(1251);
-
-        protected override HashAlgorithm Create()
-            => Streebog256.Create();
 
         [Theory(DisplayName = nameof(Streebog256) + "_" + nameof(Hash))]
         [InlineData(

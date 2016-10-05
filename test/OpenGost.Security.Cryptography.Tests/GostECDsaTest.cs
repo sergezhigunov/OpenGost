@@ -7,11 +7,11 @@ namespace OpenGost.Security.Cryptography
     using static ECHelper;
 
     public abstract class GostECDsaTest<T> : AsymmetricAlgorithmTest<T>
-        where T : GostECDsa
+        where T : GostECDsa, new()
     {
         protected T Create(ECParameters parameters)
         {
-            T algorithm = Create();
+            var algorithm = new T();
             algorithm.ImportParameters(parameters);
             return algorithm;
         }
@@ -76,19 +76,19 @@ namespace OpenGost.Security.Cryptography
 
         protected void CheckKeyExchangeAlgorithmProperty()
         {
-            using (T algorithm = Create())
+            using (var algorithm = new T())
                 Assert.Null(algorithm.KeyExchangeAlgorithm);
         }
 
         protected void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
         {
-            using (T algorithm = Create())
+            using (var algorithm = new T())
                 Assert.Equal(expectedSignatureAlgorithm, algorithm.SignatureAlgorithm);
         }
 
         protected void CheckKeyGeneration(ECCurve curve)
         {
-            using (T algorithm = Create())
+            using (var algorithm = new T())
             {
                 algorithm.GenerateKey(curve);
                 ECParameters parameters = algorithm.ExportParameters(true);
@@ -98,7 +98,7 @@ namespace OpenGost.Security.Cryptography
 
         protected void CheckDefaultKeyGeneration()
         {
-            using (T algorithm = Create())
+            using (var algorithm = new T())
             {
                 ECParameters parameters = algorithm.ExportParameters(true);
                 parameters.Validate();

@@ -3,14 +3,8 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConfig;
-    using static CryptoConstants;
-
     public class GostECDsa256SignatureDescriptionTests : SignatureDescriptionTest<GostECDsa256SignatureDescription>
     {
-        protected override GostECDsa256SignatureDescription Create()
-            => (GostECDsa256SignatureDescription)CreateFromName(GostECDsa256SignatureDescriptionFullName);
-
         [Fact(DisplayName = nameof(GostECDsa256SignatureDescriptionTests) + "_" + nameof(ValidateCreateDigest))]
         public void ValidateCreateDigest()
         {

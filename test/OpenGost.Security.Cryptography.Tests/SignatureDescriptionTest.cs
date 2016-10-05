@@ -3,17 +3,15 @@
 namespace OpenGost.Security.Cryptography
 {
     public abstract class SignatureDescriptionTest<T> : CryptoConfigRequiredTest
-        where T : SignatureDescription
+        where T : SignatureDescription, new()
     {
-        protected abstract T Create();
-
         protected HashAlgorithm CreateDigest()
-            => Create().CreateDigest();
+            => new T().CreateDigest();
 
         protected AsymmetricSignatureFormatter CreateFormatter(AsymmetricAlgorithm key)
-            => Create().CreateFormatter(key);
+            => new T().CreateFormatter(key);
 
         protected AsymmetricSignatureDeformatter CreateDeformatter(AsymmetricAlgorithm key)
-            => Create().CreateDeformatter(key);
+            => new T().CreateDeformatter(key);
     }
 }

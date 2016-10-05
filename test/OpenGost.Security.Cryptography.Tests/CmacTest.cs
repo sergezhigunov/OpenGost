@@ -2,16 +2,15 @@
 
 namespace OpenGost.Security.Cryptography
 {
-    public abstract class CmacTest : CryptoConfigRequiredTest
+    public abstract class CmacTest<T> : CryptoConfigRequiredTest
+        where T : CMAC, new()
     {
-        protected abstract CMAC Create();
-
         protected void VerifyCmac(string dataHex, string keyHex, string digestHex)
         {
             byte[] digestBytes = digestHex.HexToByteArray();
             byte[] computedDigest;
 
-            using (CMAC cmac = Create())
+            using (var cmac = new T())
             {
                 Assert.True(cmac.HashSize > 0);
 

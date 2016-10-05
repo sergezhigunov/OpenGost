@@ -4,10 +4,9 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public abstract class HashAlgorithmTest : CryptoConfigRequiredTest
+    public abstract class HashAlgorithmTest<T>
+        where T : HashAlgorithm, new()
     {
-        protected abstract HashAlgorithm Create();
-
         protected void Verify(string input, Encoding inputEncoding, string expectedHexadecimal)
             => Verify(inputEncoding.GetBytes(input), expectedHexadecimal);
 
@@ -16,7 +15,7 @@ namespace OpenGost.Security.Cryptography
             byte[] expected = expectedHexadecimal.HexToByteArray();
             byte[] actual;
 
-            using (HashAlgorithm hash = Create())
+            using (var hash = new T())
             {
                 Assert.True(hash.HashSize > 0);
                 actual = hash.ComputeHash(input, 0, input.Length);

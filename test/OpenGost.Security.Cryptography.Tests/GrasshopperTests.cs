@@ -3,15 +3,12 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class GrasshopperTests : SymmetricAlgorithmTest
+    public class GrasshopperTests : SymmetricAlgorithmTest<GrasshopperManaged>
     {
         private const string
             PlainText = "1122334455667700ffeeddccbbaa998800112233445566778899aabbcceeff0a112233445566778899aabbcceeff0a002233445566778899aabbcceeff0a0011",
             Key = "8899aabbccddeeff0011223344556677fedcba98765432100123456789abcdef",
             IV = "1234567890abcef0a1b2c3d4e5f0011223344556677889901213141516171819";
-
-        protected override SymmetricAlgorithm Create()
-            => Grasshopper.Create();
 
         [Theory(DisplayName = nameof(Grasshopper) + "_" + nameof(EncryptAndDecrypt))]
         [InlineData(CipherMode.ECB, PaddingMode.None,

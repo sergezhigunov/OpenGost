@@ -25,8 +25,8 @@ namespace OpenGost.Security.Cryptography
         {
             return new[]
             {
-                new Func<HashAlgorithm>[] { Streebog512.Create, },
-                new Func<HashAlgorithm>[] { Streebog256.Create, },
+                new Func<HashAlgorithm>[] { () => new Streebog256Managed(), },
+                new Func<HashAlgorithm>[] { () => new Streebog512Managed(), },
                 new Func<HashAlgorithm>[] { () => new CMACGrasshopper(), },
                 new Func<HashAlgorithm>[] { () => new CMACMagma(), },
             };

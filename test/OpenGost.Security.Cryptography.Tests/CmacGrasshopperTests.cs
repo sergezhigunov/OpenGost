@@ -2,13 +2,8 @@
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConstants;
-
-    public class CmacGrasshopperTests : CmacTest
+    public class CmacGrasshopperTests : CmacTest<CMACGrasshopper>
     {
-        protected override CMAC Create()
-            => CMAC.Create(CMACGrasshopperAlgorithmFullName);
-
         [Theory(DisplayName = nameof(Grasshopper) + "_" + nameof(ComputeCmac))]
         [InlineData(
             "1122334455667700ffeeddccbbaa998800112233445566778899aabbcceeff0a112233445566778899aabbcceeff0a002233445566778899aabbcceeff0a0011",

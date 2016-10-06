@@ -20,17 +20,23 @@
   "dependencies": {
     "OpenGost.Security.Cryptography": {
       "target": "project"
-    }
+    },
+    "xunit": "2.2.0-beta3-build3402",
+    "xunit.runner.visualstudio": "2.2.0-beta3-build1187"
   },
   "frameworks": {
     "net45": {
-      "dependencies": {
-        "xunit": "2.1.0",
-        "xunit.runner.visualstudio": "2.1.0"
-      },
       "frameworkAssemblies": {
         "System.Runtime": "4.0.0.0",
         "System.Threading.Tasks": "4.0.0.0"
+      }
+    },
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
       }
     }
   }

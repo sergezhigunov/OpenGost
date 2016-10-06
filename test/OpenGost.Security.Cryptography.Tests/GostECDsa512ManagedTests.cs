@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+#if NETCOREAPP1_0
+using System.Security.Cryptography;
+#endif
 using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConstants;
+#if NET45
+    using static CryptoConstants; 
+#endif
 
     public class GostECDsa512ManagedTests : GostECDsaTest<GostECDsa512Managed>
     {
@@ -37,6 +42,7 @@ namespace OpenGost.Security.Cryptography
         public void ExportParametersTest(ECParameters parameters)
             => CheckExportParameters(parameters);
 
+#if NET45
         [Theory(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(CheckWriteAndReadXmlString))]
         [MemberData(nameof(TestDomainParameters))]
         public void CheckWriteAndReadXmlString(ECParameters parameters)
@@ -48,7 +54,8 @@ namespace OpenGost.Security.Cryptography
 
         [Fact(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(CheckSignatureAlgorithmProperty))]
         public void CheckSignatureAlgorithmProperty()
-            => CheckSignatureAlgorithmProperty(GostECDsa512AlgorithmName);
+            => CheckSignatureAlgorithmProperty(GostECDsa512AlgorithmName); 
+#endif
 
         [Fact(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(CheckKeyGeneration))]
         public void CheckKeyGeneration()

@@ -14,9 +14,27 @@ namespace OpenGost.Security.Cryptography
         protected const int BlockSizeBits = 64;
         protected const int BlockSizeBytes = BlockSizeBits / 8;
 
-        private static CipherMode[] SupportedCipherModes { get; } = { CipherMode.ECB, CipherMode.CBC, CipherMode.CFB, CipherMode.OFB };
-        private static CipherMode[] CipherModesReqiresIV { get; } = { CipherMode.CBC, CipherMode.CFB, CipherMode.OFB };
-        private static PaddingMode[] PaddingModes { get; } = { PaddingMode.None, PaddingMode.Zeros, PaddingMode.ANSIX923, PaddingMode.PKCS7, PaddingMode.ISO10126 };
+        private static CipherMode[] SupportedCipherModes { get; } = {
+            CipherMode.ECB, CipherMode.CBC,
+#if NET45
+            CipherMode.CFB, CipherMode.OFB  
+#endif
+        };
+
+        private static CipherMode[] CipherModesReqiresIV { get; } = {
+            CipherMode.CBC,
+#if NET45
+            CipherMode.CFB, CipherMode.OFB
+#endif
+        };
+
+        private static PaddingMode[] PaddingModes { get; } = {
+            PaddingMode.None, PaddingMode.Zeros, PaddingMode.PKCS7,
+#if NET45
+            PaddingMode.ANSIX923, PaddingMode.ISO10126
+#endif
+        };
+
         private static SymmetricTransformMode[] TransformModes { get; } = { SymmetricTransformMode.Encrypt, SymmetricTransformMode.Decrypt };
 
         private static byte[][] BlockSizeMultiplePlainTexts { get; } =
@@ -45,8 +63,10 @@ namespace OpenGost.Security.Cryptography
             Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(null, new byte[BlockSizeBytes], BlockSizeBits, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
             Assert.Throws<ArgumentOutOfRangeException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], new byte[BlockSizeBytes], 0, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
             Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.CBC, PaddingMode.None, SymmetricTransformMode.Encrypt));
+#if NET45
             Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.CFB, PaddingMode.None, SymmetricTransformMode.Encrypt));
-            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.OFB, PaddingMode.None, SymmetricTransformMode.Encrypt));
+            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.OFB, PaddingMode.None, SymmetricTransformMode.Encrypt)); 
+#endif
             Assert.Throws<CryptographicException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], new byte[BlockSizeBytes], BlockSizeBytes, CipherMode.CTS, PaddingMode.None, SymmetricTransformMode.Encrypt));
         }
 
@@ -199,6 +219,7 @@ namespace OpenGost.Security.Cryptography
                 check(plainText);
         }
 
+#if NET45
         [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(EncryptAndDecryptPaddingANSIX923))]
         public void EncryptAndDecryptPaddingANSIX923()
         {
@@ -239,7 +260,8 @@ namespace OpenGost.Security.Cryptography
 
             foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
                 check(plainText);
-        }
+        } 
+#endif
 
         [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(EncryptAndDecryptPaddingPKCS7))]
         public void EncryptAndDecryptPaddingPKCS7()
@@ -283,6 +305,7 @@ namespace OpenGost.Security.Cryptography
                 check(plainText);
         }
 
+#if NET45
         [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(EncryptAndDecryptPaddingISO10126))]
         public void EncryptAndDecryptPaddingISO10126()
         {
@@ -318,7 +341,8 @@ namespace OpenGost.Security.Cryptography
 
             foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
                 check(plainText);
-        }
+        } 
+#endif
 
         private static void InternalEncryptAndDecrypt(
             SymmetricAlgorithm algorithm,
@@ -352,7 +376,9 @@ namespace OpenGost.Security.Cryptography
             {
                 KeySizeValue = BlockSizeBits;
                 BlockSizeValue = BlockSizeBits;
-                FeedbackSizeValue = BlockSizeValue;
+#if NET45
+                FeedbackSizeValue = BlockSizeValue; 
+#endif
                 LegalBlockSizesValue = s_legalBlockSizes;
                 LegalKeySizesValue = s_legalKeySizes;
             }

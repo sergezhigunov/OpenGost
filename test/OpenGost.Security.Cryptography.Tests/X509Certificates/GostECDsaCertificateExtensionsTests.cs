@@ -5,7 +5,10 @@ using Xunit;
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
 
-    public class GostECDsaCertificateExtensionsTests : CryptoConfigRequiredTest
+    public class GostECDsaCertificateExtensionsTests
+#if NET45
+        : CryptoConfigRequiredTest 
+#endif
     {
         [Theory(DisplayName = nameof(GostECDsaCertificateExtensionsTests) + "_" + nameof(GetPublicKeyFromX509Certificate2))]
         [MemberData(nameof(TestCertificates))]

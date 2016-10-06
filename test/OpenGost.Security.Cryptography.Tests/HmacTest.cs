@@ -3,7 +3,10 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public abstract class HmacTest<T> : CryptoConfigRequiredTest
+    public abstract class HmacTest<T>
+#if NET45
+        : CryptoConfigRequiredTest 
+#endif
         where T : HMAC, new()
     {
         protected abstract int BlockSize { get; }

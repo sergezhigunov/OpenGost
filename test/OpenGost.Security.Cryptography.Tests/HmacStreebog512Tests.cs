@@ -8,7 +8,7 @@ namespace OpenGost.Security.Cryptography
         protected override int BlockSize => 64;
 
         protected override HashAlgorithm CreateHashAlgorithm()
-            => Streebog512.Create();
+            => new Streebog512Managed();
 
         [Theory(DisplayName = nameof(Streebog512) + "_" + nameof(ComputeHmac))]
         [InlineData("0126bdb87800af214341456563780100",

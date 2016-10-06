@@ -15,10 +15,12 @@ namespace OpenGost.Security.Cryptography
             "7f679d90bebc24305a468d42b9d4edcdb429912c6e0032f9285452d76718d08bf0ca33549d247ceef3f5a5313bd4b157d0b09ccde830b9eb3a02c4c5aa8ada98")]
         [InlineData(CipherMode.CBC, PaddingMode.None,
             "689972d4a085fa4d90e52e3d6d7dcc272826e661b478eca6af1e8e448d5ea5acfe7babf1e91999e85640e8b0f49d90d0167688065a895c631a2d9a1560b63970")]
+#if NET45
         [InlineData(CipherMode.CFB, PaddingMode.None,
             "81800a59b1842b24ff1f795e897abd95ed5b47a7048cfab48fb521369d9326bf79f2a8eb5cc68d38842d264e97a238b54ffebecd4e922de6c75bd9dd44fbf4d1")]
         [InlineData(CipherMode.OFB, PaddingMode.None,
-            "81800a59b1842b24ff1f795e897abd95ed5b47a7048cfab48fb521369d9326bf66a257ac3ca0b8b1c80fe7fc10288a13203ebbc066138660a0292243f6903150")]
+            "81800a59b1842b24ff1f795e897abd95ed5b47a7048cfab48fb521369d9326bf66a257ac3ca0b8b1c80fe7fc10288a13203ebbc066138660a0292243f6903150")] 
+#endif
         public void EncryptAndDecrypt(CipherMode mode, PaddingMode padding, string cipherText)
             => Verify(mode, padding, PlainText, cipherText, Key, IV);
     }

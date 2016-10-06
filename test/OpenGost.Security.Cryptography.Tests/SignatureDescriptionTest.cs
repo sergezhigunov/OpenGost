@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿#if NET45
+using System.Security.Cryptography;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -14,4 +15,5 @@ namespace OpenGost.Security.Cryptography
         protected AsymmetricSignatureDeformatter CreateDeformatter(AsymmetricAlgorithm key)
             => new T().CreateDeformatter(key);
     }
-}
+} 
+#endif

@@ -7,7 +7,10 @@ namespace OpenGost.Security.Cryptography
 {
     using static ECCurve;
 
-    public class ECCurveTests : CryptoConfigRequiredTest
+    public class ECCurveTests
+#if NET45
+        : CryptoConfigRequiredTest 
+#endif
     {
         [Theory(DisplayName = nameof(ECCurveTests) + "_" + nameof(CreateFromValue))]
         [MemberData(nameof(SupportedOidValues))]

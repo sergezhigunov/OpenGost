@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if NET45
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
@@ -11,10 +12,10 @@ namespace OpenGost.Security.Cryptography
 
     public class ECParametersFormatterTests
     {
-        [ExcludeFromCodeCoverage]
+        [ExcludeFromCodeCoverage] 
         private static XmlSchemaSet ECDsaXmlSchemaSet { get; } = LoadECDsaXmlSchemaSet();
 
-        [ExcludeFromCodeCoverage]
+        [ExcludeFromCodeCoverage] 
         private static XmlSchemaSet LoadECDsaXmlSchemaSet()
         {
             var schemas = new XmlSchemaSet();
@@ -86,3 +87,4 @@ namespace OpenGost.Security.Cryptography
         }
     }
 }
+#endif

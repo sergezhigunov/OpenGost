@@ -1,4 +1,7 @@
 ﻿using System;
+#if NETCOREAPP1_0
+using System.Security.Cryptography;
+#endif
 using Xunit;
 
 namespace OpenGost.Security.Cryptography
@@ -57,6 +60,7 @@ namespace OpenGost.Security.Cryptography
             Assert.True(VerifyHash(parameters, hash, signature));
         }
 
+#if NET45
         protected void WriteAndReadXmlString(ECParameters parameters)
         {
             parameters.Validate();
@@ -84,7 +88,8 @@ namespace OpenGost.Security.Cryptography
         {
             using (var algorithm = new T())
                 Assert.Equal(expectedSignatureAlgorithm, algorithm.SignatureAlgorithm);
-        }
+        } 
+#endif
 
         protected void CheckKeyGeneration(ECCurve curve)
         {

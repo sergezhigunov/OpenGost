@@ -45,7 +45,7 @@ namespace OpenGost.Security.Cryptography
             },
         };
 
-        [Theory(DisplayName = nameof(ECParametersFormatterTests) + "_" + nameof(WriteAndReadECParameters))]
+        [Theory(DisplayName = nameof(WriteAndReadECParameters))]
         [MemberData(nameof(TestECParameters))]
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public void WriteAndReadECParameters(ECParameters parameters, int keySize)

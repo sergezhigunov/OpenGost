@@ -27,55 +27,55 @@ namespace OpenGost.Security.Cryptography
 
         #endregion
 
-        [Theory(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(SignAndVerifyHash))]
+        [Theory(DisplayName = nameof(SignAndVerifyHash))]
         [MemberData(nameof(TestDomainParameters))]
         public new void SignAndVerifyHash(ECParameters parameters)
             => base.SignAndVerifyHash(parameters);
 
-        [Theory(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(VerifyHashTestCases))]
+        [Theory(DisplayName = nameof(VerifyHashTestCases))]
         [MemberData(nameof(TestCases))]
         public void VerifyHashTestCases(ECParameters parameters, string hashHex, string signatureHex)
             => Assert.True(VerifyHash(parameters, hashHex, signatureHex));
 
-        [Theory(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(ExportParametersTest))]
+        [Theory(DisplayName = nameof(ExportParametersTest))]
         [MemberData(nameof(TestDomainParameters))]
         public void ExportParametersTest(ECParameters parameters)
             => CheckExportParameters(parameters);
 
 #if NET45
-        [Theory(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(CheckWriteAndReadXmlString))]
+        [Theory(DisplayName = nameof(CheckWriteAndReadXmlString))]
         [MemberData(nameof(TestDomainParameters))]
         public void CheckWriteAndReadXmlString(ECParameters parameters)
             => WriteAndReadXmlString(parameters);
 
-        [Fact(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(CheckKeyExchangeAlgorithmProperty))]
+        [Fact(DisplayName = nameof(CheckKeyExchangeAlgorithmProperty))]
         public new void CheckKeyExchangeAlgorithmProperty()
             => base.CheckKeyExchangeAlgorithmProperty();
 
-        [Fact(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(CheckSignatureAlgorithmProperty))]
+        [Fact(DisplayName = nameof(CheckSignatureAlgorithmProperty))]
         public void CheckSignatureAlgorithmProperty()
             => CheckSignatureAlgorithmProperty(GostECDsa512AlgorithmName); 
 #endif
 
-        [Fact(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(CheckKeyGeneration))]
+        [Fact(DisplayName = nameof(CheckKeyGeneration))]
         public void CheckKeyGeneration()
             => CheckKeyGeneration(TestDomainParameters512.Curve);
 
-        [Fact(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(CheckDefaultKeyGeneration))]
+        [Fact(DisplayName = nameof(CheckDefaultKeyGeneration))]
         public new void CheckDefaultKeyGeneration()
             => base.CheckDefaultKeyGeneration();
 
-        [Theory(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(SignHashNullHashThrowsArgumentNullException))]
+        [Theory(DisplayName = nameof(SignHashNullHashThrowsArgumentNullException))]
         [MemberData(nameof(RealImplementations))]
         protected new void SignHashNullHashThrowsArgumentNullException(GostECDsa512Managed algorithm)
             => base.SignHashNullHashThrowsArgumentNullException(algorithm);
 
-        [Theory(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(VerifyHashNullHashThrowsArgumentNullException))]
+        [Theory(DisplayName = nameof(VerifyHashNullHashThrowsArgumentNullException))]
         [MemberData(nameof(RealImplementations))]
         protected new void VerifyHashNullHashThrowsArgumentNullException(GostECDsa512Managed algorithm)
             => base.VerifyHashNullHashThrowsArgumentNullException(algorithm);
 
-        [Theory(DisplayName = nameof(GostECDsa512ManagedTests) + "_" + nameof(VerifyHashNullSignatureThrowsArgumentNullException))]
+        [Theory(DisplayName = nameof(VerifyHashNullSignatureThrowsArgumentNullException))]
         [MemberData(nameof(RealImplementations))]
         protected new void VerifyHashNullSignatureThrowsArgumentNullException(GostECDsa512Managed algorithm)
             => base.VerifyHashNullSignatureThrowsArgumentNullException(algorithm);

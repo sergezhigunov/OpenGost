@@ -6,7 +6,7 @@ namespace OpenGost.Security.Cryptography
 {
     public class GostECDsa256SignatureDescriptionTests : SignatureDescriptionTest<GostECDsa256SignatureDescription>
     {
-        [Fact(DisplayName = nameof(GostECDsa256SignatureDescriptionTests) + "_" + nameof(ValidateCreateDigest))]
+        [Fact(DisplayName = nameof(ValidateCreateDigest))]
         public void ValidateCreateDigest()
         {
             using (HashAlgorithm digest = CreateDigest())
@@ -16,7 +16,7 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        [Fact(DisplayName = nameof(GostECDsa256SignatureDescriptionTests) + "_" + nameof(ValidateCreateDeformatter))]
+        [Fact(DisplayName = nameof(ValidateCreateDeformatter))]
         public void ValidateCreateDeformatter()
         {
             AsymmetricSignatureDeformatter deformatter = CreateDeformatter(GostECDsa256.Create());
@@ -25,7 +25,7 @@ namespace OpenGost.Security.Cryptography
             Assert.True(deformatter is GostECDsa256SignatureDeformatter);
         }
 
-        [Fact(DisplayName = nameof(GostECDsa256SignatureDescriptionTests) + "_" + nameof(ValidateCreateFormatter))]
+        [Fact(DisplayName = nameof(ValidateCreateFormatter))]
         public void ValidateCreateFormatter()
         {
             AsymmetricSignatureFormatter formatter = CreateFormatter(GostECDsa256.Create());

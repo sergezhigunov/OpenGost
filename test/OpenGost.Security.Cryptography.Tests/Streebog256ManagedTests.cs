@@ -7,7 +7,7 @@ namespace OpenGost.Security.Cryptography
     {
         private static readonly Encoding CurrentEncoding = Encoding.GetEncoding(1251);
 
-        [Theory(DisplayName = nameof(Streebog256) + "_" + nameof(Hash))]
+        [Theory(DisplayName = nameof(Hash))]
         [InlineData(
             "012345678901234567890123456789012345678901234567890123456789012",
             "9d151eefd8590b89daa6ba6cb74af9275dd051026bb149a452fd84e5e57b5500")]

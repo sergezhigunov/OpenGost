@@ -12,7 +12,7 @@ namespace OpenGost.Security.Cryptography
         : CryptoConfigRequiredTest 
 #endif
     {
-        [Theory(DisplayName = nameof(ECCurveTests) + "_" + nameof(CreateFromValue))]
+        [Theory(DisplayName = nameof(CreateFromValue))]
         [MemberData(nameof(SupportedOidValues))]
         public void CreateFromValue(string oidValue)
         {
@@ -22,7 +22,7 @@ namespace OpenGost.Security.Cryptography
             Assert.Equal(oidValue, curve.Oid.Value);
         }
 
-        [Theory(DisplayName = nameof(ECCurveTests) + "_" + nameof(CreateFromOid))]
+        [Theory(DisplayName = nameof(CreateFromOid))]
         [MemberData(nameof(SupportedOids))]
         public void CreateFromOid(Oid curveOid)
         {

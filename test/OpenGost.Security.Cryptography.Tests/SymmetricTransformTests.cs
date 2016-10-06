@@ -57,7 +57,7 @@ namespace OpenGost.Security.Cryptography
             GenerateRandomBytes(3 * BlockSizeBytes + 3),
         };
 
-        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(ConstructorInvalidArgumentsTest))]
+        [Fact(DisplayName = nameof(ConstructorInvalidArgumentsTest))]
         public void ConstructorInvalidArgumentsTest()
         {
             Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(null, new byte[BlockSizeBytes], BlockSizeBits, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
@@ -70,7 +70,7 @@ namespace OpenGost.Security.Cryptography
             Assert.Throws<CryptographicException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], new byte[BlockSizeBytes], BlockSizeBytes, CipherMode.CTS, PaddingMode.None, SymmetricTransformMode.Encrypt));
         }
 
-        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(TransformBlockInvalidArgumentsTest))]
+        [Fact(DisplayName = nameof(TransformBlockInvalidArgumentsTest))]
         public void TransformBlockInvalidArgumentsTest()
         {
             using (var transform = new SimpleSymmetricAlgorithm())
@@ -88,7 +88,7 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(TransformFinalBlockInvalidArgumentsTest))]
+        [Fact(DisplayName = nameof(TransformFinalBlockInvalidArgumentsTest))]
         public void TransformFinalBlockInvalidArgumentsTest()
         {
             using (var transform = new SimpleSymmetricAlgorithm())
@@ -107,7 +107,7 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(CheckLifecycle))]
+        [Fact(DisplayName = nameof(CheckLifecycle))]
         public void CheckLifecycle()
         {
             var crossPaddingTransformParameters =
@@ -168,7 +168,7 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(EncryptAndDecryptPaddingNone))]
+        [Fact(DisplayName = nameof(EncryptAndDecryptPaddingNone))]
         public void EncryptAndDecryptPaddingNone()
         {
             Action<byte[]> check = plainText =>
@@ -193,7 +193,7 @@ namespace OpenGost.Security.Cryptography
                 Assert.Throws<CryptographicException>(() => check(plainText));
         }
 
-        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(EncryptAndDecryptPaddingZeros))]
+        [Fact(DisplayName = nameof(EncryptAndDecryptPaddingZeros))]
         public void EncryptAndDecryptPaddingZeros()
         {
             Action<byte[]> check = plainText =>
@@ -220,7 +220,7 @@ namespace OpenGost.Security.Cryptography
         }
 
 #if NET45
-        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(EncryptAndDecryptPaddingANSIX923))]
+        [Fact(DisplayName = nameof(EncryptAndDecryptPaddingANSIX923))]
         public void EncryptAndDecryptPaddingANSIX923()
         {
             Action<byte[]> check = plainText =>
@@ -263,7 +263,7 @@ namespace OpenGost.Security.Cryptography
         } 
 #endif
 
-        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(EncryptAndDecryptPaddingPKCS7))]
+        [Fact(DisplayName = nameof(EncryptAndDecryptPaddingPKCS7))]
         public void EncryptAndDecryptPaddingPKCS7()
         {
             Action<byte[]> check = plainText =>
@@ -306,7 +306,7 @@ namespace OpenGost.Security.Cryptography
         }
 
 #if NET45
-        [Fact(DisplayName = nameof(SymmetricTransform) + "_" + nameof(EncryptAndDecryptPaddingISO10126))]
+        [Fact(DisplayName = nameof(EncryptAndDecryptPaddingISO10126))]
         public void EncryptAndDecryptPaddingISO10126()
         {
             Action<byte[]> check = plainText =>

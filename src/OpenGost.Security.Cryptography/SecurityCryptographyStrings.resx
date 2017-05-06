@@ -225,4 +225,7 @@
   <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
     <value>'{0}' is not a known symmetric algorithm.</value>
   </data>
+  <data name="SymmetricAlgorithmNameMultipleSetNotSupported" xml:space="preserve">
+    <value>Setting the symmetric algorithm after it's already been set is not supported on this platform.</value>
+  </data>
 </root>

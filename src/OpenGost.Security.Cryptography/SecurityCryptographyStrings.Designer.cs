@@ -384,5 +384,14 @@ namespace OpenGost.Security.Cryptography {
                 return ResourceManager.GetString("CryptographicUnknownSymmetricAlgorithm", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting the symmetric algorithm after it&apos;s already been set is not supported on this platform..
+        /// </summary>
+        internal static string SymmetricAlgorithmNameMultipleSetNotSupported {
+            get {
+                return ResourceManager.GetString("SymmetricAlgorithmNameMultipleSetNotSupported", resourceCulture);
+            }
+        }
     }
 }

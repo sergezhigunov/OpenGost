@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\tools\common.props" />
+
+  <PropertyGroup>
+    <Description>OpenGost.Security.Cryptography.dll</Description>
+    <Copyright>Copyright © 2016 Serge Zhigunov</Copyright>
+    <AssemblyTitle>OpenGost.Security.Cryptography.dll</AssemblyTitle>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <VersionPrefix>0.1</VersionPrefix>
+    <Authors>Serge Zhigunov</Authors>
+    <TargetFrameworks>netcoreapp1.0;net45</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>OpenGost.Security.Cryptography</AssemblyName>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.0.4</RuntimeFrameworkVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="SecurityCryptographyStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SecurityCryptographyStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="SecurityCryptographyStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SecurityCryptographyStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

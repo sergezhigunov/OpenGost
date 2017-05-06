@@ -1,20 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8B2273E6-40B9-4CFB-94E0-4523F39043DB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7213FB63-9C9A-44A9-A619-08A285AE7AB5}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OpenGost.Security.Cryptography", "src\OpenGost.Security.Cryptography\OpenGost.Security.Cryptography.xproj", "{CDC582C2-C33B-48A6-B407-732F1A1E93F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptography", "src\OpenGost.Security.Cryptography\OpenGost.Security.Cryptography.csproj", "{CDC582C2-C33B-48A6-B407-732F1A1E93F2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OpenGost.Security.Cryptography.Tests", "test\OpenGost.Security.Cryptography.Tests\OpenGost.Security.Cryptography.Tests.xproj", "{76170594-A6D1-43B4-981A-2A2C686D63C0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{54ED9598-2AB8-4CA3-8B7F-E5944CC82835}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptography.Tests", "test\OpenGost.Security.Cryptography.Tests\OpenGost.Security.Cryptography.Tests.csproj", "{76170594-A6D1-43B4-981A-2A2C686D63C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

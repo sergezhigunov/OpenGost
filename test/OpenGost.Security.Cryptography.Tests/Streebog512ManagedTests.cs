@@ -1,12 +1,9 @@
-﻿using System.Text;
-using Xunit;
+﻿using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
     public class Streebog512ManagedTests : HashAlgorithmTest<Streebog512Managed>
     {
-        private static readonly Encoding CurrentEncoding = Encoding.GetEncoding(1251);
-
         [Theory(DisplayName = nameof(Hash))]
         [InlineData(
             "012345678901234567890123456789012345678901234567890123456789012",

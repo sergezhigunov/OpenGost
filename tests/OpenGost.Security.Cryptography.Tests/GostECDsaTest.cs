@@ -45,7 +45,7 @@ namespace OpenGost.Security.Cryptography
         protected bool VerifyHash(ECParameters parameters, string hashHex, string signatureHex)
             => VerifyHash(parameters, hashHex.HexToByteArray(), signatureHex.HexToByteArray());
 
-        protected void SignAndVerifyHash(ECParameters parameters)
+        public virtual void SignAndVerifyHash(ECParameters parameters)
         {
             byte[] hash, signature;
             using (T algorithm = Create(parameters))
@@ -74,20 +74,21 @@ namespace OpenGost.Security.Cryptography
             AssertEqual(parameters, newParameters, false);
         }
 
-        protected void CheckKeyExchangeAlgorithmProperty()
+        public virtual void CheckKeyExchangeAlgorithmProperty()
         {
             using (var algorithm = new T())
                 Assert.Null(algorithm.KeyExchangeAlgorithm);
         }
 
-        protected void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
+        public virtual void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
         {
             using (var algorithm = new T())
                 Assert.Equal(expectedSignatureAlgorithm, algorithm.SignatureAlgorithm);
         }
 
-        protected void CheckKeyGeneration(ECCurve curve)
+        public virtual void CheckKeyGeneration(ECParameters curveParameters)
         {
+            ECCurve curve = curveParameters.Curve;
             using (var algorithm = new T())
             {
                 algorithm.GenerateKey(curve);
@@ -96,7 +97,7 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        protected void CheckDefaultKeyGeneration()
+        public virtual void CheckDefaultKeyGeneration()
         {
             using (var algorithm = new T())
             {
@@ -105,13 +106,13 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        protected void SignHashNullHashThrowsArgumentNullException(T algorithm)
+        public virtual void SignHashNullHashThrowsArgumentNullException(T algorithm)
             => Assert.Throws<ArgumentNullException>("hash", () => algorithm.SignHash(null));
 
-        protected void VerifyHashNullHashThrowsArgumentNullException(T algorithm)
+        public virtual void VerifyHashNullHashThrowsArgumentNullException(T algorithm)
             => Assert.Throws<ArgumentNullException>("hash", () => algorithm.VerifyHash(null, null));
 
-        protected void VerifyHashNullSignatureThrowsArgumentNullException(T algorithm)
+        public virtual void VerifyHashNullSignatureThrowsArgumentNullException(T algorithm)
             => Assert.Throws<ArgumentNullException>("signature", () => algorithm.VerifyHash(new byte[0], null));
     }
 }

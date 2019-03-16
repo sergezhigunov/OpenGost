@@ -24,7 +24,7 @@ namespace OpenGost.Security.Cryptography
 
         [Theory]
         [MemberData(nameof(TestDomainParameters))]
-        public new void SignAndVerifyHash(ECParameters parameters)
+        public override void SignAndVerifyHash(ECParameters parameters)
             => base.SignAndVerifyHash(parameters);
 
         [Theory]
@@ -43,34 +43,36 @@ namespace OpenGost.Security.Cryptography
             => WriteAndReadXmlString(parameters);
 
         [Fact]
-        public new void CheckKeyExchangeAlgorithmProperty()
+        public override void CheckKeyExchangeAlgorithmProperty()
             => base.CheckKeyExchangeAlgorithmProperty();
 
-        [Fact]
-        public void CheckSignatureAlgorithmProperty()
-            => CheckSignatureAlgorithmProperty(GostECDsa256AlgorithmName);
+        [Theory]
+        [InlineData(GostECDsa256AlgorithmName)]
+        public override void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
+            => base.CheckSignatureAlgorithmProperty(expectedSignatureAlgorithm);
+
+        [Theory]
+        [MemberData(nameof(TestDomainParameters))]
+        public override void CheckKeyGeneration(ECParameters parameters)
+            => base.CheckKeyGeneration(parameters);
 
         [Fact]
-        public void CheckKeyGeneration()
-            => CheckKeyGeneration(TestDomainParameters256.Curve);
-
-        [Fact]
-        public new void CheckDefaultKeyGeneration()
+        public override void CheckDefaultKeyGeneration()
            => base.CheckDefaultKeyGeneration();
 
         [Theory]
         [MemberData(nameof(RealImplementations))]
-        protected new void SignHashNullHashThrowsArgumentNullException(GostECDsa256Managed algorithm)
+        public override void SignHashNullHashThrowsArgumentNullException(GostECDsa256Managed algorithm)
            => base.SignHashNullHashThrowsArgumentNullException(algorithm);
 
         [Theory]
         [MemberData(nameof(RealImplementations))]
-        protected new void VerifyHashNullHashThrowsArgumentNullException(GostECDsa256Managed algorithm)
+        public override void VerifyHashNullHashThrowsArgumentNullException(GostECDsa256Managed algorithm)
             => base.VerifyHashNullHashThrowsArgumentNullException(algorithm);
 
         [Theory]
         [MemberData(nameof(RealImplementations))]
-        protected new void VerifyHashNullSignatureThrowsArgumentNullException(GostECDsa256Managed algorithm)
+        public override void VerifyHashNullSignatureThrowsArgumentNullException(GostECDsa256Managed algorithm)
             => base.VerifyHashNullSignatureThrowsArgumentNullException(algorithm);
 
         public static IEnumerable<object[]> TestDomainParameters()

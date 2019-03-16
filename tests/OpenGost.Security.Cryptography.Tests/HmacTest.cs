@@ -36,7 +36,7 @@ namespace OpenGost.Security.Cryptography
             Assert.Equal(digestBytes, computedDigest);
         }
 
-        protected void VerifyHmacRfc2104()
+        public virtual void VerifyHmacRfc2104()
         {
             // Ensure that keys shorter than the threshold don't get altered.
             using (var hmac = new T())

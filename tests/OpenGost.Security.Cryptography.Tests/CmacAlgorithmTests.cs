@@ -13,7 +13,7 @@ namespace OpenGost.Security.Cryptography
             {
                 Assert.Throws<ArgumentException>(() => cmac.SymmetricAlgorithmName = null);
                 Assert.Throws<ArgumentException>(() => cmac.SymmetricAlgorithmName = string.Empty);
-                Assert.Equal(null, cmac.SymmetricAlgorithmName);
+                Assert.Null(cmac.SymmetricAlgorithmName);
             }
         }
 
@@ -22,10 +22,10 @@ namespace OpenGost.Security.Cryptography
         {
             using (CMAC cmac = new TestCMAC())
             {
-                const string UnknownAlgorithmName = "No known algorithm name has spaces, so this better be invalid...";
+                const string unknownAlgorithmName = "No known algorithm name has spaces, so this better be invalid...";
 
-                Assert.Throws<CryptographicException>(() => cmac.SymmetricAlgorithmName = UnknownAlgorithmName);
-                Assert.Equal(null, cmac.SymmetricAlgorithmName);
+                Assert.Throws<CryptographicException>(() => cmac.SymmetricAlgorithmName = unknownAlgorithmName);
+                Assert.Null(cmac.SymmetricAlgorithmName);
             }
         }
 

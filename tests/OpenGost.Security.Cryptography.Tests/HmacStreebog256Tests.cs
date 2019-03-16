@@ -18,7 +18,7 @@ namespace OpenGost.Security.Cryptography
             => VerifyHmac(dataHex, keyHex, expectedHmacHex);
 
         [Fact]
-        public new void VerifyHmacRfc2104()
+        public override void VerifyHmacRfc2104()
             => base.VerifyHmacRfc2104();
     }
 }

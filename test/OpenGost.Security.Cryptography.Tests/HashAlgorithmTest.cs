@@ -7,13 +7,6 @@ namespace OpenGost.Security.Cryptography
     public abstract class HashAlgorithmTest<T>
         where T : HashAlgorithm, new()
     {
-        protected static Encoding CurrentEncoding { get; } =
-#if NET45
-            Encoding.GetEncoding(1251);
-#elif NETCOREAPP1_0
-            CodePagesEncodingProvider.Instance.GetEncoding(1251);
-#endif
-
         protected void Verify(string input, Encoding inputEncoding, string expectedHexadecimal)
             => Verify(inputEncoding.GetBytes(input), expectedHexadecimal);
 

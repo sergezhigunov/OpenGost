@@ -1,16 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>OpenGost.Security.Cryptography.dll</Description>
-    <Copyright>Copyright © 2016 Serge Zhigunov</Copyright>
-    <AssemblyTitle>OpenGost.Security.Cryptography.dll</AssemblyTitle>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>0.1</VersionPrefix>
-    <Authors>Serge Zhigunov</Authors>
     <TargetFrameworks>net45</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>OpenGost.Security.Cryptography</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

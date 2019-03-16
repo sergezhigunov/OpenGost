@@ -4,7 +4,7 @@ namespace OpenGost.Security.Cryptography
 {
     public class CmacGrasshopperTests : CmacTest<CMACGrasshopper>
     {
-        [Theory(DisplayName = nameof(ComputeCmac))]
+        [Theory]
         [InlineData(
             "1122334455667700ffeeddccbbaa998800112233445566778899aabbcceeff0a112233445566778899aabbcceeff0a002233445566778899aabbcceeff0a0011",
             "8899aabbccddeeff0011223344556677fedcba98765432100123456789abcdef",

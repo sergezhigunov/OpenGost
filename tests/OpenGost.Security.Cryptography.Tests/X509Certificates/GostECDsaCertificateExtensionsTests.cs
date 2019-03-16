@@ -7,7 +7,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
     public class GostECDsaCertificateExtensionsTests : CryptoConfigRequiredTest
     {
-        [Theory(DisplayName = nameof(GetPublicKeyFromX509Certificate2))]
+        [Theory]
         [MemberData(nameof(TestCertificates))]
         public void GetPublicKeyFromX509Certificate2(X509Certificate2 certificate)
         {

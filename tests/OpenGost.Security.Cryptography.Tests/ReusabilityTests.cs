@@ -7,7 +7,7 @@ namespace OpenGost.Security.Cryptography
 {
     public class ReusabilityTests : CryptoConfigRequiredTest
     {
-        [Theory(DisplayName = nameof(ReuseHashAlgorithm))]
+        [Theory]
         [MemberData(nameof(ReusabilityHashAlgorithms))]
         public void ReuseHashAlgorithm(Func<HashAlgorithm> hashAlgorithmFactory)
         {

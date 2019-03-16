@@ -6,7 +6,7 @@ namespace OpenGost.Security.Cryptography
 {
     public class CmacAlgorithmTests
     {
-        [Fact(DisplayName = nameof(SetNullOrEmptyAlgorithmName))]
+        [Fact]
         public void SetNullOrEmptyAlgorithmName()
         {
             using (CMAC cmac = new TestCMAC())
@@ -17,7 +17,7 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        [Fact(DisplayName = nameof(SetUnknownAlgorithmName))]
+        [Fact]
         public void SetUnknownAlgorithmName()
         {
             using (CMAC cmac = new TestCMAC())

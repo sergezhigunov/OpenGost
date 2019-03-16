@@ -9,7 +9,7 @@ namespace OpenGost.Security.Cryptography
 
     public class ECCurveTests : CryptoConfigRequiredTest
     {
-        [Theory(DisplayName = nameof(CreateFromValue))]
+        [Theory]
         [MemberData(nameof(SupportedOidValues))]
         public void CreateFromValue(string oidValue)
         {
@@ -19,7 +19,7 @@ namespace OpenGost.Security.Cryptography
             Assert.Equal(oidValue, curve.Oid.Value);
         }
 
-        [Theory(DisplayName = nameof(CreateFromOid))]
+        [Theory]
         [MemberData(nameof(SupportedOids))]
         public void CreateFromOid(Oid curveOid)
         {

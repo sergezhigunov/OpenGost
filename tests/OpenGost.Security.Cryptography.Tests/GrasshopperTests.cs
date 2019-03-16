@@ -10,7 +10,7 @@ namespace OpenGost.Security.Cryptography
             Key = "8899aabbccddeeff0011223344556677fedcba98765432100123456789abcdef",
             IV = "1234567890abcef0a1b2c3d4e5f0011223344556677889901213141516171819";
 
-        [Theory(DisplayName = nameof(EncryptAndDecrypt))]
+        [Theory]
         [InlineData(CipherMode.ECB, PaddingMode.None,
             "7f679d90bebc24305a468d42b9d4edcdb429912c6e0032f9285452d76718d08bf0ca33549d247ceef3f5a5313bd4b157d0b09ccde830b9eb3a02c4c5aa8ada98")]
         [InlineData(CipherMode.CBC, PaddingMode.None,

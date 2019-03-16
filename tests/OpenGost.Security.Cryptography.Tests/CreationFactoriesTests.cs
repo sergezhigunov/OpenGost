@@ -9,7 +9,7 @@ namespace OpenGost.Security.Cryptography
 
     public class CreationFactoriesTests : CryptoConfigRequiredTest
     {
-        [Theory(DisplayName = nameof(ImplicitCreateFactoriesTest))]
+        [Theory]
         [MemberData(nameof(ImplicitCreateFactories))]
         public void ImplicitCreateFactoriesTest(Type expectedType, Func<object> factory)
         {
@@ -26,7 +26,7 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        [Theory(DisplayName = nameof(ExplicitCreateFactoriesTest))]
+        [Theory]
         [MemberData(nameof(ExplicitCreateFactories))]
         public void ExplicitCreateFactoriesTest(Type expectedType, Func<string, object> factory, string objectName)
         {

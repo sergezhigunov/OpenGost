@@ -1,6 +1,4 @@
-﻿#if NET45
-using System; 
-#endif
+﻿using System;
 using System.Runtime.InteropServices;
 
 namespace OpenGost.Security.Cryptography
@@ -8,9 +6,7 @@ namespace OpenGost.Security.Cryptography
     /// <summary>
     /// Specifies the direction of the symmetric transform. 
     /// </summary>
-#if NET45
     [Serializable]
-#endif
     [ComVisible(true)]
     public enum SymmetricTransformMode
     {

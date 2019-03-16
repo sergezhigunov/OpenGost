@@ -14,11 +14,7 @@ namespace OpenGost.Security.Cryptography
         private static RandomNumberGenerator s_randomNumberGenerator;
 
         internal static RandomNumberGenerator StaticRandomNumberGenerator
-#if NET45
             => LazyInitializer.EnsureInitialized(ref s_randomNumberGenerator, () => new RNGCryptoServiceProvider());
-#elif NETCOREAPP1_0
-            => LazyInitializer.EnsureInitialized(ref s_randomNumberGenerator, RandomNumberGenerator.Create);
-#endif
 
         internal static byte[] GenerateRandomBytes(int size)
         {

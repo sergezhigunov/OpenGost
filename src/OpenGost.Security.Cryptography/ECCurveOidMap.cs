@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-#if NETCOREAPP1_0
-using System.Security.Cryptography;
-#endif
 
 namespace OpenGost.Security.Cryptography
 {

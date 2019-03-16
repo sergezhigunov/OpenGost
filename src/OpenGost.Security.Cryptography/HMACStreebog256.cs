@@ -15,14 +15,6 @@ namespace OpenGost.Security.Cryptography
     public class HMACStreebog256 : HMAC
     {
         /// <summary>
-        /// Gets the size, in bits, of the computed hash code.
-        /// </summary>
-        /// <value>
-        /// The size, in bits, of the computed hash code.
-        /// </value>
-        public override int HashSize => 256;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="HMACStreebog256"/>
         /// class with a randomly generated key.
         /// </summary>
@@ -44,9 +36,7 @@ namespace OpenGost.Security.Cryptography
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-#if NET45
-            HashSizeValue = 256; 
-#endif
+            HashSizeValue = 256;
             HashName = Streebog256AlgorithmFullName;
             base.Key = key;
         }

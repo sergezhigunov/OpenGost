@@ -1,5 +1,4 @@
-﻿#if NET45
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -23,4 +22,3 @@ namespace OpenGost.Security.Cryptography
         }
     }
 }
-#endif

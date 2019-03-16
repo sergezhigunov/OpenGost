@@ -138,9 +138,6 @@
   <data name="ArgumentOutOfRangeStartIndexLargerThanLength" xml:space="preserve">
     <value>Start index cannot be larger than length of array.</value>
   </data>
-  <data name="CryptoConfigNotSupportedCmac" xml:space="preserve">
-    <value>Accessing a symmetric algorithm by manipulating the SymmetricAlgorithmName property is not supported on this platform. Instead, you must instantiate one of the supplied subtypes (such as CMACGrasshopper.)</value>
-  </data>
   <data name="CryptographicCurveNotSupported" xml:space="preserve">
     <value>The specified curve '{0}' or its parameters are not valid for this platform.</value>
   </data>

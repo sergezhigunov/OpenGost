@@ -45,19 +45,11 @@ namespace OpenGost.Security.Cryptography.X509Certificates
             switch (publicKey.EncodedKeyValue.Oid.Value)
             {
                 case GostECDsa256OidValue:
-#if NET45
-                    result = GostECDsa256.Create(); 
-#elif NETCOREAPP1_0
-                    result = new GostECDsa256Managed();
-#endif
+                    result = GostECDsa256.Create();
                     break;
 
                 case GostECDsa512OidValue:
-#if NET45
                     result = GostECDsa512.Create();
-#elif NETCOREAPP1_0
-                    result = new GostECDsa512Managed();
-#endif
                     break;
 
                 default:

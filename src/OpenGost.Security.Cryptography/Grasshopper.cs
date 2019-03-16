@@ -4,10 +4,8 @@ using System.Security.Cryptography;
 
 namespace OpenGost.Security.Cryptography
 {
-#if NET45
     using static CryptoConfig;
-    using static CryptoConstants; 
-#endif
+    using static CryptoConstants;
     using static SecurityCryptographyStrings;
 
     /// <summary>
@@ -27,14 +25,11 @@ namespace OpenGost.Security.Cryptography
         {
             KeySizeValue = 256;
             BlockSizeValue = 128;
-#if NET45
-            FeedbackSizeValue = BlockSizeValue; 
-#endif
+            FeedbackSizeValue = BlockSizeValue;
             LegalBlockSizesValue = s_legalBlockSizes;
             LegalKeySizesValue = s_legalKeySizes;
         }
 
-#if NET45
         /// <summary>
         /// Gets or sets the feedback size, in bits, of the cryptographic operation.
         /// </summary>
@@ -52,8 +47,7 @@ namespace OpenGost.Security.Cryptography
 
                 FeedbackSizeValue = value;
             }
-        } 
-#endif
+        }
 
         /// <summary>
         /// Gets or sets the initialization vector (<see cref="SymmetricAlgorithm.IV"/>) for the symmetric algorithm.
@@ -74,15 +68,12 @@ namespace OpenGost.Security.Cryptography
                 if (value == null) throw new ArgumentNullException(nameof(value));
                 if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0) throw new CryptographicException(CryptographicInvalidIVSize);
 
-#if NET45
-                FeedbackSize = value.Length; 
-#endif
+                FeedbackSize = value.Length;
 
                 IVValue = (byte[])value.Clone();
             }
         }
 
-#if NET45
         #region Creation factory methods 
 
         /// <summary>
@@ -108,7 +99,6 @@ namespace OpenGost.Security.Cryptography
         public new static Grasshopper Create(string algorithmName)
             => (Grasshopper)CreateFromName(algorithmName);
 
-        #endregion  
-#endif
+        #endregion
     }
 }

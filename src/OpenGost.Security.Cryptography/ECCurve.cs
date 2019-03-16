@@ -1,5 +1,4 @@
-﻿#if NET45
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
@@ -294,5 +293,4 @@ namespace OpenGost.Security.Cryptography
                 Hash != null);
         }
     }
-} 
-#endif
+}

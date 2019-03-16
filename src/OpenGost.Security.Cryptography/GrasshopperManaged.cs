@@ -56,11 +56,7 @@ namespace OpenGost.Security.Cryptography
         /// </summary>
         public override void GenerateIV()
         {
-#if NET45
             IVValue = GenerateRandomBytes(FeedbackSizeValue / 8);
-#elif NETCOREAPP1_0
-            IVValue = GenerateRandomBytes(KeySizeValue / 8); 
-#endif
         }
 
         /// <summary>

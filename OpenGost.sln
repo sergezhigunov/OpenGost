@@ -11,6 +11,26 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptogra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptography.Tests", "test\OpenGost.Security.Cryptography.Tests\OpenGost.Security.Cryptography.Tests.csproj", "{76170594-A6D1-43B4-981A-2A2C686D63C0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB808385-20EA-4A94-BF24-44743CA438B6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{3FD8CE45-7B0E-4018-8048-6B4465ACFA8C}"
+	ProjectSection(SolutionItems) = preProject
+		tools\CodeAnalysisDictionary.xml = tools\CodeAnalysisDictionary.xml
+		tools\common.props = tools\common.props
+		tools\Crypto.config = tools\Crypto.config
+		tools\Key.snk = tools\Key.snk
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{A0B0F6AA-F8FF-442E-A1DF-C648144AD7B8}"
+	ProjectSection(SolutionItems) = preProject
+		schemas\ECDsa.xsd = schemas\ECDsa.xsd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,5 +52,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CDC582C2-C33B-48A6-B407-732F1A1E93F2} = {8B2273E6-40B9-4CFB-94E0-4523F39043DB}
 		{76170594-A6D1-43B4-981A-2A2C686D63C0} = {7213FB63-9C9A-44A9-A619-08A285AE7AB5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1B3B4239-F721-4D41-8E9D-FB712341B7DA}
 	EndGlobalSection
 EndGlobal

@@ -1,5 +1,4 @@
-﻿#if NET45
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Xunit;
 
 namespace OpenGost.Security.Cryptography
@@ -34,5 +33,4 @@ namespace OpenGost.Security.Cryptography
             Assert.True(formatter is GostECDsa256SignatureFormatter);
         }
     }
-} 
-#endif
+}

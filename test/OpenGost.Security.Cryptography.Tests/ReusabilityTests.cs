@@ -5,10 +5,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class ReusabilityTests
-#if NET45
-        : CryptoConfigRequiredTest 
-#endif
+    public class ReusabilityTests : CryptoConfigRequiredTest
     {
         [Theory(DisplayName = nameof(ReuseHashAlgorithm))]
         [MemberData(nameof(ReusabilityHashAlgorithms))]

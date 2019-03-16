@@ -2,10 +2,7 @@
 
 namespace OpenGost.Security.Cryptography
 {
-    public abstract class CmacTest<T>
-#if NET45
-        : CryptoConfigRequiredTest 
-#endif
+    public abstract class CmacTest<T> : CryptoConfigRequiredTest
         where T : CMAC, new()
     {
         protected void VerifyCmac(string dataHex, string keyHex, string digestHex)

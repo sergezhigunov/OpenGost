@@ -1,5 +1,4 @@
-﻿#if NET45
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using Xunit;
@@ -8,8 +7,7 @@ namespace OpenGost.Security.Cryptography
 {
     using static CryptoConstants;
 
-    public class CreationFactoriesTests
-        : CryptoConfigRequiredTest 
+    public class CreationFactoriesTests : CryptoConfigRequiredTest
     {
         [Theory(DisplayName = nameof(ImplicitCreateFactoriesTest))]
         [MemberData(nameof(ImplicitCreateFactories))]
@@ -164,4 +162,3 @@ namespace OpenGost.Security.Cryptography
         }
     }
 }
-#endif

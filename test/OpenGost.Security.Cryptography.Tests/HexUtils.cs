@@ -4,9 +4,7 @@ using System.Text;
 
 namespace OpenGost.Security.Cryptography
 {
-#if NET45
-    [ExcludeFromCodeCoverage] 
-#endif
+    [ExcludeFromCodeCoverage]
     internal static class HexUtils
     {
         private static readonly string HexAlphabet = "0123456789abcdef";

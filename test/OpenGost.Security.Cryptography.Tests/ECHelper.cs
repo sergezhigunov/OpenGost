@@ -4,9 +4,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-#if NET45
-    [ExcludeFromCodeCoverage] 
-#endif
+    [ExcludeFromCodeCoverage]
     internal static class ECHelper
     {
         internal static void AssertEqual(ECPoint expected, ECPoint actual)

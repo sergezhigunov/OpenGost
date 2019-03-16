@@ -1,5 +1,4 @@
-﻿#if NET45
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
@@ -122,5 +121,4 @@ namespace OpenGost.Security.Cryptography
                 CryptoConfig.AddOID(item.Value, item.Key);
         }
     }
-} 
-#endif
+}

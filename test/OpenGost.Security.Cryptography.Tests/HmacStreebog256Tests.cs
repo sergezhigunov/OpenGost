@@ -8,7 +8,7 @@ namespace OpenGost.Security.Cryptography
         protected override int BlockSize => 64;
 
         protected override HashAlgorithm CreateHashAlgorithm()
-            => new Streebog256Managed();
+            => Streebog256.Create();
 
         [Theory(DisplayName = nameof(ComputeHmac))]
         [InlineData("0126bdb87800af214341456563780100",

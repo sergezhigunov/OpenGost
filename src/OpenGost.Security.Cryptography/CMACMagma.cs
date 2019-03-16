@@ -48,10 +48,8 @@ namespace OpenGost.Security.Cryptography
         public CMACMagma(string algorithmName, byte[] key)
             : base()
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-
             SymmetricAlgorithmName = algorithmName;
-            base.Key = key;
+            base.Key = key ?? throw new ArgumentNullException(nameof(key));
         }
     }
 }

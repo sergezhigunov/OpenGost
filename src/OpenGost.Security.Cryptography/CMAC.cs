@@ -163,7 +163,7 @@ namespace OpenGost.Security.Cryptography
 
             if (_bufferLength > 0 && _bufferLength + cbSize > _bytesPerBlock)
             {
-                int bytesToCopy = _bytesPerBlock - _bufferLength;
+                var bytesToCopy = _bytesPerBlock - _bufferLength;
                 BlockCopy(array, ibStart, _buffer, _bufferLength, bytesToCopy);
                 ibStart += bytesToCopy;
                 cbSize -= bytesToCopy;
@@ -246,7 +246,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="CMAC"/>.
         /// </returns>
         [ComVisible(false)]
-        public new static CMAC Create()
+        public static new CMAC Create()
             => Create(CMACGrasshopperAlgorithmFullName);
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="CMAC"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
-        public new static CMAC Create(string algorithmName)
+        public static new CMAC Create(string algorithmName)
             => (CMAC)CreateFromName(algorithmName);
 
         #endregion
@@ -302,8 +302,8 @@ namespace OpenGost.Security.Cryptography
 
         private static void LeftShiftLittleEndianOneBit(byte[] data)
         {
-            int lastByte = data.Length - 1;
-            for (int i = 0; i < lastByte; i++)
+            var lastByte = data.Length - 1;
+            for (var i = 0; i < lastByte; i++)
             {
                 data[i] <<= 1;
                 data[i] |= (byte)((data[i + 1] >> 7) & 0x01);

@@ -1,5 +1,4 @@
-﻿#if NET45
-namespace OpenGost.Security.Cryptography
+﻿namespace OpenGost.Security.Cryptography
 {
     public partial struct ECCurve
     {
@@ -39,5 +38,4 @@ namespace OpenGost.Security.Cryptography
             Named = 5,
         }
     }
-} 
-#endif
+}

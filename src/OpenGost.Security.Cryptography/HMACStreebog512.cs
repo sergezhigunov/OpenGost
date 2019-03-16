@@ -34,11 +34,9 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public HMACStreebog512(byte[] key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-
             HashSizeValue = 512;
             HashName = Streebog512AlgorithmFullName;
-            base.Key = key;
+            base.Key = key ?? throw new ArgumentNullException(nameof(key));
         }
     }
 }

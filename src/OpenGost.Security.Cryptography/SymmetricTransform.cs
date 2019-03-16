@@ -243,7 +243,7 @@ namespace OpenGost.Security.Cryptography
                     {
                         _depadBuffer = new byte[InputBlockSize];
                         // copy the last InputBlockSize bytes to _depadBuffer everything else gets processed and returned
-                        int inputToProcess = inputCount - InputBlockSize;
+                        var inputToProcess = inputCount - InputBlockSize;
                         BlockCopy(inputBuffer, inputOffset + inputToProcess, _depadBuffer, 0, InputBlockSize);
 
                         return DecryptData(inputBuffer, inputOffset, inputToProcess, ref outputBuffer, outputOffset, false);
@@ -253,7 +253,7 @@ namespace OpenGost.Security.Cryptography
                         // we already have a depad buffer, so we need to decrypt that info first & copy it out
                         DecryptData(_depadBuffer, 0, _depadBuffer.Length, ref outputBuffer, outputOffset, false);
                         outputOffset += OutputBlockSize;
-                        int inputToProcess = inputCount - InputBlockSize;
+                        var inputToProcess = inputCount - InputBlockSize;
                         BlockCopy(inputBuffer, inputOffset + inputToProcess, _depadBuffer, 0, InputBlockSize);
                         return OutputBlockSize + DecryptData(inputBuffer, inputOffset, inputToProcess, ref outputBuffer, outputOffset, false);
                     }
@@ -313,7 +313,7 @@ namespace OpenGost.Security.Cryptography
                     DecryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes, 0, true);
                 else
                 {
-                    byte[] temp = new byte[_depadBuffer.Length + inputCount];
+                    var temp = new byte[_depadBuffer.Length + inputCount];
                     BlockCopy(_depadBuffer, 0, temp, 0, _depadBuffer.Length);
                     BlockCopy(inputBuffer, inputOffset, temp, _depadBuffer.Length, inputCount);
                     DecryptData(temp,
@@ -477,7 +477,7 @@ namespace OpenGost.Security.Cryptography
 
         private byte[] CreatePadding(int lonelyBytes)
         {
-            int padSize = 0;
+            var padSize = 0;
             byte[] padBytes = null;
 
             // check the padding mode and make sure we have enough outputBuffer to handle any padding we have to do
@@ -514,7 +514,7 @@ namespace OpenGost.Security.Cryptography
                         break;
 
                     case PaddingMode.PKCS7:
-                        for (int index = 0; index < padSize; index++)
+                        for (var index = 0; index < padSize; index++)
                             padBytes[index] = (byte)padSize;
                         break;
 
@@ -548,12 +548,12 @@ namespace OpenGost.Security.Cryptography
             switch (_cipherMode)
             {
                 case CipherMode.ECB:
-                    for (int shift = 0; shift < inputCount; shift += InputBlockSize)
+                    for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                         DecryptBlock(inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift);
                     break;
 
                 case CipherMode.CBC:
-                    for (int shift = 0; shift < inputCount; shift += InputBlockSize)
+                    for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         DecryptBlock(inputBuffer, inputOffset + shift, _tempBuffer, 0);
                         Xor(_stateBuffer, 0, _tempBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
@@ -563,7 +563,7 @@ namespace OpenGost.Security.Cryptography
                     break;
 
                 case CipherMode.CFB:
-                    for (int shift = 0; shift < inputCount; shift += InputBlockSize)
+                    for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
                         Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
@@ -573,7 +573,7 @@ namespace OpenGost.Security.Cryptography
                     break;
 
                 case CipherMode.OFB:
-                    for (int shift = 0; shift < inputCount; shift += InputBlockSize)
+                    for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
                         Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
@@ -590,7 +590,7 @@ namespace OpenGost.Security.Cryptography
                 return inputCount;
 
             // this is the last block, remove the padding.
-            int padSize = 0;
+            var padSize = 0;
 
             switch (_paddingMode)
             {
@@ -602,7 +602,7 @@ namespace OpenGost.Security.Cryptography
                     padSize = GetValidPadSize(inputCount, outputBuffer);
 
                     // additional check the validity of the padding
-                    for (int index = 1; index <= padSize; index++)
+                    for (var index = 1; index <= padSize; index++)
                         if (outputBuffer[inputCount - index] != padSize)
                             throw new CryptographicException(CryptographicInvalidPadding);
 
@@ -613,7 +613,7 @@ namespace OpenGost.Security.Cryptography
                     padSize = GetValidPadSize(inputCount, outputBuffer);
 
                     // additional check the validity of the padding
-                    for (int index = 2; index <= padSize; index++)
+                    for (var index = 2; index <= padSize; index++)
                         if (outputBuffer[inputCount - index] != 0)
                             throw new CryptographicException(CryptographicInvalidPadding);
 

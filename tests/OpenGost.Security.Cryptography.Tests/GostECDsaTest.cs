@@ -19,7 +19,7 @@ namespace OpenGost.Security.Cryptography
         protected void CheckExportParameters(ECParameters parameters)
         {
             ECParameters exportedParameters;
-            using (T algorithm = Create(parameters))
+            using (var algorithm = Create(parameters))
             {
                 exportedParameters = algorithm.ExportParameters(false);
 
@@ -38,7 +38,7 @@ namespace OpenGost.Security.Cryptography
 
         protected bool VerifyHash(ECParameters parameters, byte[] hash, byte[] signature)
         {
-            using (T algorithm = Create(parameters))
+            using (var algorithm = Create(parameters))
                 return algorithm.VerifyHash(hash, signature);
         }
 
@@ -48,7 +48,7 @@ namespace OpenGost.Security.Cryptography
         public virtual void SignAndVerifyHash(ECParameters parameters)
         {
             byte[] hash, signature;
-            using (T algorithm = Create(parameters))
+            using (var algorithm = Create(parameters))
             {
                 hash = GenerateRandomBytes(algorithm.KeySize / 8);
                 signature = algorithm.SignHash(hash);
@@ -62,13 +62,13 @@ namespace OpenGost.Security.Cryptography
             parameters.Validate();
 
             string xmlString;
-            using (T algorithm = Create(parameters))
+            using (var algorithm = Create(parameters))
                 xmlString = algorithm.ToXmlString(false);
 
             Assert.False(string.IsNullOrEmpty(xmlString));
 
             ECParameters newParameters;
-            using (T algorithm = Create(xmlString))
+            using (var algorithm = Create(xmlString))
                 newParameters = algorithm.ExportParameters(false);
 
             AssertEqual(parameters, newParameters, false);
@@ -88,11 +88,11 @@ namespace OpenGost.Security.Cryptography
 
         public virtual void CheckKeyGeneration(ECParameters curveParameters)
         {
-            ECCurve curve = curveParameters.Curve;
+            var curve = curveParameters.Curve;
             using (var algorithm = new T())
             {
                 algorithm.GenerateKey(curve);
-                ECParameters parameters = algorithm.ExportParameters(true);
+                var parameters = algorithm.ExportParameters(true);
                 parameters.Validate();
             }
         }
@@ -101,7 +101,7 @@ namespace OpenGost.Security.Cryptography
         {
             using (var algorithm = new T())
             {
-                ECParameters parameters = algorithm.ExportParameters(true);
+                var parameters = algorithm.ExportParameters(true);
                 parameters.Validate();
             }
         }

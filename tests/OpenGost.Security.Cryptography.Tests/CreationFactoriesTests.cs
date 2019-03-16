@@ -13,7 +13,7 @@ namespace OpenGost.Security.Cryptography
         [MemberData(nameof(ImplicitCreateFactories))]
         public void ImplicitCreateFactoriesTest(Type expectedType, Func<object> factory)
         {
-            object obj = factory.Invoke();
+            var obj = factory.Invoke();
             try
             {
                 Assert.NotNull(obj);
@@ -30,7 +30,7 @@ namespace OpenGost.Security.Cryptography
         [MemberData(nameof(ExplicitCreateFactories))]
         public void ExplicitCreateFactoriesTest(Type expectedType, Func<string, object> factory, string objectName)
         {
-            object obj = factory.Invoke(objectName);
+            var obj = factory.Invoke(objectName);
             try
             {
                 Assert.NotNull(obj);

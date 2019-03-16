@@ -41,7 +41,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="GostECDsa512"/>.
         /// </returns>
         [ComVisible(false)]
-        public new static GostECDsa512 Create()
+        public static new GostECDsa512 Create()
             => Create(GostECDsa512AlgorithmFullName);
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="GostECDsa512"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
-        public new static GostECDsa512 Create(string algorithmName)
+        public static new GostECDsa512 Create(string algorithmName)
             => (GostECDsa512)CreateFromName(algorithmName);
 
         #endregion

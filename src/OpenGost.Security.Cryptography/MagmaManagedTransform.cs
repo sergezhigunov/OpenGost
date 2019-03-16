@@ -61,7 +61,7 @@ namespace OpenGost.Security.Cryptography
         /// The private key to be used for the key expansion.
         /// </param>
         [SecuritySafeCritical]
-        protected unsafe override void GenerateKeyExpansion(byte[] key)
+        protected override unsafe void GenerateKeyExpansion(byte[] key)
         {
             _keyExpansion = new uint[8];
 
@@ -86,11 +86,9 @@ namespace OpenGost.Security.Cryptography
         /// The offset into the output byte array to begin writing data to.
         /// </param>
         [SecuritySafeCritical]
-        protected unsafe override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
+        protected override unsafe void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
-            uint a0, a1;
-
-            LoadRegisters(inputBuffer, inputOffset, out a0, out a1);
+            LoadRegisters(inputBuffer, inputOffset, out var a0, out var a1);
 
             fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
             {
@@ -119,11 +117,9 @@ namespace OpenGost.Security.Cryptography
         /// The offset into the output byte array to begin writing data to.
         /// </param>
         [SecuritySafeCritical]
-        protected unsafe override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
+        protected override unsafe void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
         {
-            uint a0, a1;
-
-            LoadRegisters(inputBuffer, inputOffset, out a0, out a1);
+            LoadRegisters(inputBuffer, inputOffset, out var a0, out var a1);
 
             fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
             {
@@ -142,7 +138,7 @@ namespace OpenGost.Security.Cryptography
         {
             fixed (byte* input = inputBuffer)
             {
-                byte* block = input + inputOffset;
+                var block = input + inputOffset;
 
                 a0 = UInt32FromBigEndian(block + sizeof(uint));
                 a1 = UInt32FromBigEndian(block);
@@ -155,7 +151,7 @@ namespace OpenGost.Security.Cryptography
         {
             fixed (byte* output = outputBuffer)
             {
-                byte* block = output + outputOffset;
+                var block = output + outputOffset;
 
                 UInt32ToBigEndian(block, a0);
                 UInt32ToBigEndian(block + sizeof(uint), a1);
@@ -195,7 +191,7 @@ namespace OpenGost.Security.Cryptography
 
         [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe static void ComputeEightRoundsBackwardKeyOrder(uint* k, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3, ref uint a0, ref uint a1)
+        private static unsafe void ComputeEightRoundsBackwardKeyOrder(uint* k, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3, ref uint a0, ref uint a1)
         {
             a1 ^= SubstituteAndRotateElevenBits(a0 + k[7], lookup0, lookup1, lookup2, lookup3);
             a0 ^= SubstituteAndRotateElevenBits(a1 + k[6], lookup0, lookup1, lookup2, lookup3);
@@ -214,7 +210,7 @@ namespace OpenGost.Security.Cryptography
 
         [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe static uint SubstituteAndRotateElevenBits(uint data, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3)
+        private static unsafe uint SubstituteAndRotateElevenBits(uint data, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3)
         {
             // Substitution and rotation precomputed in the lookup tables
             return
@@ -228,7 +224,7 @@ namespace OpenGost.Security.Cryptography
         {
             var lookupTable = new uint[256];
 
-            for (int b = 0; b < 256; b++)
+            for (var b = 0; b < 256; b++)
                 lookupTable[b] = RotateElevenBitsLeft((s_substitutionBox[2 * tableNumber][b & 0x0f] ^
                     (uint)s_substitutionBox[2 * tableNumber + 1][b >> 4] << 4) << tableNumber * 8);
 

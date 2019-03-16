@@ -22,7 +22,7 @@ namespace OpenGost.Security.Cryptography
 
         public ECPoint ToECPoint(int keySize)
         {
-            int size = keySize / 8;
+            var size = keySize / 8;
 
             return new ECPoint
             {
@@ -63,7 +63,7 @@ namespace OpenGost.Security.Cryptography
 
         public static BigIntegerPoint Multiply(BigIntegerPoint point, BigInteger multiplier, BigInteger prime, BigInteger a)
         {
-            BigIntegerPoint result = point;
+            var result = point;
             multiplier--;
 
             while (multiplier > BigInteger.Zero)

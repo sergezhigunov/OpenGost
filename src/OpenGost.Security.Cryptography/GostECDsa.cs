@@ -119,7 +119,7 @@ namespace OpenGost.Security.Cryptography
         {
             if (xmlString == null) throw new ArgumentNullException(nameof(xmlString));
 
-            ECParameters parameters = ECParametersFormatter.FromXml(xmlString, KeySize / 8);
+            var parameters = ECParametersFormatter.FromXml(xmlString, KeySize / 8);
             ImportParameters(parameters);
         }
 
@@ -135,7 +135,7 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         public sealed override string ToXmlString(bool includePrivateParameters)
         {
-            ECParameters parameters = ExportParameters(includePrivateParameters);
+            var parameters = ExportParameters(includePrivateParameters);
             return ECParametersFormatter.ToXmlString(parameters);
         }
 
@@ -148,7 +148,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="GostECDsa"/>.
         /// </returns>
         [ComVisible(false)]
-        public new static GostECDsa Create()
+        public static new GostECDsa Create()
             => Create(GostECDsa512AlgorithmFullName);
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="GostECDsa"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
-        public new static GostECDsa Create(string algorithmName)
+        public static new GostECDsa Create(string algorithmName)
             => (GostECDsa)CreateFromName(algorithmName);
 
         #endregion

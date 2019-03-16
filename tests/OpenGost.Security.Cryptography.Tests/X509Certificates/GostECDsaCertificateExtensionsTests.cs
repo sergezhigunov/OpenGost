@@ -11,7 +11,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         [MemberData(nameof(TestCertificates))]
         public void GetPublicKeyFromX509Certificate2(X509Certificate2 certificate)
         {
-            using (GostECDsa publicKey = certificate.GetECDsaPublicKey())
+            using (var publicKey = certificate.GetECDsaPublicKey())
             {
                 Assert.NotNull(publicKey);
             }

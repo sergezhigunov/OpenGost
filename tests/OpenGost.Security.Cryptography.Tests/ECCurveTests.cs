@@ -13,7 +13,7 @@ namespace OpenGost.Security.Cryptography
         [MemberData(nameof(SupportedOidValues))]
         public void CreateFromValue(string oidValue)
         {
-            ECCurve curve = ECCurve.CreateFromValue(oidValue);
+            var curve = ECCurve.CreateFromValue(oidValue);
 
             ValidateNamedCurve(curve);
             Assert.Equal(oidValue, curve.Oid.Value);
@@ -23,7 +23,7 @@ namespace OpenGost.Security.Cryptography
         [MemberData(nameof(SupportedOids))]
         public void CreateFromOid(Oid curveOid)
         {
-            ECCurve curve = ECCurve.CreateFromOid(curveOid);
+            var curve = ECCurve.CreateFromOid(curveOid);
 
             ValidateNamedCurve(curve);
             Assert.Equal(curveOid.Value, curve.Oid.Value);
@@ -33,7 +33,7 @@ namespace OpenGost.Security.Cryptography
 
         public static IEnumerable<object[]> SupportedOidValues()
         {
-            foreach (string oidValue in new[]
+            foreach (var oidValue in new[]
             {
                 "1.2.643.7.1.2.1.1.0",
                 "1.2.643.7.1.2.1.1.1",
@@ -52,7 +52,7 @@ namespace OpenGost.Security.Cryptography
 
         public static IEnumerable<object[]> SupportedOids()
         {
-            foreach (object[] oidValue in SupportedOidValues())
+            foreach (var oidValue in SupportedOidValues())
                 yield return new[] { new Oid((string)oidValue.First())  };
         }
 

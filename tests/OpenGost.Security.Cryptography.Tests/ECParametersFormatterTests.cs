@@ -51,7 +51,7 @@ namespace OpenGost.Security.Cryptography
         {
             parameters.Validate();
 
-            string xmlString = ECParametersFormatter.ToXmlString(parameters);
+            var xmlString = ECParametersFormatter.ToXmlString(parameters);
 
             Assert.False(string.IsNullOrEmpty(xmlString));
 
@@ -71,7 +71,7 @@ namespace OpenGost.Security.Cryptography
             using (var reader = XmlReader.Create(textReader, settings))
                 while (reader.Read()) ;
 
-            ECParameters newParameters = ECParametersFormatter.FromXml(xmlString, keySize);
+            var newParameters = ECParametersFormatter.FromXml(xmlString, keySize);
 
             AssertEqual(parameters, newParameters, false);
         }

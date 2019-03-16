@@ -18,8 +18,8 @@ namespace OpenGost.Security.Cryptography
             {
                 byte[] encryptedBytes;
                 var input = new MemoryStream(plainTextBytes);
-                using (CryptoStream cryptoStream = new CryptoStream(input, algorithm.CreateEncryptor(), CryptoStreamMode.Read))
-                using (MemoryStream output = new MemoryStream())
+                using (var cryptoStream = new CryptoStream(input, algorithm.CreateEncryptor(), CryptoStreamMode.Read))
+                using (var output = new MemoryStream())
                 {
                     cryptoStream.CopyTo(output);
                     encryptedBytes = output.ToArray();
@@ -27,14 +27,14 @@ namespace OpenGost.Security.Cryptography
 
                 Assert.NotEqual(plainTextBytes, encryptedBytes);
 
-                byte[] cipherTextBytes = cipherTextHex.HexToByteArray();
+                var cipherTextBytes = cipherTextHex.HexToByteArray();
 
                 Assert.Equal(cipherTextBytes, encryptedBytes);
 
                 byte[] decryptedBytes;
                 input = new MemoryStream(encryptedBytes);
-                using (CryptoStream cryptoStream = new CryptoStream(input, algorithm.CreateDecryptor(), CryptoStreamMode.Read))
-                using (MemoryStream output = new MemoryStream())
+                using (var cryptoStream = new CryptoStream(input, algorithm.CreateDecryptor(), CryptoStreamMode.Read))
+                using (var output = new MemoryStream())
                 {
                     cryptoStream.CopyTo(output);
                     decryptedBytes = output.ToArray();

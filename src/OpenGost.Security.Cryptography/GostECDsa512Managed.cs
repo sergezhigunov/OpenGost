@@ -61,7 +61,7 @@ namespace OpenGost.Security.Cryptography
         public override void GenerateKey(ECCurve curve)
         {
             curve.Validate();
-            int keySizeInByted = curve.Prime.Length;
+            var keySizeInByted = curve.Prime.Length;
             KeySize = keySizeInByted * 8;
 
             BigInteger
@@ -69,7 +69,7 @@ namespace OpenGost.Security.Cryptography
                 subgroupOrder = Normalize(new BigInteger(curve.Order), s_modulus) / Normalize(new BigInteger(curve.Cofactor), s_modulus),
                 a = Normalize(new BigInteger(curve.A), s_modulus);
 
-            byte[] privateKey = new byte[keySizeInByted];
+            var privateKey = new byte[keySizeInByted];
             BigInteger key;
             do
             {
@@ -79,7 +79,7 @@ namespace OpenGost.Security.Cryptography
 
             var basePoint = new BigIntegerPoint(curve.G, s_modulus);
 
-            ECPoint publicKey = BigIntegerPoint.Multiply(basePoint, key, prime, a).ToECPoint(KeySize);
+            var publicKey = BigIntegerPoint.Multiply(basePoint, key, prime, a).ToECPoint(KeySize);
 
             EraseData(ref _privateKey);
             _curve = curve.Clone();
@@ -160,15 +160,15 @@ namespace OpenGost.Security.Cryptography
             if (KeySize / 8 != hash.Length)
                 throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicInvalidHashSize, KeySize / 8));
 
-            int keySizeInByted = KeySize / 8;
+            var keySizeInByted = KeySize / 8;
 
             if (!_parametersSet)
                 GenerateKey(GetDefaultCurve());
 
-            BigInteger
+            var
                 subgroupOrder = Normalize(new BigInteger(_curve.Order), s_modulus) / Normalize(new BigInteger(_curve.Cofactor), s_modulus);
 
-            BigInteger e = Normalize(new BigInteger(hash), s_modulus) % subgroupOrder;
+            var e = Normalize(new BigInteger(hash), s_modulus) % subgroupOrder;
 
             if (e == BigInteger.Zero)
                 e = BigInteger.One;
@@ -242,24 +242,24 @@ namespace OpenGost.Security.Cryptography
             if (!_parametersSet)
                 return false;
 
-            int keySizeInByted = KeySize / 8;
+            var keySizeInByted = KeySize / 8;
 
-            BigInteger
+            var
                 subgroupOrder = Normalize(new BigInteger(_curve.Order), s_modulus) / Normalize(new BigInteger(_curve.Cofactor), s_modulus);
 
-            byte[] array = new byte[keySizeInByted];
+            var array = new byte[keySizeInByted];
 
             BlockCopy(signature, 0, array, 0, keySizeInByted);
-            BigInteger s = Normalize(new BigInteger(array), s_modulus);
+            var s = Normalize(new BigInteger(array), s_modulus);
             if (s < BigInteger.One || s > subgroupOrder)
                 return false;
 
             BlockCopy(signature, keySizeInByted, array, 0, keySizeInByted);
-            BigInteger r = Normalize(new BigInteger(array), s_modulus);
+            var r = Normalize(new BigInteger(array), s_modulus);
             if (r < BigInteger.One || r > subgroupOrder)
                 return false;
 
-            BigInteger e = Normalize(new BigInteger(hash), s_modulus) % subgroupOrder;
+            var e = Normalize(new BigInteger(hash), s_modulus) % subgroupOrder;
 
             if (e == BigInteger.Zero)
                 e = BigInteger.One;
@@ -271,7 +271,7 @@ namespace OpenGost.Security.Cryptography
                 prime = Normalize(new BigInteger(_curve.Prime), s_modulus),
                 a = Normalize(new BigInteger(_curve.A), s_modulus);
 
-            BigIntegerPoint c = BigIntegerPoint.Add(
+            var c = BigIntegerPoint.Add(
                 BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, s_modulus), z1, prime, a),
                 BigIntegerPoint.Multiply(new BigIntegerPoint(_publicKey, s_modulus), z2, prime, a),
                 prime);
@@ -302,7 +302,7 @@ namespace OpenGost.Security.Cryptography
                     EraseData(ref _curve.Cofactor);
                     EraseData(ref _publicKey.X);
                     EraseData(ref _publicKey.Y);
-                    ECPoint g = _curve.G;
+                    var g = _curve.G;
                     EraseData(ref g.X);
                     EraseData(ref g.Y);
                 }

@@ -39,7 +39,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
             if (!IsGostECDsa(certificate))
                 return null;
 
-            PublicKey publicKey = certificate.PublicKey;
+            var publicKey = certificate.PublicKey;
 
             GostECDsa result;
             switch (publicKey.EncodedKeyValue.Oid.Value)
@@ -58,7 +58,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
             try
             {
-                ECParameters parameters = ReadParameters(publicKey);
+                var parameters = ReadParameters(publicKey);
                 result.ImportParameters(parameters);
             }
             catch
@@ -96,11 +96,11 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
         private static bool IsGostECDsa(X509Certificate2 certificate)
         {
-            string value = certificate.PublicKey.Oid.Value;
+            var value = certificate.PublicKey.Oid.Value;
             if (value != GostECDsa256OidValue && value != GostECDsa512OidValue)
                 return false;
 
-            foreach (X509Extension extension in certificate.Extensions)
+            foreach (var extension in certificate.Extensions)
             {
                 if (extension.Oid.Value == "2.5.29.15")
                 {
@@ -124,8 +124,8 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
         private static ECParameters ReadParameters(PublicKey publicKey)
         {
-            byte[] publicKeyValue = DecodeOctetString(publicKey.EncodedKeyValue);
-            int keySize = publicKeyValue.Length / 2;
+            var publicKeyValue = DecodeOctetString(publicKey.EncodedKeyValue);
+            var keySize = publicKeyValue.Length / 2;
             var publicPoint = new ECPoint
             {
                 X = publicKeyValue.Subarray(0, keySize),
@@ -134,14 +134,14 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
             EraseData(ref publicKeyValue);
 
-            ECCurve curve = default(ECCurve);
+            var curve = default(ECCurve);
 
-            foreach (AsnEncodedData item in DecodeSequence(publicKey.EncodedParameters))
+            foreach (var item in DecodeSequence(publicKey.EncodedParameters))
             {
-                AsnTag tag = GetAsnTag(item);
+                var tag = GetAsnTag(item);
                 if (tag == AsnTag.ObjectIdentifier)
                 {
-                    string oidValue = DecodeOidValue(item);
+                    var oidValue = DecodeOidValue(item);
                     if (OidValueRegistered(oidValue))
                     {
                         curve = ECCurve.CreateFromValue(oidValue);

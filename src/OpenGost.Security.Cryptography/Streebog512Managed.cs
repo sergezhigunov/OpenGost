@@ -164,7 +164,7 @@ namespace OpenGost.Security.Cryptography
 
         #endregion
 
-        private byte[]
+        private readonly byte[]
             _state,
             _sigma,
             _buffer,
@@ -218,14 +218,14 @@ namespace OpenGost.Security.Cryptography
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
             // Compute length of buffer 
-            int bufferLen = (int)(_count & 0x3f);
+            var bufferLen = (int)(_count & 0x3f);
 
             // Update number of bytes
             _count += cbSize;
 
             if ((bufferLen > 0) && (bufferLen + cbSize >= 64))
             {
-                int bytesToCopy = 64 - bufferLen;
+                var bytesToCopy = 64 - bufferLen;
                 BlockCopy(array, ibStart, _buffer, bufferLen, bytesToCopy);
                 ibStart += bytesToCopy;
                 cbSize -= bytesToCopy;
@@ -255,9 +255,9 @@ namespace OpenGost.Security.Cryptography
         protected override byte[] HashFinal()
         {
             // Compute length of buffer 
-            int bufferLen = (int)(_count & 0x3f);
+            var bufferLen = (int)(_count & 0x3f);
 
-            byte[] lastBlock = new byte[64];
+            var lastBlock = new byte[64];
             Array.Copy(_buffer, 0, lastBlock, 0, bufferLen);
             lastBlock[bufferLen] = 1;
 
@@ -309,7 +309,7 @@ namespace OpenGost.Security.Cryptography
 
                 fixed (byte* state = _state, s = sigma)
                 {
-                    byte* n = stackalloc byte[64];
+                    var n = stackalloc byte[64];
                     AddModuloLittleEndian(n, sizeInBits, n);
 
                     Copy(state, tempKey);
@@ -343,7 +343,7 @@ namespace OpenGost.Security.Cryptography
         {
             Xor(key, block, result);
 
-            for (int i = 0; i < 12; i++)
+            for (var i = 0; i < 12; i++)
             {
                 Transform(result, t0, t1, t2, t3, t4, t5, t6, t7);
                 fixed (byte* keyExpansion = s_keyExpansionTable[i])
@@ -359,9 +359,9 @@ namespace OpenGost.Security.Cryptography
             ulong* t0, ulong* t1, ulong* t2, ulong* t3,
             ulong* t4, ulong* t5, ulong* t6, ulong* t7)
         {
-            ulong* temp = stackalloc ulong[8];
+            var temp = stackalloc ulong[8];
 
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
                 temp[i] =
                     t0[data[i]] ^ t1[data[i + 8]] ^ t2[data[i + 16]] ^ t3[data[i + 24]] ^
                     t4[data[i + 32]] ^ t5[data[i + 40]] ^ t6[data[i + 48]] ^ t7[data[i + 56]];
@@ -373,7 +373,7 @@ namespace OpenGost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Copy(byte* source, byte* destination)
         {
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
                 *(((ulong*)destination) + i) = *(((ulong*)source) + i);
         }
 
@@ -381,7 +381,7 @@ namespace OpenGost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Xor(byte* left, byte* right, byte* result)
         {
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
                 *(((ulong*)result) + i) = *(((ulong*)left) + i) ^ *(((ulong*)right) + i);
         }
 
@@ -389,7 +389,7 @@ namespace OpenGost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Xor(byte* result, byte* right)
         {
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
                 *(((ulong*)result) + i) ^= *(((ulong*)right) + i);
         }
 
@@ -399,7 +399,7 @@ namespace OpenGost.Security.Cryptography
         {
             *(((ulong*)result)) = *(((ulong*)left)) ^ right;
 
-            for (int i = 1; i < 8; i++)
+            for (var i = 1; i < 8; i++)
                 *(((ulong*)result) + i) = *(((ulong*)left) + i);
         }
 
@@ -407,8 +407,8 @@ namespace OpenGost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void AddModuloLittleEndian(byte* left, byte* right, byte* result)
         {
-            int t = 0;
-            for (int i = 0; i < 64; i++)
+            var t = 0;
+            for (var i = 0; i < 64; i++)
             {
                 t = left[i] + right[i] + (t >> 8);
                 result[i] = (byte)t;
@@ -419,16 +419,16 @@ namespace OpenGost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void AddModuloLittleEndian(byte* left, ulong right, byte* result)
         {
-            int t = 0;
+            var t = 0;
 
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
-                byte rightByte = (byte)(right >> (i * 8));
+                var rightByte = (byte)(right >> (i * 8));
                 t = left[i] + rightByte + (t >> 8);
                 result[i] = (byte)t;
             }
 
-            for (int i = 8; i < 64; i++)
+            for (var i = 8; i < 64; i++)
             {
                 t = left[i] + (t >> 8);
                 result[i] = (byte)t;
@@ -439,8 +439,8 @@ namespace OpenGost.Security.Cryptography
         {
             var lookupTable = new ulong[256];
 
-            for (int b = 0; b < 256; b++)
-                for (int j = 0; j < 8; j++)
+            for (var b = 0; b < 256; b++)
+                for (var j = 0; j < 8; j++)
                     if (((b << j) & 0x80) == 0x80)
                         lookupTable[s_backwardSubstitutionBox[b]] ^=
                             s_linearTransformTable[(7 - tableNumber) * 8 + j];

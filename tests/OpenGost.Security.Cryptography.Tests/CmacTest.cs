@@ -7,14 +7,14 @@ namespace OpenGost.Security.Cryptography
     {
         protected void VerifyCmac(string dataHex, string keyHex, string digestHex)
         {
-            byte[] digestBytes = digestHex.HexToByteArray();
+            var digestBytes = digestHex.HexToByteArray();
             byte[] computedDigest;
 
             using (var cmac = new T())
             {
                 Assert.True(cmac.HashSize > 0);
 
-                byte[] key = keyHex.HexToByteArray();
+                var key = keyHex.HexToByteArray();
                 cmac.Key = key;
 
                 // make sure the getter returns different objects each time

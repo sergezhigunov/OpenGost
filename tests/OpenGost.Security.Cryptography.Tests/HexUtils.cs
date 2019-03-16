@@ -12,10 +12,10 @@ namespace OpenGost.Security.Cryptography
         internal static byte[] HexToByteArray(this string hexString)
         {
             if (hexString == null) throw new ArgumentNullException(nameof(hexString));
-            int hexStringLength = hexString.Length;
+            var hexStringLength = hexString.Length;
             if (hexStringLength % 2 != 0) throw CreateTextIncorrectFormatException(null);
 
-            byte[] retval = new byte[hexStringLength / 2];
+            var retval = new byte[hexStringLength / 2];
             for (int i = 0, j = 0; i < hexStringLength; i += 2, j++)
             {
                 try
@@ -38,7 +38,7 @@ namespace OpenGost.Security.Cryptography
 
             var builder = new StringBuilder(bytes.Length * 2);
 
-            foreach (byte b in bytes)
+            foreach (var b in bytes)
             {
                 builder.Append(HexAlphabet[b >> 4]);
                 builder.Append(HexAlphabet[b & 0x0F]);

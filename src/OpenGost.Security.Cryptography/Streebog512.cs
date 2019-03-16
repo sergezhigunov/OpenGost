@@ -29,7 +29,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="Streebog512"/>.
         /// </returns>
         [ComVisible(false)]
-        public new static Streebog512 Create()
+        public static new Streebog512 Create()
             => Create(Streebog512AlgorithmFullName);
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="Streebog512"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
-        public new static Streebog512 Create(string algorithmName)
+        public static new Streebog512 Create(string algorithmName)
             => (Streebog512)CreateFromName(algorithmName);
 
         #endregion

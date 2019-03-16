@@ -188,10 +188,10 @@ namespace OpenGost.Security.Cryptography
                     InternalEncryptAndDecrypt(algorithm, plainText, out cipherText, out newPlainText);
                 }
 
-                for (int i = 0; i < plainText.Length; i++)
+                for (var i = 0; i < plainText.Length; i++)
                 Assert.Equal(plainText[i], newPlainText[i]);
 
-            for (int i = plainText.Length; i < newPlainText.Length; i++)
+            for (var i = plainText.Length; i < newPlainText.Length; i++)
                 Assert.Equal(0, newPlainText[i]);
             };
 
@@ -218,21 +218,21 @@ namespace OpenGost.Security.Cryptography
                     newPlainTextNoDepad = InternalTransform(algorithm.CreateDecryptor, cipherText);
                 }
 
-                int padCount = newPlainTextNoDepad.Length - newPlainText.Length;
+                var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
 
-                byte[] padding = new byte[padCount];
+                var padding = new byte[padCount];
                 BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
 
                 Assert.Equal(plainText, newPlainText);
 
-                for (int i = 0; i < plainText.Length; i++)
+                for (var i = 0; i < plainText.Length; i++)
                     Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
 
                 if (padCount > 0)
                 {
                     Assert.Equal(padCount, padding[padCount - 1]);
 
-                    for (int i = 0; i < padCount - 1; i++)
+                    for (var i = 0; i < padCount - 1; i++)
                         Assert.Equal(0, padding[i]);
                 }
             };
@@ -260,21 +260,21 @@ namespace OpenGost.Security.Cryptography
                     newPlainTextNoDepad = InternalTransform(algorithm.CreateDecryptor, cipherText);
                 }
 
-                int padCount = newPlainTextNoDepad.Length - newPlainText.Length;
+                var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
 
-                byte[] padding = new byte[padCount];
+                var padding = new byte[padCount];
                 BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
 
                 Assert.Equal(plainText, newPlainText);
 
-                for (int i = 0; i < plainText.Length; i++)
+                for (var i = 0; i < plainText.Length; i++)
                     Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
 
                 if (padCount > 0)
                 {
                     Assert.Equal(padCount, padding[padCount - 1]);
 
-                    for (int i = 0; i < padCount - 1; i++)
+                    for (var i = 0; i < padCount - 1; i++)
                         Assert.Equal(padCount, padding[i]);
                 }
             };
@@ -302,14 +302,14 @@ namespace OpenGost.Security.Cryptography
                     newPlainTextNoDepad = InternalTransform(algorithm.CreateDecryptor, cipherText);
                 }
 
-                int padCount = newPlainTextNoDepad.Length - newPlainText.Length;
+                var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
 
-                byte[] padding = new byte[padCount];
+                var padding = new byte[padCount];
                 BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
 
                 Assert.Equal(plainText, newPlainText);
 
-                for (int i = 0; i < plainText.Length; i++)
+                for (var i = 0; i < plainText.Length; i++)
                     Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
 
                 if (padCount > 0)

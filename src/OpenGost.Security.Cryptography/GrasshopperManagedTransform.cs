@@ -108,7 +108,7 @@ namespace OpenGost.Security.Cryptography
 
             unsafe
             {
-                byte* t = stackalloc byte[16];
+                var t = stackalloc byte[16];
 
                 fixed (byte* s = s_forwardSubstitutionBox,
                     t16 = s_lookupTable16,
@@ -119,14 +119,14 @@ namespace OpenGost.Security.Cryptography
                     t194 = s_lookupTable194,
                     t251 = s_lookupTable251)
                 {
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
                     {
                         _keyExpansion[2 * i + 2] = (byte[])_keyExpansion[2 * i].Clone();
                         _keyExpansion[2 * i + 3] = (byte[])_keyExpansion[2 * i + 1].Clone();
 
                         fixed (byte* l = _keyExpansion[2 * i + 2], h = _keyExpansion[2 * i + 3])
                         {
-                            for (int j = 0; j < 8; j++)
+                            for (var j = 0; j < 8; j++)
                             {
                                 fixed (byte* c = s_iterationConstants[i][j])
                                     Xor(c, l, t);
@@ -227,7 +227,7 @@ namespace OpenGost.Security.Cryptography
                 t194 = s_lookupTable194,
                 t251 = s_lookupTable251)
             {
-                for (int i = 1; i < 10; i++)
+                for (var i = 1; i < 10; i++)
                 {
                     Substitute(s, output);
                     DoLinearTransformForward(output, t16, t32, t133, t148, t192, t194, t251);
@@ -253,7 +253,7 @@ namespace OpenGost.Security.Cryptography
                 t194 = s_lookupTable194,
                 t251 = s_lookupTable251)
             {
-                for (int i = 8; i >= 0; i--)
+                for (var i = 8; i >= 0; i--)
                 {
                     DoLinearTransformBackward(output, t16, t32, t133, t148, t192, t194, t251);
                     Substitute(s, output);
@@ -292,7 +292,7 @@ namespace OpenGost.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Substitute(byte* substTable, byte* data)
         {
-            for (int i = 0; i < 16; i++)
+            for (var i = 0; i < 16; i++)
                 data[i] = substTable[data[i]];
         }
 
@@ -565,7 +565,7 @@ namespace OpenGost.Security.Cryptography
         [SecuritySafeCritical]
         private static byte[][][] InitializeIterationConstants()
         {
-            byte[][][] retval = new byte[4][][];
+            var retval = new byte[4][][];
 
             unsafe
             {
@@ -578,13 +578,13 @@ namespace OpenGost.Security.Cryptography
                     t194 = s_lookupTable194,
                     t251 = s_lookupTable251)
                 {
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
                     {
-                        byte[][] row = new byte[8][];
+                        var row = new byte[8][];
 
-                        for (int j = 0; j < 8; j++)
+                        for (var j = 0; j < 8; j++)
                         {
-                            byte[] iterConst = new byte[16];
+                            var iterConst = new byte[16];
                             iterConst[15] = (byte)(i * 8 + j + 1); ;
                             fixed (byte* c = iterConst)
                                 DoLinearTransformForward(c, t16, t32, t133, t148, t192, t194, t251);
@@ -601,11 +601,11 @@ namespace OpenGost.Security.Cryptography
 
         private static byte[] InitializeLookupTable(byte c)
         {
-            byte[] row = new byte[256];
-            for (int j = 0; j < 256; j++)
+            var row = new byte[256];
+            for (var j = 0; j < 256; j++)
             {
-                int x = j;
-                int z = 0;
+                var x = j;
+                var z = 0;
                 int y = c;
 
                 while (y != 0)

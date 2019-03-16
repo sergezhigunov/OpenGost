@@ -38,7 +38,7 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public void Validate()
         {
-            bool hasErrors = false;
+            var hasErrors = false;
 
             byte[] x = Q.X, y = Q.Y;
 

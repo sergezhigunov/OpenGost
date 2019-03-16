@@ -18,7 +18,7 @@ namespace OpenGost.Security.Cryptography
 
         internal static byte[] GenerateRandomBytes(int size)
         {
-            byte[] array = new byte[size];
+            var array = new byte[size];
             StaticRandomNumberGenerator.GetBytes(array);
             return array;
         }
@@ -45,7 +45,7 @@ namespace OpenGost.Security.Cryptography
             if (startIndex == 0 && length == value.Length)
                 return CloneArray(value);
 
-            T[] result = new T[length];
+            var result = new T[length];
             Array.Copy(value, startIndex, result, 0, length);
             return result;
         }
@@ -65,8 +65,8 @@ namespace OpenGost.Security.Cryptography
         {
             if (data != null)
             {
-                int length = data.Length;
-                for (int i = 0; i < length; i++)
+                var length = data.Length;
+                for (var i = 0; i < length; i++)
                     EraseData(ref data[i]);
 
                 data = null;
@@ -75,7 +75,7 @@ namespace OpenGost.Security.Cryptography
 
         internal static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] result, int resultOffset, int count)
         {
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
                 result[resultOffset + i] = (byte)(left[leftOffset + i] ^ right[rightOffset + i]);
         }
 
@@ -121,7 +121,7 @@ namespace OpenGost.Security.Cryptography
 
         [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal unsafe static void UInt32FromBigEndian(uint* x, int digits, byte* block)
+        internal static unsafe void UInt32FromBigEndian(uint* x, int digits, byte* block)
         {
             for (int i = 0, j = 0; i < digits; i++, j += sizeof(uint))
                 x[i] = UInt32FromBigEndian(block + j);
@@ -137,8 +137,8 @@ namespace OpenGost.Security.Cryptography
             if (value < BigInteger.Zero)
                 value += (BigInteger.One << size * 8);
 
-            byte[] result = new byte[size];
-            for (int i = 0; i < size; i++)
+            var result = new byte[size];
+            for (var i = 0; i < size; i++)
             {
                 if (value == BigInteger.Zero)
                     break;

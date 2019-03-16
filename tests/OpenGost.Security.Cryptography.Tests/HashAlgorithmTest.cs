@@ -12,7 +12,7 @@ namespace OpenGost.Security.Cryptography
 
         protected void Verify(byte[] input, string expectedHexadecimal)
         {
-            byte[] expected = expectedHexadecimal.HexToByteArray();
+            var expected = expectedHexadecimal.HexToByteArray();
             byte[] actual;
 
             using (var hash = new T())

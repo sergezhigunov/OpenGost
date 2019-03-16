@@ -46,7 +46,7 @@ namespace OpenGost.Security.Cryptography
         internal static ECParameters FromXml(string xmlString, int keyLength)
         {
             using (var textReader = new StringReader(xmlString))
-            using (XmlReader reader = XmlReader.Create(textReader))
+            using (var reader = XmlReader.Create(textReader))
             {
                 if (!reader.IsStartElement(ECDsaKeyValueTag, Namespace))
                     throw new ArgumentException(CryptographicMissingECDsaKeyValue, nameof(xmlString));
@@ -54,11 +54,11 @@ namespace OpenGost.Security.Cryptography
 
                 if (!reader.IsStartElement(DomainParametersTag, Namespace))
                     throw new ArgumentException(CryptographicMissingDomainParameters, nameof(xmlString));
-                ECCurve curve = ReadDomainParameters(reader, keyLength);
+                var curve = ReadDomainParameters(reader, keyLength);
 
                 if (!reader.IsStartElement(PublicKeyTag, Namespace))
                     throw new ArgumentException(CryptographicMissingPublicKey, nameof(xmlString));
-                ECPoint publicKey = ReadECPoint(reader, PublicKeyTag, Namespace, keyLength);
+                var publicKey = ReadECPoint(reader, PublicKeyTag, Namespace, keyLength);
 
                 reader.ReadEndElement();
 
@@ -84,15 +84,15 @@ namespace OpenGost.Security.Cryptography
 
         private static ECCurve ReadNamedCurveParameters(XmlReader reader)
         {
-            bool isEmpty = reader.IsEmptyElement;
+            var isEmpty = reader.IsEmptyElement;
 
             if (!reader.MoveToAttribute(UrnTag))
                 throw new NotImplementedException();
             reader.ReadAttributeValue();
-            string urn = reader[UrnTag];
+            var urn = reader[UrnTag];
             if (!urn.StartsWith(UrnPrefix, StringComparison.Ordinal))
                 throw new NotImplementedException();
-            string oidValue = urn.Substring(UrnPrefix.Length);
+            var oidValue = urn.Substring(UrnPrefix.Length);
             reader.MoveToElement();
             reader.ReadStartElement(NamedCurveTag, Namespace);
             if (!isEmpty)
@@ -116,7 +116,7 @@ namespace OpenGost.Security.Cryptography
             reader.MoveToContent();
             reader.ReadStartElement(BasePointParamsTag, Namespace);
             reader.MoveToContent();
-            ECPoint baseBoint = ReadECPoint(reader, BasePointTag, Namespace, keyLength);
+            var baseBoint = ReadECPoint(reader, BasePointTag, Namespace, keyLength);
             reader.MoveToContent();
             order = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture), keyLength);
             if (reader.IsStartElement(CofactorTag, Namespace))
@@ -141,24 +141,24 @@ namespace OpenGost.Security.Cryptography
         {
             reader.ReadStartElement(localName, ns);
             reader.MoveToContent();
-            byte[] value = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(PTag, Namespace), CultureInfo.InvariantCulture), keyLength);
+            var value = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(PTag, Namespace), CultureInfo.InvariantCulture), keyLength);
             reader.ReadEndElement();
             return value;
         }
 
         private static byte[] ReadPrimeFieldElement(XmlReader reader, string localName, string ns, int keyLength)
         {
-            bool isEmpty = reader.IsEmptyElement;
+            var isEmpty = reader.IsEmptyElement;
             if (!reader.MoveToAttribute(TypeTag, XmlSchema.InstanceNamespace))
                 throw new NotImplementedException();
             reader.ReadAttributeValue();
-            string xsiType = reader.Value;
+            var xsiType = reader.Value;
             if (xsiType != PrimeFieldElemTypeValue)
                 throw new NotImplementedException();
             if (!reader.MoveToAttribute(ValueTag))
                 throw new NotImplementedException();
             reader.ReadAttributeValue();
-            byte[] result = ToNormalizedByteArray(BigInteger.Parse(reader[ValueTag], CultureInfo.InvariantCulture), keyLength);
+            var result = ToNormalizedByteArray(BigInteger.Parse(reader[ValueTag], CultureInfo.InvariantCulture), keyLength);
             reader.MoveToElement();
             reader.ReadStartElement(localName, ns);
             if (!isEmpty)
@@ -170,9 +170,9 @@ namespace OpenGost.Security.Cryptography
         {
             reader.ReadStartElement(localName, ns);
             reader.MoveToContent();
-            byte[] x = ReadPrimeFieldElement(reader, XTag, Namespace, keyLength);
+            var x = ReadPrimeFieldElement(reader, XTag, Namespace, keyLength);
             reader.MoveToContent();
-            byte[] y = ReadPrimeFieldElement(reader, YTag, Namespace, keyLength);
+            var y = ReadPrimeFieldElement(reader, YTag, Namespace, keyLength);
             reader.ReadEndElement();
             return new ECPoint
             {
@@ -193,7 +193,7 @@ namespace OpenGost.Security.Cryptography
 #endif
             };
 
-            using (XmlWriter writer = XmlWriter.Create(xml, settings))
+            using (var writer = XmlWriter.Create(xml, settings))
             {
                 writer.WriteStartElement(ECDsaKeyValueTag, Namespace);
                 writer.WriteAttributeString(null, XmlnsPrefix, null, Namespace);

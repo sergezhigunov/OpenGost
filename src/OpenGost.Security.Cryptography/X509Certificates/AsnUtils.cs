@@ -12,13 +12,13 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         {
             if (encodedData == null) throw new ArgumentNullException(nameof(encodedData));
 
-            byte[] rawData = encodedData.RawData;
-            int position = 0;
+            var rawData = encodedData.RawData;
+            var position = 0;
             if (ReadTag(rawData, ref position) != AsnTag.OctetString)
                 throw new InvalidOperationException();
 
-            int length = ReadLength(rawData, ref position);
-            byte[] result = new byte[length];
+            var length = ReadLength(rawData, ref position);
+            var result = new byte[length];
             BlockCopy(rawData, position, result, 0, length);
             return result;
         }
@@ -27,12 +27,12 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         {
             if (encodedData == null) throw new ArgumentNullException(nameof(encodedData));
 
-            byte[] rawData = encodedData.RawData;
-            int position = 0;
+            var rawData = encodedData.RawData;
+            var position = 0;
             if (ReadTag(rawData, ref position) != AsnTag.Sequence)
                 throw new InvalidOperationException();
 
-            int end = position + ReadLength(rawData, ref position);
+            var end = position + ReadLength(rawData, ref position);
 
             var result = new AsnEncodedDataCollection();
             while (position < end)
@@ -45,18 +45,18 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         {
             if (encodedData == null) throw new ArgumentNullException(nameof(encodedData));
 
-            byte[] rawData = encodedData.RawData;
-            int position = 0;
+            var rawData = encodedData.RawData;
+            var position = 0;
             if (ReadTag(rawData, ref position) != AsnTag.ObjectIdentifier)
                 throw new InvalidOperationException();
 
-            int end = position + ReadLength(rawData, ref position);
+            var end = position + ReadLength(rawData, ref position);
             var stringBuilder = new StringBuilder();
-            byte firstByte = ReadByte(rawData, ref position);
+            var firstByte = ReadByte(rawData, ref position);
             stringBuilder.Append(firstByte / 40).Append(".").Append(firstByte % 40);
             while (position <= end)
             {
-                int value = 0;
+                var value = 0;
                 byte b;
                 do
                 {
@@ -74,17 +74,17 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         {
             if (encodedData == null) throw new ArgumentNullException(nameof(encodedData));
 
-            int position = 0;
+            var position = 0;
             return ReadTag(encodedData.RawData, ref position);
         }
 
         private static byte[] ReadTriplet(byte[] rawData, ref int position)
         {
-            int start = position;
+            var start = position;
             ReadTag(rawData, ref position);
-            int length = ReadLength(rawData, ref position);
+            var length = ReadLength(rawData, ref position);
             position += length;
-            byte[] result = new byte[position - start];
+            var result = new byte[position - start];
             BlockCopy(rawData, start, result, 0, position - start);
             return result;
         }
@@ -98,7 +98,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         private static int ReadLength(byte[] rawData, ref int position)
         {
             int length;
-            byte lengthByte = rawData[position++];
+            var lengthByte = rawData[position++];
             if (lengthByte < 0x80)
                 length = lengthByte;
             else
@@ -106,7 +106,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                 lengthByte ^= 0x80;
                 length = ReadByte(rawData, ref position);
 
-                for (int i = 1; i < lengthByte; i++)
+                for (var i = 1; i < lengthByte; i++)
                     length = (length << 8) + ReadByte(rawData, ref position);
             }
 

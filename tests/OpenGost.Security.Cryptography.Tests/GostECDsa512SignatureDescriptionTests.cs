@@ -8,7 +8,7 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void ValidateCreateDigest()
         {
-            using (HashAlgorithm digest = CreateDigest())
+            using (var digest = CreateDigest())
             {
                 Assert.NotNull(digest);
                 Assert.True(digest is Streebog512);
@@ -18,7 +18,7 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void ValidateCreateDeformatter()
         {
-            AsymmetricSignatureDeformatter deformatter = CreateDeformatter(GostECDsa512.Create());
+            var deformatter = CreateDeformatter(GostECDsa512.Create());
 
             Assert.NotNull(deformatter);
             Assert.True(deformatter is GostECDsa512SignatureDeformatter);
@@ -27,7 +27,7 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void ValidateCreateFormatter()
         {
-            AsymmetricSignatureFormatter formatter = CreateFormatter(GostECDsa512.Create());
+            var formatter = CreateFormatter(GostECDsa512.Create());
 
             Assert.NotNull(formatter);
             Assert.True(formatter is GostECDsa512SignatureFormatter);

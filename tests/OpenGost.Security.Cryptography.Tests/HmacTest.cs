@@ -12,14 +12,14 @@ namespace OpenGost.Security.Cryptography
 
         protected void VerifyHmac(string dataHex, string keyHex, string digestHex)
         {
-            byte[] digestBytes = digestHex.HexToByteArray();
+            var digestBytes = digestHex.HexToByteArray();
             byte[] computedDigest;
 
             using (var hmac = new T())
             {
                 Assert.True(hmac.HashSize > 0);
 
-                byte[] key = keyHex.HexToByteArray();
+                var key = keyHex.HexToByteArray();
                 hmac.Key = key;
 
                 // make sure the getter returns different objects each time
@@ -41,28 +41,28 @@ namespace OpenGost.Security.Cryptography
             // Ensure that keys shorter than the threshold don't get altered.
             using (var hmac = new T())
             {
-                byte[] key = new byte[BlockSize];
+                var key = new byte[BlockSize];
                 hmac.Key = key;
-                byte[] retrievedKey = hmac.Key;
+                var retrievedKey = hmac.Key;
                 Assert.Equal<byte>(key, retrievedKey);
             }
 
             // Ensure that keys longer than the threshold are adjusted via Rfc2104 Section 2.
             using (var hmac = new T())
             {
-                byte[] overSizedKey = new byte[BlockSize + 1];
+                var overSizedKey = new byte[BlockSize + 1];
                 hmac.Key = overSizedKey;
-                byte[] actualKey = hmac.Key;
-                byte[] expectedKey = CreateHashAlgorithm().ComputeHash(overSizedKey);
+                var actualKey = hmac.Key;
+                var expectedKey = CreateHashAlgorithm().ComputeHash(overSizedKey);
                 Assert.Equal<byte>(expectedKey, actualKey);
 
                 // Also ensure that the hashing operation uses the adjusted key.
-                byte[] data = new byte[100];
+                var data = new byte[100];
                 hmac.Key = expectedKey;
-                byte[] expectedHash = hmac.ComputeHash(data);
+                var expectedHash = hmac.ComputeHash(data);
 
                 hmac.Key = overSizedKey;
-                byte[] actualHash = hmac.ComputeHash(data);
+                var actualHash = hmac.ComputeHash(data);
                 Assert.Equal<byte>(expectedHash, actualHash);
             }
         }

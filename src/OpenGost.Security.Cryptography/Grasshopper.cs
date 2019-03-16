@@ -83,7 +83,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="Grasshopper"/>.
         /// </returns>
         [ComVisible(false)]
-        public new static Grasshopper Create()
+        public static new Grasshopper Create()
             => Create(GrasshopperAlgorithmFullName);
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="Grasshopper"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
-        public new static Grasshopper Create(string algorithmName)
+        public static new Grasshopper Create(string algorithmName)
             => (Grasshopper)CreateFromName(algorithmName);
 
         #endregion

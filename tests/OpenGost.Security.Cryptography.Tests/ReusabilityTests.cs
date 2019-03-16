@@ -14,8 +14,8 @@ namespace OpenGost.Security.Cryptography
             using (var hashAlgorithm = hashAlgorithmFactory.Invoke())
             {
                 byte[] input = { 0x08, 0x06, 0x07, 0x05, 0x03, 0x00, 0x09, };
-                byte[] hash1 = hashAlgorithm.ComputeHash(input);
-                byte[] hash2 = hashAlgorithm.ComputeHash(input);
+                var hash1 = hashAlgorithm.ComputeHash(input);
+                var hash2 = hashAlgorithm.ComputeHash(input);
 
                 Assert.Equal(hash1, hash2);
             }

@@ -235,7 +235,7 @@ namespace OpenGost.Security.Cryptography
             }
             else if (IsExplicit)
             {
-                bool hasErrors = HasCommonExplicitCurveErrors();
+                var hasErrors = HasCommonExplicitCurveErrors();
 
                 if (IsPrime)
                 {

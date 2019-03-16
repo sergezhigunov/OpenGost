@@ -83,7 +83,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="Magma"/>.
         /// </returns>
         [ComVisible(false)]
-        public new static Magma Create()
+        public static new Magma Create()
             => Create(MagmaAlgorithmFullName);
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace OpenGost.Security.Cryptography
         /// A new instance of <see cref="Magma"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
-        public new static Magma Create(string algorithmName)
+        public static new Magma Create(string algorithmName)
             => (Magma)CreateFromName(algorithmName);
 
         #endregion

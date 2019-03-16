@@ -20,7 +20,7 @@ namespace OpenGost.Security.Cryptography
     [ComVisible(true)]
     public abstract class CMAC : KeyedHashAlgorithm
     {
-#region Constants
+        #region Constants
 
         private static readonly byte[]
             s_64BitIrreduciblePolynomial =
@@ -32,7 +32,7 @@ namespace OpenGost.Security.Cryptography
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x87
             };
 
-#endregion
+        #endregion
 
         private SymmetricAlgorithm _symmetricAlgorithm;
         private ICryptoTransform _encryptor;
@@ -45,16 +45,9 @@ namespace OpenGost.Security.Cryptography
         private string _symmetricAlgorithmName;
         private int _bytesPerBlock;
         private int _bufferLength;
-
-#if NETCOREAPP1_0
-        /// <summary>
-        /// Represents the size, in bits, of the computed hash code.
-        /// </summary>
-        protected int HashSizeValue;
-#elif NET45
-
         private bool _hashing = false;
 
+#if NET45
         /// <summary>
         /// Gets or sets the key to use in the hash algorithm.
         /// </summary>
@@ -104,18 +97,13 @@ namespace OpenGost.Security.Cryptography
             {
                 if (string.IsNullOrEmpty(value))
                     throw new ArgumentException(CryptographicSymmetricAlgorithmNameNullOrEmpty, nameof(value));
-
-#if NETCOREAPP1_0
-                if (_symmetricAlgorithmName != null && value != _symmetricAlgorithmName)
-                    throw new PlatformNotSupportedException(SymmetricAlgorithmNameMultipleSetNotSupported);
-
-                _symmetricAlgorithm = CreateSymmetricAlgorithm(value);
-#elif NET45
                 if (_hashing)
                     throw new CryptographicException(CryptographicSymmetricAlgorithmNameSet);
 
+#if NETCOREAPP1_0
+                throw new PlatformNotSupportedException(CryptoConfigNotSupportedCmac);
+#elif NET45
                 _symmetricAlgorithm = SymmetricAlgorithm.Create(value);
-#endif
 
                 if (_symmetricAlgorithm == null)
                     throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicUnknownSymmetricAlgorithm, value));
@@ -136,18 +124,9 @@ namespace OpenGost.Security.Cryptography
 
                 _buffer = new byte[_bytesPerBlock];
                 _temp = new byte[_bytesPerBlock];
+#endif
             }
         }
-
-#if NETCOREAPP1_0
-        /// <summary>
-        /// Gets the size, in bits, of the computed hash code.
-        /// </summary>
-        /// <value>
-        /// The size, in bits, of the computed hash code.
-        /// </value>
-        public override int HashSize => HashSizeValue;
-#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CMAC"/> class.
@@ -271,7 +250,7 @@ namespace OpenGost.Security.Cryptography
         }
 
 #if NET45
-#region Creation factory methods
+        #region Creation factory methods
 
         /// <summary>
         /// Creates an instance of the default implementation of <see cref="CMAC"/> algorithm.
@@ -296,24 +275,7 @@ namespace OpenGost.Security.Cryptography
         public new static CMAC Create(string algorithmName)
             => (CMAC)CreateFromName(algorithmName);
 
-#endregion
-#endif
-
-#if NETCOREAPP1_0
-        private static SymmetricAlgorithm CreateSymmetricAlgorithm(string algorithmName)
-        {
-            switch (algorithmName)
-            {
-                case GrasshopperAlgorithmFullName:
-                    return new GrasshopperManaged();
-
-                case MagmaAlgorithmFullName:
-                    return new MagmaManaged();
-
-                default:
-                    return null;
-            }
-        }
+        #endregion
 #endif
 
         private void EnsureEncryptorInitialized()

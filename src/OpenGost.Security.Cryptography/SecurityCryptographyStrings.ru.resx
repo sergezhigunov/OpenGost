@@ -225,7 +225,4 @@
   <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
     <value>"{0}" - неизвестный симметричный алгоритм.</value>
   </data>
-  <data name="SymmetricAlgorithmNameMultipleSetNotSupported" xml:space="preserve">
-    <value>Повторное задание симметричного алгоритма не поддерживается текущей платформой.</value>
-  </data>
 </root>

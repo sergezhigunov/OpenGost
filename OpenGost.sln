@@ -3,9 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{EA354A9E-C4C3-4D5D-ACCD-14595050F040}"
+	ProjectSection(SolutionItems) = preProject
+		build\CodeAnalysisDictionary.xml = build\CodeAnalysisDictionary.xml
+		build\common.props = build\common.props
+		build\Key.snk = build\Key.snk
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8B2273E6-40B9-4CFB-94E0-4523F39043DB}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7213FB63-9C9A-44A9-A619-08A285AE7AB5}"
+	ProjectSection(SolutionItems) = preProject
+		test\Directory.Build.props = test\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptography", "src\OpenGost.Security.Cryptography\OpenGost.Security.Cryptography.csproj", "{CDC582C2-C33B-48A6-B407-732F1A1E93F2}"
 EndProject
@@ -14,16 +27,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB808385-20EA-4A94-BF24-44743CA438B6}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{3FD8CE45-7B0E-4018-8048-6B4465ACFA8C}"
 	ProjectSection(SolutionItems) = preProject
-		tools\CodeAnalysisDictionary.xml = tools\CodeAnalysisDictionary.xml
-		tools\common.props = tools\common.props
 		tools\Crypto.config = tools\Crypto.config
-		tools\Key.snk = tools\Key.snk
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{A0B0F6AA-F8FF-442E-A1DF-C648144AD7B8}"

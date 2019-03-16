@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>OpenGost.Security.Cryptography.dll</Description>
     <Copyright>Copyright © 2016 Serge Zhigunov</Copyright>

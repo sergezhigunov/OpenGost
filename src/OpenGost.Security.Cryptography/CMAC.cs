@@ -229,7 +229,7 @@ namespace OpenGost.Security.Cryptography
         {
             if (disposing)
             {
-                _symmetricAlgorithm?.Clear();
+                _symmetricAlgorithm?.Dispose();
                 _encryptor?.Dispose();
                 EraseData(ref _subkey1);
                 EraseData(ref _subkey2);

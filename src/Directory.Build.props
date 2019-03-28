@@ -8,6 +8,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Features>$(Features);flow-analysis</Features>
   </PropertyGroup>
 
   <ItemGroup>

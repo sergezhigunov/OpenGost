@@ -98,17 +98,17 @@ namespace OpenGost.Security.Cryptography
             var allSupportedParameters =
                 from c in SupportedCipherModes
                 from pt in crossPaddingTransformParameters
-                select new { CipherMode = c, PaddingMode = pt.PaddingMode, TransformMode = pt.TransformMode };
+                select new { CipherMode = c, pt.PaddingMode, pt.TransformMode };
 
             var reqiresIVParameters =
                 from c in CipherModesReqiresIV
                 from pt in crossPaddingTransformParameters
-                select new { CipherMode = c, PaddingMode = pt.PaddingMode, TransformMode = pt.TransformMode };
+                select new { CipherMode = c, pt.PaddingMode, pt.TransformMode };
 
             using (var algorithm = new SimpleSymmetricAlgorithm())
             {
 
-                Action<Func<SimpleSymmetricTransform>> checkValid = factory =>
+                void CheckValid(Func<SimpleSymmetricTransform> factory)
                 {
                     var transform = factory();
                     using (transform)
@@ -116,34 +116,33 @@ namespace OpenGost.Security.Cryptography
                         Assert.False(transform.DisposeCalled);
                     }
                     Assert.True(transform.DisposeCalled);
-                };
+                }
 
-                Action<Type, Func<SimpleSymmetricTransform>> checkInvalid =
-                    (expectedExceptionType, factory) => Assert.Throws(expectedExceptionType, factory);
+                void CheckInvalid(Type expectedExceptionType, Func<SimpleSymmetricTransform> factory) => Assert.Throws(expectedExceptionType, factory);
 
                 // All ctor parameters (without CTS)
                 foreach (var p in allSupportedParameters)
-                    checkValid(() =>
+                    CheckValid(() =>
                         new SimpleSymmetricTransform(algorithm.Key, algorithm.IV, algorithm.BlockSize, CipherMode.ECB, p.PaddingMode, p.TransformMode));
 
                 // IV is null (ECB)
                 foreach (var p in crossPaddingTransformParameters)
-                    checkValid(() =>
+                    CheckValid(() =>
                         new SimpleSymmetricTransform(algorithm.Key, null, algorithm.BlockSize, CipherMode.ECB, p.PaddingMode, p.TransformMode));
 
                 // CTS is invalid
                 foreach (var p in crossPaddingTransformParameters)
-                    checkInvalid(typeof(CryptographicException), () =>
+                    CheckInvalid(typeof(CryptographicException), () =>
                         new SimpleSymmetricTransform(algorithm.Key, algorithm.IV, algorithm.BlockSize, CipherMode.CTS, p.PaddingMode, p.TransformMode));
 
                 // Key is null
                 foreach (var p in allSupportedParameters)
-                    checkInvalid(typeof(ArgumentNullException), () =>
+                    CheckInvalid(typeof(ArgumentNullException), () =>
                         new SimpleSymmetricTransform(null, algorithm.IV, algorithm.BlockSize, p.CipherMode, p.PaddingMode, p.TransformMode));
 
                 // IV is null (CBC, CFB, OFB)
                 foreach (var p in reqiresIVParameters)
-                    checkInvalid(typeof(ArgumentNullException), () =>
+                    CheckInvalid(typeof(ArgumentNullException), () =>
                         new SimpleSymmetricTransform(algorithm.Key, null, algorithm.BlockSize, p.CipherMode, p.PaddingMode, p.TransformMode));
             }
         }
@@ -151,67 +150,67 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void EncryptAndDecryptPaddingNone()
         {
-            Action<byte[]> check = plainText =>
+            void Check(byte[] plainText)
             {
-                byte[] cipherText, newPlainText;
+                byte[] newPlainText;
 
                 using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.None })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
 
-                    InternalEncryptAndDecrypt(algorithm, plainText, out cipherText, out newPlainText);
+                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
                 }
 
                 Assert.Equal(plainText, newPlainText);
-            };
+            }
 
             foreach (var plainText in BlockSizeMultiplePlainTexts)
-                check(plainText);
+                Check(plainText);
 
             foreach (var plainText in BlockSizeNonMultiplePlainTexts)
-                Assert.Throws<CryptographicException>(() => check(plainText));
+                Assert.Throws<CryptographicException>(() => Check(plainText));
         }
 
         [Fact]
         public void EncryptAndDecryptPaddingZeros()
         {
-            Action<byte[]> check = plainText =>
+            void Check(byte[] plainText)
             {
-                byte[] cipherText, newPlainText;
+                byte[] newPlainText;
 
                 using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.Zeros })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
 
-                    InternalEncryptAndDecrypt(algorithm, plainText, out cipherText, out newPlainText);
+                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
                 }
 
                 for (var i = 0; i < plainText.Length; i++)
-                Assert.Equal(plainText[i], newPlainText[i]);
+                    Assert.Equal(plainText[i], newPlainText[i]);
 
-            for (var i = plainText.Length; i < newPlainText.Length; i++)
-                Assert.Equal(0, newPlainText[i]);
-            };
+                for (var i = plainText.Length; i < newPlainText.Length; i++)
+                    Assert.Equal(0, newPlainText[i]);
+            }
 
             foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
-                check(plainText);
+                Check(plainText);
         }
 
         [Fact]
         public void EncryptAndDecryptPaddingANSIX923()
         {
-            Action<byte[]> check = plainText =>
+            void Check(byte[] plainText)
             {
-                byte[] cipherText, newPlainText, newPlainTextNoDepad;
+                byte[] newPlainText, newPlainTextNoDepad;
 
                 using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ANSIX923 })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
 
-                    InternalEncryptAndDecrypt(algorithm, plainText, out cipherText, out newPlainText);
+                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
 
                     algorithm.Padding = PaddingMode.None;
 
@@ -235,25 +234,25 @@ namespace OpenGost.Security.Cryptography
                     for (var i = 0; i < padCount - 1; i++)
                         Assert.Equal(0, padding[i]);
                 }
-            };
+            }
 
             foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
-                check(plainText);
+                Check(plainText);
         }
 
         [Fact]
         public void EncryptAndDecryptPaddingPKCS7()
         {
-            Action<byte[]> check = plainText =>
+            void Check(byte[] plainText)
             {
-                byte[] cipherText, newPlainText, newPlainTextNoDepad;
+                byte[] newPlainText, newPlainTextNoDepad;
 
                 using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
 
-                    InternalEncryptAndDecrypt(algorithm, plainText, out cipherText, out newPlainText);
+                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
 
                     algorithm.Padding = PaddingMode.None;
 
@@ -277,25 +276,25 @@ namespace OpenGost.Security.Cryptography
                     for (var i = 0; i < padCount - 1; i++)
                         Assert.Equal(padCount, padding[i]);
                 }
-            };
+            }
 
             foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
-                check(plainText);
+                Check(plainText);
         }
 
         [Fact]
         public void EncryptAndDecryptPaddingISO10126()
         {
-            Action<byte[]> check = plainText =>
+            void Check(byte[] plainText)
             {
-                byte[] cipherText, newPlainText, newPlainTextNoDepad;
+                byte[] newPlainText, newPlainTextNoDepad;
 
                 using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ISO10126 })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
 
-                    InternalEncryptAndDecrypt(algorithm, plainText, out cipherText, out newPlainText);
+                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
 
                     algorithm.Padding = PaddingMode.None;
 
@@ -314,10 +313,10 @@ namespace OpenGost.Security.Cryptography
 
                 if (padCount > 0)
                     Assert.Equal(padCount, padding[padCount - 1]);
-            };
+            }
 
             foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
-                check(plainText);
+                Check(plainText);
         }
 
         private static void InternalEncryptAndDecrypt(

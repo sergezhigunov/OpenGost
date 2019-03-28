@@ -142,6 +142,7 @@ namespace OpenGost.Security.Cryptography
 
             _bufferLength = 0;
             Array.Clear(_buffer, 0, _bytesPerBlock);
+            _hashing = false;
         }
 
         /// <summary>
@@ -211,7 +212,9 @@ namespace OpenGost.Security.Cryptography
 
                 Xor(_buffer, 0, _subkey2, 0, _buffer, 0, _bytesPerBlock);
             }
-            return _encryptor.TransformFinalBlock(_buffer, 0, _bytesPerBlock);
+            var result = _encryptor.TransformFinalBlock(_buffer, 0, _bytesPerBlock);
+            _hashing = false;
+            return result;
         }
 
         /// <summary>
@@ -268,6 +271,7 @@ namespace OpenGost.Security.Cryptography
         {
             if (_encryptor == null)
             {
+                _hashing = true;
                 _symmetricAlgorithm.Key = Key;
                 _encryptor = _symmetricAlgorithm.CreateEncryptor();
                 GenerateSubkeys();

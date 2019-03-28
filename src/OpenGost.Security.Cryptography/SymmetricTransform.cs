@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
     using static Buffer;
-    using static SecurityCryptographyStrings;
+    using static CryptographyStrings;
     using static CryptoUtils;
 
     /// <summary>

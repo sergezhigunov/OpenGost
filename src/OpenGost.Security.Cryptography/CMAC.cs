@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -9,7 +10,7 @@ namespace OpenGost.Security.Cryptography
     using static CryptoConfig;
     using static CryptoConstants;
     using static CryptoUtils;
-    using static SecurityCryptographyStrings;
+    using static CryptographyStrings;
 
     /// <summary>
     /// Represents the abstract class from which implementations of Cipher-based Message Authentication Code

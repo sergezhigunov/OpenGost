@@ -3,13 +3,14 @@ using System.Globalization;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
     using static Buffer;
     using static CryptoUtils;
     using static Math;
-    using static SecurityCryptographyStrings;
+    using static CryptographyStrings;
 
     /// <summary>
     /// Provides a managed implementation of the <see cref="GostECDsa256"/> algorithm. 

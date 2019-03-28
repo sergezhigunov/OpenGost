@@ -13,17 +13,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="SecurityCryptographyStrings.Designer.cs">
+    <Compile Update="Properties\CryptographyStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>SecurityCryptographyStrings.resx</DependentUpon>
+      <DependentUpon>CryptographyStrings.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="SecurityCryptographyStrings.resx">
+    <EmbeddedResource Update="Properties\CryptographyStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SecurityCryptographyStrings.Designer.cs</LastGenOutput>
+      <LastGenOutput>CryptographyStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

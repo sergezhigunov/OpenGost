@@ -7,12 +7,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
     using static CryptoUtils;
     using static ECCurve;
-    using static SecurityCryptographyStrings;
+    using static CryptographyStrings;
 
     internal static class ECParametersFormatter
     {

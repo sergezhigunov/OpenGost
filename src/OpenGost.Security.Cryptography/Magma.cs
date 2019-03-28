@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
     using static CryptoConfig;
     using static CryptoConstants;
-    using static SecurityCryptographyStrings;
+    using static CryptographyStrings;
 
     /// <summary>
     /// Represents the base class from which all implementations of the <see cref="Magma"/> symmetric encryption algorithm must inherit.

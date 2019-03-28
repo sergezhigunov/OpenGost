@@ -4,10 +4,11 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Threading;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static SecurityCryptographyStrings;
+    using static CryptographyStrings;
 
     internal static class CryptoUtils
     {

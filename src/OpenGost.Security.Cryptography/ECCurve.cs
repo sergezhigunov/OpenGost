@@ -2,10 +2,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static SecurityCryptographyStrings;
+    using static CryptographyStrings;
 
     /// <summary>
     /// An elliptic curve.

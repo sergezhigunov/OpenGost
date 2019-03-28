@@ -1,11 +1,11 @@
 ﻿#if NET45
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static SecurityCryptographyStrings;
-
+    using static CryptographyStrings;
 
     /// <summary>
     /// Represents the public and private key of the specified elliptic curve.

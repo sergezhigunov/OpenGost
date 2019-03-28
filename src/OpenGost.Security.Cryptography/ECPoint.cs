@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿#if NET45
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -21,3 +22,4 @@ namespace OpenGost.Security.Cryptography
         public byte[] Y;
     }
 }
+#endif

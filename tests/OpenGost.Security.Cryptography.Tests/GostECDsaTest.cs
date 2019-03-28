@@ -1,4 +1,7 @@
 ﻿using System;
+#if !NET45
+using System.Security.Cryptography;
+#endif
 using Xunit;
 
 namespace OpenGost.Security.Cryptography

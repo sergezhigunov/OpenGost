@@ -41,7 +41,12 @@ namespace OpenGost.Security.Cryptography
                 throw new ArgumentOutOfRangeException(nameof(length), ArgumentOutOfRangeIndexLength);
 
             if (length == 0)
-                return EmptyArray<T>.Value;
+                return
+#if NET45
+                    EmptyArray<T>.Value;
+#else
+                    Array.Empty<T>();
+#endif
             if (startIndex == 0 && length == value.Length)
                 return CloneArray(value);
 

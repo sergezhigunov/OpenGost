@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if !NET45
+using System.Security.Cryptography;
+#endif
 
 namespace OpenGost.Security.Cryptography
 {
@@ -7,7 +10,7 @@ namespace OpenGost.Security.Cryptography
 
     internal static class ECCurveOidMap
     {
-        #region Constants
+#region Constants
 
         private static ECCurve ECCurve256ParamsetTest { get; } = new ECCurve
         {
@@ -452,7 +455,7 @@ namespace OpenGost.Security.Cryptography
             },
         };
 
-        #endregion
+#endregion
 
         private static volatile Dictionary<string, ECCurve> s_ecCurveOidDictionary = null;
 

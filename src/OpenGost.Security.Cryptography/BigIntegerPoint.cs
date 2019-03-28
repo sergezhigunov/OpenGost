@@ -1,4 +1,7 @@
 ﻿using System.Numerics;
+#if !NET45
+using System.Security.Cryptography;
+#endif
 
 namespace OpenGost.Security.Cryptography
 {

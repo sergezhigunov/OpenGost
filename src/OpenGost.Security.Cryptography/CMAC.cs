@@ -100,7 +100,7 @@ namespace OpenGost.Security.Cryptography
                 _symmetricAlgorithm = SymmetricAlgorithm.Create(value);
 
                 if (_symmetricAlgorithm == null)
-                    throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicUnknownSymmetricAlgorithm, value));
+                    throw new CryptographicException(CryptographicUnknownSymmetricAlgorithm(value));
 
                 _symmetricAlgorithmName = value;
 

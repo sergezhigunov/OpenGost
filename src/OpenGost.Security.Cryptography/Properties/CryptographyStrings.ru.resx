@@ -139,7 +139,7 @@
     <value>Индекс начала подмассива не может быть больше, чем длина массива.</value>
   </data>
   <data name="CryptographicCurveNotSupported" xml:space="preserve">
-    <value>Заданная эллиптическая кривая "{0}" или её параметры недопустимы для текущей платформы.</value>
+    <value>Заданная эллиптическая кривая "{curveType}" или её параметры недопустимы для текущей платформы.</value>
   </data>
   <data name="CryptographicInsufficientOutputBuffer" xml:space="preserve">
     <value>Выходной буфер содержит недостаточно места.</value>
@@ -166,7 +166,7 @@
     <value>Задан недопустимый размер блока обратной связи.</value>
   </data>
   <data name="CryptographicInvalidHashSize" xml:space="preserve">
-    <value>Размер хэша должен быть равен {0} байт.</value>
+    <value>Размер хэша должен быть равен {size} байт.</value>
   </data>
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Заданный вектор инициализации (IV) не соответствует размеру блоков для этого алгоритма.</value>
@@ -187,7 +187,7 @@
     <value>Заданные параметры простой кривой недопустимы. Prime, A, B, G.X, G.Y и Order являются обязательными и должны быть одинаковой длины, что и Q.X, Q.Y и D, если они заданы. Seed, Cofactor и Hash необязательны. Прочие параметры не допускаются.</value>
   </data>
   <data name="CryptographicInvalidSignatureSize" xml:space="preserve">
-    <value>Размер цифровой подписи должен быть равен {0} байт.</value>
+    <value>Размер цифровой подписи должен быть равен {size} байт.</value>
   </data>
   <data name="CryptographicMissingDomainParameters" xml:space="preserve">
     <value>Не удалось считать параметры домена из XML-строки.</value>
@@ -214,12 +214,12 @@
     <value>После первой записи в поток имя симметричного алгоритма изменить невозможно.</value>
   </data>
   <data name="CryptographicUnexpectedXmlNamespace" xml:space="preserve">
-    <value>Непредвиденное пространство имен XML "{0}", ожидается "{1}".</value>
+    <value>Непредвиденное пространство имен XML "{expected}", ожидается "{actual}".</value>
   </data>
   <data name="CryptographicUnknownEllipticCurveAlgorithm" xml:space="preserve">
     <value>Неизвестный алгоритм эллиптической кривой.</value>
   </data>
   <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
-    <value>"{0}" - неизвестный симметричный алгоритм.</value>
+    <value>"{algorithm}" - неизвестный симметричный алгоритм.</value>
   </data>
 </root>

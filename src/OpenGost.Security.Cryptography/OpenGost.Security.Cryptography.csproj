@@ -13,18 +13,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\CryptographyStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CryptographyStrings.resx</DependentUpon>
-    </Compile>
+    <EmbeddedResource Update="Properties\CryptographyStrings.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Properties\CryptographyStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+    <None Update="Properties\CoreStrings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CoreStrings.cs</LastGenOutput>
+    </None>
+    <None Update="Properties\CryptographyStrings.Designer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CryptographyStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\CryptographyStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CryptographyStrings.Designer.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

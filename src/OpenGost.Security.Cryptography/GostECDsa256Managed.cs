@@ -159,7 +159,7 @@ namespace OpenGost.Security.Cryptography
             ThrowIfDisposed();
 
             if (KeySize / 8 != hash.Length)
-                throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicInvalidHashSize, KeySize / 8));
+                throw new CryptographicException(CryptographicInvalidHashSize( KeySize / 8));
 
             var keySizeInByted = KeySize / 8;
 
@@ -235,9 +235,9 @@ namespace OpenGost.Security.Cryptography
             ThrowIfDisposed();
 
             if (KeySize / 8 != hash.Length)
-                throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicInvalidHashSize, KeySize / 8));
+                throw new CryptographicException(CryptographicInvalidHashSize(KeySize / 8));
             if (KeySize / 4 != signature.Length)
-                throw new CryptographicException(string.Format(CultureInfo.CurrentCulture, CryptographicInvalidSignatureSize, KeySize / 4));
+                throw new CryptographicException(CryptographicInvalidSignatureSize(KeySize / 4));
 
             // There is no necessity to generate new parameter, just return false
             if (!_parametersSet)

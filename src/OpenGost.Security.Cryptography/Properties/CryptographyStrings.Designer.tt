@@ -1,0 +1,4 @@
+﻿<#
+    Session["ResourceFile"] = "CryptographyStrings.resx";
+#>
+<#@ include file="..\..\..\tools\Resources.tt" #>

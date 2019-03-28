@@ -262,7 +262,7 @@ namespace OpenGost.Security.Cryptography
             {
                 // Implicit; if there are any values, throw
                 if (HasAnyExplicitParameters() || Oid != null)
-                    throw new CryptographicException(string.Format(Culture, CryptographicCurveNotSupported, CurveType.ToString()));
+                    throw new CryptographicException(CryptographicCurveNotSupported(CurveType));
             }
         }
 

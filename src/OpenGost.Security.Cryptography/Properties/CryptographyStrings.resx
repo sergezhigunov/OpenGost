@@ -139,7 +139,7 @@
     <value>Start index cannot be larger than length of array.</value>
   </data>
   <data name="CryptographicCurveNotSupported" xml:space="preserve">
-    <value>The specified curve '{0}' or its parameters are not valid for this platform.</value>
+    <value>The specified curve '{curveType}' or its parameters are not valid for this platform.</value>
   </data>
   <data name="CryptographicInsufficientOutputBuffer" xml:space="preserve">
     <value>Output buffer contains insufficient data size.</value>
@@ -166,7 +166,7 @@
     <value>Specified feedback is not a valid for this algorithm.</value>
   </data>
   <data name="CryptographicInvalidHashSize" xml:space="preserve">
-    <value>Hash size must be {0} bytes.</value>
+    <value>Hash size must be {size} bytes.</value>
   </data>
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Specified initialization vector (IV) does not match allowed size for this algorithm.</value>
@@ -187,7 +187,7 @@
     <value>The specified prime curve parameters are not valid. Prime, A, B, G.X, G.Y and Order are required and must be the same length, and the same length as Q.X, Q.Y and D if those are specified. Seed, Cofactor and Hash are optional. Other parameters are not allowed.</value>
   </data>
   <data name="CryptographicInvalidSignatureSize" xml:space="preserve">
-    <value>Digital signature size must be {0} bytes.</value>
+    <value>Digital signature size must be {size} bytes.</value>
   </data>
   <data name="CryptographicMissingDomainParameters" xml:space="preserve">
     <value>Could not read the domain parameters from the XML string.</value>
@@ -214,12 +214,12 @@
     <value>Symmetric algorithm name cannot be changed after the first write to the stream.</value>
   </data>
   <data name="CryptographicUnexpectedXmlNamespace" xml:space="preserve">
-    <value>The XML namespace '{0}' was unexpected, expected '{1}'.</value>
+    <value>The XML namespace '{actual}' was unexpected, expected '{expected}'.</value>
   </data>
   <data name="CryptographicUnknownEllipticCurveAlgorithm" xml:space="preserve">
     <value>Unknown elliptic curve algorithm.</value>
   </data>
   <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
-    <value>'{0}' is not a known symmetric algorithm.</value>
+    <value>'{algorithm}' is not a known symmetric algorithm.</value>
   </data>
 </root>

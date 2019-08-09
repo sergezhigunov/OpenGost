@@ -23,11 +23,11 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         /// The certificate.
         /// </param>
         /// <returns>
-        /// The public key, or <c>null</c> if the certificate does not have a
+        /// The public key, or <see langword="null"/> if the certificate does not have a
         /// <see cref="GostECDsa"/> public key.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="certificate"/> parameter is <c>null</c>.
+        /// The <paramref name="certificate"/> parameter is <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicException">
         /// The handle is invalid.
@@ -78,11 +78,11 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         /// The certificate.
         /// </param>
         /// <returns>
-        /// The private key, or <c>null</c> if the certificate does not have a
+        /// The private key, or <see langword="null"/> if the certificate does not have a
         /// <see cref="GostECDsa"/> private key.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="certificate"/> parameter is <c>null</c>.
+        /// The <paramref name="certificate"/> parameter is <see langword="null"/>.
         /// </exception>
         public static GostECDsa GetECDsaPrivateKey(this X509Certificate2 certificate)
         {

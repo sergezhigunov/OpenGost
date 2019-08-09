@@ -84,7 +84,7 @@ namespace OpenGost.Security.Cryptography
         /// An <see cref="System.Security.Cryptography.Oid"/> instance.
         /// </value>
         /// <exception cref="ArgumentNullException">
-        /// The specified <see cref="System.Security.Cryptography.Oid"/> is <c>null</c>.
+        /// The specified <see cref="System.Security.Cryptography.Oid"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// The specified <see cref="System.Security.Cryptography.Oid"/> is not valid.
@@ -129,7 +129,7 @@ namespace OpenGost.Security.Cryptography
         /// An <see cref="ECCurve"/> representing a named curve.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="curveOid"/> parameter is <c>null</c>.
+        /// <paramref name="curveOid"/> parameter is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// The specified <see cref="System.Security.Cryptography.Oid"/> is not valid.
@@ -151,7 +151,7 @@ namespace OpenGost.Security.Cryptography
         /// An <see cref="ECCurve"/> representing a named curve.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="oidFriendlyName"/> parameter is <c>null</c>.
+        /// <paramref name="oidFriendlyName"/> parameter is <see langword="null"/>.
         /// </exception>
         public static ECCurve CreateFromFriendlyName(string oidFriendlyName)
         {
@@ -170,7 +170,7 @@ namespace OpenGost.Security.Cryptography
         /// An <see cref="ECCurve"/> representing a named curve.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="oidValue"/> parameter is <c>null</c>.
+        /// <paramref name="oidValue"/> parameter is <see langword="null"/>.
         /// </exception>
         public static ECCurve CreateFromValue(string oidValue)
         {
@@ -186,8 +186,8 @@ namespace OpenGost.Security.Cryptography
         /// Indicates whether the current <see cref="ECCurve" /> is prime.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the current <see cref="ECCurve" /> is prime;
-        /// otherwise, <c>false</c>.
+        /// <see langword="true"/> if the current <see cref="ECCurve" /> is prime;
+        /// otherwise, <see langword="false"/>.
         /// </value>
         public bool IsPrime
             => CurveType == ECCurveType.PrimeShortWeierstrass || CurveType == ECCurveType.PrimeMontgomery || CurveType == ECCurveType.PrimeTwistedEdwards;
@@ -196,8 +196,8 @@ namespace OpenGost.Security.Cryptography
         /// Indicates whether the current <see cref="ECCurve" /> is characteristic 2.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the current <see cref="ECCurve" /> is characteristic 2;
-        /// otherwise, <c>false</c>.
+        /// <see langword="true"/> if the current <see cref="ECCurve" /> is characteristic 2;
+        /// otherwise, <see langword="false"/>.
         /// </value>
         public bool IsCharacteristic2 => CurveType == ECCurveType.Characteristic2;
 
@@ -205,8 +205,8 @@ namespace OpenGost.Security.Cryptography
         /// Indicates whether the current <see cref="ECCurve" /> is explicit.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the current <see cref="ECCurve" /> is explicit;
-        /// otherwise, <c>false</c>.
+        /// <see langword="true"/> if the current <see cref="ECCurve" /> is explicit;
+        /// otherwise, <see langword="false"/>.
         /// </value>
         public bool IsExplicit => IsPrime || IsCharacteristic2;
 
@@ -214,8 +214,8 @@ namespace OpenGost.Security.Cryptography
         /// Indicates whether the current <see cref="ECCurve" /> is named.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the current <see cref="ECCurve" /> is named;
-        /// otherwise, <c>false</c>.
+        /// <see langword="true"/> if the current <see cref="ECCurve" /> is named;
+        /// otherwise, <see langword="false"/>.
         /// </value>
         public bool IsNamed => CurveType == ECCurveType.Named;
 

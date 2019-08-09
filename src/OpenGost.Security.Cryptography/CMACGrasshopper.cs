@@ -26,7 +26,7 @@ namespace OpenGost.Security.Cryptography
         /// The secret key for <see cref="CMACGrasshopper"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="key"/> parameter is <c>null</c>.
+        /// The <paramref name="key"/> parameter is <see langword="null"/>.
         /// </exception>
         public CMACGrasshopper(byte[] key)
             : this(GrasshopperAlgorithmFullName, key)
@@ -43,7 +43,7 @@ namespace OpenGost.Security.Cryptography
         /// The secret key for <see cref="CMACGrasshopper"/> encryption. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="key"/> parameter is <c>null</c>. 
+        /// The <paramref name="key"/> parameter is <see langword="null"/>. 
         /// </exception>
         public CMACGrasshopper(string algorithmName, byte[] key)
             : base()

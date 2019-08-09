@@ -19,7 +19,7 @@ namespace OpenGost.Security.Cryptography
         /// Gets the name of the signature algorithm.
         /// </summary>
         /// <value>
-        /// Always <c>"GostECDsa256"</c>.
+        /// Always &quot;GostECDsa256&quot;.
         /// </value>
         public override string SignatureAlgorithm => GostECDsa256AlgorithmName;
 

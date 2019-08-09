@@ -32,7 +32,7 @@ namespace OpenGost.Security.Cryptography
         /// Gets a value indicating whether the current transform can be reused.
         /// </summary>
         /// <value>
-        /// Always <c>true</c>.
+        /// Always <see langword="true"/>.
         /// </value>
         public bool CanReuseTransform => true;
 
@@ -40,7 +40,7 @@ namespace OpenGost.Security.Cryptography
         /// Gets a value indicating whether multiple blocks can be transformed.
         /// </summary>
         /// <value>
-        /// Always <c>true</c>.
+        /// Always <see langword="true"/>.
         /// </value>
         public bool CanTransformMultipleBlocks => true;
 
@@ -83,9 +83,9 @@ namespace OpenGost.Security.Cryptography
         /// The direction mode of the symmetric transform.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/> parameter is <c>null</c>.
+        /// <paramref name="key"/> parameter is <see langword="null"/>.
         /// -or-
-        /// <paramref name="iv"/> parameter is <c>null</c> when <paramref name="cipherMode"/> value is
+        /// <paramref name="iv"/> parameter is <see langword="null"/> when <paramref name="cipherMode"/> value is
         /// <see cref="CipherMode.CBC"/>, <see cref="CipherMode.CFB"/> or <see cref="CipherMode.OFB"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
@@ -201,9 +201,9 @@ namespace OpenGost.Security.Cryptography
         /// The number of bytes written.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="inputBuffer" /> parameter is <c>null</c>.
+        /// The <paramref name="inputBuffer" /> parameter is <see langword="null"/>.
         /// -or-
-        /// The <paramref name="outputBuffer" /> parameter is <c>null</c>.
+        /// The <paramref name="outputBuffer" /> parameter is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// The value of the <paramref name="inputOffset" /> parameter is negative.
@@ -278,7 +278,7 @@ namespace OpenGost.Security.Cryptography
         /// The computed transformation.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="inputBuffer" /> parameter is <c>null</c>.
+        /// The <paramref name="inputBuffer" /> parameter is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// The value of the <paramref name="inputOffset" /> parameter is negative.
@@ -344,8 +344,8 @@ namespace OpenGost.Security.Cryptography
         /// and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">
-        /// <c>true</c> to release both managed and unmanaged resources;
-        /// <c>false</c> to release only unmanaged resources.
+        /// <see langword="true"/> to release both managed and unmanaged resources;
+        /// <see langword="false"/> to release only unmanaged resources.
         /// </param>
         protected virtual void Dispose(bool disposing)
         {

@@ -33,7 +33,7 @@ namespace OpenGost.Security.Cryptography
         /// The instance of <see cref="GostECDsa256"/> that holds the key.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/> is <c>null</c>.
+        /// <paramref name="key"/> is <see langword="null"/>.
         /// </exception>
         public GostECDsa256SignatureDeformatter(AsymmetricAlgorithm key)
         {
@@ -49,7 +49,7 @@ namespace OpenGost.Security.Cryptography
         /// The name of the hash algorithm to use for the signature deformatter. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="strName"/> is <c>null</c>.
+        /// <paramref name="strName"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicUnexpectedOperationException">
         /// The <paramref name="strName"/> parameter does not map to the <see cref="Streebog256"/>
@@ -70,7 +70,7 @@ namespace OpenGost.Security.Cryptography
         /// The instance of <see cref="GostECDsa256"/> that holds the key. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/> is <c>null</c>.
+        /// <paramref name="key"/> is <see langword="null"/>.
         /// </exception>
         public override void SetKey(AsymmetricAlgorithm key)
         {
@@ -89,13 +89,13 @@ namespace OpenGost.Security.Cryptography
         /// The signature to be verified for <paramref name="rgbHash"/>. 
         /// </param>
         /// <returns>
-        /// <c>true</c> if the signature is valid for the data;
-        /// otherwise, <c>false</c>.
+        /// <see langword="true"/> if the signature is valid for the data;
+        /// otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="rgbHash"/> is <c>null</c>.
+        /// <paramref name="rgbHash"/> is <see langword="null"/>.
         /// -or-
-        /// <paramref name="rgbSignature"/> is <c>null</c>.
+        /// <paramref name="rgbSignature"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicUnexpectedOperationException">
         /// The <see cref="GostECDsa256"/> key is missing.

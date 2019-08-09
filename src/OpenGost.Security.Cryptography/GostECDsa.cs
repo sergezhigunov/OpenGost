@@ -18,7 +18,7 @@ namespace OpenGost.Security.Cryptography
         /// Gets the name of the key exchange algorithm.
         /// </summary>
         /// <value>
-        /// Always <c>null</c>.
+        /// Always <see langword="null"/>.
         /// </value>
         public override string KeyExchangeAlgorithm => null;
 
@@ -39,7 +39,7 @@ namespace OpenGost.Security.Cryptography
         /// A digital signature that consists of the given hash value encrypted with the private key.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="hash"/> parameter is <c>null</c>.
+        /// The <paramref name="hash"/> parameter is <see langword="null"/>.
         /// </exception>
         public abstract byte[] SignHash(byte[] hash);
 
@@ -54,13 +54,13 @@ namespace OpenGost.Security.Cryptography
         /// The digital signature to be verified.
         /// </param>
         /// <returns>
-        /// <c>true</c> if the hash value equals the decrypted signature;
-        /// otherwise, <c>false</c>.
+        /// <see langword="true"/> if the hash value equals the decrypted signature;
+        /// otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="hash"/> parameter is <c>null</c>.
+        /// The <paramref name="hash"/> parameter is <see langword="null"/>.
         /// -or-
-        /// The <paramref name="signature"/> parameter is <c>null</c>.
+        /// The <paramref name="signature"/> parameter is <see langword="null"/>.
         /// </exception>
         public abstract bool VerifyHash(byte[] hash, byte[] signature);
 
@@ -80,8 +80,8 @@ namespace OpenGost.Security.Cryptography
         /// When overridden in a derived class, exports the <see cref="ECParameters"/> for an <see cref="ECCurve"/>.
         /// </summary>
         /// <param name="includePrivateParameters">
-        /// <c>true</c> to include private parameters;
-        /// otherwise, <c>false</c>.</param>
+        /// <see langword="true"/> to include private parameters;
+        /// otherwise, <see langword="false"/>.</param>
         /// <returns>
         /// An <see cref="ECParameters"/>.
         /// </returns>
@@ -110,7 +110,7 @@ namespace OpenGost.Security.Cryptography
         /// The XML string to use to reconstruct the <see cref="GostECDsa"/> object.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="xmlString"/> parameter is <c>null</c>. 
+        /// The <paramref name="xmlString"/> parameter is <see langword="null"/>. 
         /// </exception>
         /// <exception cref="CryptographicException">
         /// The format of the <paramref name="xmlString"/> parameter is not valid. 
@@ -128,7 +128,7 @@ namespace OpenGost.Security.Cryptography
         /// <see cref="GostECDsa"/> object.
         /// </summary>
         /// <param name="includePrivateParameters">
-        /// <c>true</c> to include private parameters; otherwise, <c>false</c>. 
+        /// <see langword="true"/> to include private parameters; otherwise, <see langword="false"/>. 
         /// </param>
         /// <returns>
         /// An XML string encoding of the current <see cref="GostECDsa"/> object.

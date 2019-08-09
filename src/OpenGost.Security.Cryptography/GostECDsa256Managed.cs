@@ -93,8 +93,8 @@ namespace OpenGost.Security.Cryptography
         /// Exports the <see cref="ECParameters"/> for an <see cref="ECCurve"/>.
         /// </summary>
         /// <param name="includePrivateParameters">
-        /// <c>true</c> to include private parameters;
-        /// otherwise, <c>false</c>.</param>
+        /// <see langword="true"/> to include private parameters;
+        /// otherwise, <see langword="false"/>.</param>
         /// <returns>
         /// An <see cref="ECParameters"/>.
         /// </returns>
@@ -150,7 +150,7 @@ namespace OpenGost.Security.Cryptography
         /// A digital signature that consists of the given hash value encrypted with the private key.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="hash"/> parameter is <c>null</c>.
+        /// The <paramref name="hash"/> parameter is <see langword="null"/>.
         /// </exception>
         public override byte[] SignHash(byte[] hash)
         {
@@ -219,13 +219,13 @@ namespace OpenGost.Security.Cryptography
         /// The digital signature to be verified.
         /// </param>
         /// <returns>
-        /// <c>true</c> if the hash value equals the decrypted signature;
-        /// otherwise, <c>false</c>.
+        /// <see langword="true"/> if the hash value equals the decrypted signature;
+        /// otherwise, <see langword="false"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="hash"/> parameter is <c>null</c>.
+        /// The <paramref name="hash"/> parameter is <see langword="null"/>.
         /// -or-
-        /// The <paramref name="signature"/> parameter is <c>null</c>.
+        /// The <paramref name="signature"/> parameter is <see langword="null"/>.
         /// </exception>
         public override bool VerifyHash(byte[] hash, byte[] signature)
         {
@@ -285,8 +285,8 @@ namespace OpenGost.Security.Cryptography
         /// and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">
-        /// <c>true</c>true to release both managed and unmanaged resources;
-        /// <c>false</c> to release only unmanaged resources.
+        /// <see langword="true"/>true to release both managed and unmanaged resources;
+        /// <see langword="false"/> to release only unmanaged resources.
         /// </param>
         protected override void Dispose(bool disposing)
         {

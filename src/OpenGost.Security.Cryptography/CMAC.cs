@@ -53,7 +53,7 @@ namespace OpenGost.Security.Cryptography
         /// The key to use in the hash algorithm.
         /// </value>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="value"/> is <c>null</c>.
+        /// <paramref name="value"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicException">
         /// An attempt is made to change the <see cref="Key"/> property after hashing has begun. 
@@ -78,7 +78,7 @@ namespace OpenGost.Security.Cryptography
         /// The name of the symmetric algorithm.
         /// </value>
         /// <exception cref="ArgumentException">
-        /// <paramref name="value"/> is <c>null</c> or empty.
+        /// <paramref name="value"/> is <see langword="null"/> or empty.
         /// </exception>
         /// <exception cref="CryptographicException">
         /// The current symmetric algorithm cannot be changed.
@@ -223,8 +223,8 @@ namespace OpenGost.Security.Cryptography
         /// is legitimate and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">
-        /// <c>true</c> to release both managed and unmanaged resources;
-        /// <c>false</c> to release only unmanaged resources. 
+        /// <see langword="true"/> to release both managed and unmanaged resources;
+        /// <see langword="false"/> to release only unmanaged resources. 
         /// </param>
         protected override void Dispose(bool disposing)
         {

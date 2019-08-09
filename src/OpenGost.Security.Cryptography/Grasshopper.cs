@@ -57,7 +57,7 @@ namespace OpenGost.Security.Cryptography
         /// The initialization vector.
         /// </value>
         /// <exception cref="ArgumentNullException">
-        /// An attempt was made to set the initialization vector to <c>null</c>.
+        /// An attempt was made to set the initialization vector to <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicException">
         /// The initialization vector length is zero or not evenly devisable by block size.

@@ -33,7 +33,7 @@ namespace OpenGost.Security.Cryptography
         /// The instance of <see cref="GostECDsa512"/> that holds the key.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/> is <c>null</c>.
+        /// <paramref name="key"/> is <see langword="null"/>.
         /// </exception>
         public GostECDsa512SignatureFormatter(AsymmetricAlgorithm key)
         {
@@ -52,12 +52,12 @@ namespace OpenGost.Security.Cryptography
         /// The digital signature for the specified data.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="rgbHash"/> is <c>null</c>.
+        /// <paramref name="rgbHash"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicUnexpectedOperationException">
-        /// The OID is <c>null</c>.
+        /// The OID is <see langword="null"/>.
         /// -or-
-        /// The <see cref="GostECDsa512"/> key is <c>null</c>.
+        /// The <see cref="GostECDsa512"/> key is <see langword="null"/>.
         /// </exception>
         public override byte[] CreateSignature(byte[] rgbHash)
         {
@@ -79,7 +79,7 @@ namespace OpenGost.Security.Cryptography
         /// The name of the hash algorithm to use for the signature formatter. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="strName"/> is <c>null</c>.
+        /// <paramref name="strName"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicUnexpectedOperationException">
         /// The <paramref name="strName"/> parameter does not map to the <see cref="Streebog512"/>
@@ -100,7 +100,7 @@ namespace OpenGost.Security.Cryptography
         /// The instance of <see cref="GostECDsa512"/> that holds the key. 
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/> is <c>null</c>.
+        /// <paramref name="key"/> is <see langword="null"/>.
         /// </exception>
         public override void SetKey(AsymmetricAlgorithm key)
         {

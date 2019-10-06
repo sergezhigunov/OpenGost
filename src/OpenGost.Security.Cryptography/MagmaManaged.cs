@@ -1,8 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
+    using static CryptographyStrings;
     using static CryptoUtils;
 
     /// <summary>
@@ -11,6 +13,28 @@ namespace OpenGost.Security.Cryptography
     [ComVisible(true)]
     public sealed class MagmaManaged : Magma
     {
+        /// <summary>
+        /// Gets or sets the mode for operation of the symmetric algorithm.
+        /// </summary>
+        /// <returns>
+        /// The mode for operation of the symmetric algorithm. The default is <see cref="CipherMode.CBC"/>.
+        /// </returns>
+        /// <exception cref="CryptographicException">
+        /// The cipher mode is not one of the following values:
+        /// <see cref="CipherMode.CBC"/>, <see cref="CipherMode.ECB"/>,
+        /// <see cref="CipherMode.OFB"/>, <see cref="CipherMode.CFB"/>.
+        /// </exception>
+        public override CipherMode Mode
+        {
+            set
+            {
+                if (value < CipherMode.CBC || CipherMode.CFB < value)
+                    throw new CryptographicException(CryptographicInvalidCipherMode);
+
+                ModeValue = value;
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Magma"/> class.
         /// </summary>

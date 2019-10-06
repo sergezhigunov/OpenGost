@@ -43,11 +43,8 @@ namespace OpenGost.Security.Cryptography
 
             if (length == 0)
                 return
-#if NET45
-                    EmptyArray<T>.Value;
-#else
                     Array.Empty<T>();
-#endif
+
             if (startIndex == 0 && length == value.Length)
                 return CloneArray(value);
 

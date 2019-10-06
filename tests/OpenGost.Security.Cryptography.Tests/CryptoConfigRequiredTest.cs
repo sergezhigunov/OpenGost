@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
-using System.Xml;
 using System.Xml.XPath;
 
 namespace OpenGost.Security.Cryptography

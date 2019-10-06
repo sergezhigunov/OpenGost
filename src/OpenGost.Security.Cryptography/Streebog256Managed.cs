@@ -65,11 +65,7 @@ namespace OpenGost.Security.Cryptography
         protected override byte[] HashFinal()
         {
             _innerAlgorithm.TransformFinalBlock(
-#if NET45
-                EmptyArray<byte>.Value,
-#else
                 Array.Empty<byte>(),
-#endif
                 0, 0);
             var hash = new byte[32];
             BlockCopy(_innerAlgorithm.Hash, 32, hash, 0, 32);

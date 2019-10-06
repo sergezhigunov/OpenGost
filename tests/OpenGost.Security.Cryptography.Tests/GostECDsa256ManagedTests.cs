@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-#if !NET45
 using System.Security.Cryptography;
-#endif
 using Xunit;
 
 namespace OpenGost.Security.Cryptography

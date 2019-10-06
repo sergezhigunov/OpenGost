@@ -14,16 +14,6 @@ An open-source .Net library providing the modern Russian national standard crypt
 * 512 and 256 bits GOST Elliptic Curve Digital Signature Algorithm (GOST R 34.10-2012)
 
 
-## Algorithms in Development
-
-* Pseudorandom function algorithm based on Streebog HMAC
-* Key derivation function algorithm based on Streebog HMAC
-* Key agreement algorithm based on GOST R 34.10-2012
-* Key wrap and key unwrap algorithm
-* GOST 28147-89 block cipher algorithm (non-normative, for backward compatibility, similar to Magma, but has another endianness)
-* GOST R 34.11-94 Hash Function Algorithm (non-normative, for backward compatibility)
-
-
 ## References
 
 * [GOST R 34.11-2012](https://tc26.ru/upload/iblock/f86/GOST_R_34_11-2012_eng.pdf) Information technology. Cryptographic data security. Hash function

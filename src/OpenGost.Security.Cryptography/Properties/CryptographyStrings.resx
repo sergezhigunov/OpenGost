@@ -138,6 +138,9 @@
   <data name="ArgumentOutOfRangeStartIndexLargerThanLength" xml:space="preserve">
     <value>Start index cannot be larger than length of array.</value>
   </data>
+  <data name="CryptographicHashKeySet" xml:space="preserve">
+    <value>Hash key cannot be changed after the first write to the stream.</value>
+  </data>
   <data name="CryptographicInsufficientOutputBuffer" xml:space="preserve">
     <value>Output buffer contains insufficient data size.</value>
   </data>

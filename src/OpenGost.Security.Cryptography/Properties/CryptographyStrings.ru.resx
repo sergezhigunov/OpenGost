@@ -138,6 +138,9 @@
   <data name="ArgumentOutOfRangeStartIndexLargerThanLength" xml:space="preserve">
     <value>Индекс начала подмассива не может быть больше, чем длина массива.</value>
   </data>
+  <data name="CryptographicHashKeySet" xml:space="preserve">
+    <value>После первой записи в поток ключ хэша изменить невозможно.</value>
+  </data>
   <data name="CryptographicInsufficientOutputBuffer" xml:space="preserve">
     <value>Выходной буфер содержит недостаточно места.</value>
   </data>

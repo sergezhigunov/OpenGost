@@ -30,6 +30,9 @@ namespace OpenGost.Security.Cryptography.Properties
         public static string ArgumentOutOfRangeStartIndexLargerThanLength
             => GetString("ArgumentOutOfRangeStartIndexLargerThanLength");
 
+        public static string CryptographicHashKeySet
+            => GetString("CryptographicHashKeySet");
+
         public static string CryptographicInsufficientOutputBuffer
             => GetString("CryptographicInsufficientOutputBuffer");
 

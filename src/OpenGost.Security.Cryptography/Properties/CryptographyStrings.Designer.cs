@@ -30,28 +30,14 @@ namespace OpenGost.Security.Cryptography.Properties
         public static string ArgumentOutOfRangeStartIndexLargerThanLength
             => GetString("ArgumentOutOfRangeStartIndexLargerThanLength");
 
-        public static string CryptographicCurveNotSupported(object curveType)
-            => string.Format(
-                GetString("CryptographicCurveNotSupported", nameof(curveType)),
-                curveType);
-
         public static string CryptographicInsufficientOutputBuffer
             => GetString("CryptographicInsufficientOutputBuffer");
 
         public static string CryptographicInvalidBlockSize
             => GetString("CryptographicInvalidBlockSize");
 
-        public static string CryptographicInvalidCharacteristic2Curve
-            => GetString("CryptographicInvalidCharacteristic2Curve");
-
         public static string CryptographicInvalidCipherMode
             => GetString("CryptographicInvalidCipherMode");
-
-        public static string CryptographicInvalidCurveKeyParameters
-            => GetString("CryptographicInvalidCurveKeyParameters");
-
-        public static string CryptographicInvalidCurveOid
-            => GetString("CryptographicInvalidCurveOid");
 
         public static string CryptographicInvalidDataSize
             => GetString("CryptographicInvalidDataSize");
@@ -67,20 +53,11 @@ namespace OpenGost.Security.Cryptography.Properties
         public static string CryptographicInvalidIVSize
             => GetString("CryptographicInvalidIVSize");
 
-        public static string CryptographicInvalidKeySize
-            => GetString("CryptographicInvalidKeySize");
-
-        public static string CryptographicInvalidNamedCurve
-            => GetString("CryptographicInvalidNamedCurve");
-
         public static string CryptographicInvalidOperation
             => GetString("CryptographicInvalidOperation");
 
         public static string CryptographicInvalidPadding
             => GetString("CryptographicInvalidPadding");
-
-        public static string CryptographicInvalidPrimeCurve
-            => GetString("CryptographicInvalidPrimeCurve");
 
         public static string CryptographicInvalidSignatureSize(object size)
             => string.Format(
@@ -110,14 +87,6 @@ namespace OpenGost.Security.Cryptography.Properties
 
         public static string CryptographicSymmetricAlgorithmNameSet
             => GetString("CryptographicSymmetricAlgorithmNameSet");
-
-        public static string CryptographicUnexpectedXmlNamespace(object actual, object expected)
-            => string.Format(
-                GetString("CryptographicUnexpectedXmlNamespace", nameof(actual), nameof(expected)),
-                actual, expected);
-
-        public static string CryptographicUnknownEllipticCurveAlgorithm
-            => GetString("CryptographicUnknownEllipticCurveAlgorithm");
 
         public static string CryptographicUnknownSymmetricAlgorithm(object algorithm)
             => string.Format(

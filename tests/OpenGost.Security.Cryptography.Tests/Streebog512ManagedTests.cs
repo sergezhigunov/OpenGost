@@ -5,7 +5,7 @@ namespace OpenGost.Security.Cryptography
 {
     public class Streebog512ManagedTests : HashAlgorithmTest<Streebog512Managed>
     {
-        private static readonly Encoding CurrentEncoding = Encoding.GetEncoding(1251);
+        private static Encoding CurrentEncoding { get; } = CodePagesEncodingProvider.Instance.GetEncoding(1251);
 
         [Theory]
         [InlineData(

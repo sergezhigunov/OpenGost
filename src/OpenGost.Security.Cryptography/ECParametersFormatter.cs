@@ -7,14 +7,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
-using OpenGost.Security.Cryptography.Properties;
+using static System.Security.Cryptography.ECCurve;
+using static OpenGost.Security.Cryptography.CryptoUtils;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoUtils;
-    using static ECCurve;
-    using static CryptographyStrings;
-
     internal static class ECParametersFormatter
     {
         private const string ATag = "A";

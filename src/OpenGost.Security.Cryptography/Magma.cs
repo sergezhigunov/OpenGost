@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using OpenGost.Security.Cryptography.Properties;
+using static System.Security.Cryptography.CryptoConfig;
+using static OpenGost.Security.Cryptography.CryptoConstants;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConfig;
-    using static CryptoConstants;
-    using static CryptographyStrings;
-
     /// <summary>
     /// Represents the base class from which all implementations of the <see cref="Magma"/> symmetric encryption algorithm must inherit.
     /// </summary>
@@ -16,8 +14,8 @@ namespace OpenGost.Security.Cryptography
     public abstract class Magma : SymmetricAlgorithm
     {
         private static readonly KeySizes[]
-            s_legalBlockSizes = { new KeySizes(64, 64, 0) },
-            s_legalKeySizes = { new KeySizes(256, 256, 0) };
+            _legalBlockSizes = { new KeySizes(64, 64, 0) },
+            _legalKeySizes = { new KeySizes(256, 256, 0) };
 
         /// <summary>
         /// Initializes a new instance of <see cref="Magma"/>.
@@ -27,8 +25,8 @@ namespace OpenGost.Security.Cryptography
             KeySizeValue = 256;
             BlockSizeValue = 64;
             FeedbackSizeValue = BlockSizeValue;
-            LegalBlockSizesValue = s_legalBlockSizes;
-            LegalKeySizesValue = s_legalKeySizes;
+            LegalBlockSizesValue = _legalBlockSizes;
+            LegalKeySizesValue = _legalKeySizes;
         }
 
         /// <summary>
@@ -44,7 +42,8 @@ namespace OpenGost.Security.Cryptography
         {
             set
             {
-                if (value == 0 || value % (BlockSizeValue / 8) != 0) throw new CryptographicException(CryptographicInvalidFeedbackSize);
+                if (value == 0 || value % (BlockSizeValue / 8) != 0)
+                    throw new CryptographicException(CryptographicInvalidFeedbackSize);
 
                 FeedbackSizeValue = value;
             }
@@ -66,11 +65,12 @@ namespace OpenGost.Security.Cryptography
         {
             set
             {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0) throw new CryptographicException(CryptographicInvalidIVSize);
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+                if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0)
+                    throw new CryptographicException(CryptographicInvalidIVSize);
 
                 FeedbackSize = value.Length;
-
                 IVValue = (byte[])value.Clone();
             }
         }

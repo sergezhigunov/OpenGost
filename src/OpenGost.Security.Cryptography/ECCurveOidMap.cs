@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using static System.Security.Cryptography.ECCurve;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static ECCurve;
-
     internal static class ECCurveOidMap
     {
 #region Constants
@@ -455,13 +454,13 @@ namespace OpenGost.Security.Cryptography
 
 #endregion
 
-        private static volatile Dictionary<string, ECCurve> s_ecCurveOidDictionary = null;
+        private static volatile Dictionary<string, ECCurve> _ecCurveOidDictionary = null;
 
         private static Dictionary<string, ECCurve> ECCurveOidDictionary
         {
             get
             {
-                if (s_ecCurveOidDictionary == null)
+                if (_ecCurveOidDictionary == null)
                 {
                     var ecCurveOidDictionary = new Dictionary<string, ECCurve>
                     {
@@ -478,31 +477,34 @@ namespace OpenGost.Security.Cryptography
                         { "1.2.643.7.1.2.1.2.3", ECCurve512ParamsetC },
                     };
 
-                    s_ecCurveOidDictionary = ecCurveOidDictionary;
+                    _ecCurveOidDictionary = ecCurveOidDictionary;
                 }
 
-                return s_ecCurveOidDictionary;
+                return _ecCurveOidDictionary;
             }
         }
 
         internal static bool OidValueRegistered(string oidValue)
         {
-            if (oidValue == null) throw new ArgumentNullException(nameof(oidValue));
+            if (oidValue == null)
+                throw new ArgumentNullException(nameof(oidValue));
             return ECCurveOidDictionary.ContainsKey(oidValue);
         }
 
         internal static ECCurve GetNamedCurveByOid(string oidValue)
         {
-            if (oidValue == null) throw new ArgumentNullException(nameof(oidValue));
+            if (oidValue == null)
+                throw new ArgumentNullException(nameof(oidValue));
             if (!ECCurveOidDictionary.ContainsKey(oidValue))
                 throw new NotImplementedException();
 
-            return ECCurve.CreateFromValue(oidValue);
+            return CreateFromValue(oidValue);
         }
 
         internal static ECCurve GetExplicitCurveByOid(string oidValue)
         {
-            if (oidValue == null) throw new ArgumentNullException(nameof(oidValue));
+            if (oidValue == null)
+                throw new ArgumentNullException(nameof(oidValue));
             if (!ECCurveOidDictionary.ContainsKey(oidValue))
                 throw new NotImplementedException();
 

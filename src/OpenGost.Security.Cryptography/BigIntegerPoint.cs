@@ -1,15 +1,14 @@
 ﻿using System.Numerics;
 using System.Security.Cryptography;
+using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoUtils;
-
     internal struct BigIntegerPoint
     {
         private static readonly BigInteger
-            s_two = 2,
-            s_three = 3;
+            _two = 2,
+            _three = 3;
 
         public BigInteger X { get; private set; }
 
@@ -37,7 +36,7 @@ namespace OpenGost.Security.Cryptography
             BigInteger
                 dy = Normalize(right.Y - left.Y, prime),
                 dx = Normalize(right.X - left.X, prime),
-                lambda = Normalize((dy * BigInteger.ModPow(dx, prime - s_two, prime)) % prime, prime),
+                lambda = Normalize((dy * BigInteger.ModPow(dx, prime - _two, prime)) % prime, prime),
                 x = Normalize((BigInteger.Pow(lambda, 2) - left.X - right.X) % prime, prime);
 
             return new BigIntegerPoint()
@@ -50,10 +49,10 @@ namespace OpenGost.Security.Cryptography
         private static BigIntegerPoint MultipleTwo(BigIntegerPoint value, BigInteger prime, BigInteger a)
         {
             BigInteger
-                dy = Normalize(s_three * BigInteger.Pow(value.X, 2) + a, prime),
-                dx = Normalize(s_two * value.Y, prime),
-                lambda = (dy * BigInteger.ModPow(dx, prime - s_two, prime)) % prime,
-                x = Normalize((BigInteger.Pow(lambda, 2) - s_two * value.X) % prime, prime);
+                dy = Normalize(_three * BigInteger.Pow(value.X, 2) + a, prime),
+                dx = Normalize(_two * value.Y, prime),
+                lambda = (dy * BigInteger.ModPow(dx, prime - _two, prime)) % prime,
+                x = Normalize((BigInteger.Pow(lambda, 2) - _two * value.X) % prime, prime);
 
             return new BigIntegerPoint
             {
@@ -69,7 +68,7 @@ namespace OpenGost.Security.Cryptography
 
             while (multiplier > BigInteger.Zero)
             {
-                if ((multiplier % s_two) != BigInteger.Zero)
+                if ((multiplier % _two) != BigInteger.Zero)
                 {
                     if ((result.X == point.X) && (result.Y == point.Y))
                         result = MultipleTwo(result, prime, a);
@@ -78,7 +77,7 @@ namespace OpenGost.Security.Cryptography
                     multiplier--;
                 }
 
-                multiplier /= s_two;
+                multiplier /= _two;
                 point = MultipleTwo(point, prime, a);
             }
 

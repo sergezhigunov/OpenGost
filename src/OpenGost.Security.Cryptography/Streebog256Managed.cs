@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using static System.Buffer;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static Buffer;
-
     /// <summary>
     /// Computes the <see cref="Streebog256"/> hash for the input data using the managed implementation. 
     /// </summary>
@@ -13,7 +12,7 @@ namespace OpenGost.Security.Cryptography
     {
         #region Constants
 
-        private static readonly byte[] s_iv =
+        private static readonly byte[] _defaultIV =
         {
             0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
             0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
@@ -30,7 +29,7 @@ namespace OpenGost.Security.Cryptography
         /// </summary>
         public Streebog256Managed()
         {
-            _innerAlgorithm = new Streebog512Managed(s_iv);
+            _innerAlgorithm = new Streebog512Managed(_defaultIV);
         }
 
         /// <summary>

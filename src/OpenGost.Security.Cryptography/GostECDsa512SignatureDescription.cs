@@ -1,9 +1,8 @@
 ﻿using System.Security.Cryptography;
+using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConstants;
-
     /// <summary>
     /// Contains information about the properties of the 512-bit 
     /// GOST Elliptic Curve Digital Signature (GOST R 34.10-2012).

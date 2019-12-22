@@ -3,7 +3,6 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
-
     public class GostECDsaCertificateExtensionsTests : CryptoConfigRequiredTest
     {
         [Theory]

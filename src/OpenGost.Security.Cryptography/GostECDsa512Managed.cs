@@ -2,22 +2,20 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using OpenGost.Security.Cryptography.Properties;
+using static System.Buffer;
+using static System.Math;
+using static OpenGost.Security.Cryptography.CryptoUtils;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static Buffer;
-    using static CryptoUtils;
-    using static Math;
-    using static CryptographyStrings;
-
     /// <summary>
     /// Provides a managed implementation of the <see cref="GostECDsa512"/> algorithm. 
     /// </summary>
     [ComVisible(true)]
     public sealed class GostECDsa512Managed : GostECDsa512
     {
-        private static readonly BigInteger s_modulus = BigInteger.One << 512;
+        private static readonly BigInteger _modulus = BigInteger.One << 512;
 
         private ECCurve _curve;
         private ECPoint _publicKey;
@@ -65,19 +63,19 @@ namespace OpenGost.Security.Cryptography
             KeySize = keySizeInByted * 8;
 
             BigInteger
-                prime = Normalize(new BigInteger(curve.Prime), s_modulus),
-                subgroupOrder = Normalize(new BigInteger(curve.Order), s_modulus) / Normalize(new BigInteger(curve.Cofactor), s_modulus),
-                a = Normalize(new BigInteger(curve.A), s_modulus);
+                prime = Normalize(new BigInteger(curve.Prime), _modulus),
+                subgroupOrder = Normalize(new BigInteger(curve.Order), _modulus) / Normalize(new BigInteger(curve.Cofactor), _modulus),
+                a = Normalize(new BigInteger(curve.A), _modulus);
 
             var privateKey = new byte[keySizeInByted];
             BigInteger key;
             do
             {
                 StaticRandomNumberGenerator.GetBytes(privateKey);
-                key = Normalize(new BigInteger(privateKey), s_modulus);
+                key = Normalize(new BigInteger(privateKey), _modulus);
             } while (BigInteger.Zero >= key || key >= subgroupOrder);
 
-            var basePoint = new BigIntegerPoint(curve.G, s_modulus);
+            var basePoint = new BigIntegerPoint(curve.G, _modulus);
 
             var publicKey = BigIntegerPoint.Multiply(basePoint, key, prime, a).ToECPoint(KeySize);
 
@@ -153,7 +151,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public override byte[] SignHash(byte[] hash)
         {
-            if (hash == null) throw new ArgumentNullException(nameof(hash));
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
 
             ThrowIfDisposed();
 
@@ -166,17 +165,17 @@ namespace OpenGost.Security.Cryptography
                 GenerateKey(GetDefaultCurve());
 
             var
-                subgroupOrder = Normalize(new BigInteger(_curve.Order), s_modulus) / Normalize(new BigInteger(_curve.Cofactor), s_modulus);
+                subgroupOrder = Normalize(new BigInteger(_curve.Order), _modulus) / Normalize(new BigInteger(_curve.Cofactor), _modulus);
 
-            var e = Normalize(new BigInteger(hash), s_modulus) % subgroupOrder;
+            var e = Normalize(new BigInteger(hash), _modulus) % subgroupOrder;
 
             if (e == BigInteger.Zero)
                 e = BigInteger.One;
 
             BigInteger
-                prime = Normalize(new BigInteger(_curve.Prime), s_modulus),
-                a = Normalize(new BigInteger(_curve.A), s_modulus),
-                d = Normalize(new BigInteger(_privateKey), s_modulus),
+                prime = Normalize(new BigInteger(_curve.Prime), _modulus),
+                a = Normalize(new BigInteger(_curve.A), _modulus),
+                d = Normalize(new BigInteger(_privateKey), _modulus),
                 k, r, s;
 
             var rgb = new byte[keySizeInByted];
@@ -188,10 +187,10 @@ namespace OpenGost.Security.Cryptography
                     do
                     {
                         StaticRandomNumberGenerator.GetBytes(rgb);
-                        k = Normalize(new BigInteger(rgb), s_modulus);
+                        k = Normalize(new BigInteger(rgb), _modulus);
                     } while (k <= BigInteger.Zero || k >= subgroupOrder);
 
-                    r = BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, s_modulus), k, prime, a).X;
+                    r = BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, _modulus), k, prime, a).X;
                 } while (r == BigInteger.Zero);
 
                 s = (r * d + k * e) % subgroupOrder;
@@ -228,8 +227,10 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public override bool VerifyHash(byte[] hash, byte[] signature)
         {
-            if (hash == null) throw new ArgumentNullException(nameof(hash));
-            if (signature == null) throw new ArgumentNullException(nameof(signature));
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+            if (signature == null)
+                throw new ArgumentNullException(nameof(signature));
 
             ThrowIfDisposed();
 
@@ -245,21 +246,21 @@ namespace OpenGost.Security.Cryptography
             var keySizeInByted = KeySize / 8;
 
             var
-                subgroupOrder = Normalize(new BigInteger(_curve.Order), s_modulus) / Normalize(new BigInteger(_curve.Cofactor), s_modulus);
+                subgroupOrder = Normalize(new BigInteger(_curve.Order), _modulus) / Normalize(new BigInteger(_curve.Cofactor), _modulus);
 
             var array = new byte[keySizeInByted];
 
             BlockCopy(signature, 0, array, 0, keySizeInByted);
-            var s = Normalize(new BigInteger(array), s_modulus);
+            var s = Normalize(new BigInteger(array), _modulus);
             if (s < BigInteger.One || s > subgroupOrder)
                 return false;
 
             BlockCopy(signature, keySizeInByted, array, 0, keySizeInByted);
-            var r = Normalize(new BigInteger(array), s_modulus);
+            var r = Normalize(new BigInteger(array), _modulus);
             if (r < BigInteger.One || r > subgroupOrder)
                 return false;
 
-            var e = Normalize(new BigInteger(hash), s_modulus) % subgroupOrder;
+            var e = Normalize(new BigInteger(hash), _modulus) % subgroupOrder;
 
             if (e == BigInteger.Zero)
                 e = BigInteger.One;
@@ -268,12 +269,12 @@ namespace OpenGost.Security.Cryptography
                 v = BigInteger.ModPow(e, subgroupOrder - 2, subgroupOrder),
                 z1 = (s * v) % subgroupOrder,
                 z2 = (subgroupOrder - r) * v % subgroupOrder,
-                prime = Normalize(new BigInteger(_curve.Prime), s_modulus),
-                a = Normalize(new BigInteger(_curve.A), s_modulus);
+                prime = Normalize(new BigInteger(_curve.Prime), _modulus),
+                a = Normalize(new BigInteger(_curve.A), _modulus);
 
             var c = BigIntegerPoint.Add(
-                BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, s_modulus), z1, prime, a),
-                BigIntegerPoint.Multiply(new BigIntegerPoint(_publicKey, s_modulus), z2, prime, a),
+                BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, _modulus), z1, prime, a),
+                BigIntegerPoint.Multiply(new BigIntegerPoint(_publicKey, _modulus), z2, prime, a),
                 prime);
 
             return c.X == r;

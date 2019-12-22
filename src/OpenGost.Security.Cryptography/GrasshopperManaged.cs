@@ -1,12 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using OpenGost.Security.Cryptography.Properties;
+using static OpenGost.Security.Cryptography.CryptoUtils;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptographyStrings;
-    using static CryptoUtils;
-
     /// <summary>
     /// Accesses the managed version of the <see cref="Grasshopper"/> algorithm. This class cannot be inherited.
     /// </summary>

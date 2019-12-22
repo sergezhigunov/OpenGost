@@ -3,11 +3,10 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
+using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoUtils;
-
     /// <summary>
     /// Performs a cryptographic transformation of data using the <see cref="Magma"/> algorithm.
     /// This class cannot be inherited.
@@ -18,7 +17,7 @@ namespace OpenGost.Security.Cryptography
     {
         #region Constants
 
-        private static readonly byte[][] s_substitutionBox =
+        private static readonly byte[][] _substitutionBox =
         {
             new byte[] { 0xC, 0x4, 0x6, 0x2, 0xA, 0x5, 0xB, 0x9, 0xE, 0x8, 0xD, 0x7, 0x0, 0x3, 0xF, 0x1 },
             new byte[] { 0x6, 0x8, 0x2, 0x3, 0x9, 0xA, 0x5, 0xC, 0x1, 0xE, 0x4, 0x7, 0xB, 0xD, 0x0, 0xF },
@@ -35,10 +34,10 @@ namespace OpenGost.Security.Cryptography
         #region Lookup tables
 
         private static readonly uint[]
-            s_lookupTable0 = InitializeLookupTable(0),
-            s_lookupTable1 = InitializeLookupTable(1),
-            s_lookupTable2 = InitializeLookupTable(2),
-            s_lookupTable3 = InitializeLookupTable(3);
+            _lookup0 = InitializeLookupTable(0),
+            _lookup1 = InitializeLookupTable(1),
+            _lookup2 = InitializeLookupTable(2),
+            _lookup3 = InitializeLookupTable(3);
 
         #endregion
 
@@ -90,7 +89,7 @@ namespace OpenGost.Security.Cryptography
         {
             LoadRegisters(inputBuffer, inputOffset, out var a0, out var a1);
 
-            fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
+            fixed (uint* k = _keyExpansion, lookup0 = _lookup0, lookup1 = _lookup1, lookup2 = _lookup2, lookup3 = _lookup3)
             {
                 ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
                 ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
@@ -121,7 +120,7 @@ namespace OpenGost.Security.Cryptography
         {
             LoadRegisters(inputBuffer, inputOffset, out var a0, out var a1);
 
-            fixed (uint* k = _keyExpansion, lookup0 = s_lookupTable0, lookup1 = s_lookupTable1, lookup2 = s_lookupTable2, lookup3 = s_lookupTable3)
+            fixed (uint* k = _keyExpansion, lookup0 = _lookup0, lookup1 = _lookup1, lookup2 = _lookup2, lookup3 = _lookup3)
             {
                 ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
                 ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
@@ -225,8 +224,8 @@ namespace OpenGost.Security.Cryptography
             var lookupTable = new uint[256];
 
             for (var b = 0; b < 256; b++)
-                lookupTable[b] = RotateElevenBitsLeft((s_substitutionBox[2 * tableNumber][b & 0x0f] ^
-                    (uint)s_substitutionBox[2 * tableNumber + 1][b >> 4] << 4) << tableNumber * 8);
+                lookupTable[b] = RotateElevenBitsLeft((_substitutionBox[2 * tableNumber][b & 0x0f] ^
+                    (uint)_substitutionBox[2 * tableNumber + 1][b >> 4] << 4) << tableNumber * 8);
 
             return lookupTable;
         }

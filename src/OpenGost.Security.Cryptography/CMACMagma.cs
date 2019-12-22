@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using static OpenGost.Security.Cryptography.CryptoConstants;
+using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConstants;
-    using static CryptoUtils;
-
     /// <summary>
     /// Computes a Cipher-based Message Authentication Code (CMAC) using <see cref="Magma"/> algorithm.
     /// </summary>

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Security.Cryptography;
 using Xunit;
+using static OpenGost.Security.Cryptography.CryptoUtils;
+using static OpenGost.Security.Cryptography.ECHelper;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoUtils;
-    using static ECHelper;
-
     public abstract class GostECDsaTest<T> : AsymmetricAlgorithmTest<T>
         where T : GostECDsa, new()
     {
@@ -114,6 +113,6 @@ namespace OpenGost.Security.Cryptography
             => Assert.Throws<ArgumentNullException>("hash", () => algorithm.VerifyHash(null, null));
 
         public virtual void VerifyHashNullSignatureThrowsArgumentNullException(T algorithm)
-            => Assert.Throws<ArgumentNullException>("signature", () => algorithm.VerifyHash(new byte[0], null));
+            => Assert.Throws<ArgumentNullException>("signature", () => algorithm.VerifyHash(Array.Empty<byte>(), null));
     }
 }

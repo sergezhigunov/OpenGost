@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Buffer;
 
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
-    using static Buffer;
-
     internal static class AsnUtils
     {
         internal static byte[] DecodeOctetString(AsnEncodedData encodedData)
         {
-            if (encodedData == null) throw new ArgumentNullException(nameof(encodedData));
+            if (encodedData == null)
+                throw new ArgumentNullException(nameof(encodedData));
 
             var rawData = encodedData.RawData;
             var position = 0;
@@ -25,7 +25,8 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
         internal static AsnEncodedDataCollection DecodeSequence(AsnEncodedData encodedData)
         {
-            if (encodedData == null) throw new ArgumentNullException(nameof(encodedData));
+            if (encodedData == null)
+                throw new ArgumentNullException(nameof(encodedData));
 
             var rawData = encodedData.RawData;
             var position = 0;
@@ -43,7 +44,8 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
         internal static string DecodeOidValue(AsnEncodedData encodedData)
         {
-            if (encodedData == null) throw new ArgumentNullException(nameof(encodedData));
+            if (encodedData == null)
+                throw new ArgumentNullException(nameof(encodedData));
 
             var rawData = encodedData.RawData;
             var position = 0;
@@ -72,7 +74,8 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
         internal static AsnTag GetAsnTag(AsnEncodedData encodedData)
         {
-            if (encodedData == null) throw new ArgumentNullException(nameof(encodedData));
+            if (encodedData == null)
+                throw new ArgumentNullException(nameof(encodedData));
 
             var position = 0;
             return ReadTag(encodedData.RawData, ref position);

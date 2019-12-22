@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Security.Cryptography;
 using Xunit;
+using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConstants;
 
     public class GostECDsa256ManagedTests : GostECDsaTest<GostECDsa256Managed>
     {

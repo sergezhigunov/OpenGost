@@ -4,18 +4,16 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Threading;
-using OpenGost.Security.Cryptography.Properties;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptographyStrings;
-
     internal static class CryptoUtils
     {
-        private static RandomNumberGenerator s_randomNumberGenerator;
+        private static RandomNumberGenerator _randomNumberGenerator;
 
         internal static RandomNumberGenerator StaticRandomNumberGenerator
-            => LazyInitializer.EnsureInitialized(ref s_randomNumberGenerator, () => new RNGCryptoServiceProvider());
+            => LazyInitializer.EnsureInitialized(ref _randomNumberGenerator, () => new RNGCryptoServiceProvider());
 
         internal static byte[] GenerateRandomBytes(int size)
         {

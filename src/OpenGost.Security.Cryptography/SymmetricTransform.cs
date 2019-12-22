@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using OpenGost.Security.Cryptography.Properties;
+using static System.Buffer;
+using static OpenGost.Security.Cryptography.CryptoUtils;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static Buffer;
-    using static CryptographyStrings;
-    using static CryptoUtils;
-
     /// <summary>
     /// Represents the abstract class from which implementations of symmetric algorithm
     /// (<see cref="SymmetricAlgorithm"/>) can derive.
@@ -96,8 +94,10 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         protected SymmetricTransform(byte[] key, byte[] iv, int blockSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (blockSize <= 0) throw new ArgumentOutOfRangeException(nameof(key), ArgumentOutOfRangeNeedPositiveNum);
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
+            if (blockSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(key), ArgumentOutOfRangeNeedPositiveNum);
 
             _transformMode = transformMode;
             _blockSize = blockSize / 8;
@@ -112,7 +112,8 @@ namespace OpenGost.Security.Cryptography
                 case CipherMode.CBC:
                 case CipherMode.CFB:
                 case CipherMode.OFB:
-                    if (iv == null) throw new ArgumentNullException(nameof(iv));
+                    if (iv == null)
+                        throw new ArgumentNullException(nameof(iv));
                     _rgbIV = (byte[])iv.Clone();
                     _stateBuffer = new byte[_rgbIV.Length];
                     _tempBuffer = new byte[_blockSize];
@@ -222,13 +223,20 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
         {
-            if (inputBuffer == null) throw new ArgumentNullException(nameof(inputBuffer));
-            if (outputBuffer == null) throw new ArgumentNullException(nameof(outputBuffer));
-            if (inputOffset < 0) throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
-            if (outputOffset < 0) throw new ArgumentOutOfRangeException(nameof(outputOffset), outputOffset, ArgumentOutOfRangeNeedNonNegNum);
-            if (inputCount <= 0) throw new ArgumentOutOfRangeException(nameof(inputCount), inputCount, ArgumentOutOfRangeNeedPositiveNum);
-            if (inputBuffer.Length - inputCount < inputOffset) throw new ArgumentException(ArgumentInvalidOffLen);
-            if (inputCount % InputBlockSize != 0) throw new CryptographicException(CryptographicInvalidDataSize);
+            if (inputBuffer == null)
+                throw new ArgumentNullException(nameof(inputBuffer));
+            if (outputBuffer == null)
+                throw new ArgumentNullException(nameof(outputBuffer));
+            if (inputOffset < 0)
+                throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
+            if (outputOffset < 0)
+                throw new ArgumentOutOfRangeException(nameof(outputOffset), outputOffset, ArgumentOutOfRangeNeedNonNegNum);
+            if (inputCount <= 0)
+                throw new ArgumentOutOfRangeException(nameof(inputCount), inputCount, ArgumentOutOfRangeNeedPositiveNum);
+            if (inputBuffer.Length - inputCount < inputOffset)
+                throw new ArgumentException(ArgumentInvalidOffLen);
+            if (inputCount % InputBlockSize != 0)
+                throw new CryptographicException(CryptographicInvalidDataSize);
 
             EnsureKeyExpanded();
 
@@ -295,10 +303,14 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
-            if (inputBuffer == null) throw new ArgumentNullException(nameof(inputBuffer));
-            if (inputOffset < 0) throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
-            if (inputCount < 0) throw new ArgumentOutOfRangeException(nameof(inputCount), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
-            if (inputBuffer.Length - inputCount < inputOffset) throw new ArgumentException(ArgumentInvalidOffLen);
+            if (inputBuffer == null)
+                throw new ArgumentNullException(nameof(inputBuffer));
+            if (inputOffset < 0)
+                throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
+            if (inputCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(inputCount), inputOffset, ArgumentOutOfRangeNeedNonNegNum);
+            if (inputBuffer.Length - inputCount < inputOffset)
+                throw new ArgumentException(ArgumentInvalidOffLen);
 
             EnsureKeyExpanded();
 
@@ -591,8 +603,7 @@ namespace OpenGost.Security.Cryptography
                 return inputCount;
 
             // this is the last block, remove the padding.
-            var padSize = 0;
-
+            int padSize;
             switch (_paddingMode)
             {
                 case PaddingMode.None:

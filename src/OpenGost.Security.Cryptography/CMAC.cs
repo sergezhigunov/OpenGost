@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using OpenGost.Security.Cryptography.Properties;
+using static System.Buffer;
+using static System.Security.Cryptography.CryptoConfig;
+using static OpenGost.Security.Cryptography.CryptoConstants;
+using static OpenGost.Security.Cryptography.CryptoUtils;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static Buffer;
-    using static CryptoConfig;
-    using static CryptoConstants;
-    using static CryptoUtils;
-    using static CryptographyStrings;
-
     /// <summary>
     /// Represents the abstract class from which implementations of Cipher-based Message Authentication Code
     /// (<see cref="CMAC"/>) can derive.
@@ -21,11 +19,11 @@ namespace OpenGost.Security.Cryptography
         #region Constants
 
         private static readonly byte[]
-            s_64BitIrreduciblePolynomial =
+            _irreduciblePolynomial64 =
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1B
             },
-            s_128BitIrreduciblePolynomial =
+            _irreduciblePolynomial128 =
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x87
             };
@@ -59,10 +57,11 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public override byte[] Key
         {
-            get { return (byte[])KeyValue.Clone(); }
+            get => (byte[])KeyValue.Clone();
             set
             {
-                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
                 if (_hashing)
                     throw new CryptographicException(CryptographicSymmetricAlgorithmKeySet);
 
@@ -88,7 +87,7 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public string SymmetricAlgorithmName
         {
-            get { return _symmetricAlgorithmName; }
+            get => _symmetricAlgorithmName;
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -320,10 +319,10 @@ namespace OpenGost.Security.Cryptography
             switch (blockSize)
             {
                 case 64:
-                    return s_64BitIrreduciblePolynomial;
+                    return _irreduciblePolynomial64;
 
                 case 128:
-                    return s_128BitIrreduciblePolynomial;
+                    return _irreduciblePolynomial128;
 
                 default:
                     throw new CryptographicException(CryptographicInvalidBlockSize);

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using static System.Security.Cryptography.CryptoConfig;
+using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConfig;
-    using static CryptoConstants;
-
     /// <summary>
     /// Provides an abstract base class that encapsulates the GOST
     /// Elliptic Curve Digital Signature Algorithm (GOST R 34.10-2012).
@@ -117,7 +116,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public sealed override void FromXmlString(string xmlString)
         {
-            if (xmlString == null) throw new ArgumentNullException(nameof(xmlString));
+            if (xmlString == null)
+                throw new ArgumentNullException(nameof(xmlString));
 
             var parameters = ECParametersFormatter.FromXml(xmlString, KeySize / 8);
             ImportParameters(parameters);

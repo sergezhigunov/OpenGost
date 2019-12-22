@@ -1,11 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using static System.Security.Cryptography.CryptoConfig;
+using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConfig;
-    using static CryptoConstants;
-
     /// <summary>
     /// Provides an abstract base class that encapsulates the 512-bit version of
     /// the <see cref="GostECDsa"/> algorithm.
@@ -13,7 +12,7 @@ namespace OpenGost.Security.Cryptography
     [ComVisible(true)]
     public abstract class GostECDsa512 : GostECDsa
     {
-        private static readonly KeySizes[] s_legalKeySizes = { new KeySizes(512, 512, 0) };
+        private static readonly KeySizes[] _legalKeySizes = { new KeySizes(512, 512, 0) };
 
         /// <summary>
         /// Gets the name of the signature algorithm.
@@ -28,7 +27,7 @@ namespace OpenGost.Security.Cryptography
         /// </summary>
         protected GostECDsa512()
         {
-            LegalKeySizesValue = s_legalKeySizes;
+            LegalKeySizesValue = _legalKeySizes;
             KeySizeValue = 512;
         }
 

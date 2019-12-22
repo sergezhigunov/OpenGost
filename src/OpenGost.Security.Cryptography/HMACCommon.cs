@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Security.Cryptography;
-using OpenGost.Security.Cryptography.Properties;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptographyStrings;
-
     internal sealed class HMACCommon : IDisposable
     {
         private readonly int _blockSize;
-        private HashAlgorithm _hash1;
-        private HashAlgorithm _hash2;
+        private readonly HashAlgorithm _hash1;
+        private readonly HashAlgorithm _hash2;
         private byte[] _inner;
         private byte[] _outer;
         private bool _hashing = false;

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
+using static System.Buffer;
+using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static Buffer;
-    using static CryptoUtils;
-
     /// <summary>
     /// Performs a cryptographic transformation of data using the <see cref="Grasshopper"/>
     /// algorithm. This class cannot be inherited.
@@ -21,7 +19,7 @@ namespace OpenGost.Security.Cryptography
         #region Constants
 
         private static readonly byte[]
-            s_forwardSubstitutionBox =
+            _forwardSubstitutionBox =
             {
                 0xFC, 0xEE, 0xDD, 0x11, 0xCF, 0x6E, 0x31, 0x16, 0xFB, 0xC4, 0xFA, 0xDA, 0x23, 0xC5, 0x04, 0x4D,
                 0xE9, 0x77, 0xF0, 0xDB, 0x93, 0x2E, 0x99, 0xBA, 0x17, 0x36, 0xF1, 0xBB, 0x14, 0xCD, 0x5F, 0xC1,
@@ -40,7 +38,7 @@ namespace OpenGost.Security.Cryptography
                 0x20, 0x71, 0x67, 0xA4, 0x2D, 0x2B, 0x09, 0x5B, 0xCB, 0x9B, 0x25, 0xD0, 0xBE, 0xE5, 0x6C, 0x52,
                 0x59, 0xA6, 0x74, 0xD2, 0xE6, 0xF4, 0xB4, 0xC0, 0xD1, 0x66, 0xAF, 0xC2, 0x39, 0x4B, 0x63, 0xB6,
             },
-            s_backwardSubstitutionBox =
+            _backwardSubstitutionBox =
             {
                 0xA5, 0x2D, 0x32, 0x8F, 0x0E, 0x30, 0x38, 0xC0, 0x54, 0xE6, 0x9E, 0x39, 0x55, 0x7E, 0x52, 0x91,
                 0x64, 0x03, 0x57, 0x5A, 0x1C, 0x60, 0x07, 0x18, 0x21, 0x72, 0xA8, 0xD1, 0x29, 0xC6, 0xA4, 0x3F,
@@ -65,15 +63,15 @@ namespace OpenGost.Security.Cryptography
         #region Lookup tables
 
         private static readonly byte[]
-            s_lookupTable16 = InitializeLookupTable(16),
-            s_lookupTable32 = InitializeLookupTable(32),
-            s_lookupTable133 = InitializeLookupTable(133),
-            s_lookupTable148 = InitializeLookupTable(148),
-            s_lookupTable192 = InitializeLookupTable(192),
-            s_lookupTable194 = InitializeLookupTable(194),
-            s_lookupTable251 = InitializeLookupTable(251);
+            _lookup16 = InitializeLookupTable(16),
+            _lookup32 = InitializeLookupTable(32),
+            _lookup133 = InitializeLookupTable(133),
+            _lookup148 = InitializeLookupTable(148),
+            _lookup192 = InitializeLookupTable(192),
+            _lookup194 = InitializeLookupTable(194),
+            _lookup251 = InitializeLookupTable(251);
 
-        private static readonly byte[][][] s_iterationConstants = InitializeIterationConstants();
+        private static readonly byte[][][] _iterationConstants = InitializeIterationConstants();
 
         #endregion
 
@@ -110,14 +108,14 @@ namespace OpenGost.Security.Cryptography
             {
                 var t = stackalloc byte[16];
 
-                fixed (byte* s = s_forwardSubstitutionBox,
-                    t16 = s_lookupTable16,
-                    t32 = s_lookupTable32,
-                    t133 = s_lookupTable133,
-                    t148 = s_lookupTable148,
-                    t192 = s_lookupTable192,
-                    t194 = s_lookupTable194,
-                    t251 = s_lookupTable251)
+                fixed (byte* s = _forwardSubstitutionBox,
+                    t16 = _lookup16,
+                    t32 = _lookup32,
+                    t133 = _lookup133,
+                    t148 = _lookup148,
+                    t192 = _lookup192,
+                    t194 = _lookup194,
+                    t251 = _lookup251)
                 {
                     for (var i = 0; i < 4; i++)
                     {
@@ -128,7 +126,7 @@ namespace OpenGost.Security.Cryptography
                         {
                             for (var j = 0; j < 8; j++)
                             {
-                                fixed (byte* c = s_iterationConstants[i][j])
+                                fixed (byte* c = _iterationConstants[i][j])
                                     Xor(c, l, t);
 
                                 Substitute(s, t);
@@ -218,14 +216,14 @@ namespace OpenGost.Security.Cryptography
             fixed (byte* k = keyExpansion[0])
                 Xor(input, k, output);
 
-            fixed (byte* s = s_forwardSubstitutionBox,
-                t16 = s_lookupTable16,
-                t32 = s_lookupTable32,
-                t133 = s_lookupTable133,
-                t148 = s_lookupTable148,
-                t192 = s_lookupTable192,
-                t194 = s_lookupTable194,
-                t251 = s_lookupTable251)
+            fixed (byte* s = _forwardSubstitutionBox,
+                t16 = _lookup16,
+                t32 = _lookup32,
+                t133 = _lookup133,
+                t148 = _lookup148,
+                t192 = _lookup192,
+                t194 = _lookup194,
+                t251 = _lookup251)
             {
                 for (var i = 1; i < 10; i++)
                 {
@@ -244,14 +242,14 @@ namespace OpenGost.Security.Cryptography
             fixed (byte* k = keyExpansion[9])
                 Xor(input, k, output);
 
-            fixed (byte* s = s_backwardSubstitutionBox,
-                t16 = s_lookupTable16,
-                t32 = s_lookupTable32,
-                t133 = s_lookupTable133,
-                t148 = s_lookupTable148,
-                t192 = s_lookupTable192,
-                t194 = s_lookupTable194,
-                t251 = s_lookupTable251)
+            fixed (byte* s = _backwardSubstitutionBox,
+                t16 = _lookup16,
+                t32 = _lookup32,
+                t133 = _lookup133,
+                t148 = _lookup148,
+                t192 = _lookup192,
+                t194 = _lookup194,
+                t251 = _lookup251)
             {
                 for (var i = 8; i >= 0; i--)
                 {
@@ -570,13 +568,13 @@ namespace OpenGost.Security.Cryptography
             unsafe
             {
                 fixed (byte*
-                    t16 = s_lookupTable16,
-                    t32 = s_lookupTable32,
-                    t133 = s_lookupTable133,
-                    t148 = s_lookupTable148,
-                    t192 = s_lookupTable192,
-                    t194 = s_lookupTable194,
-                    t251 = s_lookupTable251)
+                    t16 = _lookup16,
+                    t32 = _lookup32,
+                    t133 = _lookup133,
+                    t148 = _lookup148,
+                    t192 = _lookup192,
+                    t194 = _lookup194,
+                    t251 = _lookup251)
                 {
                     for (var i = 0; i < 4; i++)
                     {

@@ -7,13 +7,15 @@ namespace OpenGost.Security.Cryptography
     [ExcludeFromCodeCoverage]
     internal static class HexUtils
     {
-        private static readonly string HexAlphabet = "0123456789abcdef";
+        private const string HexAlphabet = "0123456789abcdef";
 
         internal static byte[] HexToByteArray(this string hexString)
         {
-            if (hexString == null) throw new ArgumentNullException(nameof(hexString));
+            if (hexString == null)
+                throw new ArgumentNullException(nameof(hexString));
             var hexStringLength = hexString.Length;
-            if (hexStringLength % 2 != 0) throw CreateTextIncorrectFormatException(null);
+            if (hexStringLength % 2 != 0)
+                throw CreateTextIncorrectFormatException(null);
 
             var retval = new byte[hexStringLength / 2];
             for (int i = 0, j = 0; i < hexStringLength; i += 2, j++)
@@ -34,7 +36,8 @@ namespace OpenGost.Security.Cryptography
 
         internal static string ToHexString(this byte[] bytes)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+            if (bytes == null)
+                throw new ArgumentNullException(nameof(bytes));
 
             var builder = new StringBuilder(bytes.Length * 2);
 

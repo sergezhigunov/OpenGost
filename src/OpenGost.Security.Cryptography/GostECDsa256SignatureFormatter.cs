@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using OpenGost.Security.Cryptography.Properties;
+using static System.Security.Cryptography.CryptoConfig;
+using static OpenGost.Security.Cryptography.CryptoConstants;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConfig;
-    using static CryptoConstants;
-    using static CryptographyStrings;
-
     /// <summary>
     /// Creates a <see cref="GostECDsa256"/> signature.
     /// </summary>
@@ -37,7 +35,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public GostECDsa256SignatureFormatter(AsymmetricAlgorithm key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
 
             _key = (GostECDsa256)key;
         }
@@ -61,11 +60,10 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public override byte[] CreateSignature(byte[] rgbHash)
         {
-            if (rgbHash == null) throw new ArgumentNullException(nameof(rgbHash));
-
+            if (rgbHash == null)
+                throw new ArgumentNullException(nameof(rgbHash));
             if (_oid == null)
                 throw new CryptographicUnexpectedOperationException(CryptographicMissingOid);
-
             if (_key == null)
                 throw new CryptographicUnexpectedOperationException(CryptographicMissingKey);
 
@@ -87,8 +85,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public override void SetHashAlgorithm(string strName)
         {
-            if (strName == null) throw new ArgumentNullException(nameof(strName));
-
+            if (strName == null)
+                throw new ArgumentNullException(nameof(strName));
             if (MapNameToOID(strName) != _oid)
                 throw new CryptographicUnexpectedOperationException(CryptographicInvalidOperation);
         }
@@ -104,7 +102,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public override void SetKey(AsymmetricAlgorithm key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
 
             _key = (GostECDsa256)key;
         }

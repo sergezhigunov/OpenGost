@@ -3,12 +3,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
+using static System.Buffer;
+using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static Buffer;
-    using static CryptoUtils;
-
     /// <summary>
     /// Computes the <see cref="Streebog512"/> hash for the input data using the managed implementation. 
     /// </summary>
@@ -17,7 +16,7 @@ namespace OpenGost.Security.Cryptography
     {
         #region Constants
 
-        private static readonly byte[][] s_keyExpansionTable =
+        private static readonly byte[][] _keyExpansionTable =
         {
             new byte[]
             {
@@ -107,7 +106,7 @@ namespace OpenGost.Security.Cryptography
         };
 
         private static readonly byte[]
-            s_backwardSubstitutionBox =
+            _backwardSubstitutionBox =
             {
                 0xA5, 0x2D, 0x32, 0x8F, 0x0E, 0x30, 0x38, 0xC0, 0x54, 0xE6, 0x9E, 0x39, 0x55, 0x7E, 0x52, 0x91,
                 0x64, 0x03, 0x57, 0x5A, 0x1C, 0x60, 0x07, 0x18, 0x21, 0x72, 0xA8, 0xD1, 0x29, 0xC6, 0xA4, 0x3F,
@@ -126,9 +125,9 @@ namespace OpenGost.Security.Cryptography
                 0x90, 0xD0, 0x24, 0x34, 0xCB, 0xED, 0xF4, 0xCE, 0x99, 0x10, 0x44, 0x40, 0x92, 0x3A, 0x01, 0x26,
                 0x12, 0x1A, 0x48, 0x68, 0xF5, 0x81, 0x8B, 0xC7, 0xD6, 0x20, 0x0A, 0x08, 0x00, 0x4C, 0xD7, 0x74,
             },
-            s_iv = new byte[64];
+            _defaultIV = new byte[64];
 
-        private static readonly ulong[] s_linearTransformTable =
+        private static readonly ulong[] _linearTransformTable =
         {
             0x8e20faa72ba0b470, 0x47107ddd9b505a38, 0xad08b0e0c3282d1c, 0xd8045870ef14980e,
             0x6c022c38f90a4c07, 0x3601161cf205268d, 0x1b8e0b0e798c13c8, 0x83478b07b2468764,
@@ -153,14 +152,14 @@ namespace OpenGost.Security.Cryptography
         #region Lookup tables
 
         private static readonly ulong[]
-            s_lookupTable0 = InitializeLookupTable(0),
-            s_lookupTable1 = InitializeLookupTable(1),
-            s_lookupTable2 = InitializeLookupTable(2),
-            s_lookupTable3 = InitializeLookupTable(3),
-            s_lookupTable4 = InitializeLookupTable(4),
-            s_lookupTable5 = InitializeLookupTable(5),
-            s_lookupTable6 = InitializeLookupTable(6),
-            s_lookupTable7 = InitializeLookupTable(7);
+            _lookup0 = InitializeLookupTable(0),
+            _lookup1 = InitializeLookupTable(1),
+            _lookup2 = InitializeLookupTable(2),
+            _lookup3 = InitializeLookupTable(3),
+            _lookup4 = InitializeLookupTable(4),
+            _lookup5 = InitializeLookupTable(5),
+            _lookup6 = InitializeLookupTable(6),
+            _lookup7 = InitializeLookupTable(7);
 
         #endregion
 
@@ -177,7 +176,7 @@ namespace OpenGost.Security.Cryptography
         /// Initializes a new instance of the <see cref="Streebog512Managed"/> class.
         /// </summary>
         public Streebog512Managed()
-            : this(s_iv)
+            : this(_defaultIV)
         { }
 
         internal Streebog512Managed(byte[] iv)
@@ -282,8 +281,8 @@ namespace OpenGost.Security.Cryptography
                     Xor(state, _n, tempKey);
 
                     fixed (ulong*
-                        t0 = s_lookupTable0, t1 = s_lookupTable1, t2 = s_lookupTable2, t3 = s_lookupTable3,
-                        t4 = s_lookupTable4, t5 = s_lookupTable5, t6 = s_lookupTable6, t7 = s_lookupTable7)
+                        t0 = _lookup0, t1 = _lookup1, t2 = _lookup2, t3 = _lookup3,
+                        t4 = _lookup4, t5 = _lookup5, t6 = _lookup6, t7 = _lookup7)
                     {
                         Transform(tempKey, t0, t1, t2, t3, t4, t5, t6, t7);
                         Encrypt(tempKey, b, tempBuffer, t0, t1, t2, t3, t4, t5, t6, t7);
@@ -315,8 +314,8 @@ namespace OpenGost.Security.Cryptography
                     Copy(state, tempKey);
 
                     fixed (ulong*
-                        t0 = s_lookupTable0, t1 = s_lookupTable1, t2 = s_lookupTable2, t3 = s_lookupTable3,
-                        t4 = s_lookupTable4, t5 = s_lookupTable5, t6 = s_lookupTable6, t7 = s_lookupTable7)
+                        t0 = _lookup0, t1 = _lookup1, t2 = _lookup2, t3 = _lookup3,
+                        t4 = _lookup4, t5 = _lookup5, t6 = _lookup6, t7 = _lookup7)
                     {
                         Transform(tempKey, t0, t1, t2, t3, t4, t5, t6, t7);
                         Encrypt(tempKey, n, tempBuffer, t0, t1, t2, t3, t4, t5, t6, t7);
@@ -346,7 +345,7 @@ namespace OpenGost.Security.Cryptography
             for (var i = 0; i < 12; i++)
             {
                 Transform(result, t0, t1, t2, t3, t4, t5, t6, t7);
-                fixed (byte* keyExpansion = s_keyExpansionTable[i])
+                fixed (byte* keyExpansion = _keyExpansionTable[i])
                     Xor(key, keyExpansion);
                 Transform(key, t0, t1, t2, t3, t4, t5, t6, t7);
                 Xor(result, key);
@@ -442,8 +441,8 @@ namespace OpenGost.Security.Cryptography
             for (var b = 0; b < 256; b++)
                 for (var j = 0; j < 8; j++)
                     if (((b << j) & 0x80) == 0x80)
-                        lookupTable[s_backwardSubstitutionBox[b]] ^=
-                            s_linearTransformTable[(7 - tableNumber) * 8 + j];
+                        lookupTable[_backwardSubstitutionBox[b]] ^=
+                            _linearTransformTable[(7 - tableNumber) * 8 + j];
 
             return lookupTable;
         }

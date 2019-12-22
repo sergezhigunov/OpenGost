@@ -3,12 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using Xunit;
+using static System.Buffer;
+using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static Buffer;
-    using static CryptoUtils;
-
     public class SymmetricTransformTests
     {
         protected const int BlockSizeBits = 64;
@@ -344,16 +343,16 @@ namespace OpenGost.Security.Cryptography
         private class SimpleSymmetricAlgorithm : SymmetricAlgorithm
         {
             private static readonly KeySizes[]
-                s_legalBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) },
-                s_legalKeySizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+                _legalBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) },
+                _legalKeySizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
 
             public SimpleSymmetricAlgorithm()
             {
                 KeySizeValue = BlockSizeBits;
                 BlockSizeValue = BlockSizeBits;
                 FeedbackSizeValue = BlockSizeValue;
-                LegalBlockSizesValue = s_legalBlockSizes;
-                LegalKeySizesValue = s_legalKeySizes;
+                LegalBlockSizesValue = _legalBlockSizes;
+                LegalKeySizesValue = _legalKeySizes;
             }
 
             public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)

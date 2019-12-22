@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using static OpenGost.Security.Cryptography.CryptoConstants;
+using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConstants;
-    using static CryptoUtils;
-
     /// <summary>
     /// Computes a Hash-based Message Authentication Code (HMAC)
     /// by using the <see cref="Streebog512"/> hash function.

@@ -1,11 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using static System.Security.Cryptography.CryptoConfig;
+using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConfig;
-    using static CryptoConstants;
-
     /// <summary>
     /// Computes the <see cref="Streebog512"/> hash for the input data. 
     /// </summary>

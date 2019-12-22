@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using OpenGost.Security.Cryptography.Properties;
+using static System.Security.Cryptography.CryptoConfig;
+using static OpenGost.Security.Cryptography.CryptoConstants;
+using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConfig;
-    using static CryptoConstants;
-    using static CryptographyStrings;
-
     /// <summary>
     /// Verifies a <see cref="GostECDsa256"/> signature.
     /// </summary>
@@ -37,7 +35,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public GostECDsa256SignatureDeformatter(AsymmetricAlgorithm key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
 
             _key = (GostECDsa256)key;
         }
@@ -57,8 +56,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public override void SetHashAlgorithm(string strName)
         {
-            if (strName == null) throw new ArgumentNullException(nameof(strName));
-
+            if (strName == null)
+                throw new ArgumentNullException(nameof(strName));
             if (MapNameToOID(strName) != _oid)
                 throw new CryptographicUnexpectedOperationException(CryptographicInvalidOperation);
         }
@@ -74,7 +73,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public override void SetKey(AsymmetricAlgorithm key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
 
             _key = (GostECDsa256)key;
         }
@@ -102,9 +102,10 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature)
         {
-            if (rgbHash == null) throw new ArgumentNullException(nameof(rgbHash));
-            if (rgbSignature == null) throw new ArgumentNullException(nameof(rgbSignature));
-
+            if (rgbHash == null)
+                throw new ArgumentNullException(nameof(rgbHash));
+            if (rgbSignature == null)
+                throw new ArgumentNullException(nameof(rgbSignature));
             if (_key == null)
                 throw new CryptographicUnexpectedOperationException(CryptographicMissingKey);
 

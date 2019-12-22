@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using static OpenGost.Security.Cryptography.CryptoConstants;
+using static OpenGost.Security.Cryptography.CryptoUtils;
+using static OpenGost.Security.Cryptography.ECCurveOidMap;
+using static OpenGost.Security.Cryptography.X509Certificates.AsnUtils;
 
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
-    using static AsnUtils;
-    using static CryptoConstants;
-    using static CryptoUtils;
-    using static ECCurveOidMap;
-
     /// <summary>
     /// Provides extension methods for retrieving <see cref="GostECDsa"/> implementations for the
     /// public and private keys of a <see cref="X509Certificate2"/> certificate.
@@ -34,7 +33,8 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         /// </exception>
         public static GostECDsa GetECDsaPublicKey(this X509Certificate2 certificate)
         {
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
 
             if (!IsGostECDsa(certificate))
                 return null;
@@ -86,7 +86,8 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         /// </exception>
         public static GostECDsa GetECDsaPrivateKey(this X509Certificate2 certificate)
         {
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
 
             if (!certificate.HasPrivateKey || !IsGostECDsa(certificate))
                 return null;

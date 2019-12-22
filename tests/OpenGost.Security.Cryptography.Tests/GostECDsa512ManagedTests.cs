@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Security.Cryptography;
 using Xunit;
+using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConstants;
-
     public class GostECDsa512ManagedTests : GostECDsaTest<GostECDsa512Managed>
     {
         #region 512-bit test domain parameters as described in GOST 34.10-2012

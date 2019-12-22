@@ -5,11 +5,10 @@ using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.Schema;
 using Xunit;
+using static OpenGost.Security.Cryptography.ECHelper;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static ECHelper;
-
     public class ECParametersFormatterTests
     {
         [ExcludeFromCodeCoverage]

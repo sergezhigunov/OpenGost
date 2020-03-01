@@ -1,12 +1,10 @@
-root = true
-
 [*]
+insert_final_newline = true
 indent_style = space
 trim_trailing_whitespace = true
 
 [*.{cs,csx,vb,vbx}]
 indent_size = 4
-insert_final_newline = true
 charset = utf-8-bom
 
 [*.{cs,vb}]
@@ -36,46 +34,39 @@ dotnet_style_prefer_conditional_expression_over_assignment = true:silent
 dotnet_style_prefer_conditional_expression_over_return = true:silent
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 dotnet_naming_style.camel_case_style.capitalization = camel_case
-dotnet_naming_style.camel_case_with_underscore_prefix_style.capitalization = camel_case
-dotnet_naming_style.camel_case_with_underscore_prefix_style.required_prefix = _
-dotnet_naming_style.pascal_case_with_I_prefix_style.capitalization = pascal_case
-dotnet_naming_style.pascal_case_with_I_prefix_style.required_prefix = I
-dotnet_naming_style.pascal_case_with_T_prefix_style.capitalization = pascal_case
-dotnet_naming_style.pascal_case_with_T_prefix_style.required_prefix = T
-dotnet_naming_rule.pascal_case_naming.severity = suggestion
-dotnet_naming_rule.pascal_case_naming.symbols = pascal_case_symbols
-dotnet_naming_rule.pascal_case_naming.style = pascal_case_style
-dotnet_naming_symbols.pascal_case_symbols.applicable_kinds = namespace,class,struct,enum,property,method,event,delegate,local_function
-dotnet_naming_symbols.pascal_case_symbols.applicable_accessibilities = *
-dotnet_naming_rule.interface_naming.severity = suggestion
-dotnet_naming_rule.interface_naming.symbols = interface_symbols
-dotnet_naming_rule.interface_naming.style = pascal_case_with_I_prefix_style
-dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
-dotnet_naming_symbols.interface_symbols.applicable_accessibilities = *
-dotnet_naming_rule.type_parameter_naming.severity = suggestion
-dotnet_naming_rule.type_parameter_naming.symbols = type_parameter_symbols
-dotnet_naming_rule.type_parameter_naming.style = pascal_case_with_T_prefix_style
-dotnet_naming_symbols.type_parameter_symbols.applicable_kinds = type_parameter
-dotnet_naming_symbols.type_parameter_symbols.applicable_accessibilities = *
-dotnet_naming_rule.constant_fields_naming.severity = suggestion
-dotnet_naming_rule.constant_fields_naming.symbols = constant_field_symbols
-dotnet_naming_rule.constant_fields_naming.style = pascal_case_style
-dotnet_naming_symbols.constant_field_symbols.applicable_kinds = field
-dotnet_naming_symbols.constant_field_symbols.applicable_accessibilities = *
-dotnet_naming_symbols.constant_field_symbols.required_modifiers = const
-dotnet_naming_rule.public_field_naming.severity = suggestion
-dotnet_naming_rule.public_field_naming.symbols = public_field_symbols
-dotnet_naming_rule.public_field_naming.style = pascal_case_style
-dotnet_naming_symbols.public_field_symbols.applicable_kinds = field
-dotnet_naming_symbols.public_field_symbols.applicable_accessibilities = public,internal,protected,protected_internal
-dotnet_naming_rule.other_field_naming.severity = suggestion
-dotnet_naming_rule.other_field_naming.symbols = other_field_symbols
-dotnet_naming_rule.other_field_naming.style = camel_case_with_underscore_prefix_style
-dotnet_naming_symbols.other_field_symbols.applicable_kinds = field
-dotnet_naming_symbols.other_field_symbols.applicable_accessibilities = *
-dotnet_naming_rule.everything_else_naming.severity = suggestion
-dotnet_naming_rule.everything_else_naming.symbols = everything_else
-dotnet_naming_rule.everything_else_naming.style = camel_case_style
+dotnet_naming_style.camel_case_underscore_style.capitalization = camel_case 
+dotnet_naming_style.camel_case_underscore_style.required_prefix = _
+dotnet_naming_style.pascal_case_type_parameter_style.capitalization = pascal_case 
+dotnet_naming_style.pascal_case_type_parameter_style.required_prefix = T
+dotnet_naming_style.pascal_case_interface_style.capitalization = pascal_case 
+dotnet_naming_style.pascal_case_interface_style.required_prefix = I
+dotnet_naming_rule.pascal_case_symbols.severity = suggestion
+dotnet_naming_rule.pascal_case_symbols.symbols = pascal_case_symbols
+dotnet_naming_rule.pascal_case_symbols.style = pascal_case
+dotnet_naming_symbols.pascal_case_symbols.applicable_kinds = namespace,class,struct,enum,property,method,field,event,delegate,local_function
+dotnet_naming_rule.camel_case_symbols.severity = suggestion
+dotnet_naming_rule.camel_case_symbols.symbols = camel_case_symbols
+dotnet_naming_rule.camel_case_symbols.style = camel_case
+dotnet_naming_symbols.camel_case_symbols.applicable_kinds = parameter,local
+dotnet_naming_rule.interfaces.severity = suggestion
+dotnet_naming_rule.interfaces.symbols = interfaces
+dotnet_naming_rule.interfaces.style = pascal_case_interface_style
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities = *
+dotnet_naming_rule.type_parameters.severity = suggestion
+dotnet_naming_rule.type_parameters.symbols = type_parameters
+dotnet_naming_rule.type_parameters.style = pascal_case_type_parameter_style
+dotnet_naming_symbols.type_parameters.applicable_kinds = type_parameter
+dotnet_naming_rule.constant_fields.severity = suggestion
+dotnet_naming_rule.constant_fields.symbols = constant_fields
+dotnet_naming_rule.constant_fields.style = pascal_case_style
+dotnet_naming_symbols.constant_fields.applicable_kinds = field
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+dotnet_naming_rule.private_fields.severity = suggestion
+dotnet_naming_rule.private_fields.symbols  = private_fields
+dotnet_naming_rule.private_fields.style    = camel_case_underscore_style
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
 
 [*.cs]
 csharp_style_var_for_built_in_types = true:silent

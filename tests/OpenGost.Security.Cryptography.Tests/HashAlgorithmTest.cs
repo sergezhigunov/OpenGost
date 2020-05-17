@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.Text;
 using Xunit;
 
 namespace OpenGost.Security.Cryptography
@@ -7,12 +6,11 @@ namespace OpenGost.Security.Cryptography
     public abstract class HashAlgorithmTest<T>
         where T : HashAlgorithm, new()
     {
-        protected void Verify(string input, Encoding inputEncoding, string expectedHexadecimal)
-            => Verify(inputEncoding.GetBytes(input), expectedHexadecimal);
+        protected void Verify(string input, string expected)
+            => Verify(input.HexToByteArray(), expected.HexToByteArray());
 
-        protected void Verify(byte[] input, string expectedHexadecimal)
+        protected void Verify(byte[] input, byte[] expected)
         {
-            var expected = expectedHexadecimal.HexToByteArray();
             byte[] actual;
 
             using (var hash = new T())

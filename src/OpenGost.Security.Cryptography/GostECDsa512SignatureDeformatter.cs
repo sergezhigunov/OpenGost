@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static System.Security.Cryptography.CryptoConfig;
-using static OpenGost.Security.Cryptography.CryptoConstants;
-using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -21,7 +19,7 @@ namespace OpenGost.Security.Cryptography
         /// </summary>
         public GostECDsa512SignatureDeformatter()
         {
-            _oid = MapNameToOID(Streebog512AlgorithmFullName);
+            _oid = CryptoConfig.MapNameToOID(CryptoConstants.Streebog512AlgorithmFullName);
         }
 
         /// <summary>
@@ -45,7 +43,7 @@ namespace OpenGost.Security.Cryptography
         /// Specifies the hash algorithm for the <see cref="GostECDsa512"/> signature deformatter.
         /// </summary>
         /// <param name="strName">
-        /// The name of the hash algorithm to use for the signature deformatter. 
+        /// The name of the hash algorithm to use for the signature deformatter.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="strName"/> is <see langword="null"/>.
@@ -58,15 +56,15 @@ namespace OpenGost.Security.Cryptography
         {
             if (strName == null)
                 throw new ArgumentNullException(nameof(strName));
-            if (MapNameToOID(strName) != _oid)
-                throw new CryptographicUnexpectedOperationException(CryptographicInvalidOperation);
+            if (CryptoConfig.MapNameToOID(strName) != _oid)
+                throw new CryptographicUnexpectedOperationException(CryptographyStrings.CryptographicInvalidOperation);
         }
 
         /// <summary>
         /// Specifies the key to be used for the <see cref="GostECDsa512"/> signature deformatter.
         /// </summary>
         /// <param name="key">
-        /// The instance of <see cref="GostECDsa512"/> that holds the key. 
+        /// The instance of <see cref="GostECDsa512"/> that holds the key.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="key"/> is <see langword="null"/>.
@@ -86,7 +84,7 @@ namespace OpenGost.Security.Cryptography
         /// The data signed with <paramref name="rgbSignature"/>.
         /// </param>
         /// <param name="rgbSignature">
-        /// The signature to be verified for <paramref name="rgbHash"/>. 
+        /// The signature to be verified for <paramref name="rgbHash"/>.
         /// </param>
         /// <returns>
         /// <see langword="true"/> if the signature is valid for the data;
@@ -107,7 +105,7 @@ namespace OpenGost.Security.Cryptography
             if (rgbSignature == null)
                 throw new ArgumentNullException(nameof(rgbSignature));
             if (_key == null)
-                throw new CryptographicUnexpectedOperationException(CryptographicMissingKey);
+                throw new CryptographicUnexpectedOperationException(CryptographyStrings.CryptographicMissingKey);
 
             return _key.VerifyHash(rgbHash, rgbSignature);
         }

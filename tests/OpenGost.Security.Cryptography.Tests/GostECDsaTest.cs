@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
 using Xunit;
-using static OpenGost.Security.Cryptography.CryptoUtils;
-using static OpenGost.Security.Cryptography.ECHelper;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -23,14 +21,14 @@ namespace OpenGost.Security.Cryptography
             exportedParameters = algorithm.ExportParameters(false);
 
             exportedParameters.Validate();
-            AssertEqual(parameters, exportedParameters, false);
+            ECHelper.AssertEqual(parameters, exportedParameters, false);
             Assert.Null(exportedParameters.D);
 
             if (parameters.D != null)
             {
                 exportedParameters = algorithm.ExportParameters(true);
                 exportedParameters.Validate();
-                AssertEqual(parameters, exportedParameters, true);
+                ECHelper.AssertEqual(parameters, exportedParameters, true);
             }
         }
 
@@ -48,7 +46,7 @@ namespace OpenGost.Security.Cryptography
             byte[] hash, signature;
             using (var algorithm = Create(parameters))
             {
-                hash = GenerateRandomBytes(algorithm.KeySize / 8);
+                hash = CryptoUtils.GenerateRandomBytes(algorithm.KeySize / 8);
                 signature = algorithm.SignHash(hash);
             }
 
@@ -69,7 +67,7 @@ namespace OpenGost.Security.Cryptography
             using (var algorithm = Create(xmlString))
                 newParameters = algorithm.ExportParameters(false);
 
-            AssertEqual(parameters, newParameters, false);
+            ECHelper.AssertEqual(parameters, newParameters, false);
         }
 
         public virtual void CheckKeyExchangeAlgorithmProperty()

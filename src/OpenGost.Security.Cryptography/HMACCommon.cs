@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
-using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -29,7 +29,7 @@ namespace OpenGost.Security.Cryptography
         public void ChangeKey(byte[] key)
         {
             if (_hashing)
-                throw new CryptographicException(CryptographicHashKeySet);
+                throw new CryptographicException(CryptographyStrings.CryptographicHashKeySet);
 
             // Perform RFC 2104, section 2 key adjustment.
             if (key.Length > _blockSize)

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static System.Security.Cryptography.CryptoConfig;
-using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -44,7 +42,7 @@ namespace OpenGost.Security.Cryptography
 
         /// <summary>
         /// When overridden in a derived class, verifies a digital signature
-        /// against the specified hash value. 
+        /// against the specified hash value.
         /// </summary>
         /// <param name="hash">
         /// The hash value of a block of data.
@@ -85,7 +83,7 @@ namespace OpenGost.Security.Cryptography
         /// An <see cref="ECParameters"/>.
         /// </returns>
         /// <exception cref="CryptographicException">
-        /// The key cannot be exported. 
+        /// The key cannot be exported.
         /// </exception>
         [ComVisible(false)]
         public abstract ECParameters ExportParameters(bool includePrivateParameters);
@@ -109,10 +107,10 @@ namespace OpenGost.Security.Cryptography
         /// The XML string to use to reconstruct the <see cref="GostECDsa"/> object.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="xmlString"/> parameter is <see langword="null"/>. 
+        /// The <paramref name="xmlString"/> parameter is <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicException">
-        /// The format of the <paramref name="xmlString"/> parameter is not valid. 
+        /// The format of the <paramref name="xmlString"/> parameter is not valid.
         /// </exception>
         public sealed override void FromXmlString(string xmlString)
         {
@@ -128,7 +126,7 @@ namespace OpenGost.Security.Cryptography
         /// <see cref="GostECDsa"/> object.
         /// </summary>
         /// <param name="includePrivateParameters">
-        /// <see langword="true"/> to include private parameters; otherwise, <see langword="false"/>. 
+        /// <see langword="true"/> to include private parameters; otherwise, <see langword="false"/>.
         /// </param>
         /// <returns>
         /// An XML string encoding of the current <see cref="GostECDsa"/> object.
@@ -149,20 +147,20 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         [ComVisible(false)]
         public static new GostECDsa Create()
-            => Create(GostECDsa512AlgorithmFullName);
+            => Create(CryptoConstants.GostECDsa512AlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="GostECDsa"/> algorithm.
         /// </summary>
         /// <param name="algorithmName">
-        /// The name of the specific implementation of <see cref="GostECDsa"/> to be used. 
+        /// The name of the specific implementation of <see cref="GostECDsa"/> to be used.
         /// </param>
         /// <returns>
         /// A new instance of <see cref="GostECDsa"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
         public static new GostECDsa Create(string algorithmName)
-            => (GostECDsa)CreateFromName(algorithmName);
+            => (GostECDsa)CryptoConfig.CreateFromName(algorithmName);
 
         #endregion
     }

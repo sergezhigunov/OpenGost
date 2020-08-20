@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static OpenGost.Security.Cryptography.CryptoConstants;
-using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -42,7 +40,7 @@ namespace OpenGost.Security.Cryptography
         /// class with a randomly generated key.
         /// </summary>
         public HMACStreebog256()
-            : this(GenerateRandomBytes(64))
+            : this(CryptoUtils.GenerateRandomBytes(64))
         { }
 
         /// <summary>
@@ -53,14 +51,14 @@ namespace OpenGost.Security.Cryptography
         /// The secret key for <see cref="HMACStreebog256"/> encryption.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="key"/> parameter is <see langword="null"/>. 
+        /// The <paramref name="key"/> parameter is <see langword="null"/>.
         /// </exception>
         public HMACStreebog256(byte[] key)
         {
             if (key is null)
                 throw new ArgumentNullException(nameof(key));
 
-            _hmacCommon = new HMACCommon(Streebog256AlgorithmFullName, key, BlockSize);
+            _hmacCommon = new HMACCommon(CryptoConstants.Streebog256AlgorithmFullName, key, BlockSize);
             base.Key = _hmacCommon.ActualKey;
             HashName = _hmacCommon.HashName;
             BlockSizeValue = BlockSize;

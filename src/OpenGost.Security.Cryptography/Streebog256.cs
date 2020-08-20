@@ -1,12 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static System.Security.Cryptography.CryptoConfig;
-using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
     /// <summary>
-    /// Computes the <see cref="Streebog256"/> hash for the input data. 
+    /// Computes the <see cref="Streebog256"/> hash for the input data.
     /// </summary>
     [ComVisible(true)]
     public abstract class Streebog256 : HashAlgorithm
@@ -29,20 +27,20 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         [ComVisible(false)]
         public static new Streebog256 Create()
-            => Create(Streebog256AlgorithmFullName);
+            => Create(CryptoConstants.Streebog256AlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Streebog256"/> algorithm.
         /// </summary>
         /// <param name="algorithmName">
-        /// The name of the specific implementation of <see cref="Streebog256"/> to be used. 
+        /// The name of the specific implementation of <see cref="Streebog256"/> to be used.
         /// </param>
         /// <returns>
         /// A new instance of <see cref="Streebog256"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
         public static new Streebog256 Create(string algorithmName)
-            => (Streebog256)CreateFromName(algorithmName);
+            => (Streebog256)CryptoConfig.CreateFromName(algorithmName);
 
         #endregion
     }

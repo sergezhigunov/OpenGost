@@ -1,7 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static System.Security.Cryptography.CryptoConfig;
-using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -20,7 +18,7 @@ namespace OpenGost.Security.Cryptography
         /// <value>
         /// Always &quot;GostECDsa512&quot;.
         /// </value>
-        public override string SignatureAlgorithm => GostECDsa512AlgorithmName;
+        public override string SignatureAlgorithm => CryptoConstants.GostECDsa512AlgorithmName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsa512"/> class.
@@ -41,20 +39,20 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         [ComVisible(false)]
         public static new GostECDsa512 Create()
-            => Create(GostECDsa512AlgorithmFullName);
+            => Create(CryptoConstants.GostECDsa512AlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="GostECDsa512"/> algorithm.
         /// </summary>
         /// <param name="algorithmName">
-        /// The name of the specific implementation of <see cref="GostECDsa512"/> to be used. 
+        /// The name of the specific implementation of <see cref="GostECDsa512"/> to be used.
         /// </param>
         /// <returns>
         /// A new instance of <see cref="GostECDsa512"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
         public static new GostECDsa512 Create(string algorithmName)
-            => (GostECDsa512)CreateFromName(algorithmName);
+            => (GostECDsa512)CryptoConfig.CreateFromName(algorithmName);
 
         #endregion
     }

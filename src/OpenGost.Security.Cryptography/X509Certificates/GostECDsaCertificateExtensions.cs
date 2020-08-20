@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using static OpenGost.Security.Cryptography.CryptoConstants;
-using static OpenGost.Security.Cryptography.CryptoUtils;
-using static OpenGost.Security.Cryptography.ECCurveOidMap;
-using static OpenGost.Security.Cryptography.X509Certificates.AsnUtils;
 
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
@@ -44,11 +40,11 @@ namespace OpenGost.Security.Cryptography.X509Certificates
             GostECDsa result;
             switch (publicKey.EncodedKeyValue.Oid.Value)
             {
-                case GostECDsa256OidValue:
+                case CryptoConstants.GostECDsa256OidValue:
                     result = GostECDsa256.Create();
                     break;
 
-                case GostECDsa512OidValue:
+                case CryptoConstants.GostECDsa512OidValue:
                     result = GostECDsa512.Create();
                     break;
 
@@ -98,7 +94,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         private static bool IsGostECDsa(X509Certificate2 certificate)
         {
             var value = certificate.PublicKey.Oid.Value;
-            if (value != GostECDsa256OidValue && value != GostECDsa512OidValue)
+            if (value != CryptoConstants.GostECDsa256OidValue && value != CryptoConstants.GostECDsa512OidValue)
                 return false;
 
             foreach (var extension in certificate.Extensions)
@@ -125,7 +121,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
         private static ECParameters ReadParameters(PublicKey publicKey)
         {
-            var publicKeyValue = DecodeOctetString(publicKey.EncodedKeyValue);
+            var publicKeyValue = AsnUtils.DecodeOctetString(publicKey.EncodedKeyValue);
             var keySize = publicKeyValue.Length / 2;
             var publicPoint = new ECPoint
             {
@@ -133,22 +129,22 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                 Y = publicKeyValue.Subarray(keySize),
             };
 
-            EraseData(ref publicKeyValue);
+            CryptoUtils.EraseData(ref publicKeyValue);
 
             var curve = default(ECCurve);
 
-            foreach (var item in DecodeSequence(publicKey.EncodedParameters))
+            foreach (var item in AsnUtils.DecodeSequence(publicKey.EncodedParameters))
             {
-                var tag = GetAsnTag(item);
+                var tag = AsnUtils.GetAsnTag(item);
                 if (tag == AsnTag.ObjectIdentifier)
                 {
-                    var oidValue = DecodeOidValue(item);
-                    if (OidValueRegistered(oidValue))
+                    var oidValue = AsnUtils.DecodeOidValue(item);
+                    if (ECCurveOidMap.OidValueRegistered(oidValue))
                     {
                         curve = ECCurve.CreateFromValue(oidValue);
                         continue;
                     }
-                    else if (oidValue == Streebog256OidValue || oidValue == Streebog512OidValue)
+                    else if (oidValue == CryptoConstants.Streebog256OidValue || oidValue == CryptoConstants.Streebog512OidValue)
                         continue;
                     else
                         throw new NotImplementedException();

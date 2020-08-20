@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static OpenGost.Security.Cryptography.CryptoUtils;
-using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -27,7 +26,7 @@ namespace OpenGost.Security.Cryptography
             set
             {
                 if (value < CipherMode.CBC || CipherMode.CFB < value)
-                    throw new CryptographicException(CryptographicInvalidCipherMode);
+                    throw new CryptographicException(CryptographyStrings.CryptographicInvalidCipherMode);
 
                 ModeValue = value;
             }
@@ -78,7 +77,7 @@ namespace OpenGost.Security.Cryptography
         /// </summary>
         public override void GenerateIV()
         {
-            IVValue = GenerateRandomBytes(FeedbackSizeValue / 8);
+            IVValue = CryptoUtils.GenerateRandomBytes(FeedbackSizeValue / 8);
         }
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace OpenGost.Security.Cryptography
         /// </summary>
         public override void GenerateKey()
         {
-            KeyValue = GenerateRandomBytes(KeySizeValue / 8);
+            KeyValue = CryptoUtils.GenerateRandomBytes(KeySizeValue / 8);
         }
     }
 }

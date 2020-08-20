@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
-using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -66,7 +65,7 @@ namespace OpenGost.Security.Cryptography
 
             fixed (uint* keyExpansion = _keyExpansion)
                 fixed (byte* keyPtr = key)
-                    UInt32FromBigEndian(keyExpansion, 8, keyPtr);
+                CryptoUtils.UInt32FromBigEndian(keyExpansion, 8, keyPtr);
         }
 
         /// <summary>
@@ -139,8 +138,8 @@ namespace OpenGost.Security.Cryptography
             {
                 var block = input + inputOffset;
 
-                a0 = UInt32FromBigEndian(block + sizeof(uint));
-                a1 = UInt32FromBigEndian(block);
+                a0 = CryptoUtils.UInt32FromBigEndian(block + sizeof(uint));
+                a1 = CryptoUtils.UInt32FromBigEndian(block);
             }
         }
 
@@ -152,8 +151,8 @@ namespace OpenGost.Security.Cryptography
             {
                 var block = output + outputOffset;
 
-                UInt32ToBigEndian(block, a0);
-                UInt32ToBigEndian(block + sizeof(uint), a1);
+                CryptoUtils.UInt32ToBigEndian(block, a0);
+                CryptoUtils.UInt32ToBigEndian(block + sizeof(uint), a1);
             }
         }
 
@@ -169,7 +168,7 @@ namespace OpenGost.Security.Cryptography
         {
             if (disposing)
             {
-                EraseData(ref _keyExpansion);
+                CryptoUtils.EraseData(ref _keyExpansion);
             }
             base.Dispose(disposing);
         }

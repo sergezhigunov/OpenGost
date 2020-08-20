@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static System.Security.Cryptography.CryptoConfig;
-using static OpenGost.Security.Cryptography.CryptoConstants;
-using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -43,7 +41,7 @@ namespace OpenGost.Security.Cryptography
             set
             {
                 if (value == 0 || value % (BlockSizeValue / 8) != 0)
-                    throw new CryptographicException(CryptographicInvalidFeedbackSize);
+                    throw new CryptographicException(CryptographyStrings.CryptographicInvalidFeedbackSize);
 
                 FeedbackSizeValue = value;
             }
@@ -68,14 +66,14 @@ namespace OpenGost.Security.Cryptography
                 if (value == null)
                     throw new ArgumentNullException(nameof(value));
                 if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0)
-                    throw new CryptographicException(CryptographicInvalidIVSize);
+                    throw new CryptographicException(CryptographyStrings.CryptographicInvalidIVSize);
 
                 FeedbackSize = value.Length;
                 IVValue = (byte[])value.Clone();
             }
         }
 
-        #region Creation factory methods 
+        #region Creation factory methods
 
         /// <summary>
         /// Creates an instance of the default implementation of <see cref="Grasshopper"/> algorithm.
@@ -85,20 +83,20 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         [ComVisible(false)]
         public static new Grasshopper Create()
-            => Create(GrasshopperAlgorithmFullName);
+            => Create(CryptoConstants.GrasshopperAlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Grasshopper"/> algorithm.
         /// </summary>
         /// <param name="algorithmName">
-        /// The name of the specific implementation of <see cref="Grasshopper"/> to be used. 
+        /// The name of the specific implementation of <see cref="Grasshopper"/> to be used.
         /// </param>
         /// <returns>
         /// A new instance of <see cref="Grasshopper"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
         public static new Grasshopper Create(string algorithmName)
-            => (Grasshopper)CreateFromName(algorithmName);
+            => (Grasshopper)CryptoConfig.CreateFromName(algorithmName);
 
         #endregion
     }

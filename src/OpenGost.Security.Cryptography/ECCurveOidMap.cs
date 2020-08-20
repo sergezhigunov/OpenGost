@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using static System.Security.Cryptography.ECCurve;
 
 namespace OpenGost.Security.Cryptography
 {
     internal static class ECCurveOidMap
     {
-#region Constants
+        #region Constants
 
         private static ECCurve ECCurve256ParamsetTest { get; } = new ECCurve
         {
-            CurveType = ECCurveType.PrimeShortWeierstrass,
+            CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0x31, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -54,7 +53,7 @@ namespace OpenGost.Security.Cryptography
 
         private static ECCurve ECCurve256ParamsetA { get; } = new ECCurve
         {
-            CurveType = ECCurveType.PrimeShortWeierstrass,
+            CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0x97, 0xfd, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -97,7 +96,7 @@ namespace OpenGost.Security.Cryptography
 
         private static ECCurve ECCurve256CryptoProParamsetA { get; } = new ECCurve
         {
-            CurveType = ECCurveType.PrimeShortWeierstrass,
+            CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0x97, 0xfd, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -140,7 +139,7 @@ namespace OpenGost.Security.Cryptography
 
         private static ECCurve ECCurve256CryptoProParamsetB { get; } = new ECCurve
         {
-            CurveType = ECCurveType.PrimeShortWeierstrass,
+            CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0x99, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -183,7 +182,7 @@ namespace OpenGost.Security.Cryptography
 
         private static ECCurve ECCurve256CryptoProParamsetC { get; } = new ECCurve
         {
-            CurveType = ECCurveType.PrimeShortWeierstrass,
+            CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0x9b, 0x75, 0x2d, 0x02, 0xb9, 0xf7, 0x98, 0x79, 0xd3, 0x51, 0x90, 0x78, 0x86, 0x6e, 0x84, 0xcf,
@@ -226,7 +225,7 @@ namespace OpenGost.Security.Cryptography
 
         private static ECCurve ECCurve512ParamsetTest { get; } = new ECCurve
         {
-            CurveType = ECCurveType.PrimeShortWeierstrass,
+            CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0x73, 0x63, 0xbe, 0x28, 0xf5, 0xbb, 0x64, 0x16, 0xd8, 0x4d, 0x22, 0xac, 0x6f, 0x33, 0xb8, 0x35,
@@ -283,7 +282,7 @@ namespace OpenGost.Security.Cryptography
 
         private static ECCurve ECCurve512ParamsetA { get; } = new ECCurve
         {
-            CurveType = ECCurveType.PrimeShortWeierstrass,
+            CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0xc7, 0xfd, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -340,7 +339,7 @@ namespace OpenGost.Security.Cryptography
 
         private static ECCurve ECCurve512ParamsetB { get; } = new ECCurve
         {
-            CurveType = ECCurveType.PrimeShortWeierstrass,
+            CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -397,7 +396,7 @@ namespace OpenGost.Security.Cryptography
 
         private static ECCurve ECCurve512ParamsetC { get; } = new ECCurve
         {
-            CurveType = ECCurveType.PrimeShortWeierstrass,
+            CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
             Prime = new byte[]
             {
                 0xc7, 0xfd, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -452,7 +451,7 @@ namespace OpenGost.Security.Cryptography
             },
         };
 
-#endregion
+        #endregion
 
         private static volatile Dictionary<string, ECCurve> _ecCurveOidDictionary;
 
@@ -498,7 +497,7 @@ namespace OpenGost.Security.Cryptography
             if (!ECCurveOidDictionary.ContainsKey(oidValue))
                 throw new NotImplementedException();
 
-            return CreateFromValue(oidValue);
+            return ECCurve.CreateFromValue(oidValue);
         }
 
         internal static ECCurve GetExplicitCurveByOid(string oidValue)

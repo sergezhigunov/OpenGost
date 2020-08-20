@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Threading;
-using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -31,13 +31,13 @@ namespace OpenGost.Security.Cryptography
         internal static T[] Subarray<T>(this T[] value, int startIndex, int length)
         {
             if (startIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(startIndex), ArgumentOutOfRangeStartIndex);
+                throw new ArgumentOutOfRangeException(nameof(startIndex), CryptographyStrings.ArgumentOutOfRangeStartIndex);
             if (startIndex > value.Length)
-                throw new ArgumentOutOfRangeException(nameof(startIndex), ArgumentOutOfRangeStartIndexLargerThanLength);
+                throw new ArgumentOutOfRangeException(nameof(startIndex), CryptographyStrings.ArgumentOutOfRangeStartIndexLargerThanLength);
             if (length < 0)
-                throw new ArgumentOutOfRangeException(nameof(length), ArgumentOutOfRangeNegativeLength);
+                throw new ArgumentOutOfRangeException(nameof(length), CryptographyStrings.ArgumentOutOfRangeNegativeLength);
             if (startIndex > value.Length - length)
-                throw new ArgumentOutOfRangeException(nameof(length), ArgumentOutOfRangeIndexLength);
+                throw new ArgumentOutOfRangeException(nameof(length), CryptographyStrings.ArgumentOutOfRangeIndexLength);
 
             if (length == 0)
                 return

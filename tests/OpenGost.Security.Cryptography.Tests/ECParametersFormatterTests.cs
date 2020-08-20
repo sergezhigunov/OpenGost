@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.Schema;
 using Xunit;
-using static OpenGost.Security.Cryptography.ECHelper;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -73,7 +72,7 @@ namespace OpenGost.Security.Cryptography
 
             var newParameters = ECParametersFormatter.FromXml(xmlString, keySize);
 
-            AssertEqual(parameters, newParameters, false);
+            ECHelper.AssertEqual(parameters, newParameters, false);
         }
 
         public static IEnumerable<object[]> TestECParameters()

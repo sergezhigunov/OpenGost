@@ -3,8 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using Xunit;
-using static System.Buffer;
-using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -20,22 +18,22 @@ namespace OpenGost.Security.Cryptography
 
         private static byte[][] BlockSizeMultiplePlainTexts { get; } =
         {
-            GenerateRandomBytes(0),
-            GenerateRandomBytes(BlockSizeBytes),
-            GenerateRandomBytes(2 * BlockSizeBytes),
-            GenerateRandomBytes(3 * BlockSizeBytes),
+            CryptoUtils.GenerateRandomBytes(0),
+            CryptoUtils.GenerateRandomBytes(BlockSizeBytes),
+            CryptoUtils.GenerateRandomBytes(2 * BlockSizeBytes),
+            CryptoUtils.GenerateRandomBytes(3 * BlockSizeBytes),
         };
 
         private static byte[][] BlockSizeNonMultiplePlainTexts { get; } =
         {
-            GenerateRandomBytes(1),
-            GenerateRandomBytes(BlockSizeBytes / 2),
-            GenerateRandomBytes(BlockSizeBytes - 1),
-            GenerateRandomBytes(BlockSizeBytes + 1),
-            GenerateRandomBytes(2 * BlockSizeBytes - 2),
-            GenerateRandomBytes(2 * BlockSizeBytes + 2),
-            GenerateRandomBytes(3 * BlockSizeBytes - 3),
-            GenerateRandomBytes(3 * BlockSizeBytes + 3),
+            CryptoUtils.GenerateRandomBytes(1),
+            CryptoUtils.GenerateRandomBytes(BlockSizeBytes / 2),
+            CryptoUtils.GenerateRandomBytes(BlockSizeBytes - 1),
+            CryptoUtils.GenerateRandomBytes(BlockSizeBytes + 1),
+            CryptoUtils.GenerateRandomBytes(2 * BlockSizeBytes - 2),
+            CryptoUtils.GenerateRandomBytes(2 * BlockSizeBytes + 2),
+            CryptoUtils.GenerateRandomBytes(3 * BlockSizeBytes - 3),
+            CryptoUtils.GenerateRandomBytes(3 * BlockSizeBytes + 3),
         };
 
         [Fact]
@@ -209,7 +207,7 @@ namespace OpenGost.Security.Cryptography
                 var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
 
                 var padding = new byte[padCount];
-                BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
+                Buffer.BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
 
                 Assert.Equal(plainText, newPlainText);
 
@@ -251,7 +249,7 @@ namespace OpenGost.Security.Cryptography
                 var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
 
                 var padding = new byte[padCount];
-                BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
+                Buffer.BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
 
                 Assert.Equal(plainText, newPlainText);
 
@@ -293,7 +291,7 @@ namespace OpenGost.Security.Cryptography
                 var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
 
                 var padding = new byte[padCount];
-                BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
+                Buffer.BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
 
                 Assert.Equal(plainText, newPlainText);
 
@@ -351,12 +349,12 @@ namespace OpenGost.Security.Cryptography
 
             public override void GenerateIV()
             {
-                IVValue = GenerateRandomBytes(BlockSizeValue / 8);
+                IVValue = CryptoUtils.GenerateRandomBytes(BlockSizeValue / 8);
             }
 
             public override void GenerateKey()
             {
-                KeyValue = GenerateRandomBytes(KeySizeValue / 8);
+                KeyValue = CryptoUtils.GenerateRandomBytes(KeySizeValue / 8);
             }
 
             private ICryptoTransform CreateTransform(byte[] rgbKey, byte[] rgbIV, SymmetricTransformMode transformMode)
@@ -384,13 +382,13 @@ namespace OpenGost.Security.Cryptography
             protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
             {
                 Assert.True(GenerateKeyExpansionCalled);
-                Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
+                CryptoUtils.Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
             }
 
             protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
             {
                 Assert.True(GenerateKeyExpansionCalled);
-                Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
+                CryptoUtils.Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
             }
 
             protected override void GenerateKeyExpansion(byte[] rgbKey)

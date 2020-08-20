@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static System.Security.Cryptography.CryptoConfig;
-using static OpenGost.Security.Cryptography.CryptoConstants;
-using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -43,7 +41,7 @@ namespace OpenGost.Security.Cryptography
             set
             {
                 if (value == 0 || value % (BlockSizeValue / 8) != 0)
-                    throw new CryptographicException(CryptographicInvalidFeedbackSize);
+                    throw new CryptographicException(CryptographyStrings.CryptographicInvalidFeedbackSize);
 
                 FeedbackSizeValue = value;
             }
@@ -68,7 +66,7 @@ namespace OpenGost.Security.Cryptography
                 if (value == null)
                     throw new ArgumentNullException(nameof(value));
                 if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0)
-                    throw new CryptographicException(CryptographicInvalidIVSize);
+                    throw new CryptographicException(CryptographyStrings.CryptographicInvalidIVSize);
 
                 FeedbackSize = value.Length;
                 IVValue = (byte[])value.Clone();
@@ -85,20 +83,20 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         [ComVisible(false)]
         public static new Magma Create()
-            => Create(MagmaAlgorithmFullName);
+            => Create(CryptoConstants.MagmaAlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="Magma"/> algorithm.
         /// </summary>
         /// <param name="algorithmName">
-        /// The name of the specific implementation of <see cref="Magma"/> to be used. 
+        /// The name of the specific implementation of <see cref="Magma"/> to be used.
         /// </param>
         /// <returns>
         /// A new instance of <see cref="Magma"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
         public static new Magma Create(string algorithmName)
-            => (Magma)CreateFromName(algorithmName);
+            => (Magma)CryptoConfig.CreateFromName(algorithmName);
 
         #endregion
     }

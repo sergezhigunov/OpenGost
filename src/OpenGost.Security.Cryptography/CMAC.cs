@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static System.Buffer;
-using static System.Security.Cryptography.CryptoConfig;
-using static OpenGost.Security.Cryptography.CryptoConstants;
-using static OpenGost.Security.Cryptography.CryptoUtils;
-using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -53,7 +49,7 @@ namespace OpenGost.Security.Cryptography
         /// <paramref name="value"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicException">
-        /// An attempt is made to change the <see cref="Key"/> property after hashing has begun. 
+        /// An attempt is made to change the <see cref="Key"/> property after hashing has begun.
         /// </exception>
         public override byte[] Key
         {
@@ -63,7 +59,7 @@ namespace OpenGost.Security.Cryptography
                 if (value == null)
                     throw new ArgumentNullException(nameof(value));
                 if (_hashing)
-                    throw new CryptographicException(CryptographicSymmetricAlgorithmKeySet);
+                    throw new CryptographicException(CryptographyStrings.CryptographicSymmetricAlgorithmKeySet);
 
                 KeyValue = (byte[])value.Clone();
             }
@@ -91,14 +87,14 @@ namespace OpenGost.Security.Cryptography
             set
             {
                 if (string.IsNullOrEmpty(value))
-                    throw new ArgumentException(CryptographicSymmetricAlgorithmNameNullOrEmpty, nameof(value));
+                    throw new ArgumentException(CryptographyStrings.CryptographicSymmetricAlgorithmNameNullOrEmpty, nameof(value));
                 if (_hashing)
-                    throw new CryptographicException(CryptographicSymmetricAlgorithmNameSet);
+                    throw new CryptographicException(CryptographyStrings.CryptographicSymmetricAlgorithmNameSet);
 
                 _symmetricAlgorithm = SymmetricAlgorithm.Create(value);
 
                 if (_symmetricAlgorithm == null)
-                    throw new CryptographicException(CryptographicUnknownSymmetricAlgorithm(value));
+                    throw new CryptographicException(CryptographyStrings.CryptographicUnknownSymmetricAlgorithm(value));
 
                 _symmetricAlgorithmName = value;
 
@@ -136,8 +132,8 @@ namespace OpenGost.Security.Cryptography
                 _encryptor = null;
             }
 
-            EraseData(ref _subkey1);
-            EraseData(ref _subkey2);
+            CryptoUtils.EraseData(ref _subkey1);
+            CryptoUtils.EraseData(ref _subkey2);
 
             _bufferLength = 0;
             Array.Clear(_buffer, 0, _bytesPerBlock);
@@ -155,7 +151,7 @@ namespace OpenGost.Security.Cryptography
         /// The offset into the byte array from which to begin using data.
         /// </param>
         /// <param name="cbSize">
-        /// The number of bytes in the array to use as data. 
+        /// The number of bytes in the array to use as data.
         /// </param>
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
@@ -164,7 +160,7 @@ namespace OpenGost.Security.Cryptography
             if (_bufferLength > 0 && _bufferLength + cbSize > _bytesPerBlock)
             {
                 var bytesToCopy = _bytesPerBlock - _bufferLength;
-                BlockCopy(array, ibStart, _buffer, _bufferLength, bytesToCopy);
+                Buffer.BlockCopy(array, ibStart, _buffer, _bufferLength, bytesToCopy);
                 ibStart += bytesToCopy;
                 cbSize -= bytesToCopy;
                 _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
@@ -186,7 +182,7 @@ namespace OpenGost.Security.Cryptography
 
             if (cbSize > 0)
             {
-                BlockCopy(array, ibStart, _buffer, _bufferLength, cbSize);
+                Buffer.BlockCopy(array, ibStart, _buffer, _bufferLength, cbSize);
                 _bufferLength += cbSize;
             }
         }
@@ -202,14 +198,14 @@ namespace OpenGost.Security.Cryptography
             EnsureEncryptorInitialized();
 
             if (_bufferLength == _bytesPerBlock)
-                Xor(_buffer, 0, _subkey1, 0, _buffer, 0, _bytesPerBlock);
+                CryptoUtils.Xor(_buffer, 0, _subkey1, 0, _buffer, 0, _bytesPerBlock);
             else
             {
                 // By definition, special padding
                 _buffer[_bufferLength] = 0x80;
                 Array.Clear(_buffer, _bufferLength, _bytesPerBlock - _bufferLength - 1);
 
-                Xor(_buffer, 0, _subkey2, 0, _buffer, 0, _bytesPerBlock);
+                CryptoUtils.Xor(_buffer, 0, _subkey2, 0, _buffer, 0, _bytesPerBlock);
             }
             var result = _encryptor.TransformFinalBlock(_buffer, 0, _bytesPerBlock);
             _hashing = false;
@@ -222,7 +218,7 @@ namespace OpenGost.Security.Cryptography
         /// </summary>
         /// <param name="disposing">
         /// <see langword="true"/> to release both managed and unmanaged resources;
-        /// <see langword="false"/> to release only unmanaged resources. 
+        /// <see langword="false"/> to release only unmanaged resources.
         /// </param>
         protected override void Dispose(bool disposing)
         {
@@ -230,10 +226,10 @@ namespace OpenGost.Security.Cryptography
             {
                 _symmetricAlgorithm?.Dispose();
                 _encryptor?.Dispose();
-                EraseData(ref _subkey1);
-                EraseData(ref _subkey2);
-                EraseData(ref _buffer);
-                EraseData(ref _temp);
+                CryptoUtils.EraseData(ref _subkey1);
+                CryptoUtils.EraseData(ref _subkey2);
+                CryptoUtils.EraseData(ref _buffer);
+                CryptoUtils.EraseData(ref _temp);
             }
 
             base.Dispose(disposing);
@@ -249,20 +245,20 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         [ComVisible(false)]
         public static new CMAC Create()
-            => Create(CMACGrasshopperAlgorithmFullName);
+            => Create(CryptoConstants.CMACGrasshopperAlgorithmFullName);
 
         /// <summary>
         /// Creates an instance of a specified implementation of <see cref="CMAC"/> algorithm.
         /// </summary>
         /// <param name="algorithmName">
-        /// The name of the specific implementation of <see cref="CMAC"/> to be used. 
+        /// The name of the specific implementation of <see cref="CMAC"/> to be used.
         /// </param>
         /// <returns>
         /// A new instance of <see cref="CMAC"/> using the specified implementation.
         /// </returns>
         [ComVisible(false)]
         public static new CMAC Create(string algorithmName)
-            => (CMAC)CreateFromName(algorithmName);
+            => (CMAC)CryptoConfig.CreateFromName(algorithmName);
 
         #endregion
 
@@ -291,16 +287,16 @@ namespace OpenGost.Security.Cryptography
             LeftShiftLittleEndianOneBit(_subkey1);
 
             if ((firstByte & 0x80) == 0x80)
-                Xor(_subkey1, 0, _irreduciblePolynomial, 0, _subkey1, 0, _bytesPerBlock);
+                CryptoUtils.Xor(_subkey1, 0, _irreduciblePolynomial, 0, _subkey1, 0, _bytesPerBlock);
 
-            BlockCopy(_subkey1, 0, _subkey2, 0, _bytesPerBlock);
+            Buffer.BlockCopy(_subkey1, 0, _subkey2, 0, _bytesPerBlock);
 
             firstByte = _subkey2[0];
 
             LeftShiftLittleEndianOneBit(_subkey2);
 
             if ((firstByte & 0x80) == 0x80)
-                Xor(_subkey2, 0, _irreduciblePolynomial, 0, _subkey2, 0, _bytesPerBlock);
+                CryptoUtils.Xor(_subkey2, 0, _irreduciblePolynomial, 0, _subkey2, 0, _bytesPerBlock);
         }
 
         private static void LeftShiftLittleEndianOneBit(byte[] data)
@@ -320,7 +316,7 @@ namespace OpenGost.Security.Cryptography
             {
                 64 => _irreduciblePolynomial64,
                 128 => _irreduciblePolynomial128,
-                _ => throw new CryptographicException(CryptographicInvalidBlockSize),
+                _ => throw new CryptographicException(CryptographyStrings.CryptographicInvalidBlockSize),
             };
         }
     }

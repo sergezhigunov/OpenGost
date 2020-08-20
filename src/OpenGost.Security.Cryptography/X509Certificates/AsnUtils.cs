@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using static System.Buffer;
 
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
@@ -19,7 +18,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
             var length = ReadLength(rawData, ref position);
             var result = new byte[length];
-            BlockCopy(rawData, position, result, 0, length);
+            Buffer.BlockCopy(rawData, position, result, 0, length);
             return result;
         }
 
@@ -88,7 +87,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
             var length = ReadLength(rawData, ref position);
             position += length;
             var result = new byte[position - start];
-            BlockCopy(rawData, start, result, 0, position - start);
+            Buffer.BlockCopy(rawData, start, result, 0, position - start);
             return result;
         }
 

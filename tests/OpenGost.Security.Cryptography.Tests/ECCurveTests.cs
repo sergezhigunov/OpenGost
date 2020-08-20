@@ -5,8 +5,6 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static ECCurve;
-
     public class ECCurveTests : CryptoConfigRequiredTest
     {
         [Theory]
@@ -59,7 +57,7 @@ namespace OpenGost.Security.Cryptography
         private static void ValidateNamedCurve(ECCurve curve)
         {
             curve.Validate();
-            Assert.Equal(ECCurveType.Named, curve.CurveType);
+            Assert.Equal(ECCurve.ECCurveType.Named, curve.CurveType);
             Assert.True(curve.IsNamed);
             Assert.False(curve.IsPrime);
             Assert.False(curve.IsExplicit);

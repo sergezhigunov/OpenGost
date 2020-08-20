@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Security.Cryptography;
 using Xunit;
-using static OpenGost.Security.Cryptography.CryptoConstants;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -47,7 +46,7 @@ namespace OpenGost.Security.Cryptography
             => base.CheckKeyExchangeAlgorithmProperty();
 
         [Theory]
-        [InlineData(GostECDsa512AlgorithmName)]
+        [InlineData(CryptoConstants.GostECDsa512AlgorithmName)]
         public override void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
             => base.CheckSignatureAlgorithmProperty(expectedSignatureAlgorithm);
 

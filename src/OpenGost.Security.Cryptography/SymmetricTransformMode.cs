@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace OpenGost.Security.Cryptography
 {
     /// <summary>
-    /// Specifies the direction of the symmetric transform. 
+    /// Specifies the direction of the symmetric transform.
     /// </summary>
     [Serializable]
     [ComVisible(true)]

@@ -5,8 +5,6 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    using static CryptoConstants;
-
     public class CreationFactoriesTests : CryptoConfigRequiredTest
     {
         [Theory]
@@ -21,8 +19,7 @@ namespace OpenGost.Security.Cryptography
             }
             finally
             {
-                if (obj is IDisposable)
-                    ((IDisposable)obj).Dispose();
+                (obj as IDisposable)?.Dispose();
             }
         }
 
@@ -38,8 +35,7 @@ namespace OpenGost.Security.Cryptography
             }
             finally
             {
-                if (obj is IDisposable)
-                    ((IDisposable)obj).Dispose();
+                (obj as IDisposable)?.Dispose();
             }
         }
 
@@ -49,98 +45,98 @@ namespace OpenGost.Security.Cryptography
             {
                 #region Asymmetric algorithm factories
 
-                new object[] { typeof(GostECDsa256), (Func<string, AsymmetricAlgorithm>)AsymmetricAlgorithm.Create, GostECDsa256AlgorithmName},
-                new object[] { typeof(GostECDsa256), (Func<string, AsymmetricAlgorithm>)AsymmetricAlgorithm.Create, GostECDsa256AlgorithmFullName},
-                new object[] { typeof(GostECDsa512), (Func<string, AsymmetricAlgorithm>)AsymmetricAlgorithm.Create, GostECDsa512AlgorithmName},
-                new object[] { typeof(GostECDsa512), (Func<string, AsymmetricAlgorithm>)AsymmetricAlgorithm.Create, GostECDsa512AlgorithmFullName},
+                new object[] { typeof(GostECDsa256), (Func<string, AsymmetricAlgorithm>)AsymmetricAlgorithm.Create, CryptoConstants.GostECDsa256AlgorithmName},
+                new object[] { typeof(GostECDsa256), (Func<string, AsymmetricAlgorithm>)AsymmetricAlgorithm.Create, CryptoConstants.GostECDsa256AlgorithmFullName },
+                new object[] { typeof(GostECDsa512), (Func<string, AsymmetricAlgorithm>)AsymmetricAlgorithm.Create, CryptoConstants.GostECDsa512AlgorithmName },
+                new object[] { typeof(GostECDsa512), (Func<string, AsymmetricAlgorithm>)AsymmetricAlgorithm.Create, CryptoConstants.GostECDsa512AlgorithmFullName },
 
                 #endregion
 
                 #region Symmetric algorithm factories
 
-                new object[] { typeof(Grasshopper), (Func<string, SymmetricAlgorithm>)SymmetricAlgorithm.Create, GrasshopperAlgorithmFullName},
-                new object[] { typeof(Magma), (Func<string, SymmetricAlgorithm>)SymmetricAlgorithm.Create, MagmaAlgorithmFullName},
+                new object[] { typeof(Grasshopper), (Func<string, SymmetricAlgorithm>)SymmetricAlgorithm.Create, CryptoConstants.GrasshopperAlgorithmFullName },
+                new object[] { typeof(Magma), (Func<string, SymmetricAlgorithm>)SymmetricAlgorithm.Create, CryptoConstants.MagmaAlgorithmFullName },
 
                 #endregion
 
                 #region Hash algorithm factories
 
-                new object[] { typeof(CMACGrasshopper), (Func<string, HashAlgorithm>)HashAlgorithm.Create, CMACGrasshopperAlgorithmFullName},
-                new object[] { typeof(CMACMagma), (Func<string, HashAlgorithm>)HashAlgorithm.Create, CMACMagmaAlgorithmFullName},
-                new object[] { typeof(Streebog256), (Func<string, HashAlgorithm>)HashAlgorithm.Create, Streebog256AlgorithmFullName},
-                new object[] { typeof(Streebog512), (Func<string, HashAlgorithm>)HashAlgorithm.Create, Streebog512AlgorithmFullName},
-                new object[] { typeof(HMACStreebog256), (Func<string, HashAlgorithm>)HashAlgorithm.Create, HMACStreebog256AlgorithmFullName},
-                new object[] { typeof(HMACStreebog512), (Func<string, HashAlgorithm>)HashAlgorithm.Create, HMACStreebog512AlgorithmFullName},
+                new object[] { typeof(CMACGrasshopper), (Func<string, HashAlgorithm>)HashAlgorithm.Create, CryptoConstants.CMACGrasshopperAlgorithmFullName },
+                new object[] { typeof(CMACMagma), (Func<string, HashAlgorithm>)HashAlgorithm.Create, CryptoConstants.CMACMagmaAlgorithmFullName },
+                new object[] { typeof(Streebog256), (Func<string, HashAlgorithm>)HashAlgorithm.Create, CryptoConstants.Streebog256AlgorithmFullName },
+                new object[] { typeof(Streebog512), (Func<string, HashAlgorithm>)HashAlgorithm.Create, CryptoConstants.Streebog512AlgorithmFullName },
+                new object[] { typeof(HMACStreebog256), (Func<string, HashAlgorithm>)HashAlgorithm.Create, CryptoConstants.HMACStreebog256AlgorithmFullName },
+                new object[] { typeof(HMACStreebog512), (Func<string, HashAlgorithm>)HashAlgorithm.Create, CryptoConstants.HMACStreebog512AlgorithmFullName },
 
                 #endregion
 
                 #region Keyed hash algorithm factories
 
-                new object[] { typeof(CMACGrasshopper), (Func<string, KeyedHashAlgorithm>)KeyedHashAlgorithm.Create, CMACGrasshopperAlgorithmFullName},
-                new object[] { typeof(CMACMagma), (Func<string, KeyedHashAlgorithm>)KeyedHashAlgorithm.Create, CMACMagmaAlgorithmFullName},
-                new object[] { typeof(HMACStreebog256), (Func<string, KeyedHashAlgorithm>)KeyedHashAlgorithm.Create, HMACStreebog256AlgorithmFullName},
-                new object[] { typeof(HMACStreebog512), (Func<string, KeyedHashAlgorithm>)KeyedHashAlgorithm.Create, HMACStreebog512AlgorithmFullName},
+                new object[] { typeof(CMACGrasshopper), (Func<string, KeyedHashAlgorithm>)KeyedHashAlgorithm.Create, CryptoConstants.CMACGrasshopperAlgorithmFullName },
+                new object[] { typeof(CMACMagma), (Func<string, KeyedHashAlgorithm>)KeyedHashAlgorithm.Create, CryptoConstants.CMACMagmaAlgorithmFullName },
+                new object[] { typeof(HMACStreebog256), (Func<string, KeyedHashAlgorithm>)KeyedHashAlgorithm.Create, CryptoConstants.HMACStreebog256AlgorithmFullName },
+                new object[] { typeof(HMACStreebog512), (Func<string, KeyedHashAlgorithm>)KeyedHashAlgorithm.Create, CryptoConstants.HMACStreebog512AlgorithmFullName },
 
                 #endregion
 
                 #region HMAC algorithm factories
 
-                new object[] { typeof(HMACStreebog256), (Func<string, HMAC>)HMAC.Create, HMACStreebog256AlgorithmFullName},
-                new object[] { typeof(HMACStreebog512), (Func<string, HMAC>)HMAC.Create, HMACStreebog512AlgorithmFullName},
+                new object[] { typeof(HMACStreebog256), (Func<string, HMAC>)HMAC.Create, CryptoConstants.HMACStreebog256AlgorithmFullName },
+                new object[] { typeof(HMACStreebog512), (Func<string, HMAC>)HMAC.Create, CryptoConstants.HMACStreebog512AlgorithmFullName },
 
                 #endregion
 
                 #region CMAC algorithm factories
 
-                new object[] { typeof(CMACGrasshopper), (Func<string, CMAC>)CMAC.Create, CMACGrasshopperAlgorithmFullName},
-                new object[] { typeof(CMACMagma), (Func<string, CMAC>)CMAC.Create, CMACMagmaAlgorithmFullName},
+                new object[] { typeof(CMACGrasshopper), (Func<string, CMAC>)CMAC.Create, CryptoConstants.CMACGrasshopperAlgorithmFullName },
+                new object[] { typeof(CMACMagma), (Func<string, CMAC>)CMAC.Create, CryptoConstants.CMACMagmaAlgorithmFullName },
 
                 #endregion
 
                 #region GostECDsa algorithm factories
 
-                new object[] { typeof(GostECDsa256), (Func<string, GostECDsa>)GostECDsa.Create, GostECDsa256AlgorithmName},
-                new object[] { typeof(GostECDsa256), (Func<string, GostECDsa>)GostECDsa.Create, GostECDsa256AlgorithmFullName},
-                new object[] { typeof(GostECDsa512), (Func<string, GostECDsa>)GostECDsa.Create, GostECDsa512AlgorithmName},
-                new object[] { typeof(GostECDsa512), (Func<string, GostECDsa>)GostECDsa.Create, GostECDsa512AlgorithmFullName},
+                new object[] { typeof(GostECDsa256), (Func<string, GostECDsa>)GostECDsa.Create, CryptoConstants.GostECDsa256AlgorithmName },
+                new object[] { typeof(GostECDsa256), (Func<string, GostECDsa>)GostECDsa.Create, CryptoConstants.GostECDsa256AlgorithmFullName },
+                new object[] { typeof(GostECDsa512), (Func<string, GostECDsa>)GostECDsa.Create, CryptoConstants.GostECDsa512AlgorithmName },
+                new object[] { typeof(GostECDsa512), (Func<string, GostECDsa>)GostECDsa.Create, CryptoConstants.GostECDsa512AlgorithmFullName },
 
                 #endregion
 
                 #region GostECDsa256 algorithm factories
 
-                new object[] { typeof(GostECDsa256), (Func<string, GostECDsa256>)GostECDsa256.Create, GostECDsa256AlgorithmName},
-                new object[] { typeof(GostECDsa256), (Func<string, GostECDsa256>)GostECDsa256.Create, GostECDsa256AlgorithmFullName},
+                new object[] { typeof(GostECDsa256), (Func<string, GostECDsa256>)GostECDsa256.Create, CryptoConstants.GostECDsa256AlgorithmName },
+                new object[] { typeof(GostECDsa256), (Func<string, GostECDsa256>)GostECDsa256.Create, CryptoConstants.GostECDsa256AlgorithmFullName },
 
                 #endregion
 
                 #region GostECDsa256 algorithm factories
 
-                new object[] { typeof(GostECDsa512), (Func<string, GostECDsa512>)GostECDsa512.Create, GostECDsa512AlgorithmName},
-                new object[] { typeof(GostECDsa512), (Func<string, GostECDsa512>)GostECDsa512.Create, GostECDsa512AlgorithmFullName},
+                new object[] { typeof(GostECDsa512), (Func<string, GostECDsa512>)GostECDsa512.Create, CryptoConstants.GostECDsa512AlgorithmName },
+                new object[] { typeof(GostECDsa512), (Func<string, GostECDsa512>)GostECDsa512.Create, CryptoConstants.GostECDsa512AlgorithmFullName },
 
                 #endregion
 
                 #region Grasshopper algorithm factories
 
-                new object[] { typeof(Grasshopper), (Func<string, Grasshopper>)Grasshopper.Create, GrasshopperAlgorithmFullName},
+                new object[] { typeof(Grasshopper), (Func<string, Grasshopper>)Grasshopper.Create, CryptoConstants.GrasshopperAlgorithmFullName },
 
                 #endregion
 
                 #region Magma algorithm factories
 
-                new object[] { typeof(Magma), (Func<string, Magma>)Magma.Create, MagmaAlgorithmFullName},
+                new object[] { typeof(Magma), (Func<string, Magma>)Magma.Create, CryptoConstants.MagmaAlgorithmFullName },
 
                 #endregion
 
                 #region Streebog256 algorithm factories
 
-                new object[] { typeof(Streebog256), (Func<string, Streebog256>)Streebog256.Create, Streebog256AlgorithmFullName},
+                new object[] { typeof(Streebog256), (Func<string, Streebog256>)Streebog256.Create, CryptoConstants.Streebog256AlgorithmFullName },
 
                 #endregion
 
                 #region Streebog512 algorithm factories
 
-                new object[] { typeof(Streebog512), (Func<string, Streebog512>)Streebog512.Create, Streebog512AlgorithmFullName},
+                new object[] { typeof(Streebog512), (Func<string, Streebog512>)Streebog512.Create, CryptoConstants.Streebog512AlgorithmFullName },
 
                 #endregion
             };

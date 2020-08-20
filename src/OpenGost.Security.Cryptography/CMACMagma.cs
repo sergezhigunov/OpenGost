@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using static OpenGost.Security.Cryptography.CryptoConstants;
-using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -15,20 +13,20 @@ namespace OpenGost.Security.Cryptography
         /// Initializes a new instance of the <see cref="CMACMagma"/> class.
         /// </summary>
         public CMACMagma()
-            : this(GenerateRandomBytes(32))
+            : this(CryptoUtils.GenerateRandomBytes(32))
         { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CMACMagma"/> class with the specified key data.
         /// </summary>
         /// <param name="key">
-        /// The secret key for <see cref="CMACMagma"/> encryption. 
+        /// The secret key for <see cref="CMACMagma"/> encryption.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="key"/> parameter is <see langword="null"/>. 
+        /// The <paramref name="key"/> parameter is <see langword="null"/>.
         /// </exception>
         public CMACMagma(byte[] key)
-            : this(MagmaAlgorithmFullName, key)
+            : this(CryptoConstants.MagmaAlgorithmFullName, key)
         { }
 
         /// <summary>
@@ -36,13 +34,13 @@ namespace OpenGost.Security.Cryptography
         /// and using the specified implementation of <see cref="Magma"/>.
         /// </summary>
         /// <param name="algorithmName">
-        /// The name of the <see cref="Magma"/> implementation to use. 
+        /// The name of the <see cref="Magma"/> implementation to use.
         /// </param>
         /// <param name="key">
-        /// The secret key for <see cref="CMACMagma"/> encryption. 
+        /// The secret key for <see cref="CMACMagma"/> encryption.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// The <paramref name="key"/> parameter is <see langword="null"/>. 
+        /// The <paramref name="key"/> parameter is <see langword="null"/>.
         /// </exception>
         public CMACMagma(string algorithmName, byte[] key)
             : base()

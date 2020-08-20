@@ -21,7 +21,7 @@ namespace OpenGost.Security.Cryptography
                 Assert.NotSame(key, cmac.Key);
                 Assert.NotSame(cmac.Key, cmac.Key);
 
-                // make sure the setter didn't cache the exact object we passed in 
+                // make sure the setter didn't cache the exact object we passed in
                 key[0] = (byte)(key[0] + 1);
                 Assert.NotEqual<byte>(key, cmac.Key);
 

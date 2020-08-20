@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using static System.Buffer;
 
 namespace OpenGost.Security.Cryptography
 {
     /// <summary>
-    /// Computes the <see cref="Streebog256"/> hash for the input data using the managed implementation. 
+    /// Computes the <see cref="Streebog256"/> hash for the input data using the managed implementation.
     /// </summary>
     [ComVisible(true)]
     public class Streebog256Managed : Streebog256
@@ -44,13 +43,13 @@ namespace OpenGost.Security.Cryptography
         /// Routes data written to the object into the <see cref="Streebog256"/> hash algorithm for computing the hash.
         /// </summary>
         /// <param name="array">
-        /// The input data. 
+        /// The input data.
         /// </param>
         /// <param name="ibStart">
-        /// The offset into the byte array from which to begin using data. 
+        /// The offset into the byte array from which to begin using data.
         /// </param>
         /// <param name="cbSize">
-        /// The number of bytes in the array to use as data. 
+        /// The number of bytes in the array to use as data.
         /// </param>
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
             => _innerAlgorithm.TransformBlock(array, ibStart, cbSize, null, 0);
@@ -67,7 +66,7 @@ namespace OpenGost.Security.Cryptography
                 Array.Empty<byte>(),
                 0, 0);
             var hash = new byte[32];
-            BlockCopy(_innerAlgorithm.Hash, 32, hash, 0, 32);
+            Buffer.BlockCopy(_innerAlgorithm.Hash, 32, hash, 0, 32);
             return hash;
         }
 

@@ -3,13 +3,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
-using static System.Buffer;
-using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
     /// <summary>
-    /// Computes the <see cref="Streebog512"/> hash for the input data using the managed implementation. 
+    /// Computes the <see cref="Streebog512"/> hash for the input data using the managed implementation.
     /// </summary>
     [ComVisible(true)]
     public class Streebog512Managed : Streebog512
@@ -183,7 +181,7 @@ namespace OpenGost.Security.Cryptography
         {
             _iv = iv;
             _state = new byte[64];
-            BlockCopy(_iv, 0, _state, 0, 64);
+            Buffer.BlockCopy(_iv, 0, _state, 0, 64);
             _sigma = new byte[64];
             _buffer = new byte[64];
         }
@@ -196,7 +194,7 @@ namespace OpenGost.Security.Cryptography
             _count = 0L;
             _n = 0uL;
 
-            BlockCopy(_iv, 0, _state, 0, 64);
+            Buffer.BlockCopy(_iv, 0, _state, 0, 64);
             Array.Clear(_sigma, 0, 64);
             Array.Clear(_buffer, 0, 64);
         }
@@ -205,18 +203,18 @@ namespace OpenGost.Security.Cryptography
         /// Routes data written to the object into the <see cref="Streebog512"/> hash algorithm for computing the hash.
         /// </summary>
         /// <param name="array">
-        /// The input data. 
+        /// The input data.
         /// </param>
         /// <param name="ibStart">
-        /// The offset into the byte array from which to begin using data. 
+        /// The offset into the byte array from which to begin using data.
         /// </param>
         /// <param name="cbSize">
-        /// The number of bytes in the array to use as data. 
+        /// The number of bytes in the array to use as data.
         /// </param>
         [SuppressMessage("Microsoft.Usage", "CA2233:OperationsShouldNotOverflow", MessageId = "ibStart+64")]
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
-            // Compute length of buffer 
+            // Compute length of buffer
             var bufferLen = (int)(_count & 0x3f);
 
             // Update number of bytes
@@ -225,7 +223,7 @@ namespace OpenGost.Security.Cryptography
             if ((bufferLen > 0) && (bufferLen + cbSize >= 64))
             {
                 var bytesToCopy = 64 - bufferLen;
-                BlockCopy(array, ibStart, _buffer, bufferLen, bytesToCopy);
+                Buffer.BlockCopy(array, ibStart, _buffer, bufferLen, bytesToCopy);
                 ibStart += bytesToCopy;
                 cbSize -= bytesToCopy;
                 DoTransform(_buffer, 512);
@@ -235,14 +233,14 @@ namespace OpenGost.Security.Cryptography
             // Copy input to temporary buffer and hash
             while (cbSize >= 64)
             {
-                BlockCopy(array, ibStart, _buffer, 0, 64);
+                Buffer.BlockCopy(array, ibStart, _buffer, 0, 64);
                 ibStart += 64;
                 cbSize -= 64;
                 DoTransform(_buffer, 512);
             }
 
             if (cbSize > 0)
-                BlockCopy(array, ibStart, _buffer, bufferLen, cbSize);
+                Buffer.BlockCopy(array, ibStart, _buffer, bufferLen, cbSize);
         }
 
         /// <summary>
@@ -253,7 +251,7 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         protected override byte[] HashFinal()
         {
-            // Compute length of buffer 
+            // Compute length of buffer
             var bufferLen = (int)(_count & 0x3f);
 
             var lastBlock = new byte[64];
@@ -365,7 +363,7 @@ namespace OpenGost.Security.Cryptography
                     t0[data[i]] ^ t1[data[i + 8]] ^ t2[data[i + 16]] ^ t3[data[i + 24]] ^
                     t4[data[i + 32]] ^ t5[data[i + 40]] ^ t6[data[i + 48]] ^ t7[data[i + 56]];
 
-            UInt64ToLittleEndian(data, temp, 8);
+            CryptoUtils.UInt64ToLittleEndian(data, temp, 8);
         }
 
         [SecurityCritical]

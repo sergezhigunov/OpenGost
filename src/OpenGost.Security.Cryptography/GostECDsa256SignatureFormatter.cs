@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using static System.Security.Cryptography.CryptoConfig;
-using static OpenGost.Security.Cryptography.CryptoConstants;
-using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -21,7 +19,7 @@ namespace OpenGost.Security.Cryptography
         /// </summary>
         public GostECDsa256SignatureFormatter()
         {
-            _oid = MapNameToOID(Streebog256AlgorithmFullName);
+            _oid = CryptoConfig.MapNameToOID(CryptoConstants.Streebog256AlgorithmFullName);
         }
 
         /// <summary>
@@ -63,9 +61,9 @@ namespace OpenGost.Security.Cryptography
             if (rgbHash == null)
                 throw new ArgumentNullException(nameof(rgbHash));
             if (_oid == null)
-                throw new CryptographicUnexpectedOperationException(CryptographicMissingOid);
+                throw new CryptographicUnexpectedOperationException(CryptographyStrings.CryptographicMissingOid);
             if (_key == null)
-                throw new CryptographicUnexpectedOperationException(CryptographicMissingKey);
+                throw new CryptographicUnexpectedOperationException(CryptographyStrings.CryptographicMissingKey);
 
             return _key.SignHash(rgbHash);
         }
@@ -74,7 +72,7 @@ namespace OpenGost.Security.Cryptography
         /// Specifies the hash algorithm for the <see cref="GostECDsa256"/> signature formatter.
         /// </summary>
         /// <param name="strName">
-        /// The name of the hash algorithm to use for the signature formatter. 
+        /// The name of the hash algorithm to use for the signature formatter.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="strName"/> is <see langword="null"/>.
@@ -87,15 +85,15 @@ namespace OpenGost.Security.Cryptography
         {
             if (strName == null)
                 throw new ArgumentNullException(nameof(strName));
-            if (MapNameToOID(strName) != _oid)
-                throw new CryptographicUnexpectedOperationException(CryptographicInvalidOperation);
+            if (CryptoConfig.MapNameToOID(strName) != _oid)
+                throw new CryptographicUnexpectedOperationException(CryptographyStrings.CryptographicInvalidOperation);
         }
 
         /// <summary>
         /// Specifies the key to be used for the <see cref="GostECDsa256"/> signature formatter.
         /// </summary>
         /// <param name="key">
-        /// The instance of <see cref="GostECDsa256"/> that holds the key. 
+        /// The instance of <see cref="GostECDsa256"/> that holds the key.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="key"/> is <see langword="null"/>.

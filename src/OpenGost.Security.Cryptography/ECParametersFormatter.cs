@@ -7,9 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
-using static System.Security.Cryptography.ECCurve;
-using static OpenGost.Security.Cryptography.CryptoUtils;
-using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -47,15 +45,15 @@ namespace OpenGost.Security.Cryptography
             using var textReader = new StringReader(xmlString);
             using var reader = XmlReader.Create(textReader);
             if (!reader.IsStartElement(ECDsaKeyValueTag, Namespace))
-                throw new ArgumentException(CryptographicMissingECDsaKeyValue, nameof(xmlString));
+                throw new ArgumentException(CryptographyStrings.CryptographicMissingECDsaKeyValue, nameof(xmlString));
             reader.ReadStartElement();
 
             if (!reader.IsStartElement(DomainParametersTag, Namespace))
-                throw new ArgumentException(CryptographicMissingDomainParameters, nameof(xmlString));
+                throw new ArgumentException(CryptographyStrings.CryptographicMissingDomainParameters, nameof(xmlString));
             var curve = ReadDomainParameters(reader, keyLength);
 
             if (!reader.IsStartElement(PublicKeyTag, Namespace))
-                throw new ArgumentException(CryptographicMissingPublicKey, nameof(xmlString));
+                throw new ArgumentException(CryptographyStrings.CryptographicMissingPublicKey, nameof(xmlString));
             var publicKey = ReadECPoint(reader, PublicKeyTag, Namespace, keyLength);
 
             reader.ReadEndElement();
@@ -72,7 +70,7 @@ namespace OpenGost.Security.Cryptography
                 result = ReadExplicitParameters(reader, keyLength);
             else if (reader.IsStartElement(NamedCurveTag, Namespace))
                 result = ReadNamedCurveParameters(reader);
-            else throw new ArgumentException(CryptographicMissingDomainParameters, nameof(reader));
+            else throw new ArgumentException(CryptographyStrings.CryptographicMissingDomainParameters, nameof(reader));
 
             reader.ReadEndElement();
 
@@ -115,16 +113,16 @@ namespace OpenGost.Security.Cryptography
             reader.MoveToContent();
             var baseBoint = ReadECPoint(reader, BasePointTag, Namespace, keyLength);
             reader.MoveToContent();
-            order = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture), keyLength);
+            order = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture), keyLength);
             if (reader.IsStartElement(CofactorTag, Namespace))
-                cofactor = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture), keyLength);
+                cofactor = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture), keyLength);
             else cofactor = null;
             reader.ReadEndElement();
             reader.ReadEndElement();
 
             return new ECCurve
             {
-                CurveType = ECCurveType.PrimeShortWeierstrass,
+                CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
                 Prime = prime,
                 A = a,
                 B = b,
@@ -138,7 +136,7 @@ namespace OpenGost.Security.Cryptography
         {
             reader.ReadStartElement(localName, ns);
             reader.MoveToContent();
-            var value = ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(PTag, Namespace), CultureInfo.InvariantCulture), keyLength);
+            var value = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(PTag, Namespace), CultureInfo.InvariantCulture), keyLength);
             reader.ReadEndElement();
             return value;
         }
@@ -155,7 +153,7 @@ namespace OpenGost.Security.Cryptography
             if (!reader.MoveToAttribute(ValueTag))
                 throw new NotImplementedException();
             reader.ReadAttributeValue();
-            var result = ToNormalizedByteArray(BigInteger.Parse(reader[ValueTag], CultureInfo.InvariantCulture), keyLength);
+            var result = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader[ValueTag], CultureInfo.InvariantCulture), keyLength);
             reader.MoveToElement();
             reader.ReadStartElement(localName, ns);
             if (!isEmpty)
@@ -209,11 +207,11 @@ namespace OpenGost.Security.Cryptography
 
             switch (curve.CurveType)
             {
-                case ECCurveType.PrimeShortWeierstrass:
+                case ECCurve.ECCurveType.PrimeShortWeierstrass:
                     WriteExplicitParameters(writer, curve);
                     break;
 
-                case ECCurveType.Named:
+                case ECCurve.ECCurveType.Named:
                     WriteNamedCurveParameters(writer, curve.Oid);
                     break;
 

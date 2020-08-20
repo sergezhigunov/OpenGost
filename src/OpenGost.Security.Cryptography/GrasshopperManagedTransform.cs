@@ -1,10 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
-using static System.Buffer;
-using static OpenGost.Security.Cryptography.CryptoUtils;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -101,8 +100,8 @@ namespace OpenGost.Security.Cryptography
                 new byte[16], new byte[16],
                 null, null, null, null, null, null, null, null
             };
-            BlockCopy(key, 0, _keyExpansion[0], 0, 16);
-            BlockCopy(key, 16, _keyExpansion[1], 0, 16);
+            Buffer.BlockCopy(key, 0, _keyExpansion[0], 0, 16);
+            Buffer.BlockCopy(key, 16, _keyExpansion[1], 0, 16);
 
             unsafe
             {
@@ -153,7 +152,7 @@ namespace OpenGost.Security.Cryptography
         {
             if (disposing)
             {
-                EraseData(ref _keyExpansion);
+                CryptoUtils.EraseData(ref _keyExpansion);
             }
 
             base.Dispose(disposing);

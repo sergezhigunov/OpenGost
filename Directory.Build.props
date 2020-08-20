@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Authors>Sergey Zhigunov</Authors>
-    <Copyright>Copyright © 2016-2019 Sergey Zhigunov</Copyright>
+    <Copyright>Copyright © 2016-2020 Sergey Zhigunov</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
     <LangVersion>7.3</LangVersion>
     <VersionPrefix>0.1.0</VersionPrefix>

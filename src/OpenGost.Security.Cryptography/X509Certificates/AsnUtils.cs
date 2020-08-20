@@ -55,7 +55,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
             var end = position + ReadLength(rawData, ref position);
             var stringBuilder = new StringBuilder();
             var firstByte = ReadByte(rawData, ref position);
-            stringBuilder.Append(firstByte / 40).Append(".").Append(firstByte % 40);
+            stringBuilder.Append(firstByte / 40).Append('.').Append(firstByte % 40);
             while (position <= end)
             {
                 var value = 0;
@@ -67,7 +67,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                     value += b % 128;
                 }
                 while (b >= 128);
-                stringBuilder.Append(".").Append(value);
+                stringBuilder.Append('.').Append(value);
             }
             return stringBuilder.ToString();
         }

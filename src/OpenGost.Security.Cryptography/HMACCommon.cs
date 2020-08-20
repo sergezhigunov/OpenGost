@@ -11,7 +11,7 @@ namespace OpenGost.Security.Cryptography
         private readonly HashAlgorithm _hash2;
         private byte[] _inner;
         private byte[] _outer;
-        private bool _hashing = false;
+        private bool _hashing;
 
         public byte[] ActualKey { get; private set; }
         public int HashSize => _hash1.HashSize;

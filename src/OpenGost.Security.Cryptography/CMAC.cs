@@ -41,7 +41,7 @@ namespace OpenGost.Security.Cryptography
         private string _symmetricAlgorithmName;
         private int _bytesPerBlock;
         private int _bufferLength;
-        private bool _hashing = false;
+        private bool _hashing;
 
         /// <summary>
         /// Gets or sets the key to use in the hash algorithm.

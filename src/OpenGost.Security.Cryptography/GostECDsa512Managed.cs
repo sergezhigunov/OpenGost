@@ -10,7 +10,7 @@ using static OpenGost.Security.Cryptography.Properties.CryptographyStrings;
 namespace OpenGost.Security.Cryptography
 {
     /// <summary>
-    /// Provides a managed implementation of the <see cref="GostECDsa512"/> algorithm. 
+    /// Provides a managed implementation of the <see cref="GostECDsa512"/> algorithm.
     /// </summary>
     [ComVisible(true)]
     public sealed class GostECDsa512Managed : GostECDsa512
@@ -21,8 +21,8 @@ namespace OpenGost.Security.Cryptography
         private ECPoint _publicKey;
         private byte[] _privateKey;
         private bool
-            _parametersSet = false,
-            _disposed = false;
+            _parametersSet,
+            _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsa512Managed" /> class
@@ -96,7 +96,7 @@ namespace OpenGost.Security.Cryptography
         /// An <see cref="ECParameters"/>.
         /// </returns>
         /// <exception cref="CryptographicException">
-        /// The key cannot be exported. 
+        /// The key cannot be exported.
         /// </exception>
         [ComVisible(false)]
         public override ECParameters ExportParameters(bool includePrivateParameters)
@@ -208,7 +208,7 @@ namespace OpenGost.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies a digital signature against the specified hash value. 
+        /// Verifies a digital signature against the specified hash value.
         /// </summary>
         /// <param name="hash">
         /// The hash value of a block of data.

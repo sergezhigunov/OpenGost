@@ -21,8 +21,8 @@ namespace OpenGost.Security.Cryptography
         private ECPoint _publicKey;
         private byte[] _privateKey;
         private bool
-            _parametersSet = false,
-            _disposed = false;
+            _parametersSet,
+            _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsa256Managed" /> class

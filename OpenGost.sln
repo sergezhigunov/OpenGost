@@ -1,20 +1,43 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8B2273E6-40B9-4CFB-94E0-4523F39043DB}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7213FB63-9C9A-44A9-A619-08A285AE7AB5}"
+	ProjectSection(SolutionItems) = preProject
+		tests\Directory.Build.props = tests\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB808385-20EA-4A94-BF24-44743CA438B6}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		Key.snk = Key.snk
+		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptography", "src\OpenGost.Security.Cryptography\OpenGost.Security.Cryptography.csproj", "{9234D532-B975-4C2A-A3A5-C319C4334301}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptography.Tests", "tests\OpenGost.Security.Cryptography.Tests\OpenGost.Security.Cryptography.Tests.csproj", "{F3588A93-87FB-4715-B491-85000A60EC54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{30998F5C-04AE-4AB7-BAFE-F02953D8411A}"
+	ProjectSection(SolutionItems) = preProject
+		schemas\ECDsa.xsd = schemas\ECDsa.xsd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9001C422-A979-402C-AB7A-6FC0B9B13530}"
+	ProjectSection(SolutionItems) = preProject
+		tools\Crypto.config = tools\Crypto.config
+		tools\Resources.tt = tools\Resources.tt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

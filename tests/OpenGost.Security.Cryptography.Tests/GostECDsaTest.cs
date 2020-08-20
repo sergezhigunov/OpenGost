@@ -19,27 +19,25 @@ namespace OpenGost.Security.Cryptography
         protected void CheckExportParameters(ECParameters parameters)
         {
             ECParameters exportedParameters;
-            using (var algorithm = Create(parameters))
+            using var algorithm = Create(parameters);
+            exportedParameters = algorithm.ExportParameters(false);
+
+            exportedParameters.Validate();
+            AssertEqual(parameters, exportedParameters, false);
+            Assert.Null(exportedParameters.D);
+
+            if (parameters.D != null)
             {
-                exportedParameters = algorithm.ExportParameters(false);
-
+                exportedParameters = algorithm.ExportParameters(true);
                 exportedParameters.Validate();
-                AssertEqual(parameters, exportedParameters, false);
-                Assert.Null(exportedParameters.D);
-
-                if (parameters.D != null)
-                {
-                    exportedParameters = algorithm.ExportParameters(true);
-                    exportedParameters.Validate();
-                    AssertEqual(parameters, exportedParameters, true);
-                }
+                AssertEqual(parameters, exportedParameters, true);
             }
         }
 
         protected bool VerifyHash(ECParameters parameters, byte[] hash, byte[] signature)
         {
-            using (var algorithm = Create(parameters))
-                return algorithm.VerifyHash(hash, signature);
+            using var algorithm = Create(parameters);
+            return algorithm.VerifyHash(hash, signature);
         }
 
         protected bool VerifyHash(ECParameters parameters, string hashHex, string signatureHex)
@@ -76,34 +74,30 @@ namespace OpenGost.Security.Cryptography
 
         public virtual void CheckKeyExchangeAlgorithmProperty()
         {
-            using (var algorithm = new T())
-                Assert.Null(algorithm.KeyExchangeAlgorithm);
+            using var algorithm = new T();
+            Assert.Null(algorithm.KeyExchangeAlgorithm);
         }
 
         public virtual void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
         {
-            using (var algorithm = new T())
-                Assert.Equal(expectedSignatureAlgorithm, algorithm.SignatureAlgorithm);
+            using var algorithm = new T();
+            Assert.Equal(expectedSignatureAlgorithm, algorithm.SignatureAlgorithm);
         }
 
         public virtual void CheckKeyGeneration(ECParameters curveParameters)
         {
             var curve = curveParameters.Curve;
-            using (var algorithm = new T())
-            {
-                algorithm.GenerateKey(curve);
-                var parameters = algorithm.ExportParameters(true);
-                parameters.Validate();
-            }
+            using var algorithm = new T();
+            algorithm.GenerateKey(curve);
+            var parameters = algorithm.ExportParameters(true);
+            parameters.Validate();
         }
 
         public virtual void CheckDefaultKeyGeneration()
         {
-            using (var algorithm = new T())
-            {
-                var parameters = algorithm.ExportParameters(true);
-                parameters.Validate();
-            }
+            using var algorithm = new T();
+            var parameters = algorithm.ExportParameters(true);
+            parameters.Validate();
         }
 
         public virtual void SignHashNullHashThrowsArgumentNullException(T algorithm)

@@ -7,11 +7,10 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void ValidateCreateDigest()
         {
-            using (var digest = CreateDigest())
-            {
-                Assert.NotNull(digest);
-                Assert.True(digest is Streebog512);
-            }
+            using var digest = CreateDigest();
+
+            Assert.NotNull(digest);
+            Assert.True(digest is Streebog512);
         }
 
         [Fact]

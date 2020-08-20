@@ -52,38 +52,30 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void TransformBlockInvalidArgumentsTest()
         {
-            using (var transform = new SimpleSymmetricAlgorithm())
-            {
-                using (var encryptor = transform.CreateEncryptor())
-                {
-                    Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(null, 0, BlockSizeBytes, new byte[BlockSizeBytes], 0));
-                    Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, null, 0));
-                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes, new byte[BlockSizeBytes], 0));
-                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, new byte[BlockSizeBytes], -1));
-                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, 0, new byte[BlockSizeBytes], 0));
-                    Assert.Throws<ArgumentException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], BlockSizeBytes, BlockSizeBytes, new byte[BlockSizeBytes], 0));
-                    Assert.Throws<CryptographicException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes - 1, new byte[BlockSizeBytes], 0));
-                }
-            }
+            using var transform = new SimpleSymmetricAlgorithm();
+            using var encryptor = transform.CreateEncryptor();
+            Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(null, 0, BlockSizeBytes, new byte[BlockSizeBytes], 0));
+            Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, null, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes, new byte[BlockSizeBytes], 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, new byte[BlockSizeBytes], -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, 0, new byte[BlockSizeBytes], 0));
+            Assert.Throws<ArgumentException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], BlockSizeBytes, BlockSizeBytes, new byte[BlockSizeBytes], 0));
+            Assert.Throws<CryptographicException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes - 1, new byte[BlockSizeBytes], 0));
         }
 
         [Fact]
         public void TransformFinalBlockInvalidArgumentsTest()
         {
-            using (var transform = new SimpleSymmetricAlgorithm())
+            using var transform = new SimpleSymmetricAlgorithm();
+            using (var encryptor = transform.CreateDecryptor())
             {
-                using (var encryptor = transform.CreateDecryptor())
-                {
-                    Assert.Throws<ArgumentNullException>(() => encryptor.TransformFinalBlock(null, 0, BlockSizeBytes));
-                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes));
-                    Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], 0, -1));
-                    Assert.Throws<ArgumentException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], BlockSizeBytes, BlockSizeBytes));
-                }
-                using (var decryptor = transform.CreateDecryptor())
-                {
-                    Assert.Throws<CryptographicException>(() => decryptor.TransformFinalBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes - 1));
-                }
+                Assert.Throws<ArgumentNullException>(() => encryptor.TransformFinalBlock(null, 0, BlockSizeBytes));
+                Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes));
+                Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], 0, -1));
+                Assert.Throws<ArgumentException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], BlockSizeBytes, BlockSizeBytes));
             }
+            using var decryptor = transform.CreateDecryptor();
+            Assert.Throws<CryptographicException>(() => decryptor.TransformFinalBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes - 1));
         }
 
         [Fact]
@@ -104,52 +96,50 @@ namespace OpenGost.Security.Cryptography
                 from pt in crossPaddingTransformParameters
                 select new { CipherMode = c, pt.PaddingMode, pt.TransformMode };
 
-            using (var algorithm = new SimpleSymmetricAlgorithm())
+            using var algorithm = new SimpleSymmetricAlgorithm();
+
+            static void CheckValid(Func<SimpleSymmetricTransform> factory)
             {
-
-                void CheckValid(Func<SimpleSymmetricTransform> factory)
+                var transform = factory();
+                using (transform)
                 {
-                    var transform = factory();
-                    using (transform)
-                    {
-                        Assert.False(transform.DisposeCalled);
-                    }
-                    Assert.True(transform.DisposeCalled);
+                    Assert.False(transform.DisposeCalled);
                 }
-
-                void CheckInvalid(Type expectedExceptionType, Func<SimpleSymmetricTransform> factory) => Assert.Throws(expectedExceptionType, factory);
-
-                // All ctor parameters (without CTS)
-                foreach (var p in allSupportedParameters)
-                    CheckValid(() =>
-                        new SimpleSymmetricTransform(algorithm.Key, algorithm.IV, algorithm.BlockSize, CipherMode.ECB, p.PaddingMode, p.TransformMode));
-
-                // IV is null (ECB)
-                foreach (var p in crossPaddingTransformParameters)
-                    CheckValid(() =>
-                        new SimpleSymmetricTransform(algorithm.Key, null, algorithm.BlockSize, CipherMode.ECB, p.PaddingMode, p.TransformMode));
-
-                // CTS is invalid
-                foreach (var p in crossPaddingTransformParameters)
-                    CheckInvalid(typeof(CryptographicException), () =>
-                        new SimpleSymmetricTransform(algorithm.Key, algorithm.IV, algorithm.BlockSize, CipherMode.CTS, p.PaddingMode, p.TransformMode));
-
-                // Key is null
-                foreach (var p in allSupportedParameters)
-                    CheckInvalid(typeof(ArgumentNullException), () =>
-                        new SimpleSymmetricTransform(null, algorithm.IV, algorithm.BlockSize, p.CipherMode, p.PaddingMode, p.TransformMode));
-
-                // IV is null (CBC, CFB, OFB)
-                foreach (var p in reqiresIVParameters)
-                    CheckInvalid(typeof(ArgumentNullException), () =>
-                        new SimpleSymmetricTransform(algorithm.Key, null, algorithm.BlockSize, p.CipherMode, p.PaddingMode, p.TransformMode));
+                Assert.True(transform.DisposeCalled);
             }
+
+            static void CheckInvalid(Type expectedExceptionType, Func<SimpleSymmetricTransform> factory) => Assert.Throws(expectedExceptionType, factory);
+
+            // All ctor parameters (without CTS)
+            foreach (var p in allSupportedParameters)
+                CheckValid(() =>
+                    new SimpleSymmetricTransform(algorithm.Key, algorithm.IV, algorithm.BlockSize, CipherMode.ECB, p.PaddingMode, p.TransformMode));
+
+            // IV is null (ECB)
+            foreach (var p in crossPaddingTransformParameters)
+                CheckValid(() =>
+                    new SimpleSymmetricTransform(algorithm.Key, null, algorithm.BlockSize, CipherMode.ECB, p.PaddingMode, p.TransformMode));
+
+            // CTS is invalid
+            foreach (var p in crossPaddingTransformParameters)
+                CheckInvalid(typeof(CryptographicException), () =>
+                    new SimpleSymmetricTransform(algorithm.Key, algorithm.IV, algorithm.BlockSize, CipherMode.CTS, p.PaddingMode, p.TransformMode));
+
+            // Key is null
+            foreach (var p in allSupportedParameters)
+                CheckInvalid(typeof(ArgumentNullException), () =>
+                    new SimpleSymmetricTransform(null, algorithm.IV, algorithm.BlockSize, p.CipherMode, p.PaddingMode, p.TransformMode));
+
+            // IV is null (CBC, CFB, OFB)
+            foreach (var p in reqiresIVParameters)
+                CheckInvalid(typeof(ArgumentNullException), () =>
+                    new SimpleSymmetricTransform(algorithm.Key, null, algorithm.BlockSize, p.CipherMode, p.PaddingMode, p.TransformMode));
         }
 
         [Fact]
         public void EncryptAndDecryptPaddingNone()
         {
-            void Check(byte[] plainText)
+            static void Check(byte[] plainText)
             {
                 byte[] newPlainText;
 
@@ -174,7 +164,7 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void EncryptAndDecryptPaddingZeros()
         {
-            void Check(byte[] plainText)
+            static void Check(byte[] plainText)
             {
                 byte[] newPlainText;
 
@@ -200,7 +190,7 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void EncryptAndDecryptPaddingANSIX923()
         {
-            void Check(byte[] plainText)
+            static void Check(byte[] plainText)
             {
                 byte[] newPlainText, newPlainTextNoDepad;
 
@@ -242,7 +232,7 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void EncryptAndDecryptPaddingPKCS7()
         {
-            void Check(byte[] plainText)
+            static void Check(byte[] plainText)
             {
                 byte[] newPlainText, newPlainTextNoDepad;
 
@@ -284,7 +274,7 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void EncryptAndDecryptPaddingISO10126()
         {
-            void Check(byte[] plainText)
+            static void Check(byte[] plainText)
             {
                 byte[] newPlainText, newPlainTextNoDepad;
 
@@ -331,13 +321,11 @@ namespace OpenGost.Security.Cryptography
         private static byte[] InternalTransform(Func<ICryptoTransform> factory, byte[] input)
         {
             var memoryStream = new MemoryStream();
-            using (var transform = factory())
-            using (var cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Write))
-            {
-                cryptoStream.Write(input, 0, input.Length);
-                cryptoStream.FlushFinalBlock();
-                return memoryStream.ToArray();
-            }
+            using var transform = factory();
+            using var cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Write);
+            cryptoStream.Write(input, 0, input.Length);
+            cryptoStream.FlushFinalBlock();
+            return memoryStream.ToArray();
         }
 
         private class SimpleSymmetricAlgorithm : SymmetricAlgorithm

@@ -14,10 +14,9 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                 ResourceUtils.GetBinaryResource(
                     $"OpenGost.Security.Cryptography.Tests.Resources.{certificateName}.cer"));
 
-            using (var publicKey = certificate.GetECDsaPublicKey())
-            {
-                Assert.NotNull(publicKey);
-            }
+            using var publicKey = certificate.GetECDsaPublicKey();
+
+            Assert.NotNull(publicKey);
         }
     }
 }

@@ -11,13 +11,11 @@ namespace OpenGost.Security.Cryptography
 
         internal static byte[] GetBinaryResource(string resourceName)
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                using (var resourceStream = GetResourceStream(resourceName, Assembly.GetExecutingAssembly()))
-                    resourceStream.CopyTo(memoryStream);
+            using var memoryStream = new MemoryStream();
+            using (var resourceStream = GetResourceStream(resourceName, Assembly.GetExecutingAssembly()))
+                resourceStream.CopyTo(memoryStream);
 
-                return memoryStream.ToArray();
-            }
+            return memoryStream.ToArray();
         }
 
         private static Stream GetResourceStream(string resourceName)

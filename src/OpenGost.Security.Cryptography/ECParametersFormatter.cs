@@ -44,25 +44,23 @@ namespace OpenGost.Security.Cryptography
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         internal static ECParameters FromXml(string xmlString, int keyLength)
         {
-            using (var textReader = new StringReader(xmlString))
-            using (var reader = XmlReader.Create(textReader))
-            {
-                if (!reader.IsStartElement(ECDsaKeyValueTag, Namespace))
-                    throw new ArgumentException(CryptographicMissingECDsaKeyValue, nameof(xmlString));
-                reader.ReadStartElement();
+            using var textReader = new StringReader(xmlString);
+            using var reader = XmlReader.Create(textReader);
+            if (!reader.IsStartElement(ECDsaKeyValueTag, Namespace))
+                throw new ArgumentException(CryptographicMissingECDsaKeyValue, nameof(xmlString));
+            reader.ReadStartElement();
 
-                if (!reader.IsStartElement(DomainParametersTag, Namespace))
-                    throw new ArgumentException(CryptographicMissingDomainParameters, nameof(xmlString));
-                var curve = ReadDomainParameters(reader, keyLength);
+            if (!reader.IsStartElement(DomainParametersTag, Namespace))
+                throw new ArgumentException(CryptographicMissingDomainParameters, nameof(xmlString));
+            var curve = ReadDomainParameters(reader, keyLength);
 
-                if (!reader.IsStartElement(PublicKeyTag, Namespace))
-                    throw new ArgumentException(CryptographicMissingPublicKey, nameof(xmlString));
-                var publicKey = ReadECPoint(reader, PublicKeyTag, Namespace, keyLength);
+            if (!reader.IsStartElement(PublicKeyTag, Namespace))
+                throw new ArgumentException(CryptographicMissingPublicKey, nameof(xmlString));
+            var publicKey = ReadECPoint(reader, PublicKeyTag, Namespace, keyLength);
 
-                reader.ReadEndElement();
+            reader.ReadEndElement();
 
-                return new ECParameters { Curve = curve, Q = publicKey };
-            }
+            return new ECParameters { Curve = curve, Q = publicKey };
         }
 
         private static ECCurve ReadDomainParameters(XmlReader reader, int keyLength)

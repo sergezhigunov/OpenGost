@@ -19,51 +19,49 @@ namespace OpenGost.Security.Cryptography
         {
             var mscorlibVersion = typeof(CryptoConfig).Assembly.GetName().Version.ToString();
 
-            using (var reader = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Tests.Crypto.config"))
+            using var reader = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Tests.Crypto.config");
+            var document = new XPathDocument(reader);
+            var navigator = document.CreateNavigator();
+            var mscorlibIterator = navigator.Select("configuration/mscorlib");
+            XPathNavigator mscorlib = null;
+            while (mscorlibIterator.MoveNext())
             {
-                var document = new XPathDocument(reader);
-                var navigator = document.CreateNavigator();
-                var mscorlibIterator = navigator.Select("configuration/mscorlib");
-                XPathNavigator mscorlib = null;
-                while (mscorlibIterator.MoveNext())
+                var versionSpecificMscorlib = false;
+                var current = mscorlibIterator.Current;
+                var versionAttributeIterator = current.Select("@version");
+                while (versionAttributeIterator.MoveNext())
                 {
-                    var versionSpecificMscorlib = false;
-                    var current = mscorlibIterator.Current;
-                    var versionAttributeIterator = current.Select("@version");
-                    while (versionAttributeIterator.MoveNext())
+                    versionSpecificMscorlib = true;
+
+                    if (mscorlibVersion == versionAttributeIterator.Current.Value)
                     {
-                        versionSpecificMscorlib = true;
-
-                        if (mscorlibVersion == versionAttributeIterator.Current.Value)
-                        {
-                            mscorlib = current;
-                            break;
-                        }
-                    }
-
-                    if (!versionSpecificMscorlib)
                         mscorlib = current;
-
-                    if (mscorlib != null)
                         break;
+                    }
                 }
 
-                if (mscorlib == null)
-                    return;
+                if (!versionSpecificMscorlib)
+                    mscorlib = current;
 
-                var cryptographySettings = mscorlib.SelectSingleNode("cryptographySettings");
-
-                if (cryptographySettings == null)
-                    return;
-
-                var cryptoNameMapping = cryptographySettings.SelectSingleNode("cryptoNameMapping");
-                if (cryptoNameMapping != null)
-                    ConfigureCryptoNameMapping(cryptoNameMapping);
-
-                var oidMap = cryptographySettings.SelectSingleNode("oidMap");
-                if (oidMap != null)
-                    ConfigureOidMap(oidMap);
+                if (mscorlib != null)
+                    break;
             }
+
+            if (mscorlib == null)
+                return;
+
+            var cryptographySettings = mscorlib.SelectSingleNode("cryptographySettings");
+
+            if (cryptographySettings == null)
+                return;
+
+            var cryptoNameMapping = cryptographySettings.SelectSingleNode("cryptoNameMapping");
+            if (cryptoNameMapping != null)
+                ConfigureCryptoNameMapping(cryptoNameMapping);
+
+            var oidMap = cryptographySettings.SelectSingleNode("oidMap");
+            if (oidMap != null)
+                ConfigureOidMap(oidMap);
         }
 
         private static void ConfigureCryptoNameMapping(XPathNavigator cryptoNameMapping)

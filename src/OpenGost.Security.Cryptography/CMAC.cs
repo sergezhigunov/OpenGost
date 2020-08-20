@@ -316,17 +316,12 @@ namespace OpenGost.Security.Cryptography
 
         private static byte[] GetIrreduciblePolynomial(int blockSize)
         {
-            switch (blockSize)
+            return blockSize switch
             {
-                case 64:
-                    return _irreduciblePolynomial64;
-
-                case 128:
-                    return _irreduciblePolynomial128;
-
-                default:
-                    throw new CryptographicException(CryptographicInvalidBlockSize);
-            }
+                64 => _irreduciblePolynomial64,
+                128 => _irreduciblePolynomial128,
+                _ => throw new CryptographicException(CryptographicInvalidBlockSize),
+            };
         }
     }
 }

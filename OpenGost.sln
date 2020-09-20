@@ -42,6 +42,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9001C422
 		tools\Resources.tt = tools\Resources.tt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{689567F4-3622-4373-9F4E-32D5C51C56C0}"
+	ProjectSection(SolutionItems) = preProject
+		benchmarks\Directory.Build.props = benchmarks\Directory.Build.props
+		benchmarks\Directory.Build.targets = benchmarks\Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptography.Benchmarks", "benchmarks\OpenGost.Security.Cryptography.Benchmarks\OpenGost.Security.Cryptography.Benchmarks.csproj", "{26E62B0D-A094-4AA9-97E8-12D1677405DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +64,10 @@ Global
 		{F3588A93-87FB-4715-B491-85000A60EC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3588A93-87FB-4715-B491-85000A60EC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3588A93-87FB-4715-B491-85000A60EC54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26E62B0D-A094-4AA9-97E8-12D1677405DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26E62B0D-A094-4AA9-97E8-12D1677405DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26E62B0D-A094-4AA9-97E8-12D1677405DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26E62B0D-A094-4AA9-97E8-12D1677405DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +75,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9234D532-B975-4C2A-A3A5-C319C4334301} = {8B2273E6-40B9-4CFB-94E0-4523F39043DB}
 		{F3588A93-87FB-4715-B491-85000A60EC54} = {7213FB63-9C9A-44A9-A619-08A285AE7AB5}
+		{26E62B0D-A094-4AA9-97E8-12D1677405DB} = {689567F4-3622-4373-9F4E-32D5C51C56C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B3B4239-F721-4D41-8E9D-FB712341B7DA}

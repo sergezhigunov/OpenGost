@@ -211,7 +211,6 @@ namespace OpenGost.Security.Cryptography
         /// <param name="cbSize">
         /// The number of bytes in the array to use as data.
         /// </param>
-        [SuppressMessage("Microsoft.Usage", "CA2233:OperationsShouldNotOverflow", MessageId = "ibStart+64")]
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
             // Compute length of buffer

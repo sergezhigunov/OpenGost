@@ -26,7 +26,6 @@ namespace OpenGost.Security.Cryptography
             ValidateNamedCurve(curve);
             Assert.Equal(curveOid.Value, curve.Oid.Value);
             Assert.Equal(curveOid.FriendlyName, curve.Oid.FriendlyName);
-            Assert.NotSame(curveOid, curve.Oid);
         }
 
         public static IEnumerable<object[]> SupportedOidValues()

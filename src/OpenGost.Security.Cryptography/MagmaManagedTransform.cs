@@ -11,7 +11,6 @@ namespace OpenGost.Security.Cryptography
     /// This class cannot be inherited.
     /// </summary>
     [ComVisible(true)]
-    [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
     public sealed class MagmaManagedTransform : SymmetricTransform
     {
         #region Constants

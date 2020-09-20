@@ -39,7 +39,6 @@ namespace OpenGost.Security.Cryptography
         private const string XTag = "X";
         private const string YTag = "Y";
 
-        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         internal static ECParameters FromXml(string xmlString, int keyLength)
         {
             using var textReader = new StringReader(xmlString);

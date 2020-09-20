@@ -14,7 +14,6 @@ namespace OpenGost.Security.Cryptography
             ConfigureCryptography();
         }
 
-        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         private static void ConfigureCryptography()
         {
             var mscorlibVersion = typeof(CryptoConfig).Assembly.GetName().Version.ToString();

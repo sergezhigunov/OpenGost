@@ -25,7 +25,7 @@ namespace OpenGost.Security.Cryptography.Benchmarks
         public byte[] SignHash() => AsymmetricAlgorithm.SignHash(_hash);
 
         [Benchmark]
-        public bool DecryptData() => AsymmetricAlgorithm.VerifyHash(_hash, _signature);
+        public bool VerifyHash() => AsymmetricAlgorithm.VerifyHash(_hash, _signature);
 
         protected virtual void Dispose(bool disposing)
         {

@@ -15,12 +15,16 @@ namespace OpenGost.Security.Cryptography.Benchmarks
         private readonly byte[] _encryptedData;
         private bool _disposed;
 
-        protected T SymmetricAlgorithm = new T();
+        protected T SymmetricAlgorithm = new T { Padding = PaddingMode.Zeros };
 
         protected SymmetricAlgorithmBenchmark()
         {
             using var encryptor = SymmetricAlgorithm.CreateEncryptor();
-            _encryptedData = encryptor.TransformFinalBlock(_data, 0, _data.Length);
+            using var output = new MemoryStream();
+            using (var input = new MemoryStream(_data))
+            using (var cryptoStream = new CryptoStream(input, encryptor, CryptoStreamMode.Read))
+                cryptoStream.CopyTo(output);
+            _encryptedData = output.ToArray();
         }
 
         [Benchmark]

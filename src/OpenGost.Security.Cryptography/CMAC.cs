@@ -76,9 +76,11 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         /// <exception cref="CryptographicException">
         /// The current symmetric algorithm cannot be changed.
-        /// -or-
+        /// </exception>
+        /// <exception cref="CryptographicException">
         /// Unknown symmetric algorithm.
-        /// -or-
+        /// </exception>
+        /// <exception cref="CryptographicException">
         /// Specified symmetric block size is not valid for this algorithm.
         /// </exception>
         public string SymmetricAlgorithmName

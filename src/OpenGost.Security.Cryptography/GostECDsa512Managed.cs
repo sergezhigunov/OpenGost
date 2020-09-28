@@ -219,7 +219,8 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// The <paramref name="hash"/> parameter is <see langword="null"/>.
-        /// -or-
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
         /// The <paramref name="signature"/> parameter is <see langword="null"/>.
         /// </exception>
         public override bool VerifyHash(byte[] hash, byte[] signature)

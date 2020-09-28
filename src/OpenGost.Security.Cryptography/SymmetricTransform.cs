@@ -79,7 +79,8 @@ namespace OpenGost.Security.Cryptography
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="key"/> parameter is <see langword="null"/>.
-        /// -or-
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
         /// <paramref name="iv"/> parameter is <see langword="null"/> when <paramref name="cipherMode"/> value is
         /// <see cref="CipherMode.CBC"/>, <see cref="CipherMode.CFB"/> or <see cref="CipherMode.OFB"/>.
         /// </exception>
@@ -200,19 +201,23 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// The <paramref name="inputBuffer" /> parameter is <see langword="null"/>.
-        /// -or-
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
         /// The <paramref name="outputBuffer" /> parameter is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// The value of the <paramref name="inputOffset" /> parameter is negative.
-        /// -or-
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
         /// The value of the <paramref name="inputCount" /> parameter is non-positive.
-        /// -or-
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
         /// The value of the <paramref name="outputOffset" /> parameter is negative.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// The length of the input buffer is less than the sum of the input offset and the input count.
-        /// -or-
+        /// </exception>
+        /// <exception cref="ArgumentException">
         /// The value of the <paramref name="inputCount" /> parameter is greater than the length of the <paramref name="inputBuffer" /> parameter.
         /// </exception>
         /// <exception cref="CryptographicException">
@@ -287,7 +292,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// The value of the <paramref name="inputOffset" /> parameter is negative.
-        /// -or-
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
         /// The value of the <paramref name="inputCount" /> parameter is negative.
         /// </exception>
         /// <exception cref="ArgumentException">
@@ -295,7 +301,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         /// <exception cref="CryptographicException">
         /// The length of the <paramref name="inputCount" /> parameter is not evenly devisable by input block size.
-        /// -or-
+        /// </exception>
+        /// <exception cref="CryptographicException">
         /// The padding is invalid and cannot be removed.
         /// </exception>
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)

@@ -92,7 +92,8 @@ namespace OpenGost.Security.Cryptography
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="rgbHash"/> is <see langword="null"/>.
-        /// -or-
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
         /// <paramref name="rgbSignature"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="CryptographicUnexpectedOperationException">

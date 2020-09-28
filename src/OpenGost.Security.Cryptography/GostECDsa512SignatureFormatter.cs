@@ -53,7 +53,8 @@ namespace OpenGost.Security.Cryptography
         /// </exception>
         /// <exception cref="CryptographicUnexpectedOperationException">
         /// The OID is <see langword="null"/>.
-        /// -or-
+        /// </exception>
+        /// <exception cref="CryptographicUnexpectedOperationException">
         /// The <see cref="GostECDsa512"/> key is <see langword="null"/>.
         /// </exception>
         public override byte[] CreateSignature(byte[] rgbHash)

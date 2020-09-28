@@ -13,7 +13,7 @@ namespace OpenGost.Security.Cryptography
         private static RandomNumberGenerator _randomNumberGenerator;
 
         internal static RandomNumberGenerator StaticRandomNumberGenerator
-            => LazyInitializer.EnsureInitialized(ref _randomNumberGenerator, () => new RNGCryptoServiceProvider());
+            => LazyInitializer.EnsureInitialized(ref _randomNumberGenerator, RandomNumberGenerator.Create);
 
         internal static byte[] GenerateRandomBytes(int size)
         {

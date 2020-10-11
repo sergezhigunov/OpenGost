@@ -17,10 +17,10 @@ namespace OpenGost.Security.Cryptography
         private readonly PaddingMode _paddingMode;
 
         private byte[] _rgbKey;
-        private byte[] _rgbIV;
-        private byte[] _depadBuffer;
-        private byte[] _stateBuffer;
-        private byte[] _tempBuffer;
+        private byte[]? _rgbIV;
+        private byte[]? _depadBuffer;
+        private byte[]? _stateBuffer;
+        private byte[]? _tempBuffer;
         private bool _keyExpanded;
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace OpenGost.Security.Cryptography
         /// <exception cref="CryptographicException">
         /// <paramref name="cipherMode"/> parameter value is not supported.
         /// </exception>
-        protected SymmetricTransform(byte[] key, byte[] iv, int blockSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
+        protected SymmetricTransform(byte[] key, byte[]? iv, int blockSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
@@ -173,7 +173,7 @@ namespace OpenGost.Security.Cryptography
 
             if (_cipherMode == CipherMode.CBC || _cipherMode == CipherMode.CFB || _cipherMode == CipherMode.OFB)
             {
-                Buffer.BlockCopy(_rgbIV, 0, _stateBuffer, 0, _rgbIV.Length);
+                Buffer.BlockCopy(_rgbIV, 0, _stateBuffer, 0, _rgbIV!.Length);
             }
         }
 
@@ -243,11 +243,11 @@ namespace OpenGost.Security.Cryptography
             EnsureKeyExpanded();
 
             if (_transformMode == SymmetricTransformMode.Encrypt)
-                return EncryptData(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset, false);
+                return EncryptData(inputBuffer, inputOffset, inputCount, ref outputBuffer!, outputOffset, false);
             else
             {
                 if (_paddingMode == PaddingMode.Zeros || _paddingMode == PaddingMode.None)
-                    return DecryptData(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset, false);
+                    return DecryptData(inputBuffer, inputOffset, inputCount, ref outputBuffer!, outputOffset, false);
                 else
                 {
                     if (_depadBuffer == null)
@@ -257,16 +257,16 @@ namespace OpenGost.Security.Cryptography
                         var inputToProcess = inputCount - InputBlockSize;
                         Buffer.BlockCopy(inputBuffer, inputOffset + inputToProcess, _depadBuffer, 0, InputBlockSize);
 
-                        return DecryptData(inputBuffer, inputOffset, inputToProcess, ref outputBuffer, outputOffset, false);
+                        return DecryptData(inputBuffer, inputOffset, inputToProcess, ref outputBuffer!, outputOffset, false);
                     }
                     else
                     {
                         // we already have a depad buffer, so we need to decrypt that info first & copy it out
-                        DecryptData(_depadBuffer, 0, _depadBuffer.Length, ref outputBuffer, outputOffset, false);
+                        DecryptData(_depadBuffer, 0, _depadBuffer.Length, ref outputBuffer!, outputOffset, false);
                         outputOffset += OutputBlockSize;
                         var inputToProcess = inputCount - InputBlockSize;
                         Buffer.BlockCopy(inputBuffer, inputOffset + inputToProcess, _depadBuffer, 0, InputBlockSize);
-                        return OutputBlockSize + DecryptData(inputBuffer, inputOffset, inputToProcess, ref outputBuffer, outputOffset, false);
+                        return OutputBlockSize + DecryptData(inputBuffer, inputOffset, inputToProcess, ref outputBuffer!, outputOffset, false);
                     }
                 }
             }
@@ -318,22 +318,22 @@ namespace OpenGost.Security.Cryptography
 
             EnsureKeyExpanded();
 
-            byte[] transformedBytes = null;
+            byte[] transformedBytes = null!;
             if (_transformMode == SymmetricTransformMode.Encrypt)
-                EncryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes, 0, true);
+                EncryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes!, 0, true);
             else
             {
                 if (inputCount % InputBlockSize != 0)
                     throw new CryptographicException(CryptographyStrings.CryptographicInvalidDataSize);
 
                 if (_depadBuffer == null)
-                    DecryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes, 0, true);
+                    DecryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes!, 0, true);
                 else
                 {
                     var temp = new byte[_depadBuffer.Length + inputCount];
                     Buffer.BlockCopy(_depadBuffer, 0, temp, 0, _depadBuffer.Length);
                     Buffer.BlockCopy(inputBuffer, inputOffset, temp, _depadBuffer.Length, inputCount);
-                    DecryptData(temp, 0, temp.Length, ref transformedBytes, 0, true);
+                    DecryptData(temp, 0, temp.Length, ref transformedBytes!, 0, true);
                 }
             }
             Reset();
@@ -362,7 +362,7 @@ namespace OpenGost.Security.Cryptography
         {
             if (disposing)
             {
-                CryptoUtils.EraseData(ref _rgbKey);
+                CryptoUtils.EraseData(ref _rgbKey!);
                 CryptoUtils.EraseData(ref _rgbIV);
                 CryptoUtils.EraseData(ref _depadBuffer);
                 CryptoUtils.EraseData(ref _stateBuffer);
@@ -379,13 +379,13 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        private int EncryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[] outputBuffer, int outputOffset, bool isFinalTransform)
+        private int EncryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[]? outputBuffer, int outputOffset, bool isFinalTransform)
         {
             int
                 padSize = 0,
                 lonelyBytes = inputCount % InputBlockSize;
 
-            byte[] padBytes = null;
+            byte[]? padBytes = null;
 
             if (isFinalTransform)
             {
@@ -414,30 +414,30 @@ namespace OpenGost.Security.Cryptography
                 case CipherMode.CBC:
                     for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
-                        CryptoUtils.Xor(_stateBuffer, 0, inputBuffer, inputOffset + shift, _tempBuffer, 0, InputBlockSize);
-                        EncryptBlock(_tempBuffer, 0, outputBuffer, outputOffset + shift);
-                        Buffer.BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
-                        Buffer.BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
+                        CryptoUtils.Xor(_stateBuffer!, 0, inputBuffer, inputOffset + shift, _tempBuffer!, 0, InputBlockSize);
+                        EncryptBlock(_tempBuffer!, 0, outputBuffer, outputOffset + shift);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
                 case CipherMode.CFB:
                     for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
-                        EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                        CryptoUtils.Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
-                        Buffer.BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
+                        EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
+                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
                 case CipherMode.OFB:
                     for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
-                        EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                        CryptoUtils.Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
-                        Buffer.BlockCopy(_tempBuffer, 0, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
+                        EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
+                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(_tempBuffer!, 0, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
@@ -446,7 +446,7 @@ namespace OpenGost.Security.Cryptography
             }
 
             if (padSize != 0)
-                EncryptPaddedBlock(inputBuffer, inputOffset, outputBuffer, outputOffset, padSize, lonelyBytes, padBytes, shift);
+                EncryptPaddedBlock(inputBuffer, inputOffset, outputBuffer, outputOffset, padSize, lonelyBytes, padBytes!, shift);
 
             return inputCount + padSize;
         }
@@ -472,14 +472,14 @@ namespace OpenGost.Security.Cryptography
                     break;
 
                 case CipherMode.CBC:
-                    CryptoUtils.Xor(_stateBuffer, 0, tmpInputBuffer, 0, _tempBuffer, 0, InputBlockSize);
-                    EncryptBlock(_tempBuffer, 0, outputBuffer, outputOffset + shift);
+                    CryptoUtils.Xor(_stateBuffer!, 0, tmpInputBuffer, 0, _tempBuffer!, 0, InputBlockSize);
+                    EncryptBlock(_tempBuffer!, 0, outputBuffer, outputOffset + shift);
                     break;
 
                 case CipherMode.CFB:
                 case CipherMode.OFB:
-                    EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                    CryptoUtils.Xor(_tempBuffer, 0, tmpInputBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
+                    EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
+                    CryptoUtils.Xor(_tempBuffer!, 0, tmpInputBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
                     break;
 
                 default:
@@ -487,10 +487,10 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        private byte[] CreatePadding(int lonelyBytes)
+        private byte[]? CreatePadding(int lonelyBytes)
         {
             var padSize = 0;
-            byte[] padBytes = null;
+            byte[]? padBytes = null;
 
             // check the padding mode and make sure we have enough outputBuffer to handle any padding we have to do
             switch (_paddingMode)
@@ -547,7 +547,7 @@ namespace OpenGost.Security.Cryptography
             return padBytes;
         }
 
-        private int DecryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[] outputBuffer, int outputOffset, bool isFinalTransform)
+        private int DecryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[]? outputBuffer, int outputOffset, bool isFinalTransform)
         {
             if (outputBuffer == null)
             {
@@ -567,30 +567,30 @@ namespace OpenGost.Security.Cryptography
                 case CipherMode.CBC:
                     for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
-                        DecryptBlock(inputBuffer, inputOffset + shift, _tempBuffer, 0);
-                        CryptoUtils.Xor(_stateBuffer, 0, _tempBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
-                        Buffer.BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
+                        DecryptBlock(inputBuffer, inputOffset + shift, _tempBuffer!, 0);
+                        CryptoUtils.Xor(_stateBuffer!, 0, _tempBuffer!, 0, outputBuffer, outputOffset + shift, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
                 case CipherMode.CFB:
                     for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
-                        EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                        CryptoUtils.Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
-                        Buffer.BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
+                        EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
+                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
                 case CipherMode.OFB:
                     for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
-                        EncryptBlock(_stateBuffer, 0, _tempBuffer, 0);
-                        CryptoUtils.Xor(_tempBuffer, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer, InputBlockSize, _stateBuffer, 0, _rgbIV.Length - InputBlockSize);
-                        Buffer.BlockCopy(_tempBuffer, 0, _stateBuffer, _rgbIV.Length - InputBlockSize, InputBlockSize);
+                        EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
+                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(_tempBuffer!, 0, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 

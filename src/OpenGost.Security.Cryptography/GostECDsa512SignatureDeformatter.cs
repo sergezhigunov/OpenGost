@@ -11,8 +11,8 @@ namespace OpenGost.Security.Cryptography
     [ComVisible(true)]
     public class GostECDsa512SignatureDeformatter : AsymmetricSignatureDeformatter
     {
-        private readonly string _oid;
-        private GostECDsa512 _key;
+        private readonly string? _oid;
+        private GostECDsa512? _key;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsa512SignatureDeformatter"/> class.

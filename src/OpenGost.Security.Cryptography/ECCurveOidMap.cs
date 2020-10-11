@@ -453,9 +453,9 @@ namespace OpenGost.Security.Cryptography
 
         #endregion
 
-        private static volatile Dictionary<string, ECCurve> _ecCurveOidDictionary;
+        private static volatile IReadOnlyDictionary<string, ECCurve>? _ecCurveOidDictionary;
 
-        private static Dictionary<string, ECCurve> ECCurveOidDictionary
+        private static IReadOnlyDictionary<string, ECCurve> ECCurveOidDictionary
         {
             get
             {

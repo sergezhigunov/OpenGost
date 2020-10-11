@@ -9,11 +9,11 @@ namespace OpenGost.Security.Cryptography
         private readonly int _blockSize;
         private readonly HashAlgorithm _hash1;
         private readonly HashAlgorithm _hash2;
-        private byte[] _inner;
-        private byte[] _outer;
+        private byte[] _inner = null!;
+        private byte[] _outer = null!;
         private bool _hashing;
 
-        public byte[] ActualKey { get; private set; }
+        public byte[] ActualKey { get; private set; } = null!;
         public int HashSize => _hash1.HashSize;
         public string HashName { get; }
 
@@ -86,8 +86,8 @@ namespace OpenGost.Security.Cryptography
                     _hash1.Dispose();
                 if (_hash2 != null)
                     _hash2.Dispose();
-                CryptoUtils.EraseData(ref _inner);
-                CryptoUtils.EraseData(ref _outer);
+                CryptoUtils.EraseData(ref _inner!);
+                CryptoUtils.EraseData(ref _outer!);
             }
         }
 

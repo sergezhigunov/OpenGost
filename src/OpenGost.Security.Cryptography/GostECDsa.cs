@@ -17,7 +17,7 @@ namespace OpenGost.Security.Cryptography
         /// <value>
         /// Always <see langword="null"/>.
         /// </value>
-        public override string KeyExchangeAlgorithm => null;
+        public override string? KeyExchangeAlgorithm => null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsa"/> class.

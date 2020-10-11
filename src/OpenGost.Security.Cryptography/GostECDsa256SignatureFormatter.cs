@@ -11,8 +11,8 @@ namespace OpenGost.Security.Cryptography
     [ComVisible(true)]
     public class GostECDsa256SignatureFormatter : AsymmetricSignatureFormatter
     {
-        private readonly string _oid;
-        private GostECDsa256 _key;
+        private readonly string? _oid;
+        private GostECDsa256? _key;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GostECDsa256SignatureFormatter"/> class.

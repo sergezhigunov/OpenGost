@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
@@ -39,11 +38,11 @@ namespace OpenGost.Security.Cryptography
 
         #endregion
 
-        private uint[] _keyExpansion;
+        private uint[]? _keyExpansion;
 
         internal MagmaManagedTransform(
             byte[] rgbKey,
-            byte[] rgbIV,
+            byte[]? rgbIV,
             int blockSize,
             CipherMode cipherMode,
             PaddingMode paddingMode,

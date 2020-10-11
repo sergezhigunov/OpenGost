@@ -26,15 +26,16 @@ namespace OpenGost.Security.Cryptography
 
         #endregion
 
-        private SymmetricAlgorithm _symmetricAlgorithm;
-        private ICryptoTransform _encryptor;
-        private byte[]
+        private SymmetricAlgorithm _symmetricAlgorithm = null!;
+        private ICryptoTransform? _encryptor;
+        private byte[]?
             _subkey1,
-            _subkey2,
-            _buffer,
-            _temp,
-            _irreduciblePolynomial;
-        private string _symmetricAlgorithmName;
+            _subkey2;
+        private byte[]
+            _buffer = null!,
+            _temp = null!,
+            _irreduciblePolynomial = null!;
+        private string _symmetricAlgorithmName = null!;
         private int _bytesPerBlock;
         private int _bufferLength;
         private bool _hashing;
@@ -165,19 +166,19 @@ namespace OpenGost.Security.Cryptography
                 Buffer.BlockCopy(array, ibStart, _buffer, _bufferLength, bytesToCopy);
                 ibStart += bytesToCopy;
                 cbSize -= bytesToCopy;
-                _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
+                _encryptor!.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
                 _bufferLength = 0;
             }
 
             if (cbSize >= _bytesPerBlock && _bufferLength == _bytesPerBlock)
             {
-                _encryptor.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
+                _encryptor!.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
                 _bufferLength = 0;
             }
 
             while (cbSize > _bytesPerBlock)
             {
-                _encryptor.TransformBlock(array, ibStart, _bytesPerBlock, _temp, 0);
+                _encryptor!.TransformBlock(array, ibStart, _bytesPerBlock, _temp, 0);
                 ibStart += _bytesPerBlock;
                 cbSize -= _bytesPerBlock;
             }
@@ -200,16 +201,16 @@ namespace OpenGost.Security.Cryptography
             EnsureEncryptorInitialized();
 
             if (_bufferLength == _bytesPerBlock)
-                CryptoUtils.Xor(_buffer, 0, _subkey1, 0, _buffer, 0, _bytesPerBlock);
+                CryptoUtils.Xor(_buffer, 0, _subkey1!, 0, _buffer, 0, _bytesPerBlock);
             else
             {
                 // By definition, special padding
                 _buffer[_bufferLength] = 0x80;
                 Array.Clear(_buffer, _bufferLength, _bytesPerBlock - _bufferLength - 1);
 
-                CryptoUtils.Xor(_buffer, 0, _subkey2, 0, _buffer, 0, _bytesPerBlock);
+                CryptoUtils.Xor(_buffer, 0, _subkey2!, 0, _buffer, 0, _bytesPerBlock);
             }
-            var result = _encryptor.TransformFinalBlock(_buffer, 0, _bytesPerBlock);
+            var result = _encryptor!.TransformFinalBlock(_buffer, 0, _bytesPerBlock);
             _hashing = false;
             return result;
         }
@@ -230,8 +231,8 @@ namespace OpenGost.Security.Cryptography
                 _encryptor?.Dispose();
                 CryptoUtils.EraseData(ref _subkey1);
                 CryptoUtils.EraseData(ref _subkey2);
-                CryptoUtils.EraseData(ref _buffer);
-                CryptoUtils.EraseData(ref _temp);
+                CryptoUtils.EraseData(ref _buffer!);
+                CryptoUtils.EraseData(ref _temp!);
             }
 
             base.Dispose(disposing);
@@ -278,7 +279,7 @@ namespace OpenGost.Security.Cryptography
         private void GenerateSubkeys()
         {
             _subkey2 = new byte[_bytesPerBlock];
-            _subkey1 = _encryptor.TransformFinalBlock(_subkey2, 0, _bytesPerBlock);
+            _subkey1 = _encryptor!.TransformFinalBlock(_subkey2, 0, _bytesPerBlock);
             if (!_encryptor.CanReuseTransform)
             {
                 _encryptor.Dispose();

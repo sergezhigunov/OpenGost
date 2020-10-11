@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -73,11 +72,11 @@ namespace OpenGost.Security.Cryptography
 
         #endregion
 
-        private byte[][] _keyExpansion;
+        private byte[]?[]? _keyExpansion;
 
         internal GrasshopperManagedTransform(
             byte[] rgbKey,
-            byte[] rgbIV,
+            byte[]? rgbIV,
             int blockSize,
             CipherMode cipherMode,
             PaddingMode paddingMode,
@@ -97,7 +96,7 @@ namespace OpenGost.Security.Cryptography
             _keyExpansion = new byte[10][]
             {
                 new byte[16], new byte[16],
-                null, null, null, null, null, null, null, null
+                null!, null!, null!, null!, null!, null!, null!, null!
             };
             Buffer.BlockCopy(key, 0, _keyExpansion[0], 0, 16);
             Buffer.BlockCopy(key, 16, _keyExpansion[1], 0, 16);
@@ -117,8 +116,8 @@ namespace OpenGost.Security.Cryptography
                 {
                     for (var i = 0; i < 4; i++)
                     {
-                        _keyExpansion[2 * i + 2] = (byte[])_keyExpansion[2 * i].Clone();
-                        _keyExpansion[2 * i + 3] = (byte[])_keyExpansion[2 * i + 1].Clone();
+                        _keyExpansion[2 * i + 2] = (byte[])_keyExpansion[2 * i]!.Clone();
+                        _keyExpansion[2 * i + 3] = (byte[])_keyExpansion[2 * i + 1]!.Clone();
 
                         fixed (byte* l = _keyExpansion[2 * i + 2], h = _keyExpansion[2 * i + 3])
                         {
@@ -178,7 +177,7 @@ namespace OpenGost.Security.Cryptography
             unsafe
             {
                 fixed (byte* input = inputBuffer, output = outputBuffer)
-                    EncryptBlock(_keyExpansion, input + inputOffset, output + outputOffset);
+                    EncryptBlock(_keyExpansion!, input + inputOffset, output + outputOffset);
             }
         }
 
@@ -203,7 +202,7 @@ namespace OpenGost.Security.Cryptography
             unsafe
             {
                 fixed (byte* input = inputBuffer, output = outputBuffer)
-                    DecryptBlock(_keyExpansion, input + inputOffset, output + outputOffset);
+                    DecryptBlock(_keyExpansion!, input + inputOffset, output + outputOffset);
             }
         }
 

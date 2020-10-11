@@ -16,7 +16,7 @@ namespace OpenGost.Security.Cryptography
 
         private ECCurve _curve;
         private ECPoint _publicKey;
-        private byte[] _privateKey;
+        private byte[]? _privateKey;
         private bool
             _parametersSet,
             _disposed;

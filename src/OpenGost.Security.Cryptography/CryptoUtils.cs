@@ -10,10 +10,10 @@ namespace OpenGost.Security.Cryptography
 {
     internal static class CryptoUtils
     {
-        private static RandomNumberGenerator _randomNumberGenerator;
+        private static RandomNumberGenerator? _randomNumberGenerator;
 
         internal static RandomNumberGenerator StaticRandomNumberGenerator
-            => LazyInitializer.EnsureInitialized(ref _randomNumberGenerator, RandomNumberGenerator.Create);
+            => LazyInitializer.EnsureInitialized(ref _randomNumberGenerator, RandomNumberGenerator.Create)!;
 
         internal static byte[] GenerateRandomBytes(int size)
         {
@@ -22,7 +22,7 @@ namespace OpenGost.Security.Cryptography
             return array;
         }
 
-        internal static T[] CloneArray<T>(T[] source)
+        internal static T[]? CloneArray<T>(T[]? source)
             => source == null ? null : (T[])source.Clone();
 
         internal static T[] Subarray<T>(this T[] value, int startIndex)
@@ -44,14 +44,14 @@ namespace OpenGost.Security.Cryptography
                     Array.Empty<T>();
 
             if (startIndex == 0 && length == value.Length)
-                return CloneArray(value);
+                return CloneArray(value)!;
 
             var result = new T[length];
             Array.Copy(value, startIndex, result, 0, length);
             return result;
         }
 
-        internal static void EraseData<T>(ref T[] data)
+        internal static void EraseData<T>(ref T[]? data)
             where T : struct
         {
             if (data != null)
@@ -61,7 +61,7 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        internal static void EraseData<T>(ref T[][] data)
+        internal static void EraseData<T>(ref T[]?[]? data)
             where T : struct
         {
             if (data != null)

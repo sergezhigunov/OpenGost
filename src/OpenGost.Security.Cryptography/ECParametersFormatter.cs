@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Numerics;
@@ -98,21 +97,21 @@ namespace OpenGost.Security.Cryptography
         {
             reader.ReadStartElement(ExplicitParamsTag, Namespace);
             reader.MoveToContent();
-            byte[]
-                prime = ReadPrimeFieldParameters(reader, FieldParamsTag, Namespace, keyLength), a, b, order, cofactor;
+            var prime = ReadPrimeFieldParameters(reader, FieldParamsTag, Namespace, keyLength);
             reader.MoveToContent();
             reader.ReadStartElement(CurveParamsTag, Namespace);
             reader.MoveToContent();
-            a = ReadPrimeFieldElement(reader, ATag, Namespace, keyLength);
+            var a = ReadPrimeFieldElement(reader, ATag, Namespace, keyLength);
             reader.MoveToContent();
-            b = ReadPrimeFieldElement(reader, BTag, Namespace, keyLength);
+            var b = ReadPrimeFieldElement(reader, BTag, Namespace, keyLength);
             reader.ReadEndElement();
             reader.MoveToContent();
             reader.ReadStartElement(BasePointParamsTag, Namespace);
             reader.MoveToContent();
             var baseBoint = ReadECPoint(reader, BasePointTag, Namespace, keyLength);
             reader.MoveToContent();
-            order = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture), keyLength);
+            var order = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture), keyLength);
+            byte[]? cofactor;
             if (reader.IsStartElement(CofactorTag, Namespace))
                 cofactor = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture), keyLength);
             else cofactor = null;

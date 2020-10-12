@@ -6,7 +6,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class SymmetricTransformTests
+    public class SymmetricTransformFacts
     {
         protected const int BlockSizeBits = 64;
         protected const int BlockSizeBytes = BlockSizeBits / 8;

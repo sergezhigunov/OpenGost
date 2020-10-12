@@ -3,12 +3,12 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
-    public class GostECDsaCertificateExtensionsTests : CryptoConfigRequiredTest
+    public class GostECDsaCertificateExtensionsFacts : CryptoConfigRequiredTest
     {
         [Theory]
         [InlineData("GostECDsa256")]
         [InlineData("GostECDsa512")]
-        public void GetPublicKeyFromX509Certificate2(string certificateName)
+        public void GetECDsaPublicKey_ReturnsPublicKey(string certificateName)
         {
             var certificate = new X509Certificate2(
                 ResourceUtils.GetBinaryResource(

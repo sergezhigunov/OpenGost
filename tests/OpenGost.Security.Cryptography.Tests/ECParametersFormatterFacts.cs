@@ -8,7 +8,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class ECParametersFormatterTests
+    public class ECParametersFormatterFacts
     {
         [ExcludeFromCodeCoverage]
         private static XmlSchemaSet ECDsaXmlSchemaSet { get; } = LoadECDsaXmlSchemaSet();

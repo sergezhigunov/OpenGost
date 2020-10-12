@@ -2,7 +2,7 @@
 
 namespace OpenGost.Security.Cryptography
 {
-    public class CmacMagmaTests : CmacTest<CMACMagma>
+    public class CmacMagmaFacts : CmacTest<CMACMagma>
     {
         [Theory]
         [InlineData(

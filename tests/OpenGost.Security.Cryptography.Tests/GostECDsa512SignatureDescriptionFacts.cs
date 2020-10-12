@@ -2,10 +2,10 @@
 
 namespace OpenGost.Security.Cryptography
 {
-    public class GostECDsa512SignatureDescriptionTests : SignatureDescriptionTest<GostECDsa512SignatureDescription>
+    public class GostECDsa512SignatureDescriptionFacts : SignatureDescriptionTest<GostECDsa512SignatureDescription>
     {
         [Fact]
-        public void ValidateCreateDigest()
+        public void CreateDigest_CreatesValidHashAlgorithm()
         {
             using var digest = CreateDigest();
 
@@ -14,7 +14,7 @@ namespace OpenGost.Security.Cryptography
         }
 
         [Fact]
-        public void ValidateCreateDeformatter()
+        public void CreateDeformatter_CreatesValidDeformatter()
         {
             var deformatter = CreateDeformatter(GostECDsa512.Create());
 
@@ -23,7 +23,7 @@ namespace OpenGost.Security.Cryptography
         }
 
         [Fact]
-        public void ValidateCreateFormatter()
+        public void CreateFormatter_CreatesValidFormatter()
         {
             var formatter = CreateFormatter(GostECDsa512.Create());
 

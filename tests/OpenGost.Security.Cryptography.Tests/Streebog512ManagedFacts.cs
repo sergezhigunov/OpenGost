@@ -2,7 +2,7 @@
 
 namespace OpenGost.Security.Cryptography
 {
-    public class Streebog512ManagedTests : HashAlgorithmTest<Streebog512Managed>
+    public class Streebog512ManagedFacts : HashAlgorithmTest<Streebog512Managed>
     {
         [Theory]
         [InlineData(

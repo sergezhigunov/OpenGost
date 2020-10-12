@@ -5,11 +5,11 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class CreationFactoriesTests : CryptoConfigRequiredTest
+    public class CreationFactoriesFacts : CryptoConfigRequiredTest
     {
         [Theory]
         [MemberData(nameof(ImplicitCreateFactories))]
-        public void ImplicitCreateFactoriesTest(Type expectedType, Func<object> factory)
+        public void CreateImplicit_ReturnsValidInstance(Type expectedType, Func<object> factory)
         {
             var obj = factory.Invoke();
             try
@@ -25,7 +25,7 @@ namespace OpenGost.Security.Cryptography
 
         [Theory]
         [MemberData(nameof(ExplicitCreateFactories))]
-        public void ExplicitCreateFactoriesTest(Type expectedType, Func<string, object> factory, string objectName)
+        public void CreateExplicit_ReturnsValidInstance(Type expectedType, Func<string, object> factory, string objectName)
         {
             var obj = factory.Invoke(objectName);
             try

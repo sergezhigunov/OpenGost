@@ -3,7 +3,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class MagmaTests : SymmetricAlgorithmTest<MagmaManaged>
+    public class MagmaFacts : SymmetricAlgorithmTest<MagmaManaged>
     {
         private const string
             PlainText = "92def06b3c130a59db54c704f8189d204a98fb2e67a8024c8912409b17b57e41",

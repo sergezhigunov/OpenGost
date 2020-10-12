@@ -4,20 +4,19 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-
-    public class GostECDsa256ManagedTests : GostECDsaTest<GostECDsa256Managed>
+    public class GostECDsa512ManagedFacts : GostECDsaTest<GostECDsa512Managed>
     {
-        #region 256-bit test domain parameters as described in GOST 34.10-2012
+        #region 512-bit test domain parameters as described in GOST 34.10-2012
 
-        private static ECParameters TestDomainParameters256 { get; } = new ECParameters
+        private static ECParameters TestDomainParameters512 { get; } = new ECParameters
         {
-            Curve = ECCurveOidMap.GetExplicitCurveByOid("1.2.643.7.1.2.1.1.0"),
+            Curve = ECCurveOidMap.GetExplicitCurveByOid("1.2.643.7.1.2.1.2.0"),
             Q = new ECPoint
             {
-                X = "0bd86fe5d8db89668f789b4e1dba8585c5508b45ec5b59d8906ddb70e2492b7f".HexToByteArray(),
-                Y = "da77ff871a10fbdf2766d293c5d164afbb3c7b973a41c885d11d70d689b4f126".HexToByteArray(),
+                X = "e1ef30d52c6133ddd99d1d5c41455cf7df4d8b4c925bbc69af1433d15658515add2146850c325c5b81c133be655aa8c4d440e7b98a8d59487b0c7696bcc55d11".HexToByteArray(),
+                Y = "ecbe7736a9ec357ff2fd39931f4e114cb8cda359270ac7f0e7ff43d9419419ea61fd2ab77f5d9f63523d3b50a04f63e2a0cf51b7c13adc21560f0bd40cc9c737".HexToByteArray(),
             },
-            D = "283bec9198ce191dee7e39491f96601bc1729ad39d35ed10beb99b78de9a927a".HexToByteArray(),
+            D = "d48da11f826729c6dfaa18fd7b6b63a214277e82d2da223356a000223b12e87220108b508e50e70e70694651e8a09130c9d75677d43609a41b24aead8a04a60b".HexToByteArray(),
         };
 
         #endregion
@@ -47,7 +46,7 @@ namespace OpenGost.Security.Cryptography
             => base.CheckKeyExchangeAlgorithmProperty();
 
         [Theory]
-        [InlineData(CryptoConstants.GostECDsa256AlgorithmName)]
+        [InlineData(CryptoConstants.GostECDsa512AlgorithmName)]
         public override void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
             => base.CheckSignatureAlgorithmProperty(expectedSignatureAlgorithm);
 
@@ -58,49 +57,49 @@ namespace OpenGost.Security.Cryptography
 
         [Fact]
         public override void CheckDefaultKeyGeneration()
-           => base.CheckDefaultKeyGeneration();
+            => base.CheckDefaultKeyGeneration();
 
         [Theory]
         [MemberData(nameof(RealImplementations))]
-        public override void SignHashNullHashThrowsArgumentNullException(GostECDsa256Managed algorithm)
-           => base.SignHashNullHashThrowsArgumentNullException(algorithm);
+        public override void SignHashNullHashThrowsArgumentNullException(GostECDsa512Managed algorithm)
+            => base.SignHashNullHashThrowsArgumentNullException(algorithm);
 
         [Theory]
         [MemberData(nameof(RealImplementations))]
-        public override void VerifyHashNullHashThrowsArgumentNullException(GostECDsa256Managed algorithm)
+        public override void VerifyHashNullHashThrowsArgumentNullException(GostECDsa512Managed algorithm)
             => base.VerifyHashNullHashThrowsArgumentNullException(algorithm);
 
         [Theory]
         [MemberData(nameof(RealImplementations))]
-        public override void VerifyHashNullSignatureThrowsArgumentNullException(GostECDsa256Managed algorithm)
+        public override void VerifyHashNullSignatureThrowsArgumentNullException(GostECDsa512Managed algorithm)
             => base.VerifyHashNullSignatureThrowsArgumentNullException(algorithm);
 
         public static IEnumerable<object[]> TestDomainParameters()
         {
             return new[]
             {
-                new object[]  { TestDomainParameters256, },
+                new object[]  { TestDomainParameters512, },
             };
         }
 
-        // 256-bit test cases as described in GOST 34.10-2012
+        // 512-bit test cases as described in GOST 34.10-2012
         public static IEnumerable<object[]> TestCases()
         {
             return new[]
             {
                 new object[]
                 {
-                    TestDomainParameters256,
-                    "e53e042b67e6ec678e2e02b12a0352ce1fc6eee0529cc088119ad872b3c1fb2d", // hash
-                    "409cbfc5f6148092df31b646f7d3d6bc4902a6985a233c65a14246ba646c4501" + // s
-                    "9304dc39fd43d03ab86727a45435057419a4ed6fd59ecd808214abf1d228aa41" // r
+                    TestDomainParameters512,
+                    "8c5b0772297d77c64f0c561ddbde7a405a5d7c646c97394341f4936553ee847191c5b03570141da733c570c1f9b6091b53ab8d4d7c4a4f5c61e0c9accff35437", // hash
+                    "4a5b3ee7bd53982ab99c91561feb6e6a40ce707fdf80605262f3c4e888e23c82f52fd533e9fb0b1c08bcad8a77565f32b6262d36a9e785658efe6f6994b38110" + // s
+                    "36ae73e14493e117335c9ccdcb3bc96002859906c997c19e1c0fb28684559254d3acfca8ee783c64c2dce02ec8a312e59e683c1e5e79dd231a0981a060fa862f" // r
                 },
             };
         }
 
         public static IEnumerable<object[]> RealImplementations()
         {
-            yield return new[] { new GostECDsa256Managed() };
+            yield return new[] { new GostECDsa512Managed() };
         }
     }
 }

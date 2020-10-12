@@ -5,11 +5,11 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class ECCurveTests : CryptoConfigRequiredTest
+    public class ECCurveFacts : CryptoConfigRequiredTest
     {
         [Theory]
         [MemberData(nameof(SupportedOidValues))]
-        public void CreateFromValue(string oidValue)
+        public void CreateFromValue_CreatesValidInstance(string oidValue)
         {
             var curve = ECCurve.CreateFromValue(oidValue);
 
@@ -19,7 +19,7 @@ namespace OpenGost.Security.Cryptography
 
         [Theory]
         [MemberData(nameof(SupportedOids))]
-        public void CreateFromOid(Oid curveOid)
+        public void CreateFromOid_CreatesValidInstance(Oid curveOid)
         {
             var curve = ECCurve.CreateFromOid(curveOid);
 

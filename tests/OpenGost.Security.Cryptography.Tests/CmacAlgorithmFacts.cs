@@ -4,10 +4,10 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public class CmacAlgorithmTests
+    public class CmacAlgorithmFacts
     {
         [Fact]
-        public void SetNullOrEmptyAlgorithmName()
+        public void SymmetricAlgorithmName_SetThrows_IfValueIsNullOrEmpty()
         {
             using CMAC cmac = new TestCMAC();
 
@@ -17,7 +17,7 @@ namespace OpenGost.Security.Cryptography
         }
 
         [Fact]
-        public void SetUnknownAlgorithmName()
+        public void SymmetricAlgorithmName_SetThrows_IfValueIsInvalid()
         {
             using CMAC cmac = new TestCMAC();
             const string unknownAlgorithmName = "No known algorithm name has spaces, so this better be invalid...";

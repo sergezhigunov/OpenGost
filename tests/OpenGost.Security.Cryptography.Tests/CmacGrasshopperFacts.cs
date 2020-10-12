@@ -2,7 +2,7 @@
 
 namespace OpenGost.Security.Cryptography
 {
-    public class CmacGrasshopperTests : CmacTest<CMACGrasshopper>
+    public class CmacGrasshopperFacts : CmacTest<CMACGrasshopper>
     {
         [Theory]
         [InlineData(

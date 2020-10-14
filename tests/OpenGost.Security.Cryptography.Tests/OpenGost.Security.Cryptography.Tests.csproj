@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net48;net5;netcoreapp3.1</TargetFrameworks>
+    <RootNamespace>OpenGost.Security.Cryptography</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

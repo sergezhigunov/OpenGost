@@ -12,7 +12,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         {
             var certificate = new X509Certificate2(
                 ResourceUtils.GetBinaryResource(
-                    $"OpenGost.Security.Cryptography.Tests.Resources.{certificateName}.cer"));
+                    $"OpenGost.Security.Cryptography.Resources.{certificateName}.cer"));
 
             using var publicKey = certificate.GetECDsaPublicKey();
 

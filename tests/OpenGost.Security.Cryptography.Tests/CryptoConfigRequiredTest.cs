@@ -18,7 +18,7 @@ namespace OpenGost.Security.Cryptography
         {
             var mscorlibVersion = typeof(CryptoConfig).Assembly.GetName().Version.ToString();
 
-            using var reader = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Tests.Crypto.config");
+            using var reader = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Crypto.config");
             var document = new XPathDocument(reader);
             var navigator = document.CreateNavigator();
             var mscorlibIterator = navigator.Select("configuration/mscorlib");

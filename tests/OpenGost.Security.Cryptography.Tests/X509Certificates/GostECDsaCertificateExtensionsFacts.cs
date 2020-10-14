@@ -8,13 +8,13 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         [Theory]
         [InlineData("GostECDsa256")]
         [InlineData("GostECDsa512")]
-        public void GetECDsaPublicKey_ReturnsPublicKey(string certificateName)
+        public void GetGostECDsaPublicKey_ReturnsPublicKey(string certificateName)
         {
             var certificate = new X509Certificate2(
                 ResourceUtils.GetBinaryResource(
                     $"OpenGost.Security.Cryptography.Resources.{certificateName}.cer"));
 
-            using var publicKey = certificate.GetECDsaPublicKey();
+            using var publicKey = certificate.GetGostECDsaPublicKey();
 
             Assert.NotNull(publicKey);
         }

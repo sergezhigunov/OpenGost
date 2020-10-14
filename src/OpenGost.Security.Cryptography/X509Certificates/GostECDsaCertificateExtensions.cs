@@ -27,7 +27,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         /// <exception cref="CryptographicException">
         /// The handle is invalid.
         /// </exception>
-        public static GostECDsa? GetECDsaPublicKey(this X509Certificate2 certificate)
+        public static GostECDsa? GetGostECDsaPublicKey(this X509Certificate2 certificate)
         {
             if (certificate == null)
                 throw new ArgumentNullException(nameof(certificate));
@@ -36,33 +36,25 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                 return null;
 
             var publicKey = certificate.PublicKey;
-
-            GostECDsa result;
-            switch (publicKey.EncodedKeyValue.Oid.Value)
+            GostECDsa? result = publicKey.EncodedKeyValue.Oid.Value switch
             {
-                case CryptoConstants.GostECDsa256OidValue:
-                    result = GostECDsa256.Create();
-                    break;
-
-                case CryptoConstants.GostECDsa512OidValue:
-                    result = GostECDsa512.Create();
-                    break;
-
-                default:
-                    return null;
-            }
-
-            try
+                CryptoConstants.GostECDsa256OidValue => GostECDsa256.Create(),
+                CryptoConstants.GostECDsa512OidValue => GostECDsa512.Create(),
+                _ => null
+            };
+            if (result is not null)
             {
-                var parameters = ReadParameters(publicKey);
-                result.ImportParameters(parameters);
+                try
+                {
+                    var parameters = ReadParameters(publicKey);
+                    result.ImportParameters(parameters);
+                }
+                catch
+                {
+                    result.Dispose();
+                    throw;
+                }
             }
-            catch
-            {
-                result.Dispose();
-                throw;
-            }
-
             return result;
         }
 
@@ -80,7 +72,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         /// <exception cref="ArgumentNullException">
         /// The <paramref name="certificate"/> parameter is <see langword="null"/>.
         /// </exception>
-        public static GostECDsa? GetECDsaPrivateKey(this X509Certificate2 certificate)
+        public static GostECDsa? GetGostECDsaPrivateKey(this X509Certificate2 certificate)
         {
             if (certificate == null)
                 throw new ArgumentNullException(nameof(certificate));

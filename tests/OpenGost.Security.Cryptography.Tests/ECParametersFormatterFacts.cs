@@ -18,7 +18,7 @@ namespace OpenGost.Security.Cryptography
         {
             var schemas = new XmlSchemaSet();
             using (var stream = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.ECDsa.xsd"))
-                schemas.Add(XmlSchema.Read(stream, null));
+                schemas.Add(XmlSchema.Read(stream, null)!);
             schemas.Compile();
             return schemas;
         }

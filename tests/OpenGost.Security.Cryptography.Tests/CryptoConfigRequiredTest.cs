@@ -1,120 +1,78 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security.Cryptography;
-using System.Xml.XPath;
+using System.Xml.Linq;
 
 namespace OpenGost.Security.Cryptography
 {
     [ExcludeFromCodeCoverage]
     public abstract class CryptoConfigRequiredTest
     {
-        static CryptoConfigRequiredTest()
-        {
-            ConfigureCryptography();
-        }
+        static CryptoConfigRequiredTest() => ConfigureCryptography();
 
         private static void ConfigureCryptography()
         {
-            var mscorlibVersion = typeof(CryptoConfig).Assembly.GetName().Version.ToString();
+            XDocument document;
+            using (var reader = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Crypto.config"))
+                document = XDocument.Load(reader, LoadOptions.None);
 
-            using var reader = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Crypto.config");
-            var document = new XPathDocument(reader);
-            var navigator = document.CreateNavigator();
-            var mscorlibIterator = navigator.Select("configuration/mscorlib");
-            XPathNavigator mscorlib = null;
-            while (mscorlibIterator.MoveNext())
-            {
-                var versionSpecificMscorlib = false;
-                var current = mscorlibIterator.Current;
-                var versionAttributeIterator = current.Select("@version");
-                while (versionAttributeIterator.MoveNext())
-                {
-                    versionSpecificMscorlib = true;
-
-                    if (mscorlibVersion == versionAttributeIterator.Current.Value)
-                    {
-                        mscorlib = current;
-                        break;
-                    }
-                }
-
-                if (!versionSpecificMscorlib)
-                    mscorlib = current;
-
-                if (mscorlib != null)
-                    break;
-            }
-
-            if (mscorlib == null)
-                return;
-
-            var cryptographySettings = mscorlib.SelectSingleNode("cryptographySettings");
+            var cryptographySettings = document
+                .Element(XName.Get("configuration"))?
+                .Element(XName.Get("mscorlib"))?
+                .Element(XName.Get("cryptographySettings"));
 
             if (cryptographySettings == null)
                 return;
 
-            var cryptoNameMapping = cryptographySettings.SelectSingleNode("cryptoNameMapping");
+            var cryptoNameMapping = cryptographySettings.Element(XName.Get("cryptoNameMapping"));
             if (cryptoNameMapping != null)
                 ConfigureCryptoNameMapping(cryptoNameMapping);
 
-            var oidMap = cryptographySettings.SelectSingleNode("oidMap");
+            var oidMap = cryptographySettings.Element(XName.Get("oidMap"));
             if (oidMap != null)
                 ConfigureOidMap(oidMap);
         }
 
-        private static void ConfigureCryptoNameMapping(XPathNavigator cryptoNameMapping)
+        private static void ConfigureCryptoNameMapping(XElement cryptoNameMapping)
         {
-            var nameMappings = new Dictionary<string, string>();
-            var typeAliases = new Dictionary<string, string>();
+            var typeAliases = (
+                from cryptoClass in cryptoNameMapping
+                    .Elements(XName.Get("cryptoClasses"))
+                    .Elements(XName.Get("cryptoClass"))
+                let attribute = cryptoClass.Attributes().FirstOrDefault()
+                where attribute?.Value != null
+                let type = Type.GetType(attribute.Value, false, false)
+                where type != null
+                select (Key: attribute.Name.LocalName, Value: type))
+                .ToDictionary(x => x.Key, x => x.Value);
 
-            var cryptoClasses = cryptoNameMapping.SelectSingleNode("cryptoClasses");
-            if (cryptoClasses != null)
-            {
-                var cryptoClassIterator = cryptoClasses.Select("cryptoClass");
-                while (cryptoClassIterator.MoveNext())
-                {
-                    var cryptoClass = cryptoClassIterator.Current;
-                    if (cryptoClass.MoveToFirstAttribute())
-                        typeAliases.Add(cryptoClass.Name, cryptoClass.Value);
-                }
-            }
+            var nameMappings =
+                from nameEntry in cryptoNameMapping.Elements(XName.Get("nameEntry"))
+                let friendlyName = nameEntry.Attribute(XName.Get("name"))?.Value
+                let className = nameEntry.Attribute(XName.Get("class"))?.Value
+                where friendlyName != null && className != null
+                let type = typeAliases.TryGetValue(className, out var value) ? value : null
+                where type != null
+                group friendlyName by type into items
+                select items;
 
-            var nameEntryIterator = cryptoNameMapping.Select("nameEntry");
-            while (nameEntryIterator.MoveNext())
-            {
-                var nameEntry = nameEntryIterator.Current;
-                var friendlyName = nameEntry.SelectSingleNode("@name")?.Value;
-                var className = nameEntry.SelectSingleNode("@class")?.Value;
-                if (friendlyName != null && className != null)
-                    if (typeAliases.ContainsKey(className))
-                        nameMappings.Add(friendlyName, typeAliases[className]);
-            }
-
-            foreach (var item in nameMappings)
-            {
-                var algorithm = Type.GetType(item.Value, false, false);
-                if (algorithm != null)
-                    CryptoConfig.AddAlgorithm(algorithm, item.Key);
-            }
+            foreach (var items in nameMappings)
+                CryptoConfig.AddAlgorithm(items.Key, items.ToArray());
         }
 
-        private static void ConfigureOidMap(XPathNavigator oidMap)
+        private static void ConfigureOidMap(XElement oidMap)
         {
-            var oidMapings = new Dictionary<string, string>();
-            var oidEntryIterator = oidMap.Select("oidEntry");
-            while (oidEntryIterator.MoveNext())
-            {
-                var oidEntry = oidEntryIterator.Current;
-                var oidString = oidEntry.SelectSingleNode("@OID")?.Value;
-                var friendlyName = oidEntry.SelectSingleNode("@name")?.Value;
+            var oidMapings =
+                from oidEntry in oidMap.Elements(XName.Get("oidEntry"))
+                let oid = oidEntry.Attribute(XName.Get("OID"))?.Value
+                let name = oidEntry.Attribute(XName.Get("name"))?.Value
+                where name != null && oid != null
+                group name by oid into items
+                select items;
 
-                if ((friendlyName != null) && (oidString != null))
-                    oidMapings.Add(friendlyName, oidString);
-            }
-
-            foreach (var item in oidMapings)
-                CryptoConfig.AddOID(item.Value, item.Key);
+            foreach (var items in oidMapings)
+                CryptoConfig.AddOID(items.Key, items.ToArray());
         }
     }
 }

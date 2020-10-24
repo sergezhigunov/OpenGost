@@ -11,7 +11,7 @@ namespace OpenGost.Security.Cryptography
         {
             using CMAC cmac = new TestCMAC();
 
-            Assert.Throws<ArgumentException>(() => cmac.SymmetricAlgorithmName = null);
+            Assert.Throws<ArgumentException>(() => cmac.SymmetricAlgorithmName = null!);
             Assert.Throws<ArgumentException>(() => cmac.SymmetricAlgorithmName = string.Empty);
             Assert.Null(cmac.SymmetricAlgorithmName);
         }

@@ -60,7 +60,7 @@ namespace OpenGost.Security.Cryptography
             throw new FormatException($"Invalid character '{character}'.");
         }
 
-        private static FormatException CreateTextIncorrectFormatException(Exception innerException)
+        private static FormatException CreateTextIncorrectFormatException(Exception? innerException)
             => new FormatException("Input text has incorrect format.", innerException);
     }
 }

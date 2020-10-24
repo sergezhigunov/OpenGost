@@ -39,7 +39,7 @@ namespace OpenGost.Security.Cryptography
         [Fact]
         public void ConstructorInvalidArgumentsTest()
         {
-            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(null, new byte[BlockSizeBytes], BlockSizeBits, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
+            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(null!, new byte[BlockSizeBytes], BlockSizeBits, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
             Assert.Throws<ArgumentOutOfRangeException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], new byte[BlockSizeBytes], 0, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
             Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.CBC, PaddingMode.None, SymmetricTransformMode.Encrypt));
             Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.CFB, PaddingMode.None, SymmetricTransformMode.Encrypt));
@@ -52,8 +52,8 @@ namespace OpenGost.Security.Cryptography
         {
             using var transform = new SimpleSymmetricAlgorithm();
             using var encryptor = transform.CreateEncryptor();
-            Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(null, 0, BlockSizeBytes, new byte[BlockSizeBytes], 0));
-            Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, null, 0));
+            Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(null!, 0, BlockSizeBytes, new byte[BlockSizeBytes], 0));
+            Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, null!, 0));
             Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes, new byte[BlockSizeBytes], 0));
             Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, new byte[BlockSizeBytes], -1));
             Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, 0, new byte[BlockSizeBytes], 0));
@@ -67,7 +67,7 @@ namespace OpenGost.Security.Cryptography
             using var transform = new SimpleSymmetricAlgorithm();
             using (var encryptor = transform.CreateDecryptor())
             {
-                Assert.Throws<ArgumentNullException>(() => encryptor.TransformFinalBlock(null, 0, BlockSizeBytes));
+                Assert.Throws<ArgumentNullException>(() => encryptor.TransformFinalBlock(null!, 0, BlockSizeBytes));
                 Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes));
                 Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], 0, -1));
                 Assert.Throws<ArgumentException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], BlockSizeBytes, BlockSizeBytes));
@@ -126,7 +126,7 @@ namespace OpenGost.Security.Cryptography
             // Key is null
             foreach (var p in allSupportedParameters)
                 CheckInvalid(typeof(ArgumentNullException), () =>
-                    new SimpleSymmetricTransform(null, algorithm.IV, algorithm.BlockSize, p.CipherMode, p.PaddingMode, p.TransformMode));
+                    new SimpleSymmetricTransform(null!, algorithm.IV, algorithm.BlockSize, p.CipherMode, p.PaddingMode, p.TransformMode));
 
             // IV is null (CBC, CFB, OFB)
             foreach (var p in reqiresIVParameters)
@@ -341,10 +341,10 @@ namespace OpenGost.Security.Cryptography
                 LegalKeySizesValue = _legalKeySizes;
             }
 
-            public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
+            public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
                 => CreateTransform(rgbKey, rgbIV, SymmetricTransformMode.Decrypt);
 
-            public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
+            public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
                 => CreateTransform(rgbKey, rgbIV, SymmetricTransformMode.Encrypt);
 
             public override void GenerateIV()
@@ -357,17 +357,17 @@ namespace OpenGost.Security.Cryptography
                 KeyValue = CryptoUtils.GenerateRandomBytes(KeySizeValue / 8);
             }
 
-            private ICryptoTransform CreateTransform(byte[] rgbKey, byte[] rgbIV, SymmetricTransformMode transformMode)
+            private ICryptoTransform CreateTransform(byte[] rgbKey, byte[]? rgbIV, SymmetricTransformMode transformMode)
                 => new SimpleSymmetricTransform(rgbKey, rgbIV, BlockSizeValue, ModeValue, PaddingValue, transformMode);
         }
 
         private class SimpleSymmetricTransform : SymmetricTransform
         {
-            private byte[] _rgbKey;
+            private byte[] _rgbKey = null!;
 
             internal SimpleSymmetricTransform(
                 byte[] rgbKey,
-                byte[] rgbIV,
+                byte[]? rgbIV,
                 int blockSize,
                 CipherMode cipherMode,
                 PaddingMode paddingMode,
@@ -405,7 +405,7 @@ namespace OpenGost.Security.Cryptography
                 if (_rgbKey != null)
                 {
                     Array.Clear(_rgbKey, 0, _rgbKey.Length);
-                    _rgbKey = null;
+                    _rgbKey = null!;
                 }
 
                 base.Dispose(disposing);

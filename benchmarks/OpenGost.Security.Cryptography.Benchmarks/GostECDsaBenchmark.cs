@@ -4,7 +4,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace OpenGost.Security.Cryptography.Benchmarks
 {
-    public abstract class GostECDsaBenchmark<T>
+    public abstract class GostECDsaBenchmark<T> : IDisposable
         where T : GostECDsa, new()
     {
         private static RandomNumberGenerator RandomNumberGenerator { get; } = RandomNumberGenerator.Create();

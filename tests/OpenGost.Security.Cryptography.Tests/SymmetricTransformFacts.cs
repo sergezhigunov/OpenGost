@@ -11,10 +11,16 @@ namespace OpenGost.Security.Cryptography
         protected const int BlockSizeBits = 64;
         protected const int BlockSizeBytes = BlockSizeBits / 8;
 
-        private static CipherMode[] SupportedCipherModes { get; } = { CipherMode.ECB, CipherMode.CBC, CipherMode.CFB, CipherMode.OFB };
-        private static CipherMode[] CipherModesReqiresIV { get; } = { CipherMode.CBC, CipherMode.CFB, CipherMode.OFB };
-        private static PaddingMode[] PaddingModes { get; } = { PaddingMode.None, PaddingMode.Zeros, PaddingMode.ANSIX923, PaddingMode.PKCS7, PaddingMode.ISO10126 };
-        private static SymmetricTransformMode[] TransformModes { get; } = { SymmetricTransformMode.Encrypt, SymmetricTransformMode.Decrypt };
+        private static CipherMode[] SupportedCipherModes { get; }
+            = { CipherMode.ECB, CipherMode.CBC, CipherMode.CFB, CipherMode.OFB };
+
+        private static CipherMode[] CipherModesReqiresIV { get; }
+            = { CipherMode.CBC, CipherMode.CFB, CipherMode.OFB };
+
+        private static PaddingMode[] PaddingModes { get; }
+            = { PaddingMode.None, PaddingMode.Zeros, PaddingMode.ANSIX923, PaddingMode.PKCS7, PaddingMode.ISO10126 };
+        private static SymmetricTransformMode[] TransformModes { get; }
+            = { SymmetricTransformMode.Encrypt, SymmetricTransformMode.Decrypt };
 
         private static byte[][] BlockSizeMultiplePlainTexts { get; } =
         {
@@ -37,43 +43,114 @@ namespace OpenGost.Security.Cryptography
         };
 
         [Fact]
-        public void ConstructorInvalidArgumentsTest()
+        public void Constructor_Throws_IfParametersAreInvalid()
         {
-            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(null!, new byte[BlockSizeBytes], BlockSizeBits, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], new byte[BlockSizeBytes], 0, CipherMode.ECB, PaddingMode.None, SymmetricTransformMode.Encrypt));
-            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.CBC, PaddingMode.None, SymmetricTransformMode.Encrypt));
-            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.CFB, PaddingMode.None, SymmetricTransformMode.Encrypt));
-            Assert.Throws<ArgumentNullException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], null, BlockSizeBytes, CipherMode.OFB, PaddingMode.None, SymmetricTransformMode.Encrypt));
-            Assert.Throws<CryptographicException>(() => new SimpleSymmetricTransform(new byte[BlockSizeBytes], new byte[BlockSizeBytes], BlockSizeBytes, CipherMode.CTS, PaddingMode.None, SymmetricTransformMode.Encrypt));
+            var key = new byte[BlockSizeBytes];
+            var iv = new byte[BlockSizeBytes];
+            var blockSize = BlockSizeBits;
+
+            Assert.Throws<ArgumentNullException>(nameof(key),
+                () => new SimpleSymmetricTransform(
+                    null!,
+                    iv,
+                    blockSize,
+                    CipherMode.ECB,
+                    PaddingMode.None,
+                    SymmetricTransformMode.Encrypt));
+
+            Assert.Throws<ArgumentOutOfRangeException>(nameof(blockSize),
+                () => new SimpleSymmetricTransform(
+                    key,
+                    iv,
+                    0,
+                    CipherMode.ECB,
+                    PaddingMode.None,
+                    SymmetricTransformMode.Encrypt));
+
+            Assert.Throws<ArgumentNullException>(nameof(iv),
+                () => new SimpleSymmetricTransform(
+                    key,
+                    null,
+                    blockSize,
+                    CipherMode.CBC,
+                    PaddingMode.None,
+                    SymmetricTransformMode.Encrypt));
+
+            Assert.Throws<ArgumentNullException>(nameof(iv),
+                () => new SimpleSymmetricTransform(
+                    key,
+                    null,
+                    blockSize,
+                    CipherMode.CFB,
+                    PaddingMode.None,
+                    SymmetricTransformMode.Encrypt));
+
+            Assert.Throws<ArgumentNullException>(nameof(iv),
+                () => new SimpleSymmetricTransform(
+                    key,
+                    null,
+                    blockSize,
+                    CipherMode.OFB,
+                    PaddingMode.None,
+                    SymmetricTransformMode.Encrypt));
+
+            Assert.Throws<CryptographicException>(
+                () => new SimpleSymmetricTransform(
+                    key,
+                    iv,
+                    blockSize,
+                    CipherMode.CTS,
+                    PaddingMode.None,
+                    SymmetricTransformMode.Encrypt));
         }
 
         [Fact]
-        public void TransformBlockInvalidArgumentsTest()
+        public void TransformBlock_Throws_IfParametersAreInvalid()
         {
+            var inputBuffer = new byte[BlockSizeBytes];
+            var outputBuffer = new byte[BlockSizeBytes];
+            var inputOffset = 0;
+            var inputCount = BlockSizeBytes;
+            var outputOffset = 0;
             using var transform = new SimpleSymmetricAlgorithm();
             using var encryptor = transform.CreateEncryptor();
-            Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(null!, 0, BlockSizeBytes, new byte[BlockSizeBytes], 0));
-            Assert.Throws<ArgumentNullException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, null!, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes, new byte[BlockSizeBytes], 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes, new byte[BlockSizeBytes], -1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, 0, new byte[BlockSizeBytes], 0));
-            Assert.Throws<ArgumentException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], BlockSizeBytes, BlockSizeBytes, new byte[BlockSizeBytes], 0));
-            Assert.Throws<CryptographicException>(() => encryptor.TransformBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes - 1, new byte[BlockSizeBytes], 0));
+
+            Assert.Throws<ArgumentNullException>(nameof(inputBuffer),
+                () => encryptor.TransformBlock(null!, inputOffset, inputCount, outputBuffer, outputOffset));
+            Assert.Throws<ArgumentNullException>(nameof(outputBuffer),
+                () => encryptor.TransformBlock(inputBuffer, inputOffset, inputCount, null!, outputOffset));
+            Assert.Throws<ArgumentOutOfRangeException>(nameof(inputOffset),
+                () => encryptor.TransformBlock(inputBuffer, -1, inputCount, outputBuffer, outputOffset));
+            Assert.Throws<ArgumentOutOfRangeException>(nameof(outputOffset),
+                () => encryptor.TransformBlock(inputBuffer, inputOffset, inputCount, outputBuffer, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(nameof(inputCount),
+                () => encryptor.TransformBlock(inputBuffer, inputOffset, 0, outputBuffer, outputOffset));
+            Assert.Throws<ArgumentException>(null,
+                () => encryptor.TransformBlock(inputBuffer, inputCount, inputCount, outputBuffer, outputOffset));
+            Assert.Throws<CryptographicException>(
+                () => encryptor.TransformBlock(inputBuffer, inputOffset, inputCount - 1, outputBuffer, outputOffset));
         }
 
         [Fact]
-        public void TransformFinalBlockInvalidArgumentsTest()
+        public void TransformFinalBlock_Throws_IfParametersAreInvalid()
         {
+            var inputBuffer = new byte[BlockSizeBytes];
+            var inputCount = BlockSizeBytes;
+            var inputOffset = 0;
             using var transform = new SimpleSymmetricAlgorithm();
-            using (var encryptor = transform.CreateDecryptor())
-            {
-                Assert.Throws<ArgumentNullException>(() => encryptor.TransformFinalBlock(null!, 0, BlockSizeBytes));
-                Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], -1, BlockSizeBytes));
-                Assert.Throws<ArgumentOutOfRangeException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], 0, -1));
-                Assert.Throws<ArgumentException>(() => encryptor.TransformFinalBlock(new byte[BlockSizeBytes], BlockSizeBytes, BlockSizeBytes));
-            }
+            using var encryptor = transform.CreateEncryptor();
             using var decryptor = transform.CreateDecryptor();
-            Assert.Throws<CryptographicException>(() => decryptor.TransformFinalBlock(new byte[BlockSizeBytes], 0, BlockSizeBytes - 1));
+
+            Assert.Throws<ArgumentNullException>(nameof(inputBuffer),
+                () => encryptor.TransformFinalBlock(null!, inputOffset, inputCount));
+            Assert.Throws<ArgumentOutOfRangeException>(nameof(inputOffset),
+                () => encryptor.TransformFinalBlock(inputBuffer, -1, inputCount));
+            Assert.Throws<ArgumentOutOfRangeException>(nameof(inputCount),
+                () => encryptor.TransformFinalBlock(inputBuffer, inputOffset, -1));
+            Assert.Throws<ArgumentException>(null,
+                () => encryptor.TransformFinalBlock(inputBuffer, inputCount, inputCount));
+            Assert.Throws<CryptographicException>(
+                () => decryptor.TransformFinalBlock(inputBuffer, inputOffset, inputCount - 1));
         }
 
         [Fact]
@@ -106,7 +183,8 @@ namespace OpenGost.Security.Cryptography
                 Assert.True(transform.DisposeCalled);
             }
 
-            static void CheckInvalid(Type expectedExceptionType, Func<SimpleSymmetricTransform> factory) => Assert.Throws(expectedExceptionType, factory);
+            static void CheckInvalid(Type expectedExceptionType, Func<SimpleSymmetricTransform> factory)
+                => Assert.Throws(expectedExceptionType, factory);
 
             // All ctor parameters (without CTS)
             foreach (var p in allSupportedParameters)
@@ -141,7 +219,8 @@ namespace OpenGost.Security.Cryptography
             {
                 byte[] newPlainText;
 
-                using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.None })
+                using (var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.None })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
@@ -166,7 +245,8 @@ namespace OpenGost.Security.Cryptography
             {
                 byte[] newPlainText;
 
-                using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.Zeros })
+                using (var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.Zeros })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
@@ -192,7 +272,8 @@ namespace OpenGost.Security.Cryptography
             {
                 byte[] newPlainText, newPlainTextNoDepad;
 
-                using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ANSIX923 })
+                using (var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ANSIX923 })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
@@ -234,7 +315,8 @@ namespace OpenGost.Security.Cryptography
             {
                 byte[] newPlainText, newPlainTextNoDepad;
 
-                using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 })
+                using (var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
@@ -276,7 +358,8 @@ namespace OpenGost.Security.Cryptography
             {
                 byte[] newPlainText, newPlainTextNoDepad;
 
-                using (var algorithm = new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ISO10126 })
+                using (var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ISO10126 })
                 {
                     algorithm.GenerateKey();
                     algorithm.GenerateIV();
@@ -379,16 +462,26 @@ namespace OpenGost.Security.Cryptography
 
             internal bool DisposeCalled { get; private set; }
 
-            protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
+            protected override void DecryptBlock(
+                byte[] inputBuffer,
+                int inputOffset,
+                byte[] outputBuffer,
+                int outputOffset)
             {
                 Assert.True(GenerateKeyExpansionCalled);
-                CryptoUtils.Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
+                // Simply Xor with key
+                CryptoUtils.Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize);
             }
 
-            protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
+            protected override void EncryptBlock(
+                byte[] inputBuffer,
+                int inputOffset,
+                byte[] outputBuffer,
+                int outputOffset)
             {
                 Assert.True(GenerateKeyExpansionCalled);
-                CryptoUtils.Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize); // Simply Xor with key
+                // Simply Xor with key
+                CryptoUtils.Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize);
             }
 
             protected override void GenerateKeyExpansion(byte[] rgbKey)

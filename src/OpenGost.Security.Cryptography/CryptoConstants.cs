@@ -2,16 +2,23 @@
 {
     internal static class CryptoConstants
     {
-        private const string FullNamePrefix = nameof(OpenGost) + "." + nameof(Security) + "." + nameof(Cryptography) + ".";
+        private const string FullNamePrefix =
+            nameof(OpenGost) + "." + nameof(Security) + "." + nameof(Cryptography) + ".";
 
-        internal const string GostECDsa512SignatureFormatterFullName = FullNamePrefix + nameof(GostECDsa512SignatureFormatter);
-        internal const string GostECDsa512SignatureDeformatterFullName = FullNamePrefix + nameof(GostECDsa512SignatureDeformatter);
+        internal const string GostECDsa512SignatureFormatterFullName =
+            FullNamePrefix + nameof(GostECDsa512SignatureFormatter);
+        internal const string GostECDsa512SignatureDeformatterFullName =
+            FullNamePrefix + nameof(GostECDsa512SignatureDeformatter);
 
-        internal const string GostECDsa256SignatureFormatterFullName = FullNamePrefix + nameof(GostECDsa256SignatureFormatter);
-        internal const string GostECDsa256SignatureDeformatterFullName = FullNamePrefix + nameof(GostECDsa256SignatureDeformatter);
+        internal const string GostECDsa256SignatureFormatterFullName =
+            FullNamePrefix + nameof(GostECDsa256SignatureFormatter);
+        internal const string GostECDsa256SignatureDeformatterFullName =
+            FullNamePrefix + nameof(GostECDsa256SignatureDeformatter);
 
-        internal const string GostECDsa512SignatureDescriptionFullName = FullNamePrefix + nameof(GostECDsa512SignatureDescription);
-        internal const string GostECDsa256SignatureDescriptionFullName = FullNamePrefix + nameof(GostECDsa256SignatureDescription);
+        internal const string GostECDsa512SignatureDescriptionFullName =
+            FullNamePrefix + nameof(GostECDsa512SignatureDescription);
+        internal const string GostECDsa256SignatureDescriptionFullName =
+            FullNamePrefix + nameof(GostECDsa256SignatureDescription);
 
         internal const string GostECDsa512AlgorithmName = nameof(GostECDsa512);
         internal const string GostECDsa512AlgorithmFullName = FullNamePrefix + GostECDsa512AlgorithmName;

@@ -60,7 +60,11 @@ namespace OpenGost.Security.Cryptography
             };
         }
 
-        public static BigIntegerPoint Multiply(BigIntegerPoint point, BigInteger multiplier, BigInteger prime, BigInteger a)
+        public static BigIntegerPoint Multiply(
+            BigIntegerPoint point,
+            BigInteger multiplier,
+            BigInteger prime,
+            BigInteger a)
         {
             var result = point;
             multiplier--;

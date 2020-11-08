@@ -90,12 +90,19 @@ namespace OpenGost.Security.Cryptography
         /// <exception cref="CryptographicException">
         /// <paramref name="cipherMode"/> parameter value is not supported.
         /// </exception>
-        protected SymmetricTransform(byte[] key, byte[]? iv, int blockSize, CipherMode cipherMode, PaddingMode paddingMode, SymmetricTransformMode transformMode)
+        protected SymmetricTransform(
+            byte[] key,
+            byte[]? iv,
+            int blockSize,
+            CipherMode cipherMode,
+            PaddingMode paddingMode,
+            SymmetricTransformMode transformMode)
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
             if (blockSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(key), CryptographyStrings.ArgumentOutOfRangeNeedPositiveNum);
+                throw new ArgumentOutOfRangeException(nameof(blockSize),
+                    CryptographyStrings.ArgumentOutOfRangeNeedPositiveNum);
 
             _transformMode = transformMode;
             InputBlockSize = blockSize / 8;
@@ -148,7 +155,11 @@ namespace OpenGost.Security.Cryptography
         /// <param name="outputOffset">
         /// The offset into the output byte array to begin writing data to.
         /// </param>
-        protected abstract void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset);
+        protected abstract void EncryptBlock(
+            byte[] inputBuffer,
+            int inputOffset,
+            byte[] outputBuffer,
+            int outputOffset);
 
         /// <summary>
         /// When overridden in a derived class, implements the block cipher decryption function.
@@ -165,7 +176,10 @@ namespace OpenGost.Security.Cryptography
         /// <param name="outputOffset">
         /// The offset into the output byte array to begin writing data to.
         /// </param>
-        protected abstract void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset);
+        protected abstract void DecryptBlock(byte[] inputBuffer,
+            int inputOffset,
+            byte[] outputBuffer,
+            int outputOffset);
 
         private void Reset()
         {
@@ -218,23 +232,32 @@ namespace OpenGost.Security.Cryptography
         /// The length of the input buffer is less than the sum of the input offset and the input count.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The value of the <paramref name="inputCount" /> parameter is greater than the length of the <paramref name="inputBuffer" /> parameter.
+        /// The value of the <paramref name="inputCount" /> parameter is greater
+        /// than the length of the <paramref name="inputBuffer" /> parameter.
         /// </exception>
         /// <exception cref="CryptographicException">
         /// The length of the <paramref name="inputCount" /> parameter is not evenly devisable by input block size.
         /// </exception>
-        public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
+        public int TransformBlock(
+            byte[] inputBuffer,
+            int inputOffset,
+            int inputCount,
+            byte[] outputBuffer,
+            int outputOffset)
         {
             if (inputBuffer == null)
                 throw new ArgumentNullException(nameof(inputBuffer));
             if (outputBuffer == null)
                 throw new ArgumentNullException(nameof(outputBuffer));
             if (inputOffset < 0)
-                throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
+                throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset,
+                    CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
             if (outputOffset < 0)
-                throw new ArgumentOutOfRangeException(nameof(outputOffset), outputOffset, CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
+                throw new ArgumentOutOfRangeException(nameof(outputOffset), outputOffset,
+                    CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
             if (inputCount <= 0)
-                throw new ArgumentOutOfRangeException(nameof(inputCount), inputCount, CryptographyStrings.ArgumentOutOfRangeNeedPositiveNum);
+                throw new ArgumentOutOfRangeException(nameof(inputCount), inputCount,
+                    CryptographyStrings.ArgumentOutOfRangeNeedPositiveNum);
             if (inputBuffer.Length - inputCount < inputOffset)
                 throw new ArgumentException(CryptographyStrings.ArgumentInvalidOffLen);
             if (inputCount % InputBlockSize != 0)
@@ -253,11 +276,12 @@ namespace OpenGost.Security.Cryptography
                     if (_depadBuffer == null)
                     {
                         _depadBuffer = new byte[InputBlockSize];
-                        // copy the last InputBlockSize bytes to _depadBuffer everything else gets processed and returned
+                        // copy the last InputBlockSize bytes to _depadBuffer
+                        // everything else gets processed and returned
                         var inputToProcess = inputCount - InputBlockSize;
                         Buffer.BlockCopy(inputBuffer, inputOffset + inputToProcess, _depadBuffer, 0, InputBlockSize);
-
-                        return DecryptData(inputBuffer, inputOffset, inputToProcess, ref outputBuffer!, outputOffset, false);
+                        return DecryptData(inputBuffer, inputOffset, inputToProcess, ref outputBuffer!, outputOffset,
+                            false);
                     }
                     else
                     {
@@ -266,7 +290,8 @@ namespace OpenGost.Security.Cryptography
                         outputOffset += OutputBlockSize;
                         var inputToProcess = inputCount - InputBlockSize;
                         Buffer.BlockCopy(inputBuffer, inputOffset + inputToProcess, _depadBuffer, 0, InputBlockSize);
-                        return OutputBlockSize + DecryptData(inputBuffer, inputOffset, inputToProcess, ref outputBuffer!, outputOffset, false);
+                        return OutputBlockSize + DecryptData(inputBuffer, inputOffset, inputToProcess,
+                            ref outputBuffer!, outputOffset, false);
                     }
                 }
             }
@@ -310,9 +335,11 @@ namespace OpenGost.Security.Cryptography
             if (inputBuffer == null)
                 throw new ArgumentNullException(nameof(inputBuffer));
             if (inputOffset < 0)
-                throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset, CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
+                throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset,
+                    CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
             if (inputCount < 0)
-                throw new ArgumentOutOfRangeException(nameof(inputCount), inputOffset, CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
+                throw new ArgumentOutOfRangeException(nameof(inputCount), inputOffset,
+                    CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
             if (inputBuffer.Length - inputCount < inputOffset)
                 throw new ArgumentException(CryptographyStrings.ArgumentInvalidOffLen);
 
@@ -379,7 +406,13 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        private int EncryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[]? outputBuffer, int outputOffset, bool isFinalTransform)
+        private int EncryptData(
+            byte[] inputBuffer,
+            int inputOffset,
+            int inputCount,
+            ref byte[]? outputBuffer,
+            int outputOffset,
+            bool isFinalTransform)
         {
             int
                 padSize = 0,
@@ -414,10 +447,13 @@ namespace OpenGost.Security.Cryptography
                 case CipherMode.CBC:
                     for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
-                        CryptoUtils.Xor(_stateBuffer!, 0, inputBuffer, inputOffset + shift, _tempBuffer!, 0, InputBlockSize);
+                        CryptoUtils.Xor(_stateBuffer!, 0, inputBuffer, inputOffset + shift, _tempBuffer!, 0,
+                            InputBlockSize);
                         EncryptBlock(_tempBuffer!, 0, outputBuffer, outputOffset + shift);
-                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
-                        Buffer.BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0,
+                            _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer!,
+                            _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
@@ -425,9 +461,12 @@ namespace OpenGost.Security.Cryptography
                     for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
-                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
-                        Buffer.BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
+                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer,
+                            outputOffset + shift, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0,
+                            _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(outputBuffer, outputOffset + shift, _stateBuffer!,
+                            _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
@@ -435,9 +474,12 @@ namespace OpenGost.Security.Cryptography
                     for (shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
-                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
-                        Buffer.BlockCopy(_tempBuffer!, 0, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
+                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer,
+                            outputOffset + shift, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0,
+                            _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(_tempBuffer!, 0, _stateBuffer!, _rgbIV!.Length - InputBlockSize,
+                            InputBlockSize);
                     }
                     break;
 
@@ -446,12 +488,21 @@ namespace OpenGost.Security.Cryptography
             }
 
             if (padSize != 0)
-                EncryptPaddedBlock(inputBuffer, inputOffset, outputBuffer, outputOffset, padSize, lonelyBytes, padBytes!, shift);
+                EncryptPaddedBlock(inputBuffer, inputOffset, outputBuffer, outputOffset, padSize, lonelyBytes,
+                    padBytes!, shift);
 
             return inputCount + padSize;
         }
 
-        private void EncryptPaddedBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset, int padSize, int lonelyBytes, byte[] padBytes, int shift)
+        private void EncryptPaddedBlock(
+            byte[] inputBuffer,
+            int inputOffset,
+            byte[] outputBuffer,
+            int outputOffset,
+            int padSize,
+            int lonelyBytes,
+            byte[] padBytes,
+            int shift)
         {
             byte[] tmpInputBuffer;
 
@@ -479,7 +530,8 @@ namespace OpenGost.Security.Cryptography
                 case CipherMode.CFB:
                 case CipherMode.OFB:
                     EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
-                    CryptoUtils.Xor(_tempBuffer!, 0, tmpInputBuffer, 0, outputBuffer, outputOffset + shift, InputBlockSize);
+                    CryptoUtils.Xor(_tempBuffer!, 0, tmpInputBuffer, 0, outputBuffer, outputOffset + shift,
+                        InputBlockSize);
                     break;
 
                 default:
@@ -547,7 +599,13 @@ namespace OpenGost.Security.Cryptography
             return padBytes;
         }
 
-        private int DecryptData(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[]? outputBuffer, int outputOffset, bool isFinalTransform)
+        private int DecryptData(
+            byte[] inputBuffer,
+            int inputOffset,
+            int inputCount,
+            ref byte[]? outputBuffer,
+            int outputOffset,
+            bool isFinalTransform)
         {
             if (outputBuffer == null)
             {
@@ -568,9 +626,12 @@ namespace OpenGost.Security.Cryptography
                     for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         DecryptBlock(inputBuffer, inputOffset + shift, _tempBuffer!, 0);
-                        CryptoUtils.Xor(_stateBuffer!, 0, _tempBuffer!, 0, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
-                        Buffer.BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
+                        CryptoUtils.Xor(_stateBuffer!, 0, _tempBuffer!, 0, outputBuffer, outputOffset + shift,
+                            InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0,
+                            _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer!,
+                            _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
@@ -578,9 +639,12 @@ namespace OpenGost.Security.Cryptography
                     for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
-                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
-                        Buffer.BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
+                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer,
+                            outputOffset + shift, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0,
+                            _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(inputBuffer, inputOffset + shift, _stateBuffer!,
+                            _rgbIV!.Length - InputBlockSize, InputBlockSize);
                     }
                     break;
 
@@ -588,9 +652,12 @@ namespace OpenGost.Security.Cryptography
                     for (var shift = 0; shift < inputCount; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
-                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift, InputBlockSize);
-                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0, _rgbIV!.Length - InputBlockSize);
-                        Buffer.BlockCopy(_tempBuffer!, 0, _stateBuffer!, _rgbIV!.Length - InputBlockSize, InputBlockSize);
+                        CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer,
+                            outputOffset + shift, InputBlockSize);
+                        Buffer.BlockCopy(_stateBuffer!, InputBlockSize, _stateBuffer!, 0,
+                            _rgbIV!.Length - InputBlockSize);
+                        Buffer.BlockCopy(_tempBuffer!, 0, _stateBuffer!, _rgbIV!.Length - InputBlockSize,
+                            InputBlockSize);
                     }
                     break;
 

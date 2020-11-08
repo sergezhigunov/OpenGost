@@ -31,13 +31,17 @@ namespace OpenGost.Security.Cryptography
         internal static T[] Subarray<T>(this T[] value, int startIndex, int length)
         {
             if (startIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(startIndex), CryptographyStrings.ArgumentOutOfRangeStartIndex);
+                throw new ArgumentOutOfRangeException(nameof(startIndex),
+                    CryptographyStrings.ArgumentOutOfRangeStartIndex);
             if (startIndex > value.Length)
-                throw new ArgumentOutOfRangeException(nameof(startIndex), CryptographyStrings.ArgumentOutOfRangeStartIndexLargerThanLength);
+                throw new ArgumentOutOfRangeException(nameof(startIndex),
+                    CryptographyStrings.ArgumentOutOfRangeStartIndexLargerThanLength);
             if (length < 0)
-                throw new ArgumentOutOfRangeException(nameof(length), CryptographyStrings.ArgumentOutOfRangeNegativeLength);
+                throw new ArgumentOutOfRangeException(nameof(length),
+                    CryptographyStrings.ArgumentOutOfRangeNegativeLength);
             if (startIndex > value.Length - length)
-                throw new ArgumentOutOfRangeException(nameof(length), CryptographyStrings.ArgumentOutOfRangeIndexLength);
+                throw new ArgumentOutOfRangeException(nameof(length),
+                    CryptographyStrings.ArgumentOutOfRangeIndexLength);
 
             if (length == 0)
                 return
@@ -74,7 +78,14 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        internal static void Xor(byte[] left, int leftOffset, byte[] right, int rightOffset, byte[] result, int resultOffset, int count)
+        internal static void Xor(
+            byte[] left,
+            int leftOffset,
+            byte[] right,
+            int rightOffset,
+            byte[] result,
+            int resultOffset,
+            int count)
         {
             for (var i = 0; i < count; i++)
                 result[resultOffset + i] = (byte)(left[leftOffset + i] ^ right[rightOffset + i]);

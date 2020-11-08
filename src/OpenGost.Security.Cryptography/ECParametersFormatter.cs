@@ -47,7 +47,8 @@ namespace OpenGost.Security.Cryptography
             reader.ReadStartElement();
 
             if (!reader.IsStartElement(DomainParametersTag, Namespace))
-                throw new ArgumentException(CryptographyStrings.CryptographicMissingDomainParameters, nameof(xmlString));
+                throw new ArgumentException(CryptographyStrings.CryptographicMissingDomainParameters,
+                    nameof(xmlString));
             var curve = ReadDomainParameters(reader, keyLength);
 
             if (!reader.IsStartElement(PublicKeyTag, Namespace))
@@ -110,10 +111,14 @@ namespace OpenGost.Security.Cryptography
             reader.MoveToContent();
             var baseBoint = ReadECPoint(reader, BasePointTag, Namespace, keyLength);
             reader.MoveToContent();
-            var order = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture), keyLength);
+            var order = CryptoUtils.ToNormalizedByteArray(
+                BigInteger.Parse(reader.ReadElementContentAsString(OrderTag, Namespace), CultureInfo.InvariantCulture),
+                keyLength);
             byte[]? cofactor;
             if (reader.IsStartElement(CofactorTag, Namespace))
-                cofactor = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture), keyLength);
+                cofactor = CryptoUtils.ToNormalizedByteArray(
+                    BigInteger.Parse(reader.ReadElementContentAsString(), CultureInfo.InvariantCulture),
+                    keyLength);
             else cofactor = null;
             reader.ReadEndElement();
             reader.ReadEndElement();
@@ -134,7 +139,9 @@ namespace OpenGost.Security.Cryptography
         {
             reader.ReadStartElement(localName, ns);
             reader.MoveToContent();
-            var value = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader.ReadElementContentAsString(PTag, Namespace), CultureInfo.InvariantCulture), keyLength);
+            var value = CryptoUtils.ToNormalizedByteArray(
+                BigInteger.Parse(reader.ReadElementContentAsString(PTag, Namespace), CultureInfo.InvariantCulture),
+                keyLength);
             reader.ReadEndElement();
             return value;
         }
@@ -151,7 +158,9 @@ namespace OpenGost.Security.Cryptography
             if (!reader.MoveToAttribute(ValueTag))
                 throw new NotImplementedException();
             reader.ReadAttributeValue();
-            var result = CryptoUtils.ToNormalizedByteArray(BigInteger.Parse(reader[ValueTag], CultureInfo.InvariantCulture), keyLength);
+            var result = CryptoUtils.ToNormalizedByteArray(
+                BigInteger.Parse(reader[ValueTag], CultureInfo.InvariantCulture),
+                keyLength);
             reader.MoveToElement();
             reader.ReadStartElement(localName, ns);
             if (!isEmpty)

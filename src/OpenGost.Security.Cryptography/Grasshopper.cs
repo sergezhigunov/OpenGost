@@ -6,7 +6,8 @@ using OpenGost.Security.Cryptography.Properties;
 namespace OpenGost.Security.Cryptography
 {
     /// <summary>
-    /// Represents the base class from which all implementations of the <see cref="Grasshopper"/> symmetric encryption algorithm must inherit.
+    /// Represents the base class from which all implementations of the <see cref="Grasshopper"/>
+    /// symmetric encryption algorithm must inherit.
     /// </summary>
     [ComVisible(true)]
     public abstract class Grasshopper : SymmetricAlgorithm

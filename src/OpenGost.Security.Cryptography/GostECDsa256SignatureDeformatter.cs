@@ -23,7 +23,8 @@ namespace OpenGost.Security.Cryptography
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GostECDsa256SignatureDeformatter"/> class with the specified key.
+        /// Initializes a new instance of the <see cref="GostECDsa256SignatureDeformatter"/>
+        /// class with the specified key.
         /// </summary>
         /// <param name="key">
         /// The instance of <see cref="GostECDsa256"/> that holds the key.

@@ -61,7 +61,8 @@ namespace OpenGost.Security.Cryptography
 
             BigInteger
                 prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), _modulus),
-                subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), _modulus) / CryptoUtils.Normalize(new BigInteger(curve.Cofactor), _modulus),
+                subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), _modulus) /
+                    CryptoUtils.Normalize(new BigInteger(curve.Cofactor), _modulus),
                 a = CryptoUtils.Normalize(new BigInteger(curve.A), _modulus);
 
             var privateKey = new byte[keySizeInByted];
@@ -161,8 +162,8 @@ namespace OpenGost.Security.Cryptography
             if (!_parametersSet)
                 GenerateKey(GetDefaultCurve());
 
-            var
-                subgroupOrder = CryptoUtils.Normalize(new BigInteger(_curve.Order), _modulus) / CryptoUtils.Normalize(new BigInteger(_curve.Cofactor), _modulus);
+            var subgroupOrder = CryptoUtils.Normalize(new BigInteger(_curve.Order), _modulus) /
+                    CryptoUtils.Normalize(new BigInteger(_curve.Cofactor), _modulus);
 
             var e = CryptoUtils.Normalize(new BigInteger(hash), _modulus) % subgroupOrder;
 
@@ -243,8 +244,8 @@ namespace OpenGost.Security.Cryptography
 
             var keySizeInByted = KeySize / 8;
 
-            var
-                subgroupOrder = CryptoUtils.Normalize(new BigInteger(_curve.Order), _modulus) / CryptoUtils.Normalize(new BigInteger(_curve.Cofactor), _modulus);
+            var subgroupOrder = CryptoUtils.Normalize(new BigInteger(_curve.Order), _modulus) /
+                CryptoUtils.Normalize(new BigInteger(_curve.Cofactor), _modulus);
 
             var array = new byte[keySizeInByted];
 

@@ -39,7 +39,8 @@ namespace OpenGost.Security.Cryptography
         { }
 
         /// <summary>
-        /// Creates a symmetric <see cref="Grasshopper"/> decryptor object with the specified key and initialization vector.
+        /// Creates a symmetric <see cref="Grasshopper"/> decryptor object
+        /// with the specified key and initialization vector.
         /// </summary>
         /// <param name="rgbKey">
         /// The secret key to be used for the symmetric algorithm. The key size must be 256 bits.
@@ -51,12 +52,11 @@ namespace OpenGost.Security.Cryptography
         /// A symmetric <see cref="Grasshopper"/> decryptor object.
         /// </returns>
         public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
-        {
-            return new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Decrypt);
-        }
+            => new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Decrypt);
 
         /// <summary>
-        /// Creates a symmetric <see cref="Grasshopper"/> encryptor object with the specified key and initialization vector.
+        /// Creates a symmetric <see cref="Grasshopper"/> encryptor object
+        /// with the specified key and initialization vector.
         /// </summary>
         /// <param name="rgbKey">
         /// The secret key to be used for the symmetric algorithm. The key size must be 256 bits.
@@ -68,9 +68,7 @@ namespace OpenGost.Security.Cryptography
         /// A symmetric <see cref="Grasshopper"/> encryptor object.
         /// </returns>
         public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
-        {
-            return new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Encrypt);
-        }
+            => new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Encrypt);
 
         /// <summary>
         /// Generates a random initialization vector to be used for the algorithm.

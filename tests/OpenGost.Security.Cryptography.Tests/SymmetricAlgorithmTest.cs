@@ -7,7 +7,13 @@ namespace OpenGost.Security.Cryptography
     public abstract class SymmetricAlgorithmTest<T>
         where T : SymmetricAlgorithm, new()
     {
-        protected void Verify(CipherMode mode, PaddingMode padding, string plainTextHex, string cipherTextHex, string keyHex, string ivHex)
+        protected void Verify(
+            CipherMode mode,
+            PaddingMode padding,
+            string plainTextHex,
+            string cipherTextHex,
+            string keyHex,
+            string ivHex)
         {
             byte[]
                 plainTextBytes = plainTextHex.HexToByteArray(),

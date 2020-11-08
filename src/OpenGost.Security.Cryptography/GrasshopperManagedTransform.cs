@@ -293,7 +293,15 @@ namespace OpenGost.Security.Cryptography
 
         [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void DoLinearTransformForward(byte* data, byte* t16, byte* t32, byte* t133, byte* t148, byte* t192, byte* t194, byte* t251)
+        private static unsafe void DoLinearTransformForward(
+            byte* data,
+            byte* t16,
+            byte* t32,
+            byte* t133,
+            byte* t148,
+            byte* t192,
+            byte* t194,
+            byte* t251)
         {
             data[15] ^= (byte)(data[6] ^ t251[data[7]] ^ data[8] ^
                 t148[data[0]] ^ t148[data[14]] ^
@@ -426,7 +434,15 @@ namespace OpenGost.Security.Cryptography
 
         [SecurityCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void DoLinearTransformBackward(byte* data, byte* t16, byte* t32, byte* t133, byte* t148, byte* t192, byte* t194, byte* t251)
+        private static unsafe void DoLinearTransformBackward(
+            byte* data,
+            byte* t16,
+            byte* t32,
+            byte* t133,
+            byte* t148,
+            byte* t192,
+            byte* t194,
+            byte* t251)
         {
             data[0] ^= (byte)(data[7] ^ t251[data[8]] ^ data[9] ^
                 t148[data[1]] ^ t148[data[15]] ^

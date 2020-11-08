@@ -99,12 +99,15 @@ namespace OpenGost.Security.Cryptography
         }
 
         public virtual void SignHashNullHashThrowsArgumentNullException(T algorithm)
-            => Assert.Throws<ArgumentNullException>("hash", () => algorithm.SignHash(null!));
+            => Assert.Throws<ArgumentNullException>("hash",
+                () => algorithm.SignHash(null!));
 
         public virtual void VerifyHashNullHashThrowsArgumentNullException(T algorithm)
-            => Assert.Throws<ArgumentNullException>("hash", () => algorithm.VerifyHash(null!, Array.Empty<byte>()));
+            => Assert.Throws<ArgumentNullException>("hash",
+                () => algorithm.VerifyHash(null!, Array.Empty<byte>()));
 
         public virtual void VerifyHashNullSignatureThrowsArgumentNullException(T algorithm)
-            => Assert.Throws<ArgumentNullException>("signature", () => algorithm.VerifyHash(Array.Empty<byte>(), null!));
+            => Assert.Throws<ArgumentNullException>("signature",
+                () => algorithm.VerifyHash(Array.Empty<byte>(), null!));
     }
 }

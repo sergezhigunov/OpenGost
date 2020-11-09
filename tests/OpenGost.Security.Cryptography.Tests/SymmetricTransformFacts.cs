@@ -217,17 +217,14 @@ namespace OpenGost.Security.Cryptography
         {
             static void Check(byte[] plainText)
             {
-                byte[] newPlainText;
+                using var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.None };
+                algorithm.GenerateKey();
+                algorithm.GenerateIV();
 
-                using (var algorithm =
-                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.None })
-                {
-                    algorithm.GenerateKey();
-                    algorithm.GenerateIV();
-
-                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
-                }
-
+                EncryptAndDecryptUsingCryptoStream(algorithm, plainText, out var cipherText, out var newPlainText);
+                Assert.Equal(plainText, newPlainText);
+                EncryptAndDecryptUsingTransformFinalBlock(algorithm, plainText, out cipherText, out newPlainText);
                 Assert.Equal(plainText, newPlainText);
             }
 
@@ -243,22 +240,23 @@ namespace OpenGost.Security.Cryptography
         {
             static void Check(byte[] plainText)
             {
-                byte[] newPlainText;
+                using var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.Zeros };
+                algorithm.GenerateKey();
+                algorithm.GenerateIV();
 
-                using (var algorithm =
-                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.Zeros })
+                EncryptAndDecryptUsingCryptoStream(algorithm, plainText, out var cipherText, out var newPlainText);
+                AssertEqualIgnoringPaddingZeros(plainText, newPlainText);
+                EncryptAndDecryptUsingTransformFinalBlock(algorithm, plainText, out cipherText, out newPlainText);
+                AssertEqualIgnoringPaddingZeros(plainText, newPlainText);
+
+                static void AssertEqualIgnoringPaddingZeros(byte[] plainText, byte[] newPlainText)
                 {
-                    algorithm.GenerateKey();
-                    algorithm.GenerateIV();
-
-                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
+                    for (var i = 0; i < plainText.Length; i++)
+                        Assert.Equal(plainText[i], newPlainText[i]);
+                    for (var i = plainText.Length; i < newPlainText.Length; i++)
+                        Assert.Equal(0, newPlainText[i]);
                 }
-
-                for (var i = 0; i < plainText.Length; i++)
-                    Assert.Equal(plainText[i], newPlainText[i]);
-
-                for (var i = plainText.Length; i < newPlainText.Length; i++)
-                    Assert.Equal(0, newPlainText[i]);
             }
 
             foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
@@ -270,37 +268,43 @@ namespace OpenGost.Security.Cryptography
         {
             static void Check(byte[] plainText)
             {
-                byte[] newPlainText, newPlainTextNoDepad;
+                using var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ANSIX923 };
+                algorithm.GenerateKey();
+                algorithm.GenerateIV();
 
-                using (var algorithm =
-                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ANSIX923 })
+                EncryptAndDecryptUsingCryptoStream(algorithm, plainText, out var cipherText, out var newPlainText);
+                AssertEqualWithANSIX923Checks(algorithm, plainText, cipherText, newPlainText);
+                EncryptAndDecryptUsingTransformFinalBlock(algorithm, plainText, out cipherText, out newPlainText);
+                AssertEqualWithANSIX923Checks(algorithm, plainText, cipherText, newPlainText);
+
+                static void AssertEqualWithANSIX923Checks(
+                    SimpleSymmetricAlgorithm algorithm,
+                    byte[] plainText,
+                    byte[] cipherText,
+                    byte[] newPlainText)
                 {
-                    algorithm.GenerateKey();
-                    algorithm.GenerateIV();
-
-                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
-
+                    var backingPadding = algorithm.Padding;
                     algorithm.Padding = PaddingMode.None;
+                    var newPlainTextNoDepad = TransformUsingCryptoStream(algorithm.CreateDecryptor, cipherText);
+                    var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
 
-                    newPlainTextNoDepad = InternalTransform(algorithm.CreateDecryptor, cipherText);
-                }
+                    var padding = new byte[padCount];
+                    Buffer.BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
 
-                var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
+                    Assert.Equal(plainText, newPlainText);
 
-                var padding = new byte[padCount];
-                Buffer.BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
+                    for (var i = 0; i < plainText.Length; i++)
+                        Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
 
-                Assert.Equal(plainText, newPlainText);
+                    if (padCount > 0)
+                    {
+                        Assert.Equal(padCount, padding[padCount - 1]);
 
-                for (var i = 0; i < plainText.Length; i++)
-                    Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
-
-                if (padCount > 0)
-                {
-                    Assert.Equal(padCount, padding[padCount - 1]);
-
-                    for (var i = 0; i < padCount - 1; i++)
-                        Assert.Equal(0, padding[i]);
+                        for (var i = 0; i < padCount - 1; i++)
+                            Assert.Equal(0, padding[i]);
+                    }
+                    algorithm.Padding = backingPadding;
                 }
             }
 
@@ -313,37 +317,43 @@ namespace OpenGost.Security.Cryptography
         {
             static void Check(byte[] plainText)
             {
-                byte[] newPlainText, newPlainTextNoDepad;
+                using var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 };
+                algorithm.GenerateKey();
+                algorithm.GenerateIV();
 
-                using (var algorithm =
-                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 })
+                EncryptAndDecryptUsingCryptoStream(algorithm, plainText, out var cipherText, out var newPlainText);
+                AssertEqualWithPKCS7Checks(algorithm, plainText, cipherText, newPlainText);
+                EncryptAndDecryptUsingTransformFinalBlock(algorithm, plainText, out cipherText, out newPlainText);
+                AssertEqualWithPKCS7Checks(algorithm, plainText, cipherText, newPlainText);
+
+                static void AssertEqualWithPKCS7Checks(
+                    SimpleSymmetricAlgorithm algorithm,
+                    byte[] plainText,
+                    byte[] cipherText,
+                    byte[] newPlainText)
                 {
-                    algorithm.GenerateKey();
-                    algorithm.GenerateIV();
-
-                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
-
+                    var backingPadding = algorithm.Padding;
                     algorithm.Padding = PaddingMode.None;
+                    var newPlainTextNoDepad = TransformUsingCryptoStream(algorithm.CreateDecryptor, cipherText);
+                    var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
 
-                    newPlainTextNoDepad = InternalTransform(algorithm.CreateDecryptor, cipherText);
-                }
+                    var padding = new byte[padCount];
+                    Buffer.BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
 
-                var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
+                    Assert.Equal(plainText, newPlainText);
 
-                var padding = new byte[padCount];
-                Buffer.BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
+                    for (var i = 0; i < plainText.Length; i++)
+                        Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
 
-                Assert.Equal(plainText, newPlainText);
+                    if (padCount > 0)
+                    {
+                        Assert.Equal(padCount, padding[padCount - 1]);
 
-                for (var i = 0; i < plainText.Length; i++)
-                    Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
-
-                if (padCount > 0)
-                {
-                    Assert.Equal(padCount, padding[padCount - 1]);
-
-                    for (var i = 0; i < padCount - 1; i++)
-                        Assert.Equal(padCount, padding[i]);
+                        for (var i = 0; i < padCount - 1; i++)
+                            Assert.Equal(padCount, padding[i]);
+                    }
+                    algorithm.Padding = backingPadding;
                 }
             }
 
@@ -356,50 +366,68 @@ namespace OpenGost.Security.Cryptography
         {
             static void Check(byte[] plainText)
             {
-                byte[] newPlainText, newPlainTextNoDepad;
+                using var algorithm =
+                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ISO10126 };
+                algorithm.GenerateKey();
+                algorithm.GenerateIV();
 
-                using (var algorithm =
-                    new SimpleSymmetricAlgorithm { Mode = CipherMode.ECB, Padding = PaddingMode.ISO10126 })
+                EncryptAndDecryptUsingCryptoStream(algorithm, plainText, out var cipherText, out var newPlainText);
+                AssertEqualWithISO10126Checks(algorithm, plainText, cipherText, newPlainText);
+                EncryptAndDecryptUsingTransformFinalBlock(algorithm, plainText, out cipherText, out newPlainText);
+                AssertEqualWithISO10126Checks(algorithm, plainText, cipherText, newPlainText);
+
+                static void AssertEqualWithISO10126Checks(
+                    SimpleSymmetricAlgorithm algorithm,
+                    byte[] plainText,
+                    byte[] cipherText,
+                    byte[] newPlainText)
                 {
-                    algorithm.GenerateKey();
-                    algorithm.GenerateIV();
-
-                    InternalEncryptAndDecrypt(algorithm, plainText, out var cipherText, out newPlainText);
-
+                    var backingPadding = algorithm.Padding;
                     algorithm.Padding = PaddingMode.None;
 
-                    newPlainTextNoDepad = InternalTransform(algorithm.CreateDecryptor, cipherText);
+                    var newPlainTextNoDepad = TransformUsingCryptoStream(algorithm.CreateDecryptor, cipherText);
+                    var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
+
+                    var padding = new byte[padCount];
+                    Buffer.BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
+
+                    Assert.Equal(plainText, newPlainText);
+
+                    for (var i = 0; i < plainText.Length; i++)
+                        Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
+
+                    if (padCount > 0)
+                        Assert.Equal(padCount, padding[padCount - 1]);
+                    algorithm.Padding = backingPadding;
                 }
 
-                var padCount = newPlainTextNoDepad.Length - newPlainText.Length;
-
-                var padding = new byte[padCount];
-                Buffer.BlockCopy(newPlainTextNoDepad, newPlainText.Length, padding, 0, padCount);
-
-                Assert.Equal(plainText, newPlainText);
-
-                for (var i = 0; i < plainText.Length; i++)
-                    Assert.Equal(plainText[i], newPlainTextNoDepad[i]);
-
-                if (padCount > 0)
-                    Assert.Equal(padCount, padding[padCount - 1]);
             }
 
             foreach (var plainText in BlockSizeMultiplePlainTexts.Union(BlockSizeNonMultiplePlainTexts))
                 Check(plainText);
         }
 
-        private static void InternalEncryptAndDecrypt(
+        private static void EncryptAndDecryptUsingCryptoStream(
             SymmetricAlgorithm algorithm,
             byte[] plainText,
             out byte[] cipherText,
             out byte[] newPlainText)
         {
-            cipherText = InternalTransform(algorithm.CreateEncryptor, plainText);
-            newPlainText = InternalTransform(algorithm.CreateDecryptor, cipherText);
+            cipherText = TransformUsingCryptoStream(algorithm.CreateEncryptor, plainText);
+            newPlainText = TransformUsingCryptoStream(algorithm.CreateDecryptor, cipherText);
         }
 
-        private static byte[] InternalTransform(Func<ICryptoTransform> factory, byte[] input)
+        private static void EncryptAndDecryptUsingTransformFinalBlock(
+            SymmetricAlgorithm algorithm,
+            byte[] plainText,
+            out byte[] cipherText,
+            out byte[] newPlainText)
+        {
+            cipherText = TransformUsingTransformFinalBlock(algorithm.CreateEncryptor, plainText);
+            newPlainText = TransformUsingTransformFinalBlock(algorithm.CreateDecryptor, cipherText);
+        }
+
+        private static byte[] TransformUsingCryptoStream(Func<ICryptoTransform> factory, byte[] input)
         {
             var memoryStream = new MemoryStream();
             using var transform = factory();
@@ -407,6 +435,12 @@ namespace OpenGost.Security.Cryptography
             cryptoStream.Write(input, 0, input.Length);
             cryptoStream.FlushFinalBlock();
             return memoryStream.ToArray();
+        }
+
+        private static byte[] TransformUsingTransformFinalBlock(Func<ICryptoTransform> factory, byte[] input)
+        {
+            using var transform = factory();
+            return transform.TransformFinalBlock(input, 0, input.Length);
         }
 
         private class SimpleSymmetricAlgorithm : SymmetricAlgorithm

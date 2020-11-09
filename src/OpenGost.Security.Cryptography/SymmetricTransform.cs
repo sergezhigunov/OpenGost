@@ -436,16 +436,17 @@ namespace OpenGost.Security.Cryptography
                 throw new CryptographicException(CryptographyStrings.CryptographicInsufficientOutputBuffer);
 
             int shift;
+            int boundary = inputCount - lonelyBytes;
 
             switch (_cipherMode)
             {
                 case CipherMode.ECB:
-                    for (shift = 0; shift < inputCount; shift += InputBlockSize)
+                    for (shift = 0; shift < boundary; shift += InputBlockSize)
                         EncryptBlock(inputBuffer, inputOffset + shift, outputBuffer, outputOffset + shift);
                     break;
 
                 case CipherMode.CBC:
-                    for (shift = 0; shift < inputCount; shift += InputBlockSize)
+                    for (shift = 0; shift < boundary; shift += InputBlockSize)
                     {
                         CryptoUtils.Xor(_stateBuffer!, 0, inputBuffer, inputOffset + shift, _tempBuffer!, 0,
                             InputBlockSize);
@@ -458,7 +459,7 @@ namespace OpenGost.Security.Cryptography
                     break;
 
                 case CipherMode.CFB:
-                    for (shift = 0; shift < inputCount; shift += InputBlockSize)
+                    for (shift = 0; shift < boundary; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
                         CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer,
@@ -471,7 +472,7 @@ namespace OpenGost.Security.Cryptography
                     break;
 
                 case CipherMode.OFB:
-                    for (shift = 0; shift < inputCount; shift += InputBlockSize)
+                    for (shift = 0; shift < boundary; shift += InputBlockSize)
                     {
                         EncryptBlock(_stateBuffer!, 0, _tempBuffer!, 0);
                         CryptoUtils.Xor(_tempBuffer!, 0, inputBuffer, inputOffset + shift, outputBuffer,
@@ -510,7 +511,6 @@ namespace OpenGost.Security.Cryptography
                 tmpInputBuffer = padBytes;
             else
             {
-                shift -= InputBlockSize;
                 tmpInputBuffer = new byte[InputBlockSize];
                 Buffer.BlockCopy(inputBuffer, inputOffset + shift, tmpInputBuffer, 0, lonelyBytes);
                 Buffer.BlockCopy(padBytes, 0, tmpInputBuffer, lonelyBytes, padSize);

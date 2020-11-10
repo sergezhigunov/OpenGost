@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Formats.Asn1;
+using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -111,9 +113,11 @@ namespace OpenGost.Security.Cryptography.X509Certificates
             return true;
         }
 
+        [SecuritySafeCritical]
         private static ECParameters ReadParameters(PublicKey publicKey)
         {
-            var publicKeyValue = AsnUtils.DecodeOctetString(publicKey.EncodedKeyValue);
+            var keySource = new ReadOnlySpan<byte>(publicKey.EncodedKeyValue.RawData);
+            var publicKeyValue = AsnDecoder.ReadOctetString(keySource, AsnEncodingRules.BER, out _);
             var keySize = publicKeyValue.Length / 2;
             var publicPoint = new ECPoint
             {
@@ -123,14 +127,17 @@ namespace OpenGost.Security.Cryptography.X509Certificates
 
             CryptoUtils.EraseData(ref publicKeyValue);
 
+            var parametersSource = new ReadOnlyMemory<byte>(publicKey.EncodedParameters.RawData);
+            var reader = new AsnReader(parametersSource, AsnEncodingRules.BER);
+            reader = reader.ReadSequence();
             var curve = default(ECCurve);
 
-            foreach (var item in AsnUtils.DecodeSequence(publicKey.EncodedParameters))
+            while (reader.HasData)
             {
-                var tag = AsnUtils.GetAsnTag(item);
-                if (tag == AsnTag.ObjectIdentifier)
+                var tag = reader.PeekTag();
+                if (tag == Asn1Tag.ObjectIdentifier)
                 {
-                    var oidValue = AsnUtils.DecodeOidValue(item);
+                    var oidValue = reader.ReadObjectIdentifier();
                     if (ECCurveOidMap.OidValueRegistered(oidValue))
                     {
                         curve = ECCurve.CreateFromValue(oidValue);

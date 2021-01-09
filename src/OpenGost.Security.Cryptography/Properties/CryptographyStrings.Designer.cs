@@ -18,6 +18,9 @@ namespace OpenGost.Security.Cryptography.Properties
         public static string ArgumentOutOfRangeNeedPositiveNum
             => GetString("ArgumentOutOfRangeNeedPositiveNum");
 
+        public static string CryptographicDerInvalidEncoding
+            => GetString("CryptographicDerInvalidEncoding");
+
         public static string CryptographicHashKeySet
             => GetString("CryptographicHashKeySet");
 

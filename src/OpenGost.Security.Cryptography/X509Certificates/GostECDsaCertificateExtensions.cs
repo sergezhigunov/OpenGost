@@ -3,6 +3,7 @@ using System.Formats.Asn1;
 using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using OpenGost.Security.Cryptography.Asn1;
 
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
@@ -117,18 +118,18 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         private static ECParameters ReadParameters(PublicKey publicKey)
         {
             var keySource = new ReadOnlySpan<byte>(publicKey.EncodedKeyValue.RawData);
-            var publicKeyValue = AsnDecoder.ReadOctetString(keySource, AsnEncodingRules.BER, out _);
+            var reader = new AsnValueReader(keySource, AsnEncodingRules.BER);
+            var publicKeyValue = new ReadOnlySpan<byte>(reader.ReadOctetString());
             var keySize = publicKeyValue.Length / 2;
             var publicPoint = new ECPoint
             {
-                X = new ReadOnlySpan<byte>(publicKeyValue, 0, keySize).ToArray(),
-                Y = new ReadOnlySpan<byte>(publicKeyValue, keySize, keySize).ToArray(),
+                X = publicKeyValue.Slice(0, keySize).ToArray(),
+                Y = publicKeyValue.Slice(keySize, keySize).ToArray(),
             };
 
-            CryptoUtils.EraseData(ref publicKeyValue);
+            var parametersSource = new ReadOnlySpan<byte>(publicKey.EncodedParameters.RawData);
+            reader = new AsnValueReader(parametersSource, AsnEncodingRules.BER);
 
-            var parametersSource = new ReadOnlyMemory<byte>(publicKey.EncodedParameters.RawData);
-            var reader = new AsnReader(parametersSource, AsnEncodingRules.BER);
             reader = reader.ReadSequence();
             var curve = default(ECCurve);
 
@@ -143,7 +144,9 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                         curve = ECCurve.CreateFromValue(oidValue);
                         continue;
                     }
-                    else if (oidValue == CryptoConstants.Streebog256OidValue || oidValue == CryptoConstants.Streebog512OidValue)
+                    else if (
+                        oidValue == CryptoConstants.Streebog256OidValue ||
+                        oidValue == CryptoConstants.Streebog512OidValue)
                         continue;
                     else
                         throw new NotImplementedException();

@@ -12,23 +12,11 @@ namespace OpenGost.Security.Cryptography.Properties
         public static string ArgumentInvalidOffLen
             => GetString("ArgumentInvalidOffLen");
 
-        public static string ArgumentOutOfRangeIndexLength
-            => GetString("ArgumentOutOfRangeIndexLength");
-
         public static string ArgumentOutOfRangeNeedNonNegNum
             => GetString("ArgumentOutOfRangeNeedNonNegNum");
 
         public static string ArgumentOutOfRangeNeedPositiveNum
             => GetString("ArgumentOutOfRangeNeedPositiveNum");
-
-        public static string ArgumentOutOfRangeNegativeLength
-            => GetString("ArgumentOutOfRangeNegativeLength");
-
-        public static string ArgumentOutOfRangeStartIndex
-            => GetString("ArgumentOutOfRangeStartIndex");
-
-        public static string ArgumentOutOfRangeStartIndexLargerThanLength
-            => GetString("ArgumentOutOfRangeStartIndexLargerThanLength");
 
         public static string CryptographicHashKeySet
             => GetString("CryptographicHashKeySet");

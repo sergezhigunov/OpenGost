@@ -121,8 +121,8 @@ namespace OpenGost.Security.Cryptography.X509Certificates
             var keySize = publicKeyValue.Length / 2;
             var publicPoint = new ECPoint
             {
-                X = publicKeyValue.Subarray(0, keySize),
-                Y = publicKeyValue.Subarray(keySize),
+                X = new ReadOnlySpan<byte>(publicKeyValue, 0, keySize).ToArray(),
+                Y = new ReadOnlySpan<byte>(publicKeyValue, keySize, keySize).ToArray(),
             };
 
             CryptoUtils.EraseData(ref publicKeyValue);

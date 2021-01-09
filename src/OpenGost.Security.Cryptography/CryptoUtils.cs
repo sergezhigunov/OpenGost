@@ -25,36 +25,6 @@ namespace OpenGost.Security.Cryptography
         internal static T[]? CloneArray<T>(T[]? source)
             => source == null ? null : (T[])source.Clone();
 
-        internal static T[] Subarray<T>(this T[] value, int startIndex)
-            => value.Subarray(startIndex, value.Length - startIndex);
-
-        internal static T[] Subarray<T>(this T[] value, int startIndex, int length)
-        {
-            if (startIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(startIndex),
-                    CryptographyStrings.ArgumentOutOfRangeStartIndex);
-            if (startIndex > value.Length)
-                throw new ArgumentOutOfRangeException(nameof(startIndex),
-                    CryptographyStrings.ArgumentOutOfRangeStartIndexLargerThanLength);
-            if (length < 0)
-                throw new ArgumentOutOfRangeException(nameof(length),
-                    CryptographyStrings.ArgumentOutOfRangeNegativeLength);
-            if (startIndex > value.Length - length)
-                throw new ArgumentOutOfRangeException(nameof(length),
-                    CryptographyStrings.ArgumentOutOfRangeIndexLength);
-
-            if (length == 0)
-                return
-                    Array.Empty<T>();
-
-            if (startIndex == 0 && length == value.Length)
-                return CloneArray(value)!;
-
-            var result = new T[length];
-            Array.Copy(value, startIndex, result, 0, length);
-            return result;
-        }
-
         internal static void EraseData<T>(ref T[]? data)
             where T : struct
         {

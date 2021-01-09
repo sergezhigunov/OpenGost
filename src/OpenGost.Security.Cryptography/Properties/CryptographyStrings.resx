@@ -120,23 +120,11 @@
   <data name="ArgumentInvalidOffLen" xml:space="preserve">
     <value>Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.</value>
   </data>
-  <data name="ArgumentOutOfRangeIndexLength" xml:space="preserve">
-    <value>Index and length must refer to a location within the array.</value>
-  </data>
   <data name="ArgumentOutOfRangeNeedNonNegNum" xml:space="preserve">
     <value>Non-negative number required.</value>
   </data>
   <data name="ArgumentOutOfRangeNeedPositiveNum" xml:space="preserve">
     <value>Positive number required.</value>
-  </data>
-  <data name="ArgumentOutOfRangeNegativeLength" xml:space="preserve">
-    <value>Length cannot be less than zero.</value>
-  </data>
-  <data name="ArgumentOutOfRangeStartIndex" xml:space="preserve">
-    <value>Start index cannot be less than zero.</value>
-  </data>
-  <data name="ArgumentOutOfRangeStartIndexLargerThanLength" xml:space="preserve">
-    <value>Start index cannot be larger than length of array.</value>
   </data>
   <data name="CryptographicHashKeySet" xml:space="preserve">
     <value>Hash key cannot be changed after the first write to the stream.</value>

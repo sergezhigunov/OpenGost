@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
@@ -29,6 +30,15 @@ namespace OpenGost.Security.Cryptography
             }
 
             Assert.Equal(digestBytes, computedDigest);
+        }
+
+        [Fact]
+        public void Key_Throws_IfValueIsNull()
+        {
+            byte[] value = null!;
+            using var cmac = new T();
+
+            Assert.Throws<ArgumentNullException>(nameof(value), () => cmac.Key = value);
         }
     }
 }

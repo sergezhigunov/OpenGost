@@ -9,7 +9,6 @@
     <EmbeddedResource Include="Resources\GostECDsa256.cer" />
     <EmbeddedResource Include="Resources\GostECDsa512.cer" />
     <EmbeddedResource Include="..\..\tools\Crypto.config" />
-    <EmbeddedResource Include="..\..\schemas\ECDsa.xsd" />
   </ItemGroup>
 
   <ItemGroup>

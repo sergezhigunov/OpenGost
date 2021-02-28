@@ -101,43 +101,6 @@ namespace OpenGost.Security.Cryptography
         [ComVisible(false)]
         public abstract void ImportParameters(ECParameters parameters);
 
-        /// <summary>
-        /// Reconstructs a <see cref="GostECDsa"/> object from an XML string.
-        /// </summary>
-        /// <param name="xmlString">
-        /// The XML string to use to reconstruct the <see cref="GostECDsa"/> object.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// The <paramref name="xmlString"/> parameter is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="CryptographicException">
-        /// The format of the <paramref name="xmlString"/> parameter is not valid.
-        /// </exception>
-        public sealed override void FromXmlString(string xmlString)
-        {
-            if (xmlString == null)
-                throw new ArgumentNullException(nameof(xmlString));
-
-            var parameters = ECParametersFormatter.FromXml(xmlString, KeySize / 8);
-            ImportParameters(parameters);
-        }
-
-        /// <summary>
-        /// Creates and returns an XML string representation of the current
-        /// <see cref="GostECDsa"/> object.
-        /// </summary>
-        /// <param name="includePrivateParameters">
-        /// <see langword="true"/> to include private parameters; otherwise, <see langword="false"/>.
-        /// </param>
-        /// <returns>
-        /// An XML string encoding of the current <see cref="GostECDsa"/> object.
-        /// </returns>
-        public sealed override string ToXmlString(bool includePrivateParameters)
-        {
-            var parameters = ExportParameters(includePrivateParameters);
-            return ECParametersFormatter.ToXmlString(parameters);
-        }
-
         #region Creation factory methods
 
         /// <summary>

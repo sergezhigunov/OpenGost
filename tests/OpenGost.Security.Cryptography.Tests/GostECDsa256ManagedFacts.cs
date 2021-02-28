@@ -37,11 +37,6 @@ namespace OpenGost.Security.Cryptography
         public void ExportParametersTest(ECParameters parameters)
             => CheckExportParameters(parameters);
 
-        [Theory]
-        [MemberData(nameof(TestDomainParameters))]
-        public void CheckWriteAndReadXmlString(ECParameters parameters)
-            => WriteAndReadXmlString(parameters);
-
         [Fact]
         public override void CheckKeyExchangeAlgorithmProperty()
             => base.CheckKeyExchangeAlgorithmProperty();

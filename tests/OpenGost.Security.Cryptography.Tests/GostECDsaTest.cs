@@ -4,7 +4,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public abstract class GostECDsaTest<T> : AsymmetricAlgorithmTest<T>
+    public abstract class GostECDsaTest<T>
         where T : GostECDsa, new()
     {
         protected T Create(ECParameters parameters)
@@ -51,23 +51,6 @@ namespace OpenGost.Security.Cryptography
             }
 
             Assert.True(VerifyHash(parameters, hash, signature));
-        }
-
-        protected void WriteAndReadXmlString(ECParameters parameters)
-        {
-            parameters.Validate();
-
-            string xmlString;
-            using (var algorithm = Create(parameters))
-                xmlString = algorithm.ToXmlString(false);
-
-            Assert.False(string.IsNullOrEmpty(xmlString));
-
-            ECParameters newParameters;
-            using (var algorithm = Create(xmlString))
-                newParameters = algorithm.ExportParameters(false);
-
-            ECHelper.AssertEqual(parameters, newParameters, false);
         }
 
         public virtual void CheckKeyExchangeAlgorithmProperty()

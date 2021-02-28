@@ -32,11 +32,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptogra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptography.Tests", "tests\OpenGost.Security.Cryptography.Tests\OpenGost.Security.Cryptography.Tests.csproj", "{F3588A93-87FB-4715-B491-85000A60EC54}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{30998F5C-04AE-4AB7-BAFE-F02953D8411A}"
-	ProjectSection(SolutionItems) = preProject
-		schemas\ECDsa.xsd = schemas\ECDsa.xsd
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9001C422-A979-402C-AB7A-6FC0B9B13530}"
 	ProjectSection(SolutionItems) = preProject
 		tools\Crypto.config = tools\Crypto.config

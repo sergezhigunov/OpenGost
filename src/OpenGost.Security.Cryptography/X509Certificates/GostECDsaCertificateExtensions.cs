@@ -4,6 +4,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using OpenGost.Security.Cryptography.Asn1;
+using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
@@ -117,36 +118,49 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         [SecuritySafeCritical]
         private static ECParameters ReadParameters(PublicKey publicKey)
         {
-            var keySource = new ReadOnlySpan<byte>(publicKey.EncodedKeyValue.RawData);
-            var reader = new AsnValueReader(keySource, AsnEncodingRules.BER);
-            var publicKeyValue = new ReadOnlySpan<byte>(reader.ReadOctetString());
-            var keySize = publicKeyValue.Length / 2;
-            var publicPoint = new ECPoint
+            var curve = ReadCurve(new ReadOnlySpan<byte>(publicKey.EncodedParameters.RawData));
+            var publicPoint = ReadPublicKey(new ReadOnlySpan<byte>(publicKey.EncodedKeyValue.RawData));
+            return new ECParameters { Curve = curve, Q = publicPoint };
+        }
+
+
+        [SecuritySafeCritical]
+        private static ECPoint ReadPublicKey(ReadOnlySpan<byte> encodedKeyValue)
+        {
+            var reader = new AsnValueReader(encodedKeyValue, AsnEncodingRules.BER);
+            if (reader.TryReadPrimitiveOctetString(out var publicKeyValue))
             {
-                X = publicKeyValue.Slice(0, keySize).ToArray(),
-                Y = publicKeyValue.Slice(keySize, keySize).ToArray(),
-            };
+                var keySize = publicKeyValue.Length / 2;
+                var publicPoint = new ECPoint
+                {
+                    X = publicKeyValue.Slice(0, keySize).ToArray(),
+                    Y = publicKeyValue.Slice(keySize, keySize).ToArray(),
+                };
+                reader.ThrowIfNotEmpty();
+                return publicPoint;
+            }
+            throw new CryptographicException(CryptographyStrings.CryptographicDerInvalidEncoding);
+        }
 
-            var parametersSource = new ReadOnlySpan<byte>(publicKey.EncodedParameters.RawData);
-            reader = new AsnValueReader(parametersSource, AsnEncodingRules.BER);
-
+        [SecuritySafeCritical]
+        private static ECCurve ReadCurve(ReadOnlySpan<byte> encodedParameters)
+        {
+            var reader = new AsnValueReader(encodedParameters, AsnEncodingRules.BER);
             reader = reader.ReadSequence();
             var curve = default(ECCurve);
-
             while (reader.HasData)
             {
                 var tag = reader.PeekTag();
                 if (tag == Asn1Tag.ObjectIdentifier)
                 {
                     var oidValue = reader.ReadObjectIdentifier();
-                    if (ECCurveOidMap.OidValueRegistered(oidValue))
+                    if (oidValue == CryptoConstants.Streebog256OidValue ||
+                        oidValue == CryptoConstants.Streebog512OidValue)
                     {
                         curve = ECCurve.CreateFromValue(oidValue);
                         continue;
                     }
-                    else if (
-                        oidValue == CryptoConstants.Streebog256OidValue ||
-                        oidValue == CryptoConstants.Streebog512OidValue)
+                    else if (ECCurveOidMap.OidValueRegistered(oidValue))
                         continue;
                     else
                         throw new NotImplementedException();
@@ -155,7 +169,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                     throw new NotImplementedException();
             }
 
-            return new ECParameters { Curve = curve, Q = publicPoint };
+            return curve;
         }
     }
 }

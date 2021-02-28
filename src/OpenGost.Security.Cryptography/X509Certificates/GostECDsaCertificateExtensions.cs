@@ -118,16 +118,15 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         [SecuritySafeCritical]
         private static ECParameters ReadParameters(PublicKey publicKey)
         {
-            var curve = ReadCurve(new ReadOnlySpan<byte>(publicKey.EncodedParameters.RawData));
-            var publicPoint = ReadPublicKey(new ReadOnlySpan<byte>(publicKey.EncodedKeyValue.RawData));
+            var curve = ReadCurve(publicKey.EncodedParameters.RawData);
+            var publicPoint = ReadPublicKey(publicKey.EncodedKeyValue.RawData);
             return new ECParameters { Curve = curve, Q = publicPoint };
         }
 
-
         [SecuritySafeCritical]
-        private static ECPoint ReadPublicKey(ReadOnlySpan<byte> encodedKeyValue)
+        private static ECPoint ReadPublicKey(ReadOnlyMemory<byte> encodedKeyValue)
         {
-            var reader = new AsnValueReader(encodedKeyValue, AsnEncodingRules.BER);
+            var reader = new AsnValueReader(encodedKeyValue.Span, AsnEncodingRules.BER);
             if (reader.TryReadPrimitiveOctetString(out var publicKeyValue))
             {
                 var keySize = publicKeyValue.Length / 2;
@@ -143,33 +142,13 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         }
 
         [SecuritySafeCritical]
-        private static ECCurve ReadCurve(ReadOnlySpan<byte> encodedParameters)
+        private static ECCurve ReadCurve(ReadOnlyMemory<byte> encodedParameters)
         {
-            var reader = new AsnValueReader(encodedParameters, AsnEncodingRules.BER);
-            reader = reader.ReadSequence();
-            var curve = default(ECCurve);
-            while (reader.HasData)
-            {
-                var tag = reader.PeekTag();
-                if (tag == Asn1Tag.ObjectIdentifier)
-                {
-                    var oidValue = reader.ReadObjectIdentifier();
-                    if (oidValue == CryptoConstants.Streebog256OidValue ||
-                        oidValue == CryptoConstants.Streebog512OidValue)
-                    {
-                        curve = ECCurve.CreateFromValue(oidValue);
-                        continue;
-                    }
-                    else if (ECCurveOidMap.OidValueRegistered(oidValue))
-                        continue;
-                    else
-                        throw new NotImplementedException();
-                }
-                else
-                    throw new NotImplementedException();
-            }
-
-            return curve;
+            var algorithmIdentifier = AlgorithmIdentifier.Decode(encodedParameters, AsnEncodingRules.BER);
+            var algorithm = algorithmIdentifier.Algorithm;
+            if (ECCurveOidMap.OidValueRegistered(algorithm))
+                return ECCurve.CreateFromValue(algorithm);
+            throw new CryptographicException(CryptographyStrings.CryptographicUnknownOid(algorithm));
         }
     }
 }

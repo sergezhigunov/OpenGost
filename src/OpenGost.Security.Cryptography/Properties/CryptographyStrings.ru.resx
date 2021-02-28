@@ -186,6 +186,9 @@
   <data name="CryptographicSymmetricAlgorithmNameSet" xml:space="preserve">
     <value>После первой записи в поток имя симметричного алгоритма изменить невозможно.</value>
   </data>
+  <data name="CryptographicUnknownOid" xml:space="preserve">
+    <value>"{oid}" - неизвестный идентификатор объекта.</value>
+  </data>
   <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
     <value>"{algorithm}" - неизвестный симметричный алгоритм.</value>
   </data>

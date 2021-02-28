@@ -82,6 +82,11 @@ namespace OpenGost.Security.Cryptography.Properties
         public static string CryptographicSymmetricAlgorithmNameSet
             => GetString("CryptographicSymmetricAlgorithmNameSet");
 
+        public static string CryptographicUnknownOid(object oid)
+            => string.Format(
+                GetString("CryptographicUnknownOid", nameof(oid)),
+                oid);
+
         public static string CryptographicUnknownSymmetricAlgorithm(object algorithm)
             => string.Format(
                 GetString("CryptographicUnknownSymmetricAlgorithm", nameof(algorithm)),

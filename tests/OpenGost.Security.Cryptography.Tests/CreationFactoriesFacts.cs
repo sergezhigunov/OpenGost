@@ -27,7 +27,8 @@ namespace OpenGost.Security.Cryptography
         [MemberData(nameof(ExplicitCreateFactories))]
         public void CreateExplicit_ReturnsValidInstance(
             Type expectedType,
-            Func<string, object> factory, string objectName)
+            Func<string, object?> factory,
+            string objectName)
         {
             var obj = factory.Invoke(objectName);
             try
@@ -43,133 +44,125 @@ namespace OpenGost.Security.Cryptography
 
         public static IEnumerable<object[]> ExplicitCreateFactories()
         {
-            static Func<string, T> Func<T>(Func<string, T> func) => func;
+            static object[] TestCase(Type type, Func<string, object?> factory, bool fullName)
+                => new object[] { type, factory, fullName ? type.FullName : type.Name };
 
             return new[]
             {
                 #region Asymmetric algorithm factories
 
-                new object[] { typeof(GostECDsa256), Func(AsymmetricAlgorithm.Create),
-                    CryptoConstants.GostECDsa256AlgorithmName },
-                new object[] { typeof(GostECDsa256), Func(AsymmetricAlgorithm.Create),
-                    CryptoConstants.GostECDsa256AlgorithmFullName },
-                new object[] { typeof(GostECDsa512), Func(AsymmetricAlgorithm.Create),
-                    CryptoConstants.GostECDsa512AlgorithmName },
-                new object[] { typeof(GostECDsa512), Func(AsymmetricAlgorithm.Create),
-                    CryptoConstants.GostECDsa512AlgorithmFullName },
+                TestCase(typeof(GostECDsa256), AsymmetricAlgorithm.Create, false),
+                TestCase(typeof(GostECDsa256), AsymmetricAlgorithm.Create, true),
+                TestCase(typeof(GostECDsa512), AsymmetricAlgorithm.Create, false),
+                TestCase(typeof(GostECDsa512), AsymmetricAlgorithm.Create, true),
 
                 #endregion
 
                 #region Symmetric algorithm factories
 
-                new object[] { typeof(Grasshopper), Func(SymmetricAlgorithm.Create),
-                    CryptoConstants.GrasshopperAlgorithmFullName },
-                new object[] { typeof(Magma), Func(SymmetricAlgorithm.Create), CryptoConstants.MagmaAlgorithmFullName },
+                TestCase(typeof(Grasshopper), SymmetricAlgorithm.Create, false),
+                TestCase(typeof(Grasshopper), SymmetricAlgorithm.Create, true),
+                TestCase(typeof(Magma), SymmetricAlgorithm.Create, false),
+                TestCase(typeof(Magma), SymmetricAlgorithm.Create, true),
 
                 #endregion
 
                 #region Hash algorithm factories
 
-                new object[] { typeof(CMACGrasshopper), Func(HashAlgorithm.Create),
-                    CryptoConstants.CMACGrasshopperAlgorithmFullName },
-                new object[] { typeof(CMACMagma), Func(HashAlgorithm.Create),
-                    CryptoConstants.CMACMagmaAlgorithmFullName },
-                new object[] { typeof(Streebog256), Func(HashAlgorithm.Create),
-                    CryptoConstants.Streebog256AlgorithmFullName },
-                new object[] { typeof(Streebog512), Func(HashAlgorithm.Create),
-                    CryptoConstants.Streebog512AlgorithmFullName },
-                new object[] { typeof(HMACStreebog256), Func(HashAlgorithm.Create),
-                    CryptoConstants.HMACStreebog256AlgorithmFullName },
-                new object[] { typeof(HMACStreebog512), Func(HashAlgorithm.Create),
-                    CryptoConstants.HMACStreebog512AlgorithmFullName },
+                TestCase(typeof(CMACGrasshopper), HashAlgorithm.Create, false),
+                TestCase(typeof(CMACGrasshopper), HashAlgorithm.Create, true),
+                TestCase(typeof(CMACMagma), HashAlgorithm.Create, false),
+                TestCase(typeof(CMACMagma), HashAlgorithm.Create, true),
+                TestCase(typeof(Streebog256), HashAlgorithm.Create, false),
+                TestCase(typeof(Streebog256), HashAlgorithm.Create, true),
+                TestCase(typeof(Streebog512), HashAlgorithm.Create, false),
+                TestCase(typeof(Streebog512), HashAlgorithm.Create, true),
+                TestCase(typeof(HMACStreebog256), HashAlgorithm.Create, false),
+                TestCase(typeof(HMACStreebog256), HashAlgorithm.Create, true),
+                TestCase(typeof(HMACStreebog512), HashAlgorithm.Create, false),
+                TestCase(typeof(HMACStreebog512), HashAlgorithm.Create, true),
 
                 #endregion
 
                 #region Keyed hash algorithm factories
 
-                new object[] { typeof(CMACGrasshopper), Func(KeyedHashAlgorithm.Create),
-                    CryptoConstants.CMACGrasshopperAlgorithmFullName },
-                new object[] { typeof(CMACMagma), Func(KeyedHashAlgorithm.Create),
-                    CryptoConstants.CMACMagmaAlgorithmFullName },
-                new object[] { typeof(HMACStreebog256), Func(KeyedHashAlgorithm.Create),
-                    CryptoConstants.HMACStreebog256AlgorithmFullName },
-                new object[] { typeof(HMACStreebog512), Func(KeyedHashAlgorithm.Create),
-                    CryptoConstants.HMACStreebog512AlgorithmFullName },
+                TestCase(typeof(CMACGrasshopper), KeyedHashAlgorithm.Create, false),
+                TestCase(typeof(CMACGrasshopper), KeyedHashAlgorithm.Create, true),
+                TestCase(typeof(CMACMagma), KeyedHashAlgorithm.Create, false),
+                TestCase(typeof(CMACMagma), KeyedHashAlgorithm.Create, true),
+                TestCase(typeof(HMACStreebog256), KeyedHashAlgorithm.Create, false),
+                TestCase(typeof(HMACStreebog256), KeyedHashAlgorithm.Create, true),
+                TestCase(typeof(HMACStreebog512), KeyedHashAlgorithm.Create, false),
+                TestCase(typeof(HMACStreebog512), KeyedHashAlgorithm.Create, true),
 
                 #endregion
 
                 #region HMAC algorithm factories
 
-                new object[] { typeof(HMACStreebog256), Func(HMAC.Create),
-                    CryptoConstants.HMACStreebog256AlgorithmFullName },
-                new object[] { typeof(HMACStreebog512), Func(HMAC.Create),
-                    CryptoConstants.HMACStreebog512AlgorithmFullName },
+                TestCase(typeof(HMACStreebog256), HMAC.Create, false),
+                TestCase(typeof(HMACStreebog256), HMAC.Create, true),
+                TestCase(typeof(HMACStreebog512), HMAC.Create, false),
+                TestCase(typeof(HMACStreebog512), HMAC.Create, true),
 
                 #endregion
 
                 #region CMAC algorithm factories
 
-                new object[] { typeof(CMACGrasshopper), Func(CMAC.Create),
-                    CryptoConstants.CMACGrasshopperAlgorithmFullName },
-                new object[] { typeof(CMACMagma), Func(CMAC.Create), CryptoConstants.CMACMagmaAlgorithmFullName },
+                TestCase(typeof(CMACGrasshopper), CMAC.Create, false),
+                TestCase(typeof(CMACGrasshopper), CMAC.Create, true),
+                TestCase(typeof(CMACMagma), CMAC.Create, false),
+                TestCase(typeof(CMACMagma), CMAC.Create, true),
 
                 #endregion
 
                 #region GostECDsa algorithm factories
 
-                new object[] { typeof(GostECDsa256), Func(GostECDsa.Create),
-                    CryptoConstants.GostECDsa256AlgorithmName },
-                new object[] { typeof(GostECDsa256), Func(GostECDsa.Create),
-                    CryptoConstants.GostECDsa256AlgorithmFullName },
-                new object[] { typeof(GostECDsa512), Func(GostECDsa.Create),
-                    CryptoConstants.GostECDsa512AlgorithmName },
-                new object[] { typeof(GostECDsa512), Func(GostECDsa.Create),
-                    CryptoConstants.GostECDsa512AlgorithmFullName },
+                TestCase(typeof(GostECDsa256), GostECDsa.Create, false),
+                TestCase(typeof(GostECDsa256), GostECDsa.Create, true),
+                TestCase(typeof(GostECDsa512), GostECDsa.Create, false),
+                TestCase(typeof(GostECDsa512), GostECDsa.Create, true),
 
                 #endregion
 
                 #region GostECDsa256 algorithm factories
 
-                new object[] { typeof(GostECDsa256), Func(GostECDsa256.Create),
-                    CryptoConstants.GostECDsa256AlgorithmName },
-                new object[] { typeof(GostECDsa256), Func(GostECDsa256.Create),
-                    CryptoConstants.GostECDsa256AlgorithmFullName },
+                TestCase(typeof(GostECDsa256), GostECDsa256.Create, false),
+                TestCase(typeof(GostECDsa256), GostECDsa256.Create, true),
 
                 #endregion
 
                 #region GostECDsa256 algorithm factories
 
-                new object[] { typeof(GostECDsa512), Func(GostECDsa512.Create),
-                    CryptoConstants.GostECDsa512AlgorithmName },
-                new object[] { typeof(GostECDsa512), Func(GostECDsa512.Create),
-                    CryptoConstants.GostECDsa512AlgorithmFullName },
+                TestCase(typeof(GostECDsa512), GostECDsa512.Create, false),
+                TestCase(typeof(GostECDsa512), GostECDsa512.Create, true),
 
                 #endregion
 
                 #region Grasshopper algorithm factories
 
-                new object[] { typeof(Grasshopper), Func(Grasshopper.Create),
-                    CryptoConstants.GrasshopperAlgorithmFullName },
+                TestCase(typeof(Grasshopper), Grasshopper.Create, false),
+                TestCase(typeof(Grasshopper), Grasshopper.Create, true),
 
                 #endregion
 
                 #region Magma algorithm factories
 
-                new object[] { typeof(Magma), Func(Magma.Create), CryptoConstants.MagmaAlgorithmFullName },
+                TestCase(typeof(Magma), Magma.Create, false),
+                TestCase(typeof(Magma), Magma.Create, true),
 
                 #endregion
 
                 #region Streebog256 algorithm factories
 
-                new object[] { typeof(Streebog256), Func(Streebog256.Create),
-                    CryptoConstants.Streebog256AlgorithmFullName },
+                TestCase(typeof(Streebog256), Streebog256.Create, false),
+                TestCase(typeof(Streebog256), Streebog256.Create, true),
 
                 #endregion
 
                 #region Streebog512 algorithm factories
 
-                new object[] { typeof(Streebog512), Func(Streebog512.Create),
-                    CryptoConstants.Streebog512AlgorithmFullName },
+                TestCase(typeof(Streebog512), Streebog512.Create, false),
+                TestCase(typeof(Streebog512), Streebog512.Create, true),
 
                 #endregion
             };

@@ -11,7 +11,7 @@ namespace OpenGost.Security.Cryptography
 
         private static ECParameters TestDomainParameters256 { get; } = new ECParameters
         {
-            Curve = ECCurveOidMap.GetExplicitCurveByOid("1.2.643.7.1.2.1.1.0"),
+            Curve = ECCurve.CreateFromValue("1.2.643.7.1.2.1.1.0"),
             Q = new ECPoint
             {
                 X = "0bd86fe5d8db89668f789b4e1dba8585c5508b45ec5b59d8906ddb70e2492b7f".HexToByteArray(),

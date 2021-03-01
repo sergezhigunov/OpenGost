@@ -56,7 +56,6 @@ namespace OpenGost.Security.Cryptography
         public override void GenerateKey(ECCurve curve)
         {
             curve.Validate();
-            KeySize = curve.Prime.Length * 8;
 
             GenerateKey(curve, _modulus, out var publicKey, out var privateKey);
 
@@ -68,11 +67,14 @@ namespace OpenGost.Security.Cryptography
         }
 
         internal static void GenerateKey(
-            in ECCurve curve,
+            ECCurve curve,
             in BigInteger modulus,
             out ECPoint publicKey,
             out byte[] privateKey)
         {
+            if (!curve.IsExplicit)
+                curve = ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value);
+
             var prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), modulus);
             var subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), modulus) /
                 CryptoUtils.Normalize(new BigInteger(curve.Cofactor), modulus);
@@ -174,9 +176,11 @@ namespace OpenGost.Security.Cryptography
         internal static byte[] SignHash(
             in byte[] hash,
             in BigInteger modulus,
-            in ECCurve curve,
+            ECCurve curve,
             in byte[] privateKey)
         {
+            if (!curve.IsExplicit)
+                curve = ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value);
             var subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), modulus) /
                 CryptoUtils.Normalize(new BigInteger(curve.Cofactor), modulus);
             var e = CryptoUtils.Normalize(new BigInteger(hash), modulus) % subgroupOrder;
@@ -258,9 +262,11 @@ namespace OpenGost.Security.Cryptography
             in byte[] hash,
             in byte[] signature,
             in BigInteger modulus,
-            in ECCurve curve,
+            ECCurve curve,
             in ECPoint publicKey)
         {
+            if (!curve.IsExplicit)
+                curve = ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value);
             var size = curve.Prime.Length;
             var subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), modulus) /
                 CryptoUtils.Normalize(new BigInteger(curve.Cofactor), modulus);
@@ -328,6 +334,6 @@ namespace OpenGost.Security.Cryptography
         }
 
         private static ECCurve GetDefaultCurve()
-            => ECCurveOidMap.GetExplicitCurveByOid("1.2.643.7.1.2.1.2.1");
+            => ECCurve.CreateFromValue("1.2.643.7.1.2.1.2.1");
     }
 }

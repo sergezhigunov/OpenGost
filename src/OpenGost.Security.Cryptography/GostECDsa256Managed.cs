@@ -56,7 +56,6 @@ namespace OpenGost.Security.Cryptography
         public override void GenerateKey(ECCurve curve)
         {
             curve.Validate();
-            KeySize = curve.Prime.Length * 8;
 
             GostECDsa512Managed.GenerateKey(curve, _modulus, out var publicKey, out var privateKey);
 
@@ -143,7 +142,7 @@ namespace OpenGost.Security.Cryptography
             if (!_parametersSet)
                 GenerateKey(GetDefaultCurve());
 
-            return GostECDsa512Managed.SignHash(hash, _modulus, _curve, _privateKey!);
+           return GostECDsa512Managed.SignHash(hash, _modulus, _curve, _privateKey!);
         }
 
         /// <summary>
@@ -226,6 +225,6 @@ namespace OpenGost.Security.Cryptography
         }
 
         private static ECCurve GetDefaultCurve()
-            => ECCurveOidMap.GetExplicitCurveByOid("1.2.643.7.1.2.1.1.1");
+            => ECCurve.CreateFromValue("1.2.643.7.1.2.1.1.1");
     }
 }

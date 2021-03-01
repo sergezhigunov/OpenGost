@@ -115,12 +115,12 @@ namespace OpenGost.Security.Cryptography
 
                 #endregion
 
-                #region GostECDsa algorithm factories
+                #region ECDsa algorithm factories
 
-                TestCase(typeof(GostECDsa256), GostECDsa.Create, false),
-                TestCase(typeof(GostECDsa256), GostECDsa.Create, true),
-                TestCase(typeof(GostECDsa512), GostECDsa.Create, false),
-                TestCase(typeof(GostECDsa512), GostECDsa.Create, true),
+                TestCase(typeof(GostECDsa256), ECDsa.Create, false),
+                TestCase(typeof(GostECDsa256), ECDsa.Create, true),
+                TestCase(typeof(GostECDsa512), ECDsa.Create, false),
+                TestCase(typeof(GostECDsa512), ECDsa.Create, true),
 
                 #endregion
 
@@ -175,7 +175,6 @@ namespace OpenGost.Security.Cryptography
             return new[]
             {
                 new object[] { typeof(CMACGrasshopper), Func(CMAC.Create), },
-                new object[] { typeof(GostECDsa512), Func(GostECDsa.Create), },
                 new object[] { typeof(GostECDsa256), Func(GostECDsa256.Create), },
                 new object[] { typeof(GostECDsa512), Func(GostECDsa512.Create), },
                 new object[] { typeof(Grasshopper), Func(Grasshopper.Create), },

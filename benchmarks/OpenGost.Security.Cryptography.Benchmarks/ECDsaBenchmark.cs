@@ -4,8 +4,8 @@ using BenchmarkDotNet.Attributes;
 
 namespace OpenGost.Security.Cryptography.Benchmarks
 {
-    public abstract class GostECDsaBenchmark<T> : IDisposable
-        where T : GostECDsa, new()
+    public abstract class ECDsaBenchmark<T> : IDisposable
+        where T : ECDsa, new()
     {
         private static RandomNumberGenerator RandomNumberGenerator { get; } = RandomNumberGenerator.Create();
 
@@ -14,7 +14,7 @@ namespace OpenGost.Security.Cryptography.Benchmarks
         private bool _disposed;
         protected T AsymmetricAlgorithm = new T();
 
-        protected GostECDsaBenchmark()
+        protected ECDsaBenchmark()
         {
             _hash = new byte[AsymmetricAlgorithm.KeySize / 8];
             RandomNumberGenerator.GetBytes(_hash);

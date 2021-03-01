@@ -5,7 +5,7 @@ using Xunit;
 namespace OpenGost.Security.Cryptography
 {
 
-    public class GostECDsa256ManagedFacts : GostECDsaTest<GostECDsa256Managed>
+    public class GostECDsa256ManagedFacts : ECDsaTest<GostECDsa256Managed>
     {
         #region 256-bit test domain parameters as described in GOST 34.10-2012
 

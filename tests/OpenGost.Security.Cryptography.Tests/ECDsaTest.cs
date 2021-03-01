@@ -4,8 +4,8 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography
 {
-    public abstract class GostECDsaTest<T>
-        where T : GostECDsa, new()
+    public abstract class ECDsaTest<T>
+        where T : ECDsa, new()
     {
         protected T Create(ECParameters parameters)
         {

@@ -5,10 +5,10 @@ namespace OpenGost.Security.Cryptography
 {
     /// <summary>
     /// Provides an abstract base class that encapsulates the 512-bit version of
-    /// the <see cref="GostECDsa"/> algorithm.
+    /// the GOST R 34.10-2012 <see cref="ECDsa"/> algorithm.
     /// </summary>
     [ComVisible(true)]
-    public abstract class GostECDsa512 : GostECDsa
+    public abstract class GostECDsa512 : ECDsa
     {
         private static readonly KeySizes[] _legalKeySizes = { new KeySizes(512, 512, 0) };
 

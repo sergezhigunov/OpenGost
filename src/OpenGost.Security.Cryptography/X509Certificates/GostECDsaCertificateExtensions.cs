@@ -9,13 +9,13 @@ using OpenGost.Security.Cryptography.Properties;
 namespace OpenGost.Security.Cryptography.X509Certificates
 {
     /// <summary>
-    /// Provides extension methods for retrieving <see cref="GostECDsa"/> implementations for the
+    /// Provides extension methods for retrieving GOST R 34.10-2012 <see cref="ECDsa"/> implementations for the
     /// public and private keys of a <see cref="X509Certificate2"/> certificate.
     /// </summary>
     public static class GostECDsaCertificateExtensions
     {
         /// <summary>
-        /// Gets the <see cref="GostECDsa"/> public key from the <see cref="X509Certificate2"/>
+        /// Gets the GOST R 34.10-2012 <see cref="ECDsa"/> public key from the <see cref="X509Certificate2"/>
         /// certificate.
         /// </summary>
         /// <param name="certificate">
@@ -23,7 +23,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         /// </param>
         /// <returns>
         /// The public key, or <see langword="null"/> if the certificate does not have a
-        /// <see cref="GostECDsa"/> public key.
+        /// GOST R 34.10-2012 <see cref="ECDsa"/> public key.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// The <paramref name="certificate"/> parameter is <see langword="null"/>.
@@ -31,7 +31,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         /// <exception cref="CryptographicException">
         /// The handle is invalid.
         /// </exception>
-        public static GostECDsa? GetGostECDsaPublicKey(this X509Certificate2 certificate)
+        public static ECDsa? GetGostECDsaPublicKey(this X509Certificate2 certificate)
         {
             if (certificate == null)
                 throw new ArgumentNullException(nameof(certificate));
@@ -40,7 +40,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
                 return null;
 
             var publicKey = certificate.PublicKey;
-            GostECDsa? result = publicKey.EncodedKeyValue.Oid.Value switch
+            ECDsa? result = publicKey.EncodedKeyValue.Oid.Value switch
             {
                 CryptoConstants.GostECDsa256OidValue => GostECDsa256.Create(),
                 CryptoConstants.GostECDsa512OidValue => GostECDsa512.Create(),
@@ -63,7 +63,7 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         }
 
         /// <summary>
-        /// Gets the <see cref="GostECDsa"/> private key from the <see cref="X509Certificate2"/>
+        /// Gets the GOST R 34.10-2012<see cref="ECDsa"/> private key from the <see cref="X509Certificate2"/>
         /// certificate.
         /// </summary>
         /// <param name="certificate">
@@ -71,12 +71,12 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         /// </param>
         /// <returns>
         /// The private key, or <see langword="null"/> if the certificate does not have a
-        /// <see cref="GostECDsa"/> private key.
+        /// GOST R 34.10-2012 <see cref="ECDsa"/> private key.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// The <paramref name="certificate"/> parameter is <see langword="null"/>.
         /// </exception>
-        public static GostECDsa? GetGostECDsaPrivateKey(this X509Certificate2 certificate)
+        public static ECDsa? GetGostECDsaPrivateKey(this X509Certificate2 certificate)
         {
             if (certificate == null)
                 throw new ArgumentNullException(nameof(certificate));

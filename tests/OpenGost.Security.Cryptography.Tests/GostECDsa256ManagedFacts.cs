@@ -42,7 +42,7 @@ namespace OpenGost.Security.Cryptography
             => base.CheckKeyExchangeAlgorithmProperty();
 
         [Theory]
-        [InlineData(CryptoConstants.GostECDsa256AlgorithmName)]
+        [InlineData(nameof(GostECDsa256))]
         public override void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
             => base.CheckSignatureAlgorithmProperty(expectedSignatureAlgorithm);
 

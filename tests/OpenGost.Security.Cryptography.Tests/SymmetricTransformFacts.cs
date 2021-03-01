@@ -504,7 +504,8 @@ namespace OpenGost.Security.Cryptography
             {
                 Assert.True(GenerateKeyExpansionCalled);
                 // Simply Xor with key
-                CryptoUtils.Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize);
+                for (var i = 0; i < InputBlockSize; i++)
+                    outputBuffer[outputOffset + i] = (byte)(_rgbKey[i] ^ inputBuffer[inputOffset + i]);
             }
 
             protected override void EncryptBlock(
@@ -515,7 +516,9 @@ namespace OpenGost.Security.Cryptography
             {
                 Assert.True(GenerateKeyExpansionCalled);
                 // Simply Xor with key
-                CryptoUtils.Xor(_rgbKey, 0, inputBuffer, inputOffset, outputBuffer, outputOffset, InputBlockSize);
+                for (var i = 0; i < InputBlockSize; i++)
+                    outputBuffer[outputOffset + i] = (byte)(_rgbKey[i] ^ inputBuffer[inputOffset + i]);
+
             }
 
             protected override void GenerateKeyExpansion(byte[] rgbKey)

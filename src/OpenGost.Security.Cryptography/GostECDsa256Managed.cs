@@ -56,26 +56,9 @@ namespace OpenGost.Security.Cryptography
         public override void GenerateKey(ECCurve curve)
         {
             curve.Validate();
-            var keySizeInByted = curve.Prime.Length;
-            KeySize = keySizeInByted * 8;
+            KeySize = curve.Prime.Length * 8;
 
-            BigInteger
-                prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), _modulus),
-                subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), _modulus) /
-                    CryptoUtils.Normalize(new BigInteger(curve.Cofactor), _modulus),
-                a = CryptoUtils.Normalize(new BigInteger(curve.A), _modulus);
-
-            var privateKey = new byte[keySizeInByted];
-            BigInteger key;
-            do
-            {
-                CryptoUtils.StaticRandomNumberGenerator.GetBytes(privateKey);
-                key = CryptoUtils.Normalize(new BigInteger(privateKey), _modulus);
-            } while (BigInteger.Zero >= key || key >= subgroupOrder);
-
-            var basePoint = new BigIntegerPoint(curve.G, _modulus);
-
-            var publicKey = BigIntegerPoint.Multiply(basePoint, key, prime, a).ToECPoint(KeySize);
+            GostECDsa512Managed.GenerateKey(curve, _modulus, out var publicKey, out var privateKey);
 
             CryptoUtils.EraseData(ref _privateKey);
             _curve = curve.Clone();
@@ -155,54 +138,12 @@ namespace OpenGost.Security.Cryptography
             ThrowIfDisposed();
 
             if (KeySize / 8 != hash.Length)
-                throw new CryptographicException(CryptographyStrings.CryptographicInvalidHashSize( KeySize / 8));
-
-            var keySizeInByted = KeySize / 8;
+                throw new CryptographicException(CryptographyStrings.CryptographicInvalidHashSize(KeySize / 8));
 
             if (!_parametersSet)
                 GenerateKey(GetDefaultCurve());
 
-            var subgroupOrder = CryptoUtils.Normalize(new BigInteger(_curve.Order), _modulus) /
-                CryptoUtils.Normalize(new BigInteger(_curve.Cofactor), _modulus);
-
-            var e = CryptoUtils.Normalize(new BigInteger(hash), _modulus) % subgroupOrder;
-
-            if (e == BigInteger.Zero)
-                e = BigInteger.One;
-
-            BigInteger
-                prime = CryptoUtils.Normalize(new BigInteger(_curve.Prime), _modulus),
-                a = CryptoUtils.Normalize(new BigInteger(_curve.A), _modulus),
-                d = CryptoUtils.Normalize(new BigInteger(_privateKey), _modulus),
-                k, r, s;
-
-            var rgb = new byte[keySizeInByted];
-
-            do
-            {
-                do
-                {
-                    do
-                    {
-                        CryptoUtils.StaticRandomNumberGenerator.GetBytes(rgb);
-                        k = CryptoUtils.Normalize(new BigInteger(rgb), _modulus);
-                    } while (k <= BigInteger.Zero || k >= subgroupOrder);
-
-                    r = BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, _modulus), k, prime, a).X;
-                } while (r == BigInteger.Zero);
-
-                s = (r * d + k * e) % subgroupOrder;
-            } while (s == BigInteger.Zero);
-
-            byte[]
-                signature = new byte[keySizeInByted * 2],
-                array = s.ToByteArray();
-
-            Buffer.BlockCopy(array, 0, signature, 0, Math.Min(array.Length, keySizeInByted));
-            array = r.ToByteArray();
-            Buffer.BlockCopy(array, 0, signature, keySizeInByted, Math.Min(array.Length, keySizeInByted));
-
-            return signature;
+            return GostECDsa512Managed.SignHash(hash, _modulus, _curve, _privateKey!);
         }
 
         /// <summary>
@@ -242,41 +183,7 @@ namespace OpenGost.Security.Cryptography
             if (!_parametersSet)
                 return false;
 
-            var keySizeInByted = KeySize / 8;
-
-            var subgroupOrder = CryptoUtils.Normalize(new BigInteger(_curve.Order), _modulus) /
-                CryptoUtils.Normalize(new BigInteger(_curve.Cofactor), _modulus);
-
-            var array = new byte[keySizeInByted];
-
-            Buffer.BlockCopy(signature, 0, array, 0, keySizeInByted);
-            var s = CryptoUtils.Normalize(new BigInteger(array), _modulus);
-            if (s < BigInteger.One || s > subgroupOrder)
-                return false;
-
-            Buffer.BlockCopy(signature, keySizeInByted, array, 0, keySizeInByted);
-            var r = CryptoUtils.Normalize(new BigInteger(array), _modulus);
-            if (r < BigInteger.One || r > subgroupOrder)
-                return false;
-
-            var e = CryptoUtils.Normalize(new BigInteger(hash), _modulus) % subgroupOrder;
-
-            if (e == BigInteger.Zero)
-                e = BigInteger.One;
-
-            BigInteger
-                v = BigInteger.ModPow(e, subgroupOrder - 2, subgroupOrder),
-                z1 = (s * v) % subgroupOrder,
-                z2 = (subgroupOrder - r) * v % subgroupOrder,
-                prime = CryptoUtils.Normalize(new BigInteger(_curve.Prime), _modulus),
-                a = CryptoUtils.Normalize(new BigInteger(_curve.A), _modulus);
-
-            var c = BigIntegerPoint.Add(
-                BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, _modulus), z1, prime, a),
-                BigIntegerPoint.Multiply(new BigIntegerPoint(_publicKey, _modulus), z2, prime, a),
-                prime);
-
-            return c.X == r;
+            return GostECDsa512Managed.VerifyHash(hash, signature, _modulus, _curve, _publicKey);
         }
 
         /// <summary>

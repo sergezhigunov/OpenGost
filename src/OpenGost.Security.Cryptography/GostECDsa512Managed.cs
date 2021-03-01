@@ -56,32 +56,40 @@ namespace OpenGost.Security.Cryptography
         public override void GenerateKey(ECCurve curve)
         {
             curve.Validate();
-            var keySizeInByted = curve.Prime.Length;
-            KeySize = keySizeInByted * 8;
+            KeySize = curve.Prime.Length * 8;
 
-            BigInteger
-                prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), _modulus),
-                subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), _modulus) /
-                    CryptoUtils.Normalize(new BigInteger(curve.Cofactor), _modulus),
-                a = CryptoUtils.Normalize(new BigInteger(curve.A), _modulus);
-
-            var privateKey = new byte[keySizeInByted];
-            BigInteger key;
-            do
-            {
-                CryptoUtils.StaticRandomNumberGenerator.GetBytes(privateKey);
-                key = CryptoUtils.Normalize(new BigInteger(privateKey), _modulus);
-            } while (BigInteger.Zero >= key || key >= subgroupOrder);
-
-            var basePoint = new BigIntegerPoint(curve.G, _modulus);
-
-            var publicKey = BigIntegerPoint.Multiply(basePoint, key, prime, a).ToECPoint(KeySize);
+            GenerateKey(curve, _modulus, out var publicKey, out var privateKey);
 
             CryptoUtils.EraseData(ref _privateKey);
             _curve = curve.Clone();
             _publicKey = publicKey;
             _privateKey = privateKey;
             _parametersSet = true;
+        }
+
+        internal static void GenerateKey(
+            in ECCurve curve,
+            in BigInteger modulus,
+            out ECPoint publicKey,
+            out byte[] privateKey)
+        {
+            var prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), modulus);
+            var subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), modulus) /
+                CryptoUtils.Normalize(new BigInteger(curve.Cofactor), modulus);
+            var a = CryptoUtils.Normalize(new BigInteger(curve.A), modulus);
+            int size = curve.Prime.Length;
+            privateKey = new byte[size];
+
+            BigInteger key;
+            do
+            {
+                CryptoUtils.StaticRandomNumberGenerator.GetBytes(privateKey);
+                key = CryptoUtils.Normalize(new BigInteger(privateKey), modulus);
+            }
+            while (BigInteger.Zero >= key || key >= subgroupOrder);
+
+            var basePoint = new BigIntegerPoint(curve.G, modulus);
+            publicKey = BigIntegerPoint.Multiply(basePoint, key, prime, a).ToECPoint(size);
         }
 
         /// <summary>
@@ -157,27 +165,30 @@ namespace OpenGost.Security.Cryptography
             if (KeySize / 8 != hash.Length)
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidHashSize(KeySize / 8));
 
-            var keySizeInByted = KeySize / 8;
-
             if (!_parametersSet)
                 GenerateKey(GetDefaultCurve());
 
-            var subgroupOrder = CryptoUtils.Normalize(new BigInteger(_curve.Order), _modulus) /
-                    CryptoUtils.Normalize(new BigInteger(_curve.Cofactor), _modulus);
+            return SignHash(hash, _modulus, _curve, _privateKey!);
+        }
 
-            var e = CryptoUtils.Normalize(new BigInteger(hash), _modulus) % subgroupOrder;
-
+        internal static byte[] SignHash(
+            in byte[] hash,
+            in BigInteger modulus,
+            in ECCurve curve,
+            in byte[] privateKey)
+        {
+            var subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), modulus) /
+                CryptoUtils.Normalize(new BigInteger(curve.Cofactor), modulus);
+            var e = CryptoUtils.Normalize(new BigInteger(hash), modulus) % subgroupOrder;
             if (e == BigInteger.Zero)
                 e = BigInteger.One;
+            var prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), modulus);
+            var a = CryptoUtils.Normalize(new BigInteger(curve.A), modulus);
+            var d = CryptoUtils.Normalize(new BigInteger(privateKey), modulus);
+            int size = curve.Prime.Length;
+            var rgb = new byte[size];
 
-            BigInteger
-                prime = CryptoUtils.Normalize(new BigInteger(_curve.Prime), _modulus),
-                a = CryptoUtils.Normalize(new BigInteger(_curve.A), _modulus),
-                d = CryptoUtils.Normalize(new BigInteger(_privateKey), _modulus),
-                k, r, s;
-
-            var rgb = new byte[keySizeInByted];
-
+            BigInteger k, r, s;
             do
             {
                 do
@@ -185,23 +196,21 @@ namespace OpenGost.Security.Cryptography
                     do
                     {
                         CryptoUtils.StaticRandomNumberGenerator.GetBytes(rgb);
-                        k = CryptoUtils.Normalize(new BigInteger(rgb), _modulus);
+                        k = CryptoUtils.Normalize(new BigInteger(rgb), modulus);
                     } while (k <= BigInteger.Zero || k >= subgroupOrder);
 
-                    r = BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, _modulus), k, prime, a).X;
+                    r = BigIntegerPoint.Multiply(new BigIntegerPoint(curve.G, modulus), k, prime, a).X;
                 } while (r == BigInteger.Zero);
 
                 s = (r * d + k * e) % subgroupOrder;
-            } while (s == BigInteger.Zero);
+            }
+            while (s == BigInteger.Zero);
 
-            byte[]
-                signature = new byte[keySizeInByted * 2],
-                array = s.ToByteArray();
-
-            Buffer.BlockCopy(array, 0, signature, 0, Math.Min(array.Length, keySizeInByted));
+            var signature = new byte[size * 2];
+            var array = s.ToByteArray();
+            Buffer.BlockCopy(array, 0, signature, 0, Math.Min(array.Length, size));
             array = r.ToByteArray();
-            Buffer.BlockCopy(array, 0, signature, keySizeInByted, Math.Min(array.Length, keySizeInByted));
-
+            Buffer.BlockCopy(array, 0, signature, size, Math.Min(array.Length, size));
             return signature;
         }
 
@@ -242,40 +251,40 @@ namespace OpenGost.Security.Cryptography
             if (!_parametersSet)
                 return false;
 
-            var keySizeInByted = KeySize / 8;
+            return VerifyHash(hash, signature, _modulus, _curve, _publicKey);
+        }
 
-            var subgroupOrder = CryptoUtils.Normalize(new BigInteger(_curve.Order), _modulus) /
-                CryptoUtils.Normalize(new BigInteger(_curve.Cofactor), _modulus);
-
-            var array = new byte[keySizeInByted];
-
-            Buffer.BlockCopy(signature, 0, array, 0, keySizeInByted);
-            var s = CryptoUtils.Normalize(new BigInteger(array), _modulus);
+        internal static bool VerifyHash(
+            in byte[] hash,
+            in byte[] signature,
+            in BigInteger modulus,
+            in ECCurve curve,
+            in ECPoint publicKey)
+        {
+            var size = curve.Prime.Length;
+            var subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), modulus) /
+                CryptoUtils.Normalize(new BigInteger(curve.Cofactor), modulus);
+            var array = new byte[size];
+            Buffer.BlockCopy(signature, 0, array, 0, size);
+            var s = CryptoUtils.Normalize(new BigInteger(array), modulus);
             if (s < BigInteger.One || s > subgroupOrder)
                 return false;
-
-            Buffer.BlockCopy(signature, keySizeInByted, array, 0, keySizeInByted);
-            var r = CryptoUtils.Normalize(new BigInteger(array), _modulus);
+            Buffer.BlockCopy(signature, size, array, 0, size);
+            var r = CryptoUtils.Normalize(new BigInteger(array), modulus);
             if (r < BigInteger.One || r > subgroupOrder)
                 return false;
-
-            var e = CryptoUtils.Normalize(new BigInteger(hash), _modulus) % subgroupOrder;
-
+            var e = CryptoUtils.Normalize(new BigInteger(hash), modulus) % subgroupOrder;
             if (e == BigInteger.Zero)
                 e = BigInteger.One;
-
-            BigInteger
-                v = BigInteger.ModPow(e, subgroupOrder - 2, subgroupOrder),
-                z1 = (s * v) % subgroupOrder,
-                z2 = (subgroupOrder - r) * v % subgroupOrder,
-                prime = CryptoUtils.Normalize(new BigInteger(_curve.Prime), _modulus),
-                a = CryptoUtils.Normalize(new BigInteger(_curve.A), _modulus);
-
+            var v = BigInteger.ModPow(e, subgroupOrder - 2, subgroupOrder);
+            var z1 = (s * v) % subgroupOrder;
+            var z2 = (subgroupOrder - r) * v % subgroupOrder;
+            var prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), modulus);
+            var a = CryptoUtils.Normalize(new BigInteger(curve.A), modulus);
             var c = BigIntegerPoint.Add(
-                BigIntegerPoint.Multiply(new BigIntegerPoint(_curve.G, _modulus), z1, prime, a),
-                BigIntegerPoint.Multiply(new BigIntegerPoint(_publicKey, _modulus), z2, prime, a),
+                BigIntegerPoint.Multiply(new BigIntegerPoint(curve.G, modulus), z1, prime, a),
+                BigIntegerPoint.Multiply(new BigIntegerPoint(publicKey, modulus), z2, prime, a),
                 prime);
-
             return c.X == r;
         }
 

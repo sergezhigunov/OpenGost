@@ -19,10 +19,8 @@ namespace OpenGost.Security.Cryptography
             Y = CryptoUtils.Normalize(new BigInteger(point.Y), modulus);
         }
 
-        public ECPoint ToECPoint(int keySize)
+        public ECPoint ToECPoint(int size)
         {
-            var size = keySize / 8;
-
             return new ECPoint
             {
                 X = CryptoUtils.ToNormalizedByteArray(X, size),

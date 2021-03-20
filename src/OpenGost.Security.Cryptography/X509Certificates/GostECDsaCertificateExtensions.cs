@@ -144,8 +144,8 @@ namespace OpenGost.Security.Cryptography.X509Certificates
         [SecuritySafeCritical]
         private static ECCurve ReadCurve(ReadOnlyMemory<byte> encodedParameters)
         {
-            var algorithmIdentifier = AlgorithmIdentifier.Decode(encodedParameters, AsnEncodingRules.BER);
-            var algorithm = algorithmIdentifier.Algorithm;
+            var parameters = GostECDsaPublicKeyParameters.Decode(encodedParameters, AsnEncodingRules.BER);
+            var algorithm = parameters.PublicKeyParamSet;
             if (ECCurveOidMap.OidValueRegistered(algorithm))
                 return ECCurve.CreateFromValue(algorithm);
             throw new CryptographicException(CryptographyStrings.CryptographicUnknownOid(algorithm));

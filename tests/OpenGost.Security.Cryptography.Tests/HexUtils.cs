@@ -61,6 +61,6 @@ namespace OpenGost.Security.Cryptography
         }
 
         private static FormatException CreateTextIncorrectFormatException(Exception? innerException)
-            => new FormatException("Input text has incorrect format.", innerException);
+            => new("Input text has incorrect format.", innerException);
     }
 }

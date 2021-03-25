@@ -42,10 +42,10 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
-        public static IEnumerable<object[]> ExplicitCreateFactories()
+        public static IEnumerable<object?[]> ExplicitCreateFactories()
         {
-            static object[] TestCase(Type type, Func<string, object?> factory, bool fullName)
-                => new object[] { type, factory, fullName ? type.FullName : type.Name };
+            static object?[] TestCase(Type type, Func<string, object?> factory, bool fullName)
+                => new object?[] { type, factory, fullName ? type.FullName : type.Name };
 
             return new[]
             {

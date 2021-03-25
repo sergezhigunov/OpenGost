@@ -15,7 +15,7 @@ namespace OpenGost.Security.Cryptography.Benchmarks
         private readonly byte[] _encryptedData;
         private bool _disposed;
 
-        protected T SymmetricAlgorithm = new T { Padding = PaddingMode.Zeros };
+        protected T SymmetricAlgorithm = new() { Padding = PaddingMode.Zeros };
 
         protected SymmetricAlgorithmBenchmark()
         {

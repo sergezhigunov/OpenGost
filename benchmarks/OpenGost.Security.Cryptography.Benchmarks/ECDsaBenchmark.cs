@@ -12,7 +12,7 @@ namespace OpenGost.Security.Cryptography.Benchmarks
         private readonly byte[] _hash;
         private readonly byte[] _signature;
         private bool _disposed;
-        protected T AsymmetricAlgorithm = new T();
+        protected T AsymmetricAlgorithm = new();
 
         protected ECDsaBenchmark()
         {

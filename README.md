@@ -1,6 +1,6 @@
 # OpenGost
 
-An open-source .Net library providing the modern Russian national standard cryptographic algorithms
+An open-source .NET library providing the modern Russian national standard cryptographic algorithms
 
 
 ## Supported Algorithms

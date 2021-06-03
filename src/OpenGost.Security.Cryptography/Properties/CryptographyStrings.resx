@@ -126,9 +126,6 @@
   <data name="ArgumentOutOfRangeNeedPositiveNum" xml:space="preserve">
     <value>Positive number required.</value>
   </data>
-  <data name="CryptographicDerInvalidEncoding" xml:space="preserve">
-    <value>ASN1 corrupted data.</value>
-  </data>
   <data name="CryptographicHashKeySet" xml:space="preserve">
     <value>Hash key cannot be changed after the first write to the stream.</value>
   </data>
@@ -162,20 +159,11 @@
   <data name="CryptographicInvalidSignatureSize" xml:space="preserve">
     <value>Digital signature size must be {size} bytes.</value>
   </data>
-  <data name="CryptographicMissingDomainParameters" xml:space="preserve">
-    <value>Could not read the domain parameters from the XML string.</value>
-  </data>
-  <data name="CryptographicMissingECDsaKeyValue" xml:space="preserve">
-    <value>Could not read the elliptic curve key value parameters root element from the XML string.</value>
-  </data>
   <data name="CryptographicMissingKey" xml:space="preserve">
     <value>No asymmetric key object has been associated with this formatter object.</value>
   </data>
   <data name="CryptographicMissingOid" xml:space="preserve">
     <value>Required object identifier (OID) cannot be found.</value>
-  </data>
-  <data name="CryptographicMissingPublicKey" xml:space="preserve">
-    <value>Could not read the public key from the XML string.</value>
   </data>
   <data name="CryptographicSymmetricAlgorithmKeySet" xml:space="preserve">
     <value>The key cannot be changed after the first write to the stream.</value>
@@ -185,9 +173,6 @@
   </data>
   <data name="CryptographicSymmetricAlgorithmNameSet" xml:space="preserve">
     <value>Symmetric algorithm name cannot be changed after the first write to the stream.</value>
-  </data>
-  <data name="CryptographicUnknownOid" xml:space="preserve">
-    <value>'{oid}' is not a known object identifier.</value>
   </data>
   <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
     <value>'{algorithm}' is not a known symmetric algorithm.</value>

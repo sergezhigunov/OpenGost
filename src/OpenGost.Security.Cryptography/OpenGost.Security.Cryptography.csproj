@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Formats.Asn1" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Update="Properties\CryptographyStrings.resx">
       <Generator></Generator>
     </EmbeddedResource>

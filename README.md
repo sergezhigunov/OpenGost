@@ -1,5 +1,8 @@
 # OpenGost
 
+[![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Latest version](https://img.shields.io/nuget/v/OpenGost.Security.Cryptography.svg)](https://www.nuget.org/packages/OpenGost.Security.Cryptography)
+
 An open-source .NET library providing the modern Russian national standard cryptographic algorithms
 
 

@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -126,6 +126,9 @@
   <data name="ArgumentOutOfRangeNeedPositiveNum" xml:space="preserve">
     <value>Требуется положительное число.</value>
   </data>
+  <data name="CryptographicDerInvalidEncoding" xml:space="preserve">
+    <value>Данные ASN1 повреждены.</value>
+  </data>
   <data name="CryptographicHashKeySet" xml:space="preserve">
     <value>После первой записи в поток ключ хэша изменить невозможно.</value>
   </data>
@@ -159,11 +162,20 @@
   <data name="CryptographicInvalidSignatureSize" xml:space="preserve">
     <value>Размер цифровой подписи должен быть равен {size} байт.</value>
   </data>
+  <data name="CryptographicMissingDomainParameters" xml:space="preserve">
+    <value>Не удалось считать параметры домена из XML-строки.</value>
+  </data>
+  <data name="CryptographicMissingECDsaKeyValue" xml:space="preserve">
+    <value>Не удалось считать корневой элемент контейнера ключа эллиптических кривых из XML-строки.</value>
+  </data>
   <data name="CryptographicMissingKey" xml:space="preserve">
     <value>Этому объекту средства форматирования не соответствует ни один объект с асимметричным ключом.</value>
   </data>
   <data name="CryptographicMissingOid" xml:space="preserve">
     <value>Не удалось найти требуемый идентификатор объекта (OID).</value>
+  </data>
+  <data name="CryptographicMissingPublicKey" xml:space="preserve">
+    <value>Не удалось считать открытый ключ из XML-строки.</value>
   </data>
   <data name="CryptographicSymmetricAlgorithmKeySet" xml:space="preserve">
     <value>После первой записи в поток ключ симметричного алгоритма изменить невозможно.</value>
@@ -173,6 +185,9 @@
   </data>
   <data name="CryptographicSymmetricAlgorithmNameSet" xml:space="preserve">
     <value>После первой записи в поток имя симметричного алгоритма изменить невозможно.</value>
+  </data>
+  <data name="CryptographicUnknownOid" xml:space="preserve">
+    <value>"{oid}" - неизвестный идентификатор объекта.</value>
   </data>
   <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
     <value>"{algorithm}" - неизвестный симметричный алгоритм.</value>

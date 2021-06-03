@@ -18,6 +18,9 @@ namespace OpenGost.Security.Cryptography.Properties
         public static string ArgumentOutOfRangeNeedPositiveNum
             => GetString("ArgumentOutOfRangeNeedPositiveNum");
 
+        public static string CryptographicDerInvalidEncoding
+            => GetString("CryptographicDerInvalidEncoding");
+
         public static string CryptographicHashKeySet
             => GetString("CryptographicHashKeySet");
 
@@ -55,11 +58,20 @@ namespace OpenGost.Security.Cryptography.Properties
                 GetString("CryptographicInvalidSignatureSize", nameof(size)),
                 size);
 
+        public static string CryptographicMissingDomainParameters
+            => GetString("CryptographicMissingDomainParameters");
+
+        public static string CryptographicMissingECDsaKeyValue
+            => GetString("CryptographicMissingECDsaKeyValue");
+
         public static string CryptographicMissingKey
             => GetString("CryptographicMissingKey");
 
         public static string CryptographicMissingOid
             => GetString("CryptographicMissingOid");
+
+        public static string CryptographicMissingPublicKey
+            => GetString("CryptographicMissingPublicKey");
 
         public static string CryptographicSymmetricAlgorithmKeySet
             => GetString("CryptographicSymmetricAlgorithmKeySet");
@@ -69,6 +81,11 @@ namespace OpenGost.Security.Cryptography.Properties
 
         public static string CryptographicSymmetricAlgorithmNameSet
             => GetString("CryptographicSymmetricAlgorithmNameSet");
+
+        public static string CryptographicUnknownOid(object oid)
+            => string.Format(
+                GetString("CryptographicUnknownOid", nameof(oid)),
+                oid);
 
         public static string CryptographicUnknownSymmetricAlgorithm(object algorithm)
             => string.Format(

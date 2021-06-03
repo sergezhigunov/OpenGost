@@ -8,6 +8,10 @@
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageTags>gost;security;cryptography;hash-algorithm;hmac;cmac;cipher-algorithm;digital-signature-algorithm</PackageTags>
+    <PackageProjectUrl>https://github.com/sergezhigunov/OpenGost</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sergezhigunov/OpenGost.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <AnalysisLevel>5.0</AnalysisLevel>
   </PropertyGroup>

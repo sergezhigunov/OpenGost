@@ -96,7 +96,7 @@ namespace OpenGost.Security.Cryptography.Asn1
             }
         }
 
-        [SuppressMessage("Style", "IDE0060:Remove unused parameter")]
+        [SuppressMessage("Usage", "CA1801")]
         private static void DecodeCore(
             ref AsnValueReader reader,
             Asn1Tag expectedTag,

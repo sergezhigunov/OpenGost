@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using OpenGost.Security.Cryptography.Properties;
@@ -10,6 +11,7 @@ namespace OpenGost.Security.Cryptography
     /// (<see cref="SymmetricAlgorithm"/>) can derive.
     /// </summary>
     [ComVisible(true)]
+    [SuppressMessage("Security", "CA5358")]
     public abstract class SymmetricTransform : ICryptoTransform
     {
         private readonly SymmetricTransformMode _transformMode;
@@ -54,6 +56,7 @@ namespace OpenGost.Security.Cryptography
         /// The size of the output data blocks in bytes.
         /// </value>
         public int OutputBlockSize => InputBlockSize;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SymmetricTransform" /> class.

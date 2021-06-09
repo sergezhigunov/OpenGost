@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using OpenGost.Security.Cryptography.Properties;
 
@@ -21,6 +22,7 @@ namespace OpenGost.Security.Cryptography
         /// <see cref="CipherMode.CBC"/>, <see cref="CipherMode.ECB"/>,
         /// <see cref="CipherMode.OFB"/>, <see cref="CipherMode.CFB"/>.
         /// </exception>
+        [SuppressMessage("Security", "CA5358")]
         public override CipherMode Mode
         {
             set

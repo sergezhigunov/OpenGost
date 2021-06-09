@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using OpenGost.Security.Cryptography.Properties;
@@ -66,6 +67,7 @@ namespace OpenGost.Security.Cryptography
             }
         }
 
+
         /// <summary>
         /// Gets or sets the name of the symmetric algorithm to use for hashing.
         /// </summary>
@@ -84,6 +86,7 @@ namespace OpenGost.Security.Cryptography
         /// <exception cref="CryptographicException">
         /// Specified symmetric block size is not valid for this algorithm.
         /// </exception>
+        [SuppressMessage("Maintainability", "CA1508")]
         public string SymmetricAlgorithmName
         {
             get => _symmetricAlgorithmName;

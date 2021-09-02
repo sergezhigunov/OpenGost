@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -13,19 +14,22 @@ namespace OpenGost.Security.Cryptography
     [ComVisible(true)]
     public abstract class CMAC : KeyedHashAlgorithm
     {
-        #region Constants
-
-        private static readonly byte[]
-            _irreduciblePolynomial64 =
+        private static readonly IReadOnlyDictionary<int, byte[]> _irreduciblePolynomials = new Dictionary<int, byte[]>
+        {
+            [64] = new byte[]
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1B
             },
-            _irreduciblePolynomial128 =
+            [128] = new byte[]
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x87
-            };
-
-        #endregion
+            },
+            [256] = new byte[]
+            {
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x25
+            },
+        };
 
         private SymmetricAlgorithm _symmetricAlgorithm = null!;
         private ICryptoTransform? _encryptor;
@@ -321,12 +325,10 @@ namespace OpenGost.Security.Cryptography
 
         private static byte[] GetIrreduciblePolynomial(int blockSize)
         {
-            return blockSize switch
-            {
-                64 => _irreduciblePolynomial64,
-                128 => _irreduciblePolynomial128,
-                _ => throw new CryptographicException(CryptographyStrings.CryptographicInvalidBlockSize),
-            };
+            if (_irreduciblePolynomials.TryGetValue(blockSize, out var result))
+                return result;
+
+            throw new CryptographicException(CryptographyStrings.CryptographicInvalidBlockSize);
         }
     }
 }

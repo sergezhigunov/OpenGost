@@ -4,7 +4,7 @@
     <Authors>Sergey Zhigunov</Authors>
     <Copyright>Copyright © 2016 Sergey Zhigunov</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <VersionPrefix>0.1.0</VersionPrefix>
     <SignAssembly>true</SignAssembly>

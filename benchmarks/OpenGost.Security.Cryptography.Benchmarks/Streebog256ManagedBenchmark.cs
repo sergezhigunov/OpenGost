@@ -1,7 +1,6 @@
-﻿namespace OpenGost.Security.Cryptography.Benchmarks
+﻿namespace OpenGost.Security.Cryptography.Benchmarks;
+
+public class Streebog256ManagedBenchmark
+    : HashAlgorithmBenchmark<Streebog256Managed>
 {
-    public class Streebog256ManagedBenchmark
-        : HashAlgorithmBenchmark<Streebog256Managed>
-    {
-    }
 }

@@ -1,7 +1,6 @@
-﻿namespace OpenGost.Security.Cryptography.Benchmarks
+﻿namespace OpenGost.Security.Cryptography.Benchmarks;
+
+public class MagmaManagedBenchmark
+    : SymmetricAlgorithmBenchmark<MagmaManaged>
 {
-    public class MagmaManagedBenchmark
-        : SymmetricAlgorithmBenchmark<MagmaManaged>
-    {
-    }
 }

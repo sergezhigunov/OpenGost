@@ -1,7 +1,6 @@
-﻿namespace OpenGost.Security.Cryptography.Benchmarks
+﻿namespace OpenGost.Security.Cryptography.Benchmarks;
+
+public class GrasshopperManagedBenchmark
+    : SymmetricAlgorithmBenchmark<GrasshopperManaged>
 {
-    public class GrasshopperManagedBenchmark
-        : SymmetricAlgorithmBenchmark<GrasshopperManaged>
-    {
-    }
 }

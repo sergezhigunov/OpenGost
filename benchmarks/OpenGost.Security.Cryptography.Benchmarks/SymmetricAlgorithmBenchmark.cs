@@ -4,65 +4,64 @@ using System.Security.Cryptography;
 using System.Text;
 using BenchmarkDotNet.Attributes;
 
-namespace OpenGost.Security.Cryptography.Benchmarks
+namespace OpenGost.Security.Cryptography.Benchmarks;
+
+public abstract class SymmetricAlgorithmBenchmark<T> : IDisposable
+    where T : SymmetricAlgorithm, new()
 {
-    public abstract class SymmetricAlgorithmBenchmark<T> : IDisposable
-        where T : SymmetricAlgorithm, new()
+    private static readonly byte[] _data =
+        Encoding.ASCII.GetBytes("The quick brown fox jumped over the extremely lazy frogs!");
+
+    private readonly byte[] _encryptedData;
+    private bool _disposed;
+
+    protected T SymmetricAlgorithm = new() { Padding = PaddingMode.Zeros };
+
+    protected SymmetricAlgorithmBenchmark()
     {
-        private static readonly byte[] _data =
-            Encoding.ASCII.GetBytes("The quick brown fox jumped over the extremely lazy frogs!");
+        using var encryptor = SymmetricAlgorithm.CreateEncryptor();
+        using var output = new MemoryStream();
+        using (var input = new MemoryStream(_data))
+        using (var cryptoStream = new CryptoStream(input, encryptor, CryptoStreamMode.Read))
+            cryptoStream.CopyTo(output);
+        _encryptedData = output.ToArray();
+    }
 
-        private readonly byte[] _encryptedData;
-        private bool _disposed;
+    [Benchmark]
+    public byte[] EncryptData()
+    {
+        using var encryptor = SymmetricAlgorithm.CreateEncryptor();
+        using var output = new MemoryStream();
+        using (var input = new MemoryStream(_data))
+        using (var cryptoStream = new CryptoStream(input, encryptor, CryptoStreamMode.Read))
+            cryptoStream.CopyTo(output);
+        return output.ToArray();
+    }
 
-        protected T SymmetricAlgorithm = new() { Padding = PaddingMode.Zeros };
+    [Benchmark]
+    public byte[] DecryptData()
+    {
+        using var decryptor = SymmetricAlgorithm.CreateDecryptor();
+        using var output = new MemoryStream();
+        using (var input = new MemoryStream(_encryptedData))
+        using (var cryptoStream = new CryptoStream(input, decryptor, CryptoStreamMode.Read))
+            cryptoStream.CopyTo(output);
+        return output.ToArray();
+    }
 
-        protected SymmetricAlgorithmBenchmark()
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
         {
-            using var encryptor = SymmetricAlgorithm.CreateEncryptor();
-            using var output = new MemoryStream();
-            using (var input = new MemoryStream(_data))
-            using (var cryptoStream = new CryptoStream(input, encryptor, CryptoStreamMode.Read))
-                cryptoStream.CopyTo(output);
-            _encryptedData = output.ToArray();
+            if (disposing)
+                SymmetricAlgorithm.Dispose();
+            _disposed = true;
         }
+    }
 
-        [Benchmark]
-        public byte[] EncryptData()
-        {
-            using var encryptor = SymmetricAlgorithm.CreateEncryptor();
-            using var output = new MemoryStream();
-            using (var input = new MemoryStream(_data))
-            using (var cryptoStream = new CryptoStream(input, encryptor, CryptoStreamMode.Read))
-                cryptoStream.CopyTo(output);
-            return output.ToArray();
-        }
-
-        [Benchmark]
-        public byte[] DecryptData()
-        {
-            using var decryptor = SymmetricAlgorithm.CreateDecryptor();
-            using var output = new MemoryStream();
-            using (var input = new MemoryStream(_encryptedData))
-            using (var cryptoStream = new CryptoStream(input, decryptor, CryptoStreamMode.Read))
-                cryptoStream.CopyTo(output);
-            return output.ToArray();
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                    SymmetricAlgorithm.Dispose();
-                _disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

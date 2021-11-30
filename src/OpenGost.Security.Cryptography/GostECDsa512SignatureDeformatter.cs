@@ -3,113 +3,112 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using OpenGost.Security.Cryptography.Properties;
 
-namespace OpenGost.Security.Cryptography
+namespace OpenGost.Security.Cryptography;
+
+/// <summary>
+/// Verifies a <see cref="GostECDsa512"/> signature.
+/// </summary>
+[ComVisible(true)]
+public class GostECDsa512SignatureDeformatter : AsymmetricSignatureDeformatter
 {
+    private readonly string? _oid;
+    private GostECDsa512? _key;
+
     /// <summary>
-    /// Verifies a <see cref="GostECDsa512"/> signature.
+    /// Initializes a new instance of the <see cref="GostECDsa512SignatureDeformatter"/> class.
     /// </summary>
-    [ComVisible(true)]
-    public class GostECDsa512SignatureDeformatter : AsymmetricSignatureDeformatter
+    public GostECDsa512SignatureDeformatter()
     {
-        private readonly string? _oid;
-        private GostECDsa512? _key;
+        _oid = CryptoConfig.MapNameToOID(CryptoConstants.Streebog512AlgorithmFullName);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GostECDsa512SignatureDeformatter"/> class.
-        /// </summary>
-        public GostECDsa512SignatureDeformatter()
-        {
-            _oid = CryptoConfig.MapNameToOID(CryptoConstants.Streebog512AlgorithmFullName);
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GostECDsa512SignatureDeformatter"/>
+    /// class with the specified key.
+    /// </summary>
+    /// <param name="key">
+    /// The instance of <see cref="GostECDsa512"/> that holds the key.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key"/> is <see langword="null"/>.
+    /// </exception>
+    public GostECDsa512SignatureDeformatter(AsymmetricAlgorithm key)
+    {
+        if (key == null)
+            throw new ArgumentNullException(nameof(key));
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GostECDsa512SignatureDeformatter"/>
-        /// class with the specified key.
-        /// </summary>
-        /// <param name="key">
-        /// The instance of <see cref="GostECDsa512"/> that holds the key.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/> is <see langword="null"/>.
-        /// </exception>
-        public GostECDsa512SignatureDeformatter(AsymmetricAlgorithm key)
-        {
-            if (key == null)
-                throw new ArgumentNullException(nameof(key));
+        _key = (GostECDsa512)key;
+    }
 
-            _key = (GostECDsa512)key;
-        }
+    /// <summary>
+    /// Specifies the hash algorithm for the <see cref="GostECDsa512"/> signature deformatter.
+    /// </summary>
+    /// <param name="strName">
+    /// The name of the hash algorithm to use for the signature deformatter.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="strName"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The <paramref name="strName"/> parameter does not map to the <see cref="Streebog512"/>
+    /// hash algorithm.
+    /// </exception>
+    public override void SetHashAlgorithm(string strName)
+    {
+        if (strName == null)
+            throw new ArgumentNullException(nameof(strName));
+        if (CryptoConfig.MapNameToOID(strName) != _oid)
+            throw new CryptographicUnexpectedOperationException(CryptographyStrings.CryptographicInvalidOperation);
+    }
 
-        /// <summary>
-        /// Specifies the hash algorithm for the <see cref="GostECDsa512"/> signature deformatter.
-        /// </summary>
-        /// <param name="strName">
-        /// The name of the hash algorithm to use for the signature deformatter.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="strName"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="CryptographicUnexpectedOperationException">
-        /// The <paramref name="strName"/> parameter does not map to the <see cref="Streebog512"/>
-        /// hash algorithm.
-        /// </exception>
-        public override void SetHashAlgorithm(string strName)
-        {
-            if (strName == null)
-                throw new ArgumentNullException(nameof(strName));
-            if (CryptoConfig.MapNameToOID(strName) != _oid)
-                throw new CryptographicUnexpectedOperationException(CryptographyStrings.CryptographicInvalidOperation);
-        }
+    /// <summary>
+    /// Specifies the key to be used for the <see cref="GostECDsa512"/> signature deformatter.
+    /// </summary>
+    /// <param name="key">
+    /// The instance of <see cref="GostECDsa512"/> that holds the key.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key"/> is <see langword="null"/>.
+    /// </exception>
+    public override void SetKey(AsymmetricAlgorithm key)
+    {
+        if (key == null)
+            throw new ArgumentNullException(nameof(key));
 
-        /// <summary>
-        /// Specifies the key to be used for the <see cref="GostECDsa512"/> signature deformatter.
-        /// </summary>
-        /// <param name="key">
-        /// The instance of <see cref="GostECDsa512"/> that holds the key.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/> is <see langword="null"/>.
-        /// </exception>
-        public override void SetKey(AsymmetricAlgorithm key)
-        {
-            if (key == null)
-                throw new ArgumentNullException(nameof(key));
+        _key = (GostECDsa512)key;
+    }
 
-            _key = (GostECDsa512)key;
-        }
+    /// <summary>
+    /// Verifies the <see cref="GostECDsa512"/> signature on the data.
+    /// </summary>
+    /// <param name="rgbHash">
+    /// The data signed with <paramref name="rgbSignature"/>.
+    /// </param>
+    /// <param name="rgbSignature">
+    /// The signature to be verified for <paramref name="rgbHash"/>.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the signature is valid for the data;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="rgbHash"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="rgbSignature"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The <see cref="GostECDsa512"/> key is missing.
+    /// </exception>
+    public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature)
+    {
+        if (rgbHash == null)
+            throw new ArgumentNullException(nameof(rgbHash));
+        if (rgbSignature == null)
+            throw new ArgumentNullException(nameof(rgbSignature));
+        if (_key == null)
+            throw new CryptographicUnexpectedOperationException(CryptographyStrings.CryptographicMissingKey);
 
-        /// <summary>
-        /// Verifies the <see cref="GostECDsa512"/> signature on the data.
-        /// </summary>
-        /// <param name="rgbHash">
-        /// The data signed with <paramref name="rgbSignature"/>.
-        /// </param>
-        /// <param name="rgbSignature">
-        /// The signature to be verified for <paramref name="rgbHash"/>.
-        /// </param>
-        /// <returns>
-        /// <see langword="true"/> if the signature is valid for the data;
-        /// otherwise, <see langword="false"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="rgbHash"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="rgbSignature"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="CryptographicUnexpectedOperationException">
-        /// The <see cref="GostECDsa512"/> key is missing.
-        /// </exception>
-        public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature)
-        {
-            if (rgbHash == null)
-                throw new ArgumentNullException(nameof(rgbHash));
-            if (rgbSignature == null)
-                throw new ArgumentNullException(nameof(rgbSignature));
-            if (_key == null)
-                throw new CryptographicUnexpectedOperationException(CryptographyStrings.CryptographicMissingKey);
-
-            return _key.VerifyHash(rgbHash, rgbSignature);
-        }
+        return _key.VerifyHash(rgbHash, rgbSignature);
     }
 }

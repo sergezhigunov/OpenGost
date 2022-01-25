@@ -1,12 +1,9 @@
-﻿using System;
-using System.Formats.Asn1;
-using System.Security;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Formats.Asn1;
+using OpenGost.Security.Cryptography;
 using OpenGost.Security.Cryptography.Asn1;
 using OpenGost.Security.Cryptography.Properties;
 
-namespace OpenGost.Security.Cryptography.X509Certificates;
+namespace System.Security.Cryptography.X509Certificates;
 
 /// <summary>
 /// Provides extension methods for retrieving GOST R 34.10-2012 <see cref="ECDsa"/> implementations for the
@@ -63,7 +60,7 @@ public static class GostECDsaCertificateExtensions
     }
 
     /// <summary>
-    /// Gets the GOST R 34.10-2012<see cref="ECDsa"/> private key from the <see cref="X509Certificate2"/>
+    /// Gets the GOST R 34.10-2012 <see cref="ECDsa"/> private key from the <see cref="X509Certificate2"/>
     /// certificate.
     /// </summary>
     /// <param name="certificate">

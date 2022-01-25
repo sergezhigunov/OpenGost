@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Xml;
 
-namespace OpenGost.Security.Cryptography;
+namespace OpenGost.Security.Cryptography.Tests;
 
 internal static class ResourceUtils
 {

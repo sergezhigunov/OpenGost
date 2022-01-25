@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using Xunit;
 
-namespace OpenGost.Security.Cryptography;
+namespace OpenGost.Security.Cryptography.Tests;
 
 public class HmacStreebog512Facts : HmacTest<HMACStreebog512>
 {

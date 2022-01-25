@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenGost.Security.Cryptography;
+namespace OpenGost.Security.Cryptography.Tests;
 
 internal static class CryptoUtils
 {

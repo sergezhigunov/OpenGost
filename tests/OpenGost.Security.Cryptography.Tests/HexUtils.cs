@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace OpenGost.Security.Cryptography;
+namespace OpenGost.Security.Cryptography.Tests;
 
 [ExcludeFromCodeCoverage]
 internal static class HexUtils

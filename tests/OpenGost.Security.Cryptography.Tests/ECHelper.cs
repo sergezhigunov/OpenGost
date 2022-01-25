@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using Xunit;
 
-namespace OpenGost.Security.Cryptography;
+namespace OpenGost.Security.Cryptography.Tests;
 
 [ExcludeFromCodeCoverage]
 internal static class ECHelper

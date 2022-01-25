@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace OpenGost.Security.Cryptography;
+namespace OpenGost.Security.Cryptography.Tests;
 
 public class CmacMagmaFacts : CmacTest<CMACMagma>
 {

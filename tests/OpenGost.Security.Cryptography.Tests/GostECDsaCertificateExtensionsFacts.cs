@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Xunit;
 
-namespace OpenGost.Security.Cryptography.X509Certificates;
+namespace OpenGost.Security.Cryptography.Tests;
 
 public class GostECDsaCertificateExtensionsFacts : CryptoConfigRequiredTest
 {
@@ -24,17 +24,17 @@ public class GostECDsaCertificateExtensionsFacts : CryptoConfigRequiredTest
         string curveOid,
         string publicKeyXHexData,
         string publicKeyYHexData,
-        string privateKey)
+        string privateKeyHexData)
     {
         using var certificate = new X509Certificate2(
             ResourceUtils.GetBinaryResource(
-                $"OpenGost.Security.Cryptography.Resources.{certificateName}.cer"));
+                $"OpenGost.Security.Cryptography.Tests.Resources.{certificateName}.cer"));
         var point = new ECPoint
         {
             X = HexUtils.HexToByteArray(publicKeyXHexData),
             Y = HexUtils.HexToByteArray(publicKeyYHexData),
         };
-        _ = HexUtils.HexToByteArray(privateKey);
+        _ = HexUtils.HexToByteArray(privateKeyHexData);
 
         using var publicKey = certificate.GetGostECDsaPublicKey();
 

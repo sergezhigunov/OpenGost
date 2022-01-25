@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Xml.Linq;
 
-namespace OpenGost.Security.Cryptography;
+namespace OpenGost.Security.Cryptography.Tests;
 
 [ExcludeFromCodeCoverage]
 public abstract class CryptoConfigRequiredTest
@@ -14,7 +14,7 @@ public abstract class CryptoConfigRequiredTest
     private static void ConfigureCryptography()
     {
         XDocument document;
-        using (var reader = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Crypto.config"))
+        using (var reader = ResourceUtils.GetXmlResource("OpenGost.Security.Cryptography.Tests.Crypto.config"))
             document = XDocument.Load(reader, LoadOptions.None);
 
         var cryptographySettings = document

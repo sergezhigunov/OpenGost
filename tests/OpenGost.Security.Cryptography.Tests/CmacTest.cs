@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
 
-namespace OpenGost.Security.Cryptography;
+namespace OpenGost.Security.Cryptography.Tests;
 
 public abstract class CmacTest<T> : CryptoConfigRequiredTest
     where T : CMAC, new()

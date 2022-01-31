@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;
 
-public class GostECDsaManagedFacts : ECDsaTest<GostECDsaManaged>
+public class GostECDsaManagedFacts
 {
     #region Test domain parameters as described in GOST 34.10-2012
 
@@ -41,93 +42,302 @@ public class GostECDsaManagedFacts : ECDsaTest<GostECDsaManaged>
 
     #endregion
 
+    [Fact]
+    public void Constructor_SetsValidDefaultKeySize()
+    {
+        using var algorithm = new GostECDsaManaged();
+
+        Assert.Equal(512, algorithm.KeySize);
+    }
+
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
-    public override void SignAndVerifyHash(ECParameters parameters)
-        => base.SignAndVerifyHash(parameters);
+    public void SignHash_CreatesVerifiableSignature_OnTestDomainParameters(ECParameters parameters)
+    {
+        using var algorithm = new GostECDsaManaged(parameters);
+        var hash = CryptoUtils.GenerateRandomBytes(algorithm.KeySize / 8);
+
+        var signature = algorithm.SignHash(hash);
+
+        Assert.True(algorithm.VerifyHash(hash, signature));
+    }
+
+    [Theory]
+    [InlineData(0, 512)]
+    [InlineData(256, 512)]
+    [InlineData(511, 512)]
+    [InlineData(0, 256)]
+    [InlineData(255, 256)]
+    [InlineData(257, 256)]
+    [InlineData(512, 256)]
+    public void SignHash_CryptographicException_IfHashSizeIsInvalid(int hashSize, int keySize)
+    {
+        var hash = CryptoUtils.GenerateRandomBytes(hashSize);
+        using var algorithm = new GostECDsaManaged
+        {
+            KeySize = keySize,
+        };
+
+        Assert.Throws<CryptographicException>(() => algorithm.SignHash(hash));
+    }
+
+    [Fact]
+    public void SignHash_ThrowsArgumentNullException_IfHashParameterIsNull()
+    {
+        var hash = default(byte[])!;
+        using var algorithm = new GostECDsaManaged();
+
+        Assert.Throws<ArgumentNullException>(nameof(hash),
+            () => algorithm.SignHash(hash));
+    }
 
     [Theory]
     [MemberData(nameof(TestCases))]
-    public void VerifyHashTestCases(ECParameters parameters, string hashHex, string signatureHex)
-        => Assert.True(VerifyHash(parameters, hashHex, signatureHex));
+    public void VerifyHash_WhenSignatureIsValid_ReturnsTrue(
+        ECParameters parameters,
+        byte[] hash,
+        byte[] signature)
+    {
+        using var algorithm = new GostECDsaManaged(parameters);
+
+        Assert.True(algorithm.VerifyHash(hash, signature));
+    }
+
+    [Theory]
+    [InlineData(256)]
+    public void VerifyHash_ReturnsFalse_IfParametersWasNotGenereated(int keySize)
+    {
+        var hash = CryptoUtils.GenerateRandomBytes(keySize / 8);
+        var signature = CryptoUtils.GenerateRandomBytes(keySize / 4);
+        using var algorithm = new GostECDsaManaged
+        {
+            KeySize = keySize,
+        };
+
+        Assert.False(algorithm.VerifyHash(hash, signature));
+    }
+
+    [Fact]
+    public void VerifyHash_ThrowsArgumentNullException_IfHashParameterIsNull()
+    {
+        var hash = default(byte[])!;
+        var signature = CryptoUtils.GenerateRandomBytes(128);
+        using var algorithm = new GostECDsaManaged();
+
+        Assert.Throws<ArgumentNullException>(nameof(hash),
+            () => algorithm.VerifyHash(hash, signature));
+    }
+
+    [Fact]
+    public void VerifyHash_ThrowsArgumentNullException_IfSignatureParameterIsNull()
+    {
+        var hash = CryptoUtils.GenerateRandomBytes(64);
+        var signature = default(byte[])!;
+        using var algorithm = new GostECDsaManaged();
+
+        Assert.Throws<ArgumentNullException>(nameof(signature),
+            () => algorithm.VerifyHash(hash, signature));
+    }
+
+    [Theory]
+    [InlineData(0, 512)]
+    [InlineData(32, 512)]
+    [InlineData(63, 512)]
+    [InlineData(0, 256)]
+    [InlineData(31, 256)]
+    [InlineData(33, 256)]
+    [InlineData(64, 256)]
+    public void VerifyHash_CryptographicException_IfHashSizeIsInvalid(int hashSize, int keySize)
+    {
+        var hash = CryptoUtils.GenerateRandomBytes(hashSize);
+        var signature = CryptoUtils.GenerateRandomBytes(keySize / 4);
+        using var algorithm = new GostECDsaManaged
+        {
+            KeySize = keySize,
+        };
+
+        Assert.Throws<CryptographicException>(
+            () => algorithm.VerifyHash(hash, signature));
+    }
+
+    [Theory]
+    [InlineData(0, 512)]
+    [InlineData(64, 512)]
+    [InlineData(127, 512)]
+    [InlineData(0, 256)]
+    [InlineData(63, 256)]
+    [InlineData(65, 256)]
+    [InlineData(128, 256)]
+    public void VerifyHash_CryptographicException_IfSignatureSizeIsInvalid(int signatureSize, int keySize)
+    {
+        var hash = CryptoUtils.GenerateRandomBytes(keySize / 8);
+        var signature = CryptoUtils.GenerateRandomBytes(signatureSize);
+        using var algorithm = new GostECDsaManaged
+        {
+            KeySize = keySize,
+        };
+
+        Assert.Throws<CryptographicException>(
+            () => algorithm.VerifyHash(hash, signature));
+    }
 
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
-    public void ExportParametersTest(ECParameters parameters)
-        => CheckExportParameters(parameters);
+    public void ExportParameters_ExportsValidParametersWithPrivateKey_IfHasPrivateKeyAndIncludePrivateParametersIsTrue(
+        ECParameters parameters)
+    {
+        using var algorithm = new GostECDsaManaged(parameters);
 
-    [Fact]
-    public override void CheckKeyExchangeAlgorithmProperty()
-        => base.CheckKeyExchangeAlgorithmProperty();
+        var result = algorithm.ExportParameters(true);
 
-    [Theory]
-    [InlineData(nameof(GostECDsa))]
-    public override void CheckSignatureAlgorithmProperty(string expectedSignatureAlgorithm)
-        => base.CheckSignatureAlgorithmProperty(expectedSignatureAlgorithm);
+        result.Validate();
+        ECHelper.AssertEqual(parameters.Curve, result.Curve);
+        ECHelper.AssertEqual(parameters.Q, result.Q);
+        Assert.Equal(parameters.D, result.D);
+    }
 
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
-    public override void CheckKeyGeneration(ECParameters parameters)
-        => base.CheckKeyGeneration(parameters);
+    public void ExportParameters_ExportsValidPublicOnlyParameters_IfHasPrivateKeyAndIncludePrivateParametersIsFalse(
+        ECParameters parameters)
+    {
+        using var algorithm = new GostECDsaManaged(parameters);
+
+        var result = algorithm.ExportParameters(false);
+
+        result.Validate();
+        ECHelper.AssertEqual(parameters.Curve, result.Curve);
+        ECHelper.AssertEqual(parameters.Q, result.Q);
+        Assert.Null(result.D);
+    }
+
+    [Theory]
+    [MemberData(nameof(TestDomainParameters))]
+    public void ExportParameters_ExportsValidPublicOnlyParameters_IfHasNotPrivateKeyAndIncludePrivateParametersIsTrue(
+        ECParameters parameters)
+    {
+        parameters.D = null;
+        using var algorithm = new GostECDsaManaged(parameters);
+
+        var result = algorithm.ExportParameters(true);
+
+        result.Validate();
+        ECHelper.AssertEqual(parameters.Curve, result.Curve);
+        ECHelper.AssertEqual(parameters.Q, result.Q);
+        Assert.Null(result.D);
+    }
+
+    [Theory]
+    [MemberData(nameof(TestDomainParameters))]
+    public void ExportParameters_ExportsValidPublicOnlyParameters_IfHasNotPrivateKeyAndIncludePrivateParametersIsFalse(
+        ECParameters parameters)
+    {
+        parameters.D = null;
+        using var algorithm = new GostECDsaManaged(parameters);
+
+        var result = algorithm.ExportParameters(false);
+
+        result.Validate();
+        ECHelper.AssertEqual(parameters.Curve, result.Curve);
+        ECHelper.AssertEqual(parameters.Q, result.Q);
+        Assert.Null(result.D);
+    }
+
+    [Theory]
+    [InlineData(256, "1.2.643.7.1.2.1.1.1")]
+    [InlineData(512, "1.2.643.7.1.2.1.2.1")]
+    public void ExportParameters_ExportNewGeneratedParametersWithDefaultCurve_IfParametersWasNotSet(
+        int keySize,
+        string oidValue)
+    {
+        using var algorithm = new GostECDsaManaged
+        {
+            KeySize = keySize,
+        };
+
+        var parameters = algorithm.ExportParameters(true);
+        parameters.Validate();
+        Assert.Equal(keySize / 8, parameters.D.Length);
+        var curve = parameters.Curve;
+        Assert.True(curve.IsNamed);
+        Assert.Equal(oidValue, curve.Oid?.Value);
+        // Ensure generated once
+        ECHelper.AssertEqual(parameters, algorithm.ExportParameters(true), true);
+    }
 
     [Fact]
-    public override void CheckDefaultKeyGeneration()
-        => base.CheckDefaultKeyGeneration();
+    public void KeyExchangeAlgorithm_ReturnsNull_Always()
+    {
+        using var algorithm = new GostECDsaManaged();
+
+        var result = algorithm.KeyExchangeAlgorithm;
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void SignatureAlgorithm_ReturnsGostECDsa_Always()
+    {
+        using var algorithm = new GostECDsaManaged();
+
+        var result = algorithm.SignatureAlgorithm;
+
+        Assert.Equal(nameof(GostECDsa), result);
+    }
 
     [Theory]
-    [MemberData(nameof(RealImplementations))]
-    public override void SignHashNullHashThrowsArgumentNullException(GostECDsaManaged algorithm)
-        => base.SignHashNullHashThrowsArgumentNullException(algorithm);
+    [MemberData(nameof(TestDomainParameters))]
+    public void GenerateKey_GeneratesValidParametersWithPrivateKey(ECParameters parameters)
+    {
+        var curve = parameters.Curve;
+        using var algorithm = new GostECDsaManaged();
 
-    [Theory]
-    [MemberData(nameof(RealImplementations))]
-    public override void VerifyHashNullHashThrowsArgumentNullException(GostECDsaManaged algorithm)
-        => base.VerifyHashNullHashThrowsArgumentNullException(algorithm);
+        algorithm.GenerateKey(curve);
 
-    [Theory]
-    [MemberData(nameof(RealImplementations))]
-    public override void VerifyHashNullSignatureThrowsArgumentNullException(GostECDsaManaged algorithm)
-        => base.VerifyHashNullSignatureThrowsArgumentNullException(algorithm);
+        var result = algorithm.ExportParameters(true);
+        result.Validate();
+        ECHelper.AssertEqual(parameters.Curve, result.Curve);
+        Assert.NotNull(result.D);
+    }
 
     public static IEnumerable<object[]> TestDomainParameters()
     {
-        return new[]
-        {
-            new object[] { TestDomainParameters256, },
-            new object[] { TestDomainParameters512, },
-        };
+        yield return new object[] { TestDomainParameters256, };
+        yield return new object[] { TestDomainParameters512, };
     }
 
-    // 512-bit test cases as described in GOST 34.10-2012
+    // Test cases as described in GOST 34.10-2012
     public static IEnumerable<object[]> TestCases()
     {
-        return new[]
+        yield return new object[]
         {
-            new object[]
-            {
-                TestDomainParameters256,
-                "e53e042b67e6ec678e2e02b12a0352ce1fc6eee0529cc088119ad872b3c1fb2d", // hash
-                "409cbfc5f6148092df31b646f7d3d6bc4902a6985a233c65a14246ba646c4501" + // s
-                "9304dc39fd43d03ab86727a45435057419a4ed6fd59ecd808214abf1d228aa41" // r
-            },
-            new object[]
-            {
-                TestDomainParameters512,
-                // hash
+            TestDomainParameters256,
+            // Hash
+            HexUtils.HexToByteArray(
+                "e53e042b67e6ec678e2e02b12a0352ce1fc6eee0529cc088119ad872b3c1fb2d"),
+            // Signature
+            HexUtils.HexToByteArray(
+                // s
+                "409cbfc5f6148092df31b646f7d3d6bc4902a6985a233c65a14246ba646c4501" +
+                // r
+                "9304dc39fd43d03ab86727a45435057419a4ed6fd59ecd808214abf1d228aa41"),
+
+        };
+        yield return new object[]
+        {
+            TestDomainParameters512,
+            // Hash
+            HexUtils.HexToByteArray(
                 "8c5b0772297d77c64f0c561ddbde7a405a5d7c646c97394341f4936553ee8471" +
-                "91c5b03570141da733c570c1f9b6091b53ab8d4d7c4a4f5c61e0c9accff35437",
+                "91c5b03570141da733c570c1f9b6091b53ab8d4d7c4a4f5c61e0c9accff35437"),
+            // Signature
+            HexUtils.HexToByteArray(
                 // s
                 "4a5b3ee7bd53982ab99c91561feb6e6a40ce707fdf80605262f3c4e888e23c82" +
                 "f52fd533e9fb0b1c08bcad8a77565f32b6262d36a9e785658efe6f6994b38110" +
                 // r
                 "36ae73e14493e117335c9ccdcb3bc96002859906c997c19e1c0fb28684559254" +
-                "d3acfca8ee783c64c2dce02ec8a312e59e683c1e5e79dd231a0981a060fa862f"
-            },
+                "d3acfca8ee783c64c2dce02ec8a312e59e683c1e5e79dd231a0981a060fa862f"),
         };
-    }
-
-    public static IEnumerable<object[]> RealImplementations()
-    {
-        yield return new[] { new GostECDsaManaged() };
     }
 }

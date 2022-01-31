@@ -13,12 +13,14 @@ public abstract class ECDsaBenchmark<T> : IDisposable
     private readonly byte[] _signature;
     private bool _disposed;
     protected T AsymmetricAlgorithm = new();
+    private ECCurve Curve { get; }
 
     protected ECDsaBenchmark(int keySize)
     {
         _hash = new byte[keySize / 8];
         RandomNumberGenerator.GetBytes(_hash);
         AsymmetricAlgorithm.KeySize = keySize;
+        Curve = AsymmetricAlgorithm.ExportParameters(true).Curve;
         _signature = AsymmetricAlgorithm.SignHash(_hash);
     }
 
@@ -27,6 +29,9 @@ public abstract class ECDsaBenchmark<T> : IDisposable
 
     [Benchmark]
     public bool VerifyHash() => AsymmetricAlgorithm.VerifyHash(_hash, _signature);
+
+    [Benchmark]
+    public void GenerateKey() => AsymmetricAlgorithm.GenerateKey(Curve);
 
     protected virtual void Dispose(bool disposing)
     {

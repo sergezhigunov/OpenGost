@@ -14,10 +14,10 @@ internal static class ResourceUtils
         IgnoreWhitespace = true,
     };
 
-    internal static XmlReader GetXmlResource(string resourceName)
+    public static XmlReader GetXmlResource(string resourceName)
         => XmlReader.Create(GetResourceStream(resourceName), Settings, resourceName);
 
-    internal static byte[] GetBinaryResource(string resourceName)
+    public static byte[] GetBinaryResource(string resourceName)
     {
         using var memoryStream = new MemoryStream();
         using (var resourceStream = GetResourceStream(resourceName, Assembly.GetExecutingAssembly()))

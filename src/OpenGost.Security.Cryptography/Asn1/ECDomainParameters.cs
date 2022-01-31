@@ -11,10 +11,10 @@ namespace OpenGost.Security.Cryptography.Asn1;
 [StructLayout(LayoutKind.Sequential)]
 internal struct ECDomainParameters
 {
-    internal SpecifiedECDomain? Specified;
-    internal string? Named;
+    public SpecifiedECDomain? Specified;
+    public string? Named;
 
-    internal void Encode(AsnWriter writer)
+    public void Encode(AsnWriter writer)
     {
         bool wroteValue = false;
         if (Specified.HasValue)
@@ -42,7 +42,7 @@ internal struct ECDomainParameters
             throw new CryptographicException();
     }
 
-    internal static ECDomainParameters Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
+    public static ECDomainParameters Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         try
         {
@@ -57,7 +57,7 @@ internal struct ECDomainParameters
         }
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         ReadOnlyMemory<byte> rebind,
         out ECDomainParameters decoded)

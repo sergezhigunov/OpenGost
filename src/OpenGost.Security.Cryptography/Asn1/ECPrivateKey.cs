@@ -11,17 +11,17 @@ namespace OpenGost.Security.Cryptography.Asn1;
 [StructLayout(LayoutKind.Sequential)]
 internal struct ECPrivateKey
 {
-    internal int Version;
-    internal ReadOnlyMemory<byte> PrivateKey;
-    internal ECDomainParameters? Parameters;
-    internal ReadOnlyMemory<byte>? PublicKey;
+    public int Version;
+    public ReadOnlyMemory<byte> PrivateKey;
+    public ECDomainParameters? Parameters;
+    public ReadOnlyMemory<byte>? PublicKey;
 
-    internal void Encode(AsnWriter writer)
+    public void Encode(AsnWriter writer)
     {
         Encode(writer, Asn1Tag.Sequence);
     }
 
-    internal void Encode(AsnWriter writer, Asn1Tag tag)
+    public void Encode(AsnWriter writer, Asn1Tag tag)
     {
         writer.PushSequence(tag);
         writer.WriteInteger(Version);
@@ -41,12 +41,12 @@ internal struct ECPrivateKey
         writer.PopSequence(tag);
     }
 
-    internal static ECPrivateKey Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
+    public static ECPrivateKey Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         return Decode(Asn1Tag.Sequence, encoded, ruleSet);
     }
 
-    internal static ECPrivateKey Decode(
+    public static ECPrivateKey Decode(
         Asn1Tag expectedTag,
         ReadOnlyMemory<byte> encoded,
         AsnEncodingRules ruleSet)
@@ -64,12 +64,12 @@ internal struct ECPrivateKey
         }
     }
 
-    internal static void Decode(ref AsnValueReader reader, ReadOnlyMemory<byte> rebind, out ECPrivateKey decoded)
+    public static void Decode(ref AsnValueReader reader, ReadOnlyMemory<byte> rebind, out ECPrivateKey decoded)
     {
         Decode(ref reader, Asn1Tag.Sequence, rebind, out decoded);
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         Asn1Tag expectedTag,
         ReadOnlyMemory<byte> rebind,

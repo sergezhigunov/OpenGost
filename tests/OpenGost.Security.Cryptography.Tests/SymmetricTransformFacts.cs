@@ -482,7 +482,7 @@ public class SymmetricTransformFacts
     {
         private byte[] _rgbKey = null!;
 
-        internal SimpleSymmetricTransform(
+        public SimpleSymmetricTransform(
             byte[] rgbKey,
             byte[]? rgbIV,
             int blockSize,
@@ -494,7 +494,7 @@ public class SymmetricTransformFacts
 
         private bool GenerateKeyExpansionCalled { get; set; }
 
-        internal bool DisposeCalled { get; private set; }
+        public bool DisposeCalled { get; private set; }
 
         protected override void DecryptBlock(
             byte[] inputBuffer,

@@ -11,16 +11,16 @@ namespace OpenGost.Security.Cryptography.Asn1;
 [StructLayout(LayoutKind.Sequential)]
 internal struct CurveAsn
 {
-    internal ReadOnlyMemory<byte> A;
-    internal ReadOnlyMemory<byte> B;
-    internal ReadOnlyMemory<byte>? Seed;
+    public ReadOnlyMemory<byte> A;
+    public ReadOnlyMemory<byte> B;
+    public ReadOnlyMemory<byte>? Seed;
 
-    internal void Encode(AsnWriter writer)
+    public void Encode(AsnWriter writer)
     {
         Encode(writer, Asn1Tag.Sequence);
     }
 
-    internal void Encode(AsnWriter writer, Asn1Tag tag)
+    public void Encode(AsnWriter writer, Asn1Tag tag)
     {
         writer.PushSequence(tag);
         writer.WriteOctetString(A.Span);
@@ -30,12 +30,12 @@ internal struct CurveAsn
         writer.PopSequence(tag);
     }
 
-    internal static CurveAsn Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
+    public static CurveAsn Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         return Decode(Asn1Tag.Sequence, encoded, ruleSet);
     }
 
-    internal static CurveAsn Decode(Asn1Tag expectedTag, ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
+    public static CurveAsn Decode(Asn1Tag expectedTag, ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         try
         {
@@ -50,12 +50,12 @@ internal struct CurveAsn
         }
     }
 
-    internal static void Decode(ref AsnValueReader reader, ReadOnlyMemory<byte> rebind, out CurveAsn decoded)
+    public static void Decode(ref AsnValueReader reader, ReadOnlyMemory<byte> rebind, out CurveAsn decoded)
     {
         Decode(ref reader, Asn1Tag.Sequence, rebind, out decoded);
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         Asn1Tag expectedTag,
         ReadOnlyMemory<byte> rebind,

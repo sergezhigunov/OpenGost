@@ -11,15 +11,15 @@ namespace OpenGost.Security.Cryptography.Asn1;
 [StructLayout(LayoutKind.Sequential)]
 internal struct AlgorithmIdentifier
 {
-    internal string Algorithm;
-    internal ReadOnlyMemory<byte>? Parameters;
+    public string Algorithm;
+    public ReadOnlyMemory<byte>? Parameters;
 
-    internal void Encode(AsnWriter writer)
+    public void Encode(AsnWriter writer)
     {
         Encode(writer, Asn1Tag.Sequence);
     }
 
-    internal void Encode(AsnWriter writer, Asn1Tag tag)
+    public void Encode(AsnWriter writer, Asn1Tag tag)
     {
         writer.PushSequence(tag);
 
@@ -48,12 +48,12 @@ internal struct AlgorithmIdentifier
     }
 
     [SecuritySafeCritical]
-    internal static AlgorithmIdentifier Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
+    public static AlgorithmIdentifier Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         return Decode(Asn1Tag.Sequence, encoded, ruleSet);
     }
 
-    internal static AlgorithmIdentifier Decode(
+    public static AlgorithmIdentifier Decode(
         Asn1Tag expectedTag,
         ReadOnlyMemory<byte> encoded,
         AsnEncodingRules ruleSet)
@@ -71,7 +71,7 @@ internal struct AlgorithmIdentifier
         }
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         ReadOnlyMemory<byte> rebind,
         out AlgorithmIdentifier decoded)
@@ -79,7 +79,7 @@ internal struct AlgorithmIdentifier
         Decode(ref reader, Asn1Tag.Sequence, rebind, out decoded);
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         Asn1Tag expectedTag,
         ReadOnlyMemory<byte> rebind,

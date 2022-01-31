@@ -11,15 +11,15 @@ namespace OpenGost.Security.Cryptography.Asn1;
 [StructLayout(LayoutKind.Sequential)]
 internal struct FieldID
 {
-    internal string FieldType;
-    internal ReadOnlyMemory<byte> Parameters;
+    public string FieldType;
+    public ReadOnlyMemory<byte> Parameters;
 
-    internal void Encode(AsnWriter writer)
+    public void Encode(AsnWriter writer)
     {
         Encode(writer, Asn1Tag.Sequence);
     }
 
-    internal void Encode(AsnWriter writer, Asn1Tag tag)
+    public void Encode(AsnWriter writer, Asn1Tag tag)
     {
         writer.PushSequence(tag);
         try
@@ -41,12 +41,12 @@ internal struct FieldID
         writer.PopSequence(tag);
     }
 
-    internal static FieldID Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
+    public static FieldID Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         return Decode(Asn1Tag.Sequence, encoded, ruleSet);
     }
 
-    internal static FieldID Decode(Asn1Tag expectedTag, ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
+    public static FieldID Decode(Asn1Tag expectedTag, ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         try
         {
@@ -61,12 +61,12 @@ internal struct FieldID
         }
     }
 
-    internal static void Decode(ref AsnValueReader reader, ReadOnlyMemory<byte> rebind, out FieldID decoded)
+    public static void Decode(ref AsnValueReader reader, ReadOnlyMemory<byte> rebind, out FieldID decoded)
     {
         Decode(ref reader, Asn1Tag.Sequence, rebind, out decoded);
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         Asn1Tag expectedTag,
         ReadOnlyMemory<byte> rebind,

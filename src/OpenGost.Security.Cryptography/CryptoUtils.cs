@@ -11,20 +11,20 @@ internal static class CryptoUtils
 {
     private static RandomNumberGenerator? _randomNumberGenerator;
 
-    internal static RandomNumberGenerator StaticRandomNumberGenerator
+    public static RandomNumberGenerator StaticRandomNumberGenerator
         => LazyInitializer.EnsureInitialized(ref _randomNumberGenerator, RandomNumberGenerator.Create)!;
 
-    internal static byte[] GenerateRandomBytes(int size)
+    public static byte[] GenerateRandomBytes(int size)
     {
         var array = new byte[size];
         StaticRandomNumberGenerator.GetBytes(array);
         return array;
     }
 
-    internal static T[]? CloneArray<T>(T[]? source)
+    public static T[]? CloneArray<T>(T[]? source)
         => source == null ? null : (T[])source.Clone();
 
-    internal static void EraseData<T>(ref T[]? data)
+    public static void EraseData<T>(ref T[]? data)
         where T : struct
     {
         if (data != null)
@@ -34,7 +34,7 @@ internal static class CryptoUtils
         }
     }
 
-    internal static void EraseData<T>(ref T[]?[]? data)
+    public static void EraseData<T>(ref T[]?[]? data)
         where T : struct
     {
         if (data != null)
@@ -47,7 +47,7 @@ internal static class CryptoUtils
         }
     }
 
-    internal static void Xor(
+    public static void Xor(
         byte[] left,
         int leftOffset,
         byte[] right,
@@ -62,7 +62,7 @@ internal static class CryptoUtils
 
     [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe void UInt64ToLittleEndian(byte* block, ulong* x, int digits)
+    public static unsafe void UInt64ToLittleEndian(byte* block, ulong* x, int digits)
     {
         for (int i = 0, j = 0; i < digits; i++, j += sizeof(ulong))
             UInt64ToLittleEndian(block + j, x[i]);
@@ -70,7 +70,7 @@ internal static class CryptoUtils
 
     [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe void UInt64ToLittleEndian(byte* block, ulong value)
+    public static unsafe void UInt64ToLittleEndian(byte* block, ulong value)
     {
         *block = (byte)value;
         block[1] = (byte)(value >> 8);
@@ -84,7 +84,7 @@ internal static class CryptoUtils
 
     [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe void UInt32ToBigEndian(byte* block, uint* x, int digits)
+    public static unsafe void UInt32ToBigEndian(byte* block, uint* x, int digits)
     {
         for (int i = 0, j = 0; i < digits; i++, j += sizeof(uint))
             UInt32ToBigEndian(block + j, x[i]);
@@ -92,7 +92,7 @@ internal static class CryptoUtils
 
     [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe void UInt32ToBigEndian(byte* block, uint value)
+    public static unsafe void UInt32ToBigEndian(byte* block, uint value)
     {
         *block = (byte)(value >> 24);
         block[1] = (byte)(value >> 16);
@@ -102,7 +102,7 @@ internal static class CryptoUtils
 
     [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe void UInt32FromBigEndian(uint* x, int digits, byte* block)
+    public static unsafe void UInt32FromBigEndian(uint* x, int digits, byte* block)
     {
         for (int i = 0, j = 0; i < digits; i++, j += sizeof(uint))
             x[i] = UInt32FromBigEndian(block + j);
@@ -110,10 +110,10 @@ internal static class CryptoUtils
 
     [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe uint UInt32FromBigEndian(byte* block)
+    public static unsafe uint UInt32FromBigEndian(byte* block)
         => (uint)(*block << 24) | (uint)(block[1] << 16) | (uint)(block[2] << 8) | (block[3]);
 
-    internal static byte[] ToNormalizedByteArray(BigInteger value, int size)
+    public static byte[] ToNormalizedByteArray(BigInteger value, int size)
     {
         if (value < BigInteger.Zero)
             value += (BigInteger.One << size * 8);
@@ -130,7 +130,7 @@ internal static class CryptoUtils
         return result;
     }
 
-    internal static ECCurve Clone(this ECCurve curve)
+    public static ECCurve Clone(this ECCurve curve)
     {
         if (curve.IsNamed)
             return ECCurve.CreateFromOid(curve.Oid);
@@ -150,7 +150,7 @@ internal static class CryptoUtils
         };
     }
 
-    internal static ECPoint Clone(this ECPoint point)
+    public static ECPoint Clone(this ECPoint point)
     {
         return new ECPoint
         {
@@ -159,6 +159,6 @@ internal static class CryptoUtils
         };
     }
 
-    internal static BigInteger Normalize(BigInteger value, BigInteger modulus)
+    public static BigInteger Normalize(BigInteger value, BigInteger modulus)
         => value >= BigInteger.Zero ? value : value + modulus;
 }

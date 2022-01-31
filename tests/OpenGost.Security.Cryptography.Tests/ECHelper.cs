@@ -7,13 +7,13 @@ namespace OpenGost.Security.Cryptography.Tests;
 [ExcludeFromCodeCoverage]
 internal static class ECHelper
 {
-    internal static void AssertEqual(ECPoint expected, ECPoint actual)
+    public static void AssertEqual(ECPoint expected, ECPoint actual)
     {
         Assert.Equal(expected.X, actual.X);
         Assert.Equal(expected.Y, actual.Y);
     }
 
-    internal static void AssertEqual(ECCurve expected, ECCurve actual)
+    public static void AssertEqual(ECCurve expected, ECCurve actual)
     {
         Assert.Equal(expected.A, actual.A);
         Assert.Equal(expected.B, actual.B);
@@ -28,7 +28,7 @@ internal static class ECHelper
             AssertEqual(expected.Oid, actual.Oid);
     }
 
-    internal static void AssertEqual(ECParameters expected, ECParameters actual, bool shouldComparePrivateData)
+    public static void AssertEqual(ECParameters expected, ECParameters actual, bool shouldComparePrivateData)
     {
         AssertEqual(expected.Curve, actual.Curve);
         AssertEqual(expected.Q, actual.Q);
@@ -36,7 +36,7 @@ internal static class ECHelper
             Assert.Equal(expected.D, actual.D);
     }
 
-    internal static void AssertEqual(Oid expected, Oid actual)
+    public static void AssertEqual(Oid expected, Oid actual)
     {
         Assert.Equal(expected.Value, actual.Value);
         Assert.Equal(expected.FriendlyName, actual.FriendlyName);

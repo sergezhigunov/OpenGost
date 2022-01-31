@@ -483,14 +483,14 @@ internal static class ECCurveOidMap
         }
     }
 
-    internal static bool OidValueRegistered(string oidValue)
+    public static bool OidValueRegistered(string oidValue)
     {
         if (oidValue == null)
             throw new ArgumentNullException(nameof(oidValue));
         return ECCurveOidDictionary.ContainsKey(oidValue);
     }
 
-    internal static ECCurve GetNamedCurveByOid(string oidValue)
+    public static ECCurve GetNamedCurveByOid(string oidValue)
     {
         if (oidValue == null)
             throw new ArgumentNullException(nameof(oidValue));
@@ -500,7 +500,7 @@ internal static class ECCurveOidMap
         return ECCurve.CreateFromValue(oidValue);
     }
 
-    internal static ECCurve GetExplicitCurveByOid(string oidValue)
+    public static ECCurve GetExplicitCurveByOid(string oidValue)
     {
         if (oidValue == null)
             throw new ArgumentNullException(nameof(oidValue));

@@ -11,20 +11,20 @@ namespace OpenGost.Security.Cryptography.Asn1;
 [StructLayout(LayoutKind.Sequential)]
 internal struct SpecifiedECDomain
 {
-    internal int Version;
-    internal FieldID FieldID;
-    internal CurveAsn Curve;
-    internal ReadOnlyMemory<byte> Base;
-    internal ReadOnlyMemory<byte> Order;
-    internal ReadOnlyMemory<byte>? Cofactor;
-    internal string? Hash;
+    public int Version;
+    public FieldID FieldID;
+    public CurveAsn Curve;
+    public ReadOnlyMemory<byte> Base;
+    public ReadOnlyMemory<byte> Order;
+    public ReadOnlyMemory<byte>? Cofactor;
+    public string? Hash;
 
-    internal void Encode(AsnWriter writer)
+    public void Encode(AsnWriter writer)
     {
         Encode(writer, Asn1Tag.Sequence);
     }
 
-    internal void Encode(AsnWriter writer, Asn1Tag tag)
+    public void Encode(AsnWriter writer, Asn1Tag tag)
     {
         writer.PushSequence(tag);
         writer.WriteInteger(Version);
@@ -48,12 +48,12 @@ internal struct SpecifiedECDomain
         writer.PopSequence(tag);
     }
 
-    internal static SpecifiedECDomain Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
+    public static SpecifiedECDomain Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         return Decode(Asn1Tag.Sequence, encoded, ruleSet);
     }
 
-    internal static SpecifiedECDomain Decode(
+    public static SpecifiedECDomain Decode(
         Asn1Tag expectedTag,
         ReadOnlyMemory<byte> encoded,
         AsnEncodingRules ruleSet)
@@ -71,7 +71,7 @@ internal struct SpecifiedECDomain
         }
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         ReadOnlyMemory<byte> rebind,
         out SpecifiedECDomain decoded)
@@ -79,7 +79,7 @@ internal struct SpecifiedECDomain
         Decode(ref reader, Asn1Tag.Sequence, rebind, out decoded);
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         Asn1Tag expectedTag, ReadOnlyMemory<byte> rebind,
         out SpecifiedECDomain decoded)

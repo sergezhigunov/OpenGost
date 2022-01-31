@@ -13,15 +13,15 @@ internal ref struct AsnValueReader
     private ReadOnlySpan<byte> _span;
     private readonly AsnEncodingRules _ruleSet;
 
-    internal AsnValueReader(ReadOnlySpan<byte> span, AsnEncodingRules ruleSet)
+    public AsnValueReader(ReadOnlySpan<byte> span, AsnEncodingRules ruleSet)
     {
         _span = span;
         _ruleSet = ruleSet;
     }
 
-    internal bool HasData => !_span.IsEmpty;
+    public bool HasData => !_span.IsEmpty;
 
-    internal void ThrowIfNotEmpty()
+    public void ThrowIfNotEmpty()
     {
         if (!_span.IsEmpty)
         {
@@ -29,53 +29,53 @@ internal ref struct AsnValueReader
         }
     }
 
-    internal Asn1Tag PeekTag()
+    public Asn1Tag PeekTag()
     {
         return Asn1Tag.Decode(_span, out _);
     }
 
-    internal ReadOnlySpan<byte> PeekEncodedValue()
+    public ReadOnlySpan<byte> PeekEncodedValue()
     {
         AsnDecoder.ReadEncodedValue(_span, _ruleSet, out _, out _, out int consumed);
         return _span.Slice(0, consumed);
     }
 
-    internal ReadOnlySpan<byte> ReadEncodedValue()
+    public ReadOnlySpan<byte> ReadEncodedValue()
     {
         var value = PeekEncodedValue();
         _span = _span.Slice(value.Length);
         return value;
     }
 
-    internal bool ReadBoolean(Asn1Tag? expectedTag = default)
+    public bool ReadBoolean(Asn1Tag? expectedTag = default)
     {
         var ret = AsnDecoder.ReadBoolean(_span, _ruleSet, out int consumed, expectedTag);
         _span = _span.Slice(consumed);
         return ret;
     }
 
-    internal BigInteger ReadInteger(Asn1Tag? expectedTag = default)
+    public BigInteger ReadInteger(Asn1Tag? expectedTag = default)
     {
         var ret = AsnDecoder.ReadInteger(_span, _ruleSet, out int consumed, expectedTag);
         _span = _span.Slice(consumed);
         return ret;
     }
 
-    internal bool TryReadInt32(out int value, Asn1Tag? expectedTag = default)
+    public bool TryReadInt32(out int value, Asn1Tag? expectedTag = default)
     {
         var ret = AsnDecoder.TryReadInt32(_span, _ruleSet, out value, out int consumed, expectedTag);
         _span = _span.Slice(consumed);
         return ret;
     }
 
-    internal ReadOnlySpan<byte> ReadIntegerBytes(Asn1Tag? expectedTag = default)
+    public ReadOnlySpan<byte> ReadIntegerBytes(Asn1Tag? expectedTag = default)
     {
         var ret = AsnDecoder.ReadIntegerBytes(_span, _ruleSet, out int consumed, expectedTag);
         _span = _span.Slice(consumed);
         return ret;
     }
 
-    internal bool TryReadPrimitiveBitString(
+    public bool TryReadPrimitiveBitString(
         out int unusedBitCount,
         out ReadOnlySpan<byte> value,
         Asn1Tag? expectedTag = default)
@@ -92,7 +92,7 @@ internal ref struct AsnValueReader
         return ret;
     }
 
-    internal byte[] ReadBitString(out int unusedBitCount, Asn1Tag? expectedTag = default)
+    public byte[] ReadBitString(out int unusedBitCount, Asn1Tag? expectedTag = default)
     {
         byte[] ret = AsnDecoder.ReadBitString(
             _span,
@@ -105,7 +105,7 @@ internal ref struct AsnValueReader
         return ret;
     }
 
-    internal T ReadNamedBitListValue<T>(Asn1Tag? expectedTag = default)
+    public T ReadNamedBitListValue<T>(Asn1Tag? expectedTag = default)
         where T : Enum
     {
         var ret = AsnDecoder.ReadNamedBitListValue<T>(_span, _ruleSet, out int consumed, expectedTag);
@@ -113,7 +113,7 @@ internal ref struct AsnValueReader
         return ret;
     }
 
-    internal bool TryReadPrimitiveOctetString(
+    public bool TryReadPrimitiveOctetString(
         out ReadOnlySpan<byte> value,
         Asn1Tag? expectedTag = default)
     {
@@ -128,7 +128,7 @@ internal ref struct AsnValueReader
         return ret;
     }
 
-    internal byte[] ReadOctetString(Asn1Tag? expectedTag = default)
+    public byte[] ReadOctetString(Asn1Tag? expectedTag = default)
     {
         var ret = AsnDecoder.ReadOctetString(
             _span,
@@ -140,14 +140,14 @@ internal ref struct AsnValueReader
         return ret;
     }
 
-    internal string ReadObjectIdentifier(Asn1Tag? expectedTag = default)
+    public string ReadObjectIdentifier(Asn1Tag? expectedTag = default)
     {
         var ret = AsnDecoder.ReadObjectIdentifier(_span, _ruleSet, out int consumed, expectedTag);
         _span = _span.Slice(consumed);
         return ret;
     }
 
-    internal AsnValueReader ReadSequence(Asn1Tag? expectedTag = default)
+    public AsnValueReader ReadSequence(Asn1Tag? expectedTag = default)
     {
         AsnDecoder.ReadSequence(
             _span,
@@ -162,7 +162,7 @@ internal ref struct AsnValueReader
         return new AsnValueReader(content, _ruleSet);
     }
 
-    internal AsnValueReader ReadSetOf(Asn1Tag? expectedTag = default)
+    public AsnValueReader ReadSetOf(Asn1Tag? expectedTag = default)
     {
         AsnDecoder.ReadSetOf(
             _span,
@@ -177,21 +177,21 @@ internal ref struct AsnValueReader
         return new AsnValueReader(content, _ruleSet);
     }
 
-    internal DateTimeOffset ReadUtcTime(Asn1Tag? expectedTag = default)
+    public DateTimeOffset ReadUtcTime(Asn1Tag? expectedTag = default)
     {
         var ret = AsnDecoder.ReadUtcTime(_span, _ruleSet, out int consumed, expectedTag: expectedTag);
         _span = _span.Slice(consumed);
         return ret;
     }
 
-    internal DateTimeOffset ReadGeneralizedTime(Asn1Tag? expectedTag = default)
+    public DateTimeOffset ReadGeneralizedTime(Asn1Tag? expectedTag = default)
     {
         var ret = AsnDecoder.ReadGeneralizedTime(_span, _ruleSet, out int consumed, expectedTag);
         _span = _span.Slice(consumed);
         return ret;
     }
 
-    internal string ReadCharacterString(UniversalTagNumber encodingType, Asn1Tag? expectedTag = default)
+    public string ReadCharacterString(UniversalTagNumber encodingType, Asn1Tag? expectedTag = default)
     {
         var ret = AsnDecoder.ReadCharacterString(_span, _ruleSet, encodingType, out int consumed, expectedTag);
         _span = _span.Slice(consumed);

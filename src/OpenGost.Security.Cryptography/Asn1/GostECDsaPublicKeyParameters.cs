@@ -12,15 +12,15 @@ namespace OpenGost.Security.Cryptography.Asn1;
 [StructLayout(LayoutKind.Sequential)]
 internal struct GostECDsaPublicKeyParameters
 {
-    internal string PublicKeyParamSet;
-    internal string? DigestParamSet;
+    public string PublicKeyParamSet;
+    public string? DigestParamSet;
 
-    internal void Encode(AsnWriter writer)
+    public void Encode(AsnWriter writer)
     {
         Encode(writer, Asn1Tag.Sequence);
     }
 
-    internal void Encode(AsnWriter writer, Asn1Tag tag)
+    public void Encode(AsnWriter writer, Asn1Tag tag)
     {
         writer.PushSequence(tag);
 
@@ -49,12 +49,12 @@ internal struct GostECDsaPublicKeyParameters
     }
 
     [SecuritySafeCritical]
-    internal static GostECDsaPublicKeyParameters Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
+    public static GostECDsaPublicKeyParameters Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         return Decode(Asn1Tag.Sequence, encoded, ruleSet);
     }
 
-    internal static GostECDsaPublicKeyParameters Decode(
+    public static GostECDsaPublicKeyParameters Decode(
         Asn1Tag expectedTag,
         ReadOnlyMemory<byte> encoded,
         AsnEncodingRules ruleSet)
@@ -72,7 +72,7 @@ internal struct GostECDsaPublicKeyParameters
         }
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         ReadOnlyMemory<byte> rebind,
         out GostECDsaPublicKeyParameters decoded)
@@ -80,7 +80,7 @@ internal struct GostECDsaPublicKeyParameters
         Decode(ref reader, Asn1Tag.Sequence, rebind, out decoded);
     }
 
-    internal static void Decode(
+    public static void Decode(
         ref AsnValueReader reader,
         Asn1Tag expectedTag,
         ReadOnlyMemory<byte> rebind,

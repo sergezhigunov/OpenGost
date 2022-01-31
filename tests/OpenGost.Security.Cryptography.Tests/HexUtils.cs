@@ -9,7 +9,7 @@ internal static class HexUtils
 {
     private const string HexAlphabet = "0123456789abcdef";
 
-    internal static byte[] HexToByteArray(this string hexString)
+    public static byte[] HexToByteArray(this string hexString)
     {
         if (hexString == null)
             throw new ArgumentNullException(nameof(hexString));
@@ -34,7 +34,7 @@ internal static class HexUtils
         return retval;
     }
 
-    internal static string ToHexString(this byte[] bytes)
+    public static string ToHexString(this byte[] bytes)
     {
         if (bytes == null)
             throw new ArgumentNullException(nameof(bytes));

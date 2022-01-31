@@ -7,13 +7,11 @@ using OpenGost.Security.Cryptography.Properties;
 namespace OpenGost.Security.Cryptography;
 
 /// <summary>
-/// Provides a managed implementation of the <see cref="GostECDsa512"/> algorithm.
+/// Provides a managed implementation of the <see cref="GostECDsa"/> algorithm.
 /// </summary>
 [ComVisible(true)]
-public sealed class GostECDsa512Managed : GostECDsa512
+public sealed class GostECDsaManaged : GostECDsa
 {
-    private static readonly BigInteger _modulus = BigInteger.One << 512;
-
     private ECCurve _curve;
     private ECPoint _publicKey;
     private byte[]? _privateKey;
@@ -22,14 +20,14 @@ public sealed class GostECDsa512Managed : GostECDsa512
         _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GostECDsa512Managed" /> class
+    /// Initializes a new instance of the <see cref="GostECDsaManaged" /> class
     /// with a random key pair.
     /// </summary>
-    public GostECDsa512Managed()
+    public GostECDsaManaged()
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GostECDsa512Managed" /> class
+    /// Initializes a new instance of the <see cref="GostECDsaManaged" /> class
     /// with a specified <see cref="ECParameters"/>.
     /// </summary>
     /// <param name="parameters">
@@ -38,7 +36,7 @@ public sealed class GostECDsa512Managed : GostECDsa512
     /// <exception cref="CryptographicException">
     /// <paramref name="parameters"/> specifies an invalid key length.
     /// </exception>
-    public GostECDsa512Managed(ECParameters parameters)
+    public GostECDsaManaged(ECParameters parameters)
     {
         ImportParameters(parameters);
     }
@@ -57,7 +55,8 @@ public sealed class GostECDsa512Managed : GostECDsa512
     {
         curve.Validate();
 
-        GenerateKey(curve, _modulus, out var publicKey, out var privateKey);
+        var modulus = BigInteger.One << KeySize;
+        GenerateKey(curve, modulus, out var publicKey, out var privateKey);
 
         CryptoUtils.EraseData(ref _privateKey);
         _curve = curve.Clone();
@@ -112,7 +111,7 @@ public sealed class GostECDsa512Managed : GostECDsa512
         ThrowIfDisposed();
 
         if (!_parametersSet)
-            GenerateKey(GetDefaultCurve());
+            GenerateKey(GetDefaultCurve(KeySize));
 
         return new ECParameters
         {
@@ -157,6 +156,9 @@ public sealed class GostECDsa512Managed : GostECDsa512
     /// <exception cref="ArgumentNullException">
     /// The <paramref name="hash"/> parameter is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="CryptographicException">
+    /// Invalid hash size.
+    /// </exception>
     public override byte[] SignHash(byte[] hash)
     {
         if (hash == null)
@@ -164,13 +166,15 @@ public sealed class GostECDsa512Managed : GostECDsa512
 
         ThrowIfDisposed();
 
-        if (KeySize / 8 != hash.Length)
-            throw new CryptographicException(CryptographyStrings.CryptographicInvalidHashSize(KeySize / 8));
+        var keySizeInBytes = KeySize / 8;
+        if (keySizeInBytes != hash.Length)
+            throw new CryptographicException(CryptographyStrings.CryptographicInvalidHashSize(keySizeInBytes));
 
         if (!_parametersSet)
-            GenerateKey(GetDefaultCurve());
+            GenerateKey(GetDefaultCurve(KeySize));
 
-        return SignHash(hash, _modulus, _curve, _privateKey!);
+        var modulus = BigInteger.One << KeySize;
+        return SignHash(hash, modulus, _curve, _privateKey!);
     }
 
     internal static byte[] SignHash(
@@ -237,6 +241,12 @@ public sealed class GostECDsa512Managed : GostECDsa512
     /// <exception cref="ArgumentNullException">
     /// The <paramref name="signature"/> parameter is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="CryptographicException">
+    /// Invalid hash size.
+    /// </exception>
+    /// <exception cref="CryptographicException">
+    /// Invalid signature size.
+    /// </exception>
     public override bool VerifyHash(byte[] hash, byte[] signature)
     {
         if (hash == null)
@@ -246,16 +256,20 @@ public sealed class GostECDsa512Managed : GostECDsa512
 
         ThrowIfDisposed();
 
-        if (KeySize / 8 != hash.Length)
-            throw new CryptographicException(CryptographyStrings.CryptographicInvalidHashSize(KeySize / 8));
-        if (KeySize / 4 != signature.Length)
-            throw new CryptographicException(CryptographyStrings.CryptographicInvalidSignatureSize(KeySize / 4));
+        var keySizeInBytes = KeySize / 8;
+        if (keySizeInBytes != hash.Length)
+            throw new CryptographicException(CryptographyStrings.CryptographicInvalidHashSize(keySizeInBytes));
+        var signatureSizeInBytes = keySizeInBytes * 2;
+        if (signatureSizeInBytes != signature.Length)
+            throw new CryptographicException(
+                CryptographyStrings.CryptographicInvalidSignatureSize(signatureSizeInBytes));
 
         // There is no necessity to generate new parameter, just return false
         if (!_parametersSet)
             return false;
 
-        return VerifyHash(hash, signature, _modulus, _curve, _publicKey);
+        var modulus = BigInteger.One << KeySize;
+        return VerifyHash(hash, signature, modulus, _curve, _publicKey);
     }
 
     internal static bool VerifyHash(
@@ -295,7 +309,7 @@ public sealed class GostECDsa512Managed : GostECDsa512
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="GostECDsa512Managed"/> class
+    /// Releases the unmanaged resources used by the <see cref="GostECDsaManaged"/> class
     /// and optionally releases the managed resources.
     /// </summary>
     /// <param name="disposing">
@@ -333,6 +347,10 @@ public sealed class GostECDsa512Managed : GostECDsa512
             throw new ObjectDisposedException(GetType().FullName);
     }
 
-    private static ECCurve GetDefaultCurve()
-        => ECCurve.CreateFromValue("1.2.643.7.1.2.1.2.1");
+    private static ECCurve GetDefaultCurve(int keySize)
+        => keySize switch
+        {
+            512 => ECCurve.CreateFromValue("1.2.643.7.1.2.1.2.1"),
+            _ => ECCurve.CreateFromValue("1.2.643.7.1.2.1.1.1"),
+        };
 }

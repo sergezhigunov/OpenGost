@@ -14,10 +14,11 @@ public abstract class ECDsaBenchmark<T> : IDisposable
     private bool _disposed;
     protected T AsymmetricAlgorithm = new();
 
-    protected ECDsaBenchmark()
+    protected ECDsaBenchmark(int keySize)
     {
-        _hash = new byte[AsymmetricAlgorithm.KeySize / 8];
+        _hash = new byte[keySize / 8];
         RandomNumberGenerator.GetBytes(_hash);
+        AsymmetricAlgorithm.KeySize = keySize;
         _signature = AsymmetricAlgorithm.SignHash(_hash);
     }
 

@@ -1,6 +1,10 @@
 ﻿namespace OpenGost.Security.Cryptography.Benchmarks;
 
 public class GostECDsa512ManagedBenchmark
-    : ECDsaBenchmark<GostECDsa512Managed>
+    : ECDsaBenchmark<GostECDsaManaged>
 {
+    public GostECDsa512ManagedBenchmark()
+        : base(512)
+    {
+    }
 }

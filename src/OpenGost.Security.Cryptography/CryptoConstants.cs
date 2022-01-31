@@ -2,36 +2,17 @@
 
 internal static class CryptoConstants
 {
-    private const string FullNamePrefix =
-        nameof(OpenGost) + "." + nameof(Security) + "." + nameof(Cryptography) + ".";
+    private const string Namespace = $"{nameof(OpenGost)}.{nameof(Security)}.{nameof(Cryptography)}";
 
-    public const string GostECDsa512SignatureFormatterFullName =
-        FullNamePrefix + nameof(GostECDsa512SignatureFormatter);
-    public const string GostECDsa512SignatureDeformatterFullName =
-        FullNamePrefix + nameof(GostECDsa512SignatureDeformatter);
+    public const string GostECDsaAlgorithmName = nameof(GostECDsa);
+    public const string GostECDsaAlgorithmFullName = $"{Namespace}.{GostECDsaAlgorithmName}";
 
-    public const string GostECDsa256SignatureFormatterFullName =
-        FullNamePrefix + nameof(GostECDsa256SignatureFormatter);
-    public const string GostECDsa256SignatureDeformatterFullName =
-        FullNamePrefix + nameof(GostECDsa256SignatureDeformatter);
+    public const string GrasshopperAlgorithmFullName = $"{Namespace}.{nameof(Grasshopper)}";
+    public const string CMACGrasshopperAlgorithmFullName = $"{Namespace}.{nameof(CMACGrasshopper)}";
+    public const string MagmaAlgorithmFullName = $"{Namespace}.{nameof(Magma)}";
 
-    public const string GostECDsa512AlgorithmName = nameof(GostECDsa512);
-    public const string GostECDsa512AlgorithmFullName = FullNamePrefix + GostECDsa512AlgorithmName;
-
-    public const string GostECDsa256AlgorithmName = nameof(GostECDsa256);
-    public const string GostECDsa256AlgorithmFullName = FullNamePrefix + GostECDsa256AlgorithmName;
-
-    public const string GrasshopperAlgorithmFullName = FullNamePrefix + nameof(Grasshopper);
-    public const string CMACGrasshopperAlgorithmFullName = FullNamePrefix + nameof(CMACGrasshopper);
-
-    public const string MagmaAlgorithmFullName = FullNamePrefix + nameof(Magma);
-    public const string CMACMagmaAlgorithmFullName = FullNamePrefix + nameof(CMACMagma);
-
-    public const string Streebog512AlgorithmFullName = FullNamePrefix + nameof(Streebog512);
-    public const string HMACStreebog512AlgorithmFullName = FullNamePrefix + nameof(HMACStreebog512);
-
-    public const string Streebog256AlgorithmFullName = FullNamePrefix + nameof(Streebog256);
-    public const string HMACStreebog256AlgorithmFullName = FullNamePrefix + nameof(HMACStreebog256);
+    public const string Streebog512AlgorithmFullName = $"{Namespace}.{nameof(Streebog512)}";
+    public const string Streebog256AlgorithmFullName = $"{Namespace}.{nameof(Streebog256)}";
 
     public const string GostECDsa256OidValue = "1.2.643.7.1.1.1.1";
     public const string GostECDsa512OidValue = "1.2.643.7.1.1.1.2";

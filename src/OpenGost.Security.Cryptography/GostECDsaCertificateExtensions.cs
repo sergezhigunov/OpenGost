@@ -39,8 +39,7 @@ public static class GostECDsaCertificateExtensions
         var publicKey = certificate.PublicKey;
         ECDsa? result = publicKey.EncodedKeyValue.Oid.Value switch
         {
-            CryptoConstants.GostECDsa256OidValue => GostECDsa256.Create(),
-            CryptoConstants.GostECDsa512OidValue => GostECDsa512.Create(),
+            CryptoConstants.GostECDsa256OidValue or CryptoConstants.GostECDsa512OidValue => GostECDsa.Create(),
             _ => null
         };
         if (result is not null)

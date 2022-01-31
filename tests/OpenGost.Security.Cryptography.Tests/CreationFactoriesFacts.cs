@@ -51,10 +51,8 @@ public class CreationFactoriesFacts : CryptoConfigRequiredTest
         {
             #region Asymmetric algorithm factories
 
-            TestCase(typeof(GostECDsa256), AsymmetricAlgorithm.Create, false),
-            TestCase(typeof(GostECDsa256), AsymmetricAlgorithm.Create, true),
-            TestCase(typeof(GostECDsa512), AsymmetricAlgorithm.Create, false),
-            TestCase(typeof(GostECDsa512), AsymmetricAlgorithm.Create, true),
+            TestCase(typeof(GostECDsa), AsymmetricAlgorithm.Create, false),
+            TestCase(typeof(GostECDsa), AsymmetricAlgorithm.Create, true),
 
             #endregion
 
@@ -117,24 +115,15 @@ public class CreationFactoriesFacts : CryptoConfigRequiredTest
 
             #region ECDsa algorithm factories
 
-            TestCase(typeof(GostECDsa256), ECDsa.Create, false),
-            TestCase(typeof(GostECDsa256), ECDsa.Create, true),
-            TestCase(typeof(GostECDsa512), ECDsa.Create, false),
-            TestCase(typeof(GostECDsa512), ECDsa.Create, true),
+            TestCase(typeof(GostECDsa), ECDsa.Create, false),
+            TestCase(typeof(GostECDsa), ECDsa.Create, true),
 
             #endregion
 
-            #region GostECDsa256 algorithm factories
+            #region GostECDsa algorithm factories
 
-            TestCase(typeof(GostECDsa256), GostECDsa256.Create, false),
-            TestCase(typeof(GostECDsa256), GostECDsa256.Create, true),
-
-            #endregion
-
-            #region GostECDsa256 algorithm factories
-
-            TestCase(typeof(GostECDsa512), GostECDsa512.Create, false),
-            TestCase(typeof(GostECDsa512), GostECDsa512.Create, true),
+            TestCase(typeof(GostECDsa), GostECDsa.Create, false),
+            TestCase(typeof(GostECDsa), GostECDsa.Create, true),
 
             #endregion
 
@@ -175,8 +164,7 @@ public class CreationFactoriesFacts : CryptoConfigRequiredTest
         return new[]
         {
                 new object[] { typeof(CMACGrasshopper), Func(CMAC.Create), },
-                new object[] { typeof(GostECDsa256), Func(GostECDsa256.Create), },
-                new object[] { typeof(GostECDsa512), Func(GostECDsa512.Create), },
+                new object[] { typeof(GostECDsa), Func(GostECDsa.Create), },
                 new object[] { typeof(Grasshopper), Func(Grasshopper.Create), },
                 new object[] { typeof(Magma), Func(Magma.Create), },
                 new object[] { typeof(Streebog256), Func(Streebog256.Create), },

@@ -15,11 +15,6 @@ internal static class CryptoConstants
     public const string GostECDsa256SignatureDeformatterFullName =
         FullNamePrefix + nameof(GostECDsa256SignatureDeformatter);
 
-    public const string GostECDsa512SignatureDescriptionFullName =
-        FullNamePrefix + nameof(GostECDsa512SignatureDescription);
-    public const string GostECDsa256SignatureDescriptionFullName =
-        FullNamePrefix + nameof(GostECDsa256SignatureDescription);
-
     public const string GostECDsa512AlgorithmName = nameof(GostECDsa512);
     public const string GostECDsa512AlgorithmFullName = FullNamePrefix + GostECDsa512AlgorithmName;
 
@@ -40,7 +35,4 @@ internal static class CryptoConstants
 
     public const string GostECDsa256OidValue = "1.2.643.7.1.1.1.1";
     public const string GostECDsa512OidValue = "1.2.643.7.1.1.1.2";
-
-    public const string Streebog256OidValue = "1.2.643.7.1.1.2.2";
-    public const string Streebog512OidValue = "1.2.643.7.1.1.2.3";
 }

@@ -51,6 +51,22 @@ public class GostECDsaManagedFacts
     }
 
     [Theory]
+    [InlineData(256)]
+    [InlineData(512)]
+    public void SignHash_CreatesVerifiableSignature_IfParametersWasNotGenereated(int keySize)
+    {
+        using var algorithm = new GostECDsaManaged
+        {
+            KeySize = keySize,
+        };
+        var hash = CryptoUtils.GenerateRandomBytes(algorithm.KeySize / 8);
+
+        var signature = algorithm.SignHash(hash);
+
+        Assert.True(algorithm.VerifyHash(hash, signature));
+    }
+
+    [Theory]
     [MemberData(nameof(TestDomainParameters))]
     public void SignHash_CreatesVerifiableSignature_OnTestDomainParameters(ECParameters parameters)
     {

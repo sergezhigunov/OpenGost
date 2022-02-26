@@ -6,7 +6,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;
 
-public class GostECDsaCertificateExtensionsFacts : CryptoConfigRequiredTest
+public class GostECDsaCertificateExtensionsFacts
 {
     [Fact]
     public void GetGostECDsaPublicKey_Throws_IfCertificateParameterIsNull()

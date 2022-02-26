@@ -5,7 +5,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;
 
-public class CreationFactoriesFacts : CryptoConfigRequiredTest
+public class CreationFactoriesFacts
 {
     [Theory]
     [MemberData(nameof(ImplicitCreateFactories))]

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;
 
-public abstract class CmacTest<T> : CryptoConfigRequiredTest
+public abstract class CmacTest<T>
     where T : CMAC, new()
 {
     protected void VerifyCmac(string dataHex, string keyHex, string digestHex)

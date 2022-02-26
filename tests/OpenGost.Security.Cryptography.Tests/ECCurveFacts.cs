@@ -5,7 +5,7 @@ using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;
 
-public class ECCurveFacts : CryptoConfigRequiredTest
+public class ECCurveFacts
 {
     [Theory]
     [MemberData(nameof(SupportedOidValues))]

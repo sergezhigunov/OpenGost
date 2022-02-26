@@ -5,14 +5,16 @@ using OpenGost.Security.Cryptography.Properties;
 
 namespace System.Security.Cryptography.X509Certificates;
 
+using static CryptoConstants;
+
 /// <summary>
-/// Provides extension methods for retrieving GOST R 34.10-2012 <see cref="ECDsa"/> implementations for the
+/// Provides extension methods for retrieving GOST 34.10-2018 <see cref="ECDsa"/> implementations for the
 /// public and private keys of a <see cref="X509Certificate2"/> certificate.
 /// </summary>
 public static class GostECDsaCertificateExtensions
 {
     /// <summary>
-    /// Gets the GOST R 34.10-2012 <see cref="ECDsa"/> public key from the <see cref="X509Certificate2"/>
+    /// Gets the GOST 34.10-2018 <see cref="GostECDsa"/> public key from the <see cref="X509Certificate2"/>
     /// certificate.
     /// </summary>
     /// <param name="certificate">
@@ -20,7 +22,7 @@ public static class GostECDsaCertificateExtensions
     /// </param>
     /// <returns>
     /// The public key, or <see langword="null"/> if the certificate does not have a
-    /// GOST R 34.10-2012 <see cref="ECDsa"/> public key.
+    /// GOST 34.10-2018 <see cref="GostECDsa"/> public key.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// The <paramref name="certificate"/> parameter is <see langword="null"/>.
@@ -28,7 +30,7 @@ public static class GostECDsaCertificateExtensions
     /// <exception cref="CryptographicException">
     /// The handle is invalid.
     /// </exception>
-    public static ECDsa? GetGostECDsaPublicKey(this X509Certificate2 certificate)
+    public static GostECDsa? GetGostECDsaPublicKey(this X509Certificate2 certificate)
     {
         if (certificate == null)
             throw new ArgumentNullException(nameof(certificate));
@@ -37,9 +39,9 @@ public static class GostECDsaCertificateExtensions
             return null;
 
         var publicKey = certificate.PublicKey;
-        ECDsa? result = publicKey.EncodedKeyValue.Oid.Value switch
+        GostECDsa? result = publicKey.EncodedKeyValue.Oid.Value switch
         {
-            CryptoConstants.GostECDsa256OidValue or CryptoConstants.GostECDsa512OidValue => GostECDsa.Create(),
+            GostECDsa256OidValue or GostECDsa512OidValue => GostECDsa.Create(),
             _ => null
         };
         if (result is not null)
@@ -59,7 +61,7 @@ public static class GostECDsaCertificateExtensions
     }
 
     /// <summary>
-    /// Gets the GOST R 34.10-2012 <see cref="ECDsa"/> private key from the <see cref="X509Certificate2"/>
+    /// Gets the GOST 34.10-2018 <see cref="GostECDsa"/> private key from the <see cref="X509Certificate2"/>
     /// certificate.
     /// </summary>
     /// <param name="certificate">
@@ -67,12 +69,12 @@ public static class GostECDsaCertificateExtensions
     /// </param>
     /// <returns>
     /// The private key, or <see langword="null"/> if the certificate does not have a
-    /// GOST R 34.10-2012 <see cref="ECDsa"/> private key.
+    /// GOST 34.10-2018 <see cref="GostECDsa"/> private key.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// The <paramref name="certificate"/> parameter is <see langword="null"/>.
     /// </exception>
-    public static ECDsa? GetGostECDsaPrivateKey(this X509Certificate2 certificate)
+    public static GostECDsa? GetGostECDsaPrivateKey(this X509Certificate2 certificate)
     {
         if (certificate == null)
             throw new ArgumentNullException(nameof(certificate));
@@ -86,7 +88,7 @@ public static class GostECDsaCertificateExtensions
     private static bool IsGostECDsa(X509Certificate2 certificate)
     {
         var value = certificate.PublicKey.Oid.Value;
-        if (value != CryptoConstants.GostECDsa256OidValue && value != CryptoConstants.GostECDsa512OidValue)
+        if (value != GostECDsa256OidValue && value != GostECDsa512OidValue)
             return false;
 
         foreach (var extension in certificate.Extensions)

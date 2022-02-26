@@ -4,8 +4,7 @@ using System.Security.Cryptography;
 namespace OpenGost.Security.Cryptography;
 
 /// <summary>
-/// Provides an abstract base class that encapsulates the 512-bit version of
-/// the GOST R 34.10-2012 <see cref="ECDsa"/> algorithm.
+/// Provides an abstract base class that encapsulates the GOST 34.10-2018 algorithm.
 /// </summary>
 [ComVisible(true)]
 public abstract class GostECDsa : ECDsa

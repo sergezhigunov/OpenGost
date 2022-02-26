@@ -7,7 +7,7 @@ namespace OpenGost.Security.Cryptography.Tests;
 
 public class GostECDsaManagedFacts
 {
-    #region Test domain parameters as described in GOST 34.10-2012
+    #region Test domain parameters as described in GOST 34.10-2018
 
     private static ECParameters TestDomainParameters256 { get; } = new ECParameters
     {
@@ -322,7 +322,7 @@ public class GostECDsaManagedFacts
         yield return new object[] { TestDomainParameters512, };
     }
 
-    // Test cases as described in GOST 34.10-2012
+    // Test cases as described in GOST 34.10-2018
     public static IEnumerable<object[]> TestCases()
     {
         yield return new object[]

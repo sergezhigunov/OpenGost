@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30413.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8B2273E6-40B9-4CFB-94E0-4523F39043DB}"
 	ProjectSection(SolutionItems) = preProject
@@ -31,7 +31,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGost.Security.Cryptogra
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9001C422-A979-402C-AB7A-6FC0B9B13530}"
 	ProjectSection(SolutionItems) = preProject
-		tools\Crypto.config = tools\Crypto.config
 		tools\Resources.tt = tools\Resources.tt
 	EndProjectSection
 EndProject

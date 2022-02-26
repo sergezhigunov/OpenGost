@@ -3,6 +3,8 @@
 [![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Latest version](https://img.shields.io/nuget/v/OpenGost.Security.Cryptography.svg)](https://www.nuget.org/packages/OpenGost.Security.Cryptography)
 
+## Overview
+
 An open-source .NET library providing the modern Russian national standard cryptographic algorithms
 
 
@@ -16,6 +18,22 @@ An open-source .NET library providing the modern Russian national standard crypt
 * CMAC Magma (Cipher-based Message Authentification Code algorithm)
 * 512 and 256 bits GOST Elliptic Curve Digital Signature Algorithm (GOST R 34.10-2012)
 
+
+## Installation
+
+To install Russian national standard cryptographic algorithms, run the following command in the Nuget Package Manager Console:
+
+```
+PM> Install-Package OpenGost.Security.Cryptography
+```
+
+After package installation, enable cryptographic services:
+
+```csharp
+using OpenGost.Security.Cryptography;
+
+OpenGostCryptoConfig.ConfigureCryptographicServices();
+```
 
 ## References
 

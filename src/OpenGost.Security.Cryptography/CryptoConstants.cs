@@ -3,6 +3,7 @@
 internal static class CryptoConstants
 {
     private const string Namespace = $"{nameof(OpenGost)}.{nameof(Security)}.{nameof(Cryptography)}";
+    private const string MethodPrefix = "urn:ietf:params:xml:ns:cpxmlsec:algorithms";
 
     public const string GostECDsaAlgorithmName = nameof(GostECDsa);
     public const string GostECDsaAlgorithmFullName = $"{Namespace}.{GostECDsaAlgorithmName}";
@@ -29,4 +30,12 @@ internal static class CryptoConstants
     public const string GostECDsa512OidValue = "1.2.643.7.1.1.1.2";
     public const string Streebog256OidValue = "1.2.643.7.1.1.2.2";
     public const string Streebog512OidValue = "1.2.643.7.1.1.2.3";
+
+    private const string GostECDsaMethod = "gostr34102012";
+    private const string StreebogMethod = "gostr34112012";
+
+    public const string GostECDsa256SignatureMethod = $"{MethodPrefix}:{GostECDsaMethod}-{StreebogMethod}-256";
+    public const string GostECDsa512SignatureMethod = $"{MethodPrefix}:{GostECDsaMethod}-{StreebogMethod}-512";
+    public const string Streebog256DigestMethod = $"{MethodPrefix}:{StreebogMethod}-256";
+    public const string Streebog512DigestMethod = $"{MethodPrefix}:{StreebogMethod}-512";
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
+using System.Xml;
 using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;
@@ -316,6 +318,61 @@ public class GostECDsaManagedFacts
         Assert.NotNull(result.D);
     }
 
+    [Theory]
+    [MemberData(nameof(TestDomainParameters))]
+    public void SignedXml_ComputeSignature_GeneratesValidSignature(ECParameters parameters)
+    {
+        using var algorithm = new GostECDsaManaged();
+        algorithm.ImportParameters(parameters);
+        const string methodPrefix = "urn:ietf:params:xml:ns:cpxmlsec:algorithms";
+        var signatureMethod = $"{methodPrefix}:gostr34102012-gostr34112012-{algorithm.KeySize}";
+        var digestMethod = $"{methodPrefix}:gostr34112012-{algorithm.KeySize}";
+        var document = new XmlDocument();
+        document.LoadXml("<x/>");
+        var root = document.DocumentElement!;
+        var signedXml = new SignedXml(root)
+        {
+            SigningKey = algorithm,
+        };
+        signedXml.SignedInfo.SignatureMethod = signatureMethod;
+        signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
+        var reference = new Reference
+        {
+            Uri = string.Empty,
+            DigestMethod = digestMethod,
+        };
+        reference.AddTransform(new XmlDsigEnvelopedSignatureTransform());
+        reference.AddTransform(new XmlDsigExcC14NTransform());
+        signedXml.AddReference(reference);
+
+        signedXml.ComputeSignature();
+
+        var signature = signedXml.Signature;
+        Assert.NotNull(signature);
+        Assert.Equal(algorithm.KeySize / 4, signature.SignatureValue.Length);
+        Assert.Same(signedXml.SignedInfo, signature.SignedInfo);
+        Assert.Equal(algorithm.KeySize / 8, reference.DigestValue.Length);
+    }
+
+    [Theory]
+    [MemberData(nameof(XmlDSigTestCases))]
+    public void SignedXml_CheckSignature_ReturnsTrue_IfSignatureValid(ECParameters parameters, string xml)
+    {
+        using var algorithm = new GostECDsaManaged();
+        algorithm.ImportParameters(parameters);
+        var document = new XmlDocument();
+        document.LoadXml(xml);
+        var root = document.DocumentElement!;
+        var signedXml = new SignedXml(root);
+        var signatureElement =
+            (XmlElement)document.GetElementsByTagName("Signature", SignedXml.XmlDsigNamespaceUrl)[0];
+        signedXml.LoadXml(signatureElement);
+
+        var result = signedXml.CheckSignature(algorithm);
+
+        Assert.True(result);
+    }
+
     public static IEnumerable<object[]> TestDomainParameters()
     {
         yield return new object[] { TestDomainParameters256, };
@@ -354,6 +411,35 @@ public class GostECDsaManagedFacts
                 // r
                 "36ae73e14493e117335c9ccdcb3bc96002859906c997c19e1c0fb28684559254" +
                 "d3acfca8ee783c64c2dce02ec8a312e59e683c1e5e79dd231a0981a060fa862f"),
+        };
+    }
+
+    public static IEnumerable<object[]> XmlDSigTestCases()
+    {
+        yield return new object[]
+        {
+            TestDomainParameters256,
+            "<x><Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><SignedInfo><CanonicalizationMethod Algorith" +
+            "m=\"http://www.w3.org/2001/10/xml-exc-c14n#\" /><SignatureMethod Algorithm=\"urn:ietf:params:xml:ns:cpx" +
+            "mlsec:algorithms:gostr34102012-gostr34112012-256\" /><Reference URI=\"\"><Transforms><Transform Algorit" +
+            "hm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" /><Transform Algorithm=\"http://www.w3.org" +
+            "/2001/10/xml-exc-c14n#\" /></Transforms><DigestMethod Algorithm=\"urn:ietf:params:xml:ns:cpxmlsec:algor" +
+            "ithms:gostr34112012-256\" /><DigestValue>JNdsQmFfcmAYYn4g42yK6tw2Gj5Xyxx5ILX3YAlXxBE=</DigestValue></Re" +
+            "ference></SignedInfo><SignatureValue>PaW2aNI9T10zcFqL0JBaFIx9fqqk8yyAyh5rsHoOESnoszOqjQ6hVsAmoWsH/TMIOD" +
+            "GhHgvMBOJ6U86yq0eKbQ==</SignatureValue></Signature></x>",
+        };
+        yield return new object[]
+        {
+            TestDomainParameters512,
+            "<x><Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><SignedInfo><CanonicalizationMethod Algorith" +
+            "m=\"http://www.w3.org/2001/10/xml-exc-c14n#\" /><SignatureMethod Algorithm=\"urn:ietf:params:xml:ns:cpx" +
+            "mlsec:algorithms:gostr34102012-gostr34112012-512\" /><Reference URI=\"\"><Transforms><Transform Algorit" +
+            "hm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" /><Transform Algorithm=\"http://www.w3.org" +
+            "/2001/10/xml-exc-c14n#\" /></Transforms><DigestMethod Algorithm=\"urn:ietf:params:xml:ns:cpxmlsec:algor" +
+            "ithms:gostr34112012-512\" /><DigestValue>SBO2V/znwwwIuO1uz0NpidHq5PWjW3IiAotyRuH2evF/wHWcLyFzZ7zI9KBgF3" +
+            "nrPF/NGk7RTdIwDVEbNd6YLg==</DigestValue></Reference></SignedInfo><SignatureValue>jI4sDu+baO3RAN9z1azJl9" +
+            "fK7FULxiHqgZf0/+CH27b6kPZ8yYGDGOlpkaHol6lB4DYNLk+qI/qubXkZ2rzQN9jwTX8a3zFvpo4QwtXYavBRuFu8HAntrysUQfhTB" +
+            "kB4jZsWI4IbAqGhK5T271xBb+LdWcbg7p+Ehmejr4VUYi0=</SignatureValue></Signature></x>",
         };
     }
 }

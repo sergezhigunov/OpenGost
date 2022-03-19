@@ -275,7 +275,7 @@ public class GostECDsaManagedFacts
 
         var parameters = algorithm.ExportParameters(true);
         parameters.Validate();
-        Assert.Equal(keySize / 8, parameters.D.Length);
+        Assert.Equal(keySize / 8, parameters.D?.Length);
         var curve = parameters.Curve;
         Assert.True(curve.IsNamed);
         Assert.Equal(oidValue, curve.Oid?.Value);
@@ -365,7 +365,7 @@ public class GostECDsaManagedFacts
         var root = document.DocumentElement!;
         var signedXml = new SignedXml(root);
         var signatureElement =
-            (XmlElement)document.GetElementsByTagName("Signature", SignedXml.XmlDsigNamespaceUrl)[0];
+            (XmlElement)document.GetElementsByTagName("Signature", SignedXml.XmlDsigNamespaceUrl)[0]!;
         signedXml.LoadXml(signatureElement);
 
         var result = signedXml.CheckSignature(algorithm);

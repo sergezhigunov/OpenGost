@@ -60,6 +60,7 @@ public static class GostECDsaCertificateExtensions
         return result;
     }
 
+    /*
     /// <summary>
     /// Gets the GOST 34.10-2018 <see cref="GostECDsa"/> private key from the <see cref="X509Certificate2"/>
     /// certificate.
@@ -84,6 +85,7 @@ public static class GostECDsaCertificateExtensions
 
         throw new NotImplementedException();
     }
+    */
 
     private static bool IsGostECDsa(X509Certificate2 certificate)
     {

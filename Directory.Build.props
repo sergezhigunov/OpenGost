@@ -6,7 +6,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>0.2.0</VersionPrefix>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

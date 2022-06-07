@@ -4,6 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Description>An open-source .NET library providing the modern Russian national standard cryptographic algorithms</Description>
+    <PackageReleaseNotes>
+0.2.0
+• Added – Cryptographic services configuration support
+• Added - XML Digital Signature support
+• Added - GOST X.509 certificate public key extraction method
+
+0.1.0
+This is the first public release.
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

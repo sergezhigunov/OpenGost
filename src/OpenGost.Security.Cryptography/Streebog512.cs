@@ -27,7 +27,7 @@ public abstract class Streebog512 : HashAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new Streebog512 Create()
-        => Create(CryptoConstants.Streebog512AlgorithmFullName);
+        => Create(CryptoConstants.Streebog512AlgorithmName);
 
     /// <summary>
     /// Creates an instance of a specified implementation of <see cref="Streebog512"/> algorithm.

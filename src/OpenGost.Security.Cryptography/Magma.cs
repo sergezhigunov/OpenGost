@@ -84,7 +84,7 @@ public abstract class Magma : SymmetricAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new Magma Create()
-        => Create(CryptoConstants.MagmaAlgorithmFullName);
+        => Create(CryptoConstants.MagmaAlgorithmName);
 
     /// <summary>
     /// Creates an instance of a specified implementation of <see cref="Magma"/> algorithm.

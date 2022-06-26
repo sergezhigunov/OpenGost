@@ -44,116 +44,43 @@ public class CreationFactoriesFacts
 
     public static IEnumerable<object?[]> ExplicitCreateFactories()
     {
-        static object?[] TestCase(Type type, Func<string, object?> factory, bool fullName)
-            => new object?[] { type, factory, fullName ? type.FullName : type.Name };
+        static object?[] TestCase(Type type, Func<string, object?> factory)
+            => new object?[] { type, factory, type.Name };
 
         return new[]
         {
-            #region Asymmetric algorithm factories
 
-            TestCase(typeof(GostECDsa), AsymmetricAlgorithm.Create, false),
-            TestCase(typeof(GostECDsa), AsymmetricAlgorithm.Create, true),
+            TestCase(typeof(GostECDsa), AsymmetricAlgorithm.Create),
+            TestCase(typeof(GostECDsa), ECDsa.Create),
+            TestCase(typeof(GostECDsa), GostECDsa.Create),
 
-            #endregion
+            TestCase(typeof(Grasshopper), SymmetricAlgorithm.Create),
+            TestCase(typeof(Grasshopper), Grasshopper.Create),
 
-            #region Symmetric algorithm factories
+            TestCase(typeof(Magma), SymmetricAlgorithm.Create),
+            TestCase(typeof(Magma), Magma.Create),
 
-            TestCase(typeof(Grasshopper), SymmetricAlgorithm.Create, false),
-            TestCase(typeof(Grasshopper), SymmetricAlgorithm.Create, true),
-            TestCase(typeof(Magma), SymmetricAlgorithm.Create, false),
-            TestCase(typeof(Magma), SymmetricAlgorithm.Create, true),
+            TestCase(typeof(Streebog256), HashAlgorithm.Create),
+            TestCase(typeof(Streebog256), Streebog256.Create),
 
-            #endregion
+            TestCase(typeof(Streebog512), HashAlgorithm.Create),
+            TestCase(typeof(Streebog512), Streebog512.Create),
 
-            #region Hash algorithm factories
+            TestCase(typeof(CMACGrasshopper), HashAlgorithm.Create),
+            TestCase(typeof(CMACGrasshopper), KeyedHashAlgorithm.Create),
+            TestCase(typeof(CMACGrasshopper), CMAC.Create),
 
-            TestCase(typeof(CMACGrasshopper), HashAlgorithm.Create, false),
-            TestCase(typeof(CMACGrasshopper), HashAlgorithm.Create, true),
-            TestCase(typeof(CMACMagma), HashAlgorithm.Create, false),
-            TestCase(typeof(CMACMagma), HashAlgorithm.Create, true),
-            TestCase(typeof(Streebog256), HashAlgorithm.Create, false),
-            TestCase(typeof(Streebog256), HashAlgorithm.Create, true),
-            TestCase(typeof(Streebog512), HashAlgorithm.Create, false),
-            TestCase(typeof(Streebog512), HashAlgorithm.Create, true),
-            TestCase(typeof(HMACStreebog256), HashAlgorithm.Create, false),
-            TestCase(typeof(HMACStreebog256), HashAlgorithm.Create, true),
-            TestCase(typeof(HMACStreebog512), HashAlgorithm.Create, false),
-            TestCase(typeof(HMACStreebog512), HashAlgorithm.Create, true),
+            TestCase(typeof(CMACMagma), HashAlgorithm.Create),
+            TestCase(typeof(CMACMagma), KeyedHashAlgorithm.Create),
+            TestCase(typeof(CMACMagma), CMAC.Create),
 
-            #endregion
+            TestCase(typeof(HMACStreebog256), HashAlgorithm.Create),
+            TestCase(typeof(HMACStreebog256), KeyedHashAlgorithm.Create),
+            TestCase(typeof(HMACStreebog256), HMAC.Create),
 
-            #region Keyed hash algorithm factories
-
-            TestCase(typeof(CMACGrasshopper), KeyedHashAlgorithm.Create, false),
-            TestCase(typeof(CMACGrasshopper), KeyedHashAlgorithm.Create, true),
-            TestCase(typeof(CMACMagma), KeyedHashAlgorithm.Create, false),
-            TestCase(typeof(CMACMagma), KeyedHashAlgorithm.Create, true),
-            TestCase(typeof(HMACStreebog256), KeyedHashAlgorithm.Create, false),
-            TestCase(typeof(HMACStreebog256), KeyedHashAlgorithm.Create, true),
-            TestCase(typeof(HMACStreebog512), KeyedHashAlgorithm.Create, false),
-            TestCase(typeof(HMACStreebog512), KeyedHashAlgorithm.Create, true),
-
-            #endregion
-
-            #region HMAC algorithm factories
-
-            TestCase(typeof(HMACStreebog256), HMAC.Create, false),
-            TestCase(typeof(HMACStreebog256), HMAC.Create, true),
-            TestCase(typeof(HMACStreebog512), HMAC.Create, false),
-            TestCase(typeof(HMACStreebog512), HMAC.Create, true),
-
-            #endregion
-
-            #region CMAC algorithm factories
-
-            TestCase(typeof(CMACGrasshopper), CMAC.Create, false),
-            TestCase(typeof(CMACGrasshopper), CMAC.Create, true),
-            TestCase(typeof(CMACMagma), CMAC.Create, false),
-            TestCase(typeof(CMACMagma), CMAC.Create, true),
-
-            #endregion
-
-            #region ECDsa algorithm factories
-
-            TestCase(typeof(GostECDsa), ECDsa.Create, false),
-            TestCase(typeof(GostECDsa), ECDsa.Create, true),
-
-            #endregion
-
-            #region GostECDsa algorithm factories
-
-            TestCase(typeof(GostECDsa), GostECDsa.Create, false),
-            TestCase(typeof(GostECDsa), GostECDsa.Create, true),
-
-            #endregion
-
-            #region Grasshopper algorithm factories
-
-            TestCase(typeof(Grasshopper), Grasshopper.Create, false),
-            TestCase(typeof(Grasshopper), Grasshopper.Create, true),
-
-            #endregion
-
-            #region Magma algorithm factories
-
-            TestCase(typeof(Magma), Magma.Create, false),
-            TestCase(typeof(Magma), Magma.Create, true),
-
-            #endregion
-
-            #region Streebog256 algorithm factories
-
-            TestCase(typeof(Streebog256), Streebog256.Create, false),
-            TestCase(typeof(Streebog256), Streebog256.Create, true),
-
-            #endregion
-
-            #region Streebog512 algorithm factories
-
-            TestCase(typeof(Streebog512), Streebog512.Create, false),
-            TestCase(typeof(Streebog512), Streebog512.Create, true),
-
-            #endregion
+            TestCase(typeof(HMACStreebog512), HashAlgorithm.Create),
+            TestCase(typeof(HMACStreebog512), KeyedHashAlgorithm.Create),
+            TestCase(typeof(HMACStreebog512), HMAC.Create),
         };
     }
 

@@ -31,20 +31,18 @@ public static class OpenGostCryptoConfig
     [SecuritySafeCritical]
     private static void ConfigureCryptographicServicesCore()
     {
-        AddAlgorithm(typeof(GostECDsaManaged), GostECDsaAlgorithmName, GostECDsaAlgorithmFullName);
-        AddAlgorithm(typeof(GrasshopperManaged), GrasshopperAlgorithmName, GrasshopperAlgorithmFullName);
-        AddAlgorithm(typeof(CMACGrasshopper), CMACGrasshopperAlgorithmName, CMACGrasshopperAlgorithmFullName);
-        AddAlgorithm(typeof(MagmaManaged), MagmaAlgorithmName, MagmaAlgorithmFullName);
-        AddAlgorithm(typeof(CMACMagma), CMACMagmaAlgorithmName, CMACMagmaAlgorithmFullName);
-        AddAlgorithm(typeof(Streebog256Managed),
-            Streebog256AlgorithmName, Streebog256AlgorithmFullName, Streebog256DigestMethod);
-        AddAlgorithm(typeof(HMACStreebog256), HMACStreebog256AlgorithmName, HMACStreebog256AlgorithmFullName);
-        AddAlgorithm(typeof(Streebog512Managed),
-            Streebog512AlgorithmName, Streebog512AlgorithmFullName, Streebog512DigestMethod);
-        AddAlgorithm(typeof(HMACStreebog512), HMACStreebog512AlgorithmName, HMACStreebog512AlgorithmFullName);
+        AddAlgorithm(typeof(GostECDsaManaged), GostECDsaAlgorithmName);
+        AddAlgorithm(typeof(GrasshopperManaged), GrasshopperAlgorithmName);
+        AddAlgorithm(typeof(CMACGrasshopper), CMACGrasshopperAlgorithmName);
+        AddAlgorithm(typeof(MagmaManaged), MagmaAlgorithmName);
+        AddAlgorithm(typeof(CMACMagma), CMACMagmaAlgorithmName);
+        AddAlgorithm(typeof(Streebog256Managed), Streebog256AlgorithmName, Streebog256DigestMethod);
+        AddAlgorithm(typeof(HMACStreebog256), HMACStreebog256AlgorithmName);
+        AddAlgorithm(typeof(Streebog512Managed), Streebog512AlgorithmName, Streebog512DigestMethod);
+        AddAlgorithm(typeof(HMACStreebog512), HMACStreebog512AlgorithmName);
         AddAlgorithm(typeof(GostECDsa256SignatureDescription), GostECDsa256SignatureMethod);
         AddAlgorithm(typeof(GostECDsa512SignatureDescription), GostECDsa512SignatureMethod);
-        AddOID(Streebog256OidValue, Streebog256AlgorithmName, Streebog256AlgorithmFullName);
-        AddOID(Streebog512OidValue, Streebog512AlgorithmName, Streebog512AlgorithmFullName);
+        AddOID(Streebog256OidValue, Streebog256AlgorithmName);
+        AddOID(Streebog512OidValue, Streebog512AlgorithmName);
     }
 }

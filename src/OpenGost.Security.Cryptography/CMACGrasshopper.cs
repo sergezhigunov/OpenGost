@@ -26,7 +26,7 @@ public class CMACGrasshopper : CMAC
     /// The <paramref name="key"/> parameter is <see langword="null"/>.
     /// </exception>
     public CMACGrasshopper(byte[] key)
-        : this(CryptoConstants.GrasshopperAlgorithmFullName, key)
+        : this(CryptoConstants.GrasshopperAlgorithmName, key)
     { }
 
     /// <summary>

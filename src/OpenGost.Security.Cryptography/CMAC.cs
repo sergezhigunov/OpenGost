@@ -258,7 +258,7 @@ public abstract class CMAC : KeyedHashAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new CMAC Create()
-        => Create(CryptoConstants.CMACGrasshopperAlgorithmFullName);
+        => Create(CryptoConstants.CMACGrasshopperAlgorithmName);
 
     /// <summary>
     /// Creates an instance of a specified implementation of <see cref="CMAC"/> algorithm.

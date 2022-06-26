@@ -84,7 +84,7 @@ public abstract class Grasshopper : SymmetricAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new Grasshopper Create()
-        => Create(CryptoConstants.GrasshopperAlgorithmFullName);
+        => Create(CryptoConstants.GrasshopperAlgorithmName);
 
     /// <summary>
     /// Creates an instance of a specified implementation of <see cref="Grasshopper"/> algorithm.

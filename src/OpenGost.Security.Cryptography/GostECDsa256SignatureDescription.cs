@@ -13,7 +13,7 @@ public class GostECDsa256SignatureDescription : SignatureDescription
     public GostECDsa256SignatureDescription()
     {
         KeyAlgorithm = typeof(GostECDsa).AssemblyQualifiedName;
-        DigestAlgorithm = CryptoConstants.Streebog256AlgorithmFullName;
+        DigestAlgorithm = CryptoConstants.Streebog256AlgorithmName;
     }
 
     /// <inheritdoc/>

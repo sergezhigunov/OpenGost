@@ -38,7 +38,7 @@ public abstract class GostECDsa : ECDsa
     /// </returns>
     [ComVisible(false)]
     public static new GostECDsa Create()
-        => Create(CryptoConstants.GostECDsaAlgorithmFullName);
+        => Create(CryptoConstants.GostECDsaAlgorithmName);
 
     /// <summary>
     /// Creates an instance of a specified implementation of <see cref="GostECDsa"/> algorithm.

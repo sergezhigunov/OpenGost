@@ -58,7 +58,7 @@ public class HMACStreebog256 : HMAC
         if (key is null)
             throw new ArgumentNullException(nameof(key));
 
-        _hmacCommon = new HMACCommon(CryptoConstants.Streebog256AlgorithmFullName, key, BlockSize);
+        _hmacCommon = new HMACCommon(CryptoConstants.Streebog256AlgorithmName, key, BlockSize);
         base.Key = _hmacCommon.ActualKey;
         HashName = _hmacCommon.HashName;
         BlockSizeValue = BlockSize;

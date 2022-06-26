@@ -26,7 +26,7 @@ public class CMACMagma : CMAC
     /// The <paramref name="key"/> parameter is <see langword="null"/>.
     /// </exception>
     public CMACMagma(byte[] key)
-        : this(CryptoConstants.MagmaAlgorithmFullName, key)
+        : this(CryptoConstants.MagmaAlgorithmName, key)
     { }
 
     /// <summary>

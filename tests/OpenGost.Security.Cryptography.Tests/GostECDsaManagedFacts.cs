@@ -55,7 +55,7 @@ public class GostECDsaManagedFacts
     [Theory]
     [InlineData(256)]
     [InlineData(512)]
-    public void SignHash_CreatesVerifiableSignature_IfParametersWasNotGenereated(int keySize)
+    public void SignHash_CreatesVerifiableSignature_IfParametersWasNotGenerated(int keySize)
     {
         using var algorithm = new GostECDsaManaged
         {

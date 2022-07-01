@@ -84,14 +84,6 @@ internal static class CryptoUtils
 
     [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void UInt32ToBigEndian(byte* block, uint* x, int digits)
-    {
-        for (int i = 0, j = 0; i < digits; i++, j += sizeof(uint))
-            UInt32ToBigEndian(block + j, x[i]);
-    }
-
-    [SecurityCritical]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void UInt32ToBigEndian(byte* block, uint value)
     {
         *block = (byte)(value >> 24);
@@ -113,24 +105,29 @@ internal static class CryptoUtils
     public static unsafe uint UInt32FromBigEndian(byte* block)
         => (uint)(*block << 24) | (uint)(block[1] << 16) | (uint)(block[2] << 8) | (block[3]);
 
-    public static byte[] ToNormalizedByteArray(BigInteger value, int size)
+    public static byte[] ToLittleEndian(in BigInteger value, int size)
     {
-        if (value < BigInteger.Zero)
-            value += (BigInteger.One << size * 8);
-
-        var result = new byte[size];
-        for (var i = 0; i < size; i++)
-        {
-            if (value == BigInteger.Zero)
-                break;
-            result[i] = (byte)(value % 256);
-            value >>= 8;
-        }
-
-        return result;
+        var buffer = new byte[size];
+        ToLittleEndian(value, buffer, 0, size);
+        return buffer;
     }
 
-    public static ECCurve Clone(this ECCurve curve)
+    public static void ToLittleEndian(BigInteger value, byte[] buffer, int offset, int count)
+    {
+        var right = offset + count;
+        for (var i = offset; i < right; i++)
+        {
+            if (value == BigInteger.Zero)
+                buffer[i] = 0;
+            else
+            {
+                buffer[i] = (byte)(value % 256);
+                value >>= 8;
+            }
+        }
+    }
+
+    public static ECCurve Clone(this in ECCurve curve)
     {
         if (curve.IsNamed)
             return ECCurve.CreateFromOid(curve.Oid);
@@ -150,15 +147,24 @@ internal static class CryptoUtils
         };
     }
 
-    public static ECPoint Clone(this ECPoint point)
+    public static ECPoint Clone(this in ECPoint point)
     {
         return new ECPoint
         {
             X = CloneArray(point.X),
-            Y = CloneArray(point.Y)
+            Y = CloneArray(point.Y),
         };
     }
 
-    public static BigInteger Normalize(BigInteger value, BigInteger modulus)
-        => value >= BigInteger.Zero ? value : value + modulus;
+    public static BigInteger UnsignedBigIntegerFromLittleEndian(byte[] value)
+    {
+        var length = value.Length;
+        if (value[length - 1] >= 0x80)
+        {
+            var temp = new byte[length + 1];
+            Buffer.BlockCopy(value, 0, temp, 0, length);
+            value = temp;
+        }
+        return new BigInteger(value);
+    }
 }

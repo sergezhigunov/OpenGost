@@ -55,8 +55,7 @@ public sealed class GostECDsaManaged : GostECDsa
     {
         curve.Validate();
 
-        var modulus = BigInteger.One << KeySize;
-        GenerateKey(curve, modulus, out var publicKey, out var privateKey);
+        GenerateKey(curve, out var publicKey, out var privateKey);
 
         CryptoUtils.EraseData(ref _privateKey);
         _curve = curve.Clone();
@@ -65,32 +64,24 @@ public sealed class GostECDsaManaged : GostECDsa
         _parametersSet = true;
     }
 
-    internal static void GenerateKey(
-        ECCurve curve,
-        in BigInteger modulus,
+    private static void GenerateKey(
+        in ECCurve curve,
         out ECPoint publicKey,
         out byte[] privateKey)
     {
-        if (!curve.IsExplicit)
-            curve = ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value);
-
-        var prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), modulus);
-        var subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), modulus) /
-            CryptoUtils.Normalize(new BigInteger(curve.Cofactor), modulus);
-        var a = CryptoUtils.Normalize(new BigInteger(curve.A), modulus);
-        int size = curve.Prime.Length;
+        var explicitCurve = GetExplicitCurve(curve);
+        var prime = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Prime);
+        var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order) /
+            CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor);
+        var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A);
+        int size = explicitCurve.Prime.Length;
         privateKey = new byte[size];
-
-        BigInteger key;
-        do
-        {
-            CryptoUtils.StaticRandomNumberGenerator.GetBytes(privateKey);
-            key = CryptoUtils.Normalize(new BigInteger(privateKey), modulus);
-        }
-        while (BigInteger.Zero >= key || key >= subgroupOrder);
-
-        var basePoint = new BigIntegerPoint(curve.G, modulus);
+        CryptoUtils.StaticRandomNumberGenerator.GetBytes(privateKey);
+        var key = CryptoUtils.UnsignedBigIntegerFromLittleEndian(privateKey) % subgroupOrder;
+        CryptoUtils.ToLittleEndian(key, privateKey, 0, size);
+        var basePoint = new BigIntegerPoint(explicitCurve.G);
         publicKey = BigIntegerPoint.Multiply(basePoint, key, prime, a).ToECPoint(size);
+
     }
 
     /// <summary>
@@ -172,53 +163,42 @@ public sealed class GostECDsaManaged : GostECDsa
 
         if (!_parametersSet)
             GenerateKey(GetDefaultCurve(KeySize));
-
-        var modulus = BigInteger.One << KeySize;
-        return SignHash(hash, modulus, _curve, _privateKey!);
+        return SignHash(hash, _curve, _privateKey!);
     }
 
-    internal static byte[] SignHash(
+    private static byte[] SignHash(
         in byte[] hash,
-        in BigInteger modulus,
-        ECCurve curve,
+        in ECCurve curve,
         in byte[] privateKey)
     {
-        if (!curve.IsExplicit)
-            curve = ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value);
-        var subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), modulus) /
-            CryptoUtils.Normalize(new BigInteger(curve.Cofactor), modulus);
-        var e = CryptoUtils.Normalize(new BigInteger(hash), modulus) % subgroupOrder;
+        var explicitCurve = GetExplicitCurve(curve);
+        var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order) /
+            CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor);
+        var e = CryptoUtils.UnsignedBigIntegerFromLittleEndian(hash) % subgroupOrder;
         if (e == BigInteger.Zero)
             e = BigInteger.One;
-        var prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), modulus);
-        var a = CryptoUtils.Normalize(new BigInteger(curve.A), modulus);
-        var d = CryptoUtils.Normalize(new BigInteger(privateKey), modulus);
-        int size = curve.Prime.Length;
-        var rgb = new byte[size];
-
+        var prime = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Prime);
+        var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A);
+        var d = CryptoUtils.UnsignedBigIntegerFromLittleEndian(privateKey) % subgroupOrder;
+        int size = explicitCurve.Prime.Length;
+        var buffer = new byte[size];
+        var basePoint = new BigIntegerPoint(explicitCurve.G);
         BigInteger k, r, s;
         do
         {
             do
             {
-                do
-                {
-                    CryptoUtils.StaticRandomNumberGenerator.GetBytes(rgb);
-                    k = CryptoUtils.Normalize(new BigInteger(rgb), modulus);
-                } while (k <= BigInteger.Zero || k >= subgroupOrder);
-
-                r = BigIntegerPoint.Multiply(new BigIntegerPoint(curve.G, modulus), k, prime, a).X;
-            } while (r == BigInteger.Zero);
-
+                CryptoUtils.StaticRandomNumberGenerator.GetBytes(buffer);
+                k = CryptoUtils.UnsignedBigIntegerFromLittleEndian(buffer) % subgroupOrder;
+                r = BigIntegerPoint.Multiply(basePoint, k, prime, a).X % subgroupOrder;
+            }
+            while (r.Sign == 0);
             s = (r * d + k * e) % subgroupOrder;
         }
-        while (s == BigInteger.Zero);
-
+        while (r.Sign == 0);
         var signature = new byte[size * 2];
-        var array = s.ToByteArray();
-        Buffer.BlockCopy(array, 0, signature, 0, Math.Min(array.Length, size));
-        array = r.ToByteArray();
-        Buffer.BlockCopy(array, 0, signature, size, Math.Min(array.Length, size));
+        CryptoUtils.ToLittleEndian(s, signature, 0, size);
+        CryptoUtils.ToLittleEndian(r, signature, size, size);
         return signature;
     }
 
@@ -268,44 +248,41 @@ public sealed class GostECDsaManaged : GostECDsa
         if (!_parametersSet)
             return false;
 
-        var modulus = BigInteger.One << KeySize;
-        return VerifyHash(hash, signature, modulus, _curve, _publicKey);
+        return VerifyHash(hash, signature, _curve, _publicKey);
     }
 
-    internal static bool VerifyHash(
+    private static bool VerifyHash(
         in byte[] hash,
         in byte[] signature,
-        in BigInteger modulus,
-        ECCurve curve,
+        in ECCurve curve,
         in ECPoint publicKey)
     {
-        if (!curve.IsExplicit)
-            curve = ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value);
-        var size = curve.Prime.Length;
-        var subgroupOrder = CryptoUtils.Normalize(new BigInteger(curve.Order), modulus) /
-            CryptoUtils.Normalize(new BigInteger(curve.Cofactor), modulus);
+        var explicitCurve = GetExplicitCurve(curve);
+        var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order) /
+            CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor);
+        int size = explicitCurve.Prime.Length;
         var array = new byte[size];
         Buffer.BlockCopy(signature, 0, array, 0, size);
-        var s = CryptoUtils.Normalize(new BigInteger(array), modulus);
-        if (s < BigInteger.One || s > subgroupOrder)
+        var s = CryptoUtils.UnsignedBigIntegerFromLittleEndian(array);
+        if (s.Sign != 1 || s > subgroupOrder)
             return false;
         Buffer.BlockCopy(signature, size, array, 0, size);
-        var r = CryptoUtils.Normalize(new BigInteger(array), modulus);
-        if (r < BigInteger.One || r > subgroupOrder)
+        var r = CryptoUtils.UnsignedBigIntegerFromLittleEndian(array);
+        if (r.Sign != 1 || r > subgroupOrder)
             return false;
-        var e = CryptoUtils.Normalize(new BigInteger(hash), modulus) % subgroupOrder;
+        var e = CryptoUtils.UnsignedBigIntegerFromLittleEndian(hash) % subgroupOrder;
         if (e == BigInteger.Zero)
             e = BigInteger.One;
-        var v = BigInteger.ModPow(e, subgroupOrder - 2, subgroupOrder);
-        var z1 = (s * v) % subgroupOrder;
+        var v = BigInteger.ModPow(e, subgroupOrder - 2, subgroupOrder) % subgroupOrder;
+        var z1 = s * v % subgroupOrder;
         var z2 = (subgroupOrder - r) * v % subgroupOrder;
-        var prime = CryptoUtils.Normalize(new BigInteger(curve.Prime), modulus);
-        var a = CryptoUtils.Normalize(new BigInteger(curve.A), modulus);
+        var prime = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Prime);
+        var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A);
         var c = BigIntegerPoint.Add(
-            BigIntegerPoint.Multiply(new BigIntegerPoint(curve.G, modulus), z1, prime, a),
-            BigIntegerPoint.Multiply(new BigIntegerPoint(publicKey, modulus), z2, prime, a),
+            BigIntegerPoint.Multiply(new BigIntegerPoint(explicitCurve.G), z1, prime, a),
+            BigIntegerPoint.Multiply(new BigIntegerPoint(publicKey), z2, prime, a),
             prime);
-        return c.X == r;
+        return c.X % subgroupOrder == r;
     }
 
     /// <summary>
@@ -339,6 +316,16 @@ public sealed class GostECDsaManaged : GostECDsa
 
         base.Dispose(disposing);
         _disposed = true;
+    }
+
+    private static ECCurve GetExplicitCurve(in ECCurve curve)
+    {
+        return curve.CurveType switch
+        {
+            ECCurve.ECCurveType.PrimeShortWeierstrass => curve,
+            ECCurve.ECCurveType.Named => ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value),
+            _ => throw new NotImplementedException(),
+        };
     }
 
     private void ThrowIfDisposed()

@@ -64,17 +64,18 @@ public sealed class GostECDsaManaged : GostECDsa
         _parametersSet = true;
     }
 
-    private static void GenerateKey(
+    private void GenerateKey(
         in ECCurve curve,
         out ECPoint publicKey,
         out byte[] privateKey)
     {
         var explicitCurve = GetExplicitCurve(curve);
+        int size = explicitCurve.Prime.Length;
+        KeySize = size * 8;
         var prime = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Prime);
         var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order) /
             CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor);
         var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A);
-        int size = explicitCurve.Prime.Length;
         privateKey = new byte[size];
         CryptoUtils.StaticRandomNumberGenerator.GetBytes(privateKey);
         var key = CryptoUtils.UnsignedBigIntegerFromLittleEndian(privateKey) % subgroupOrder;

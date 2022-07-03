@@ -53,14 +53,22 @@ public class GostECDsaManagedFacts
     }
 
     [Theory]
-    [InlineData(256)]
-    [InlineData(512)]
-    public void SignHash_CreatesVerifiableSignature_IfParametersWasNotGenerated(int keySize)
+    [InlineData("1.2.643.7.1.2.1.1.0")]
+    [InlineData("1.2.643.7.1.2.1.1.1")]
+    [InlineData("1.2.643.2.2.35.0")]
+    [InlineData("1.2.643.2.2.35.1")]
+    [InlineData("1.2.643.2.2.35.2")]
+    [InlineData("1.2.643.2.2.35.3")]
+    [InlineData("1.2.643.2.2.36.0")]
+    [InlineData("1.2.643.7.1.2.1.2.0")]
+    [InlineData("1.2.643.7.1.2.1.2.1")]
+    [InlineData("1.2.643.7.1.2.1.2.2")]
+    [InlineData("1.2.643.7.1.2.1.2.3")]
+    public void SignHash_CreatesVerifiableSignature_IfParametersWasNotGenerated(string oidValue)
     {
-        using var algorithm = new GostECDsaManaged
-        {
-            KeySize = keySize,
-        };
+        var namedCurve = ECCurve.CreateFromValue(oidValue);
+        using var algorithm = new GostECDsaManaged();
+        algorithm.GenerateKey(namedCurve);
         var hash = CryptoUtils.GenerateRandomBytes(algorithm.KeySize / 8);
 
         var signature = algorithm.SignHash(hash);
@@ -123,6 +131,7 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [InlineData(256)]
+    [InlineData(512)]
     public void VerifyHash_ReturnsFalse_IfParametersWasNotGenereated(int keySize)
     {
         var hash = CryptoUtils.GenerateRandomBytes(keySize / 8);

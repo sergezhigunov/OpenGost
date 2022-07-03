@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -15,39 +14,6 @@ internal struct GostECDsaPublicKeyParameters
     public string PublicKeyParamSet;
     public string? DigestParamSet;
 
-    public void Encode(AsnWriter writer)
-    {
-        Encode(writer, Asn1Tag.Sequence);
-    }
-
-    public void Encode(AsnWriter writer, Asn1Tag tag)
-    {
-        writer.PushSequence(tag);
-
-        try
-        {
-            writer.WriteObjectIdentifier(PublicKeyParamSet);
-        }
-        catch (ArgumentException e)
-        {
-            throw new CryptographicException(CryptographyStrings.CryptographicDerInvalidEncoding, e);
-        }
-
-        if (DigestParamSet != null)
-        {
-            try
-            {
-                writer.WriteObjectIdentifier(DigestParamSet);
-            }
-            catch (ArgumentException e)
-            {
-                throw new CryptographicException(CryptographyStrings.CryptographicDerInvalidEncoding, e);
-            }
-        }
-
-        writer.PopSequence(tag);
-    }
-
     [SecuritySafeCritical]
     public static GostECDsaPublicKeyParameters Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
@@ -62,7 +28,7 @@ internal struct GostECDsaPublicKeyParameters
         try
         {
             var reader = new AsnValueReader(encoded.Span, ruleSet);
-            DecodeCore(ref reader, expectedTag, encoded, out var decoded);
+            DecodeCore(ref reader, expectedTag, out var decoded);
             reader.ThrowIfNotEmpty();
             return decoded;
         }
@@ -72,35 +38,9 @@ internal struct GostECDsaPublicKeyParameters
         }
     }
 
-    public static void Decode(
-        ref AsnValueReader reader,
-        ReadOnlyMemory<byte> rebind,
-        out GostECDsaPublicKeyParameters decoded)
-    {
-        Decode(ref reader, Asn1Tag.Sequence, rebind, out decoded);
-    }
-
-    public static void Decode(
-        ref AsnValueReader reader,
-        Asn1Tag expectedTag,
-        ReadOnlyMemory<byte> rebind,
-        out GostECDsaPublicKeyParameters decoded)
-    {
-        try
-        {
-            DecodeCore(ref reader, expectedTag, rebind, out decoded);
-        }
-        catch (AsnContentException e)
-        {
-            throw new CryptographicException(CryptographyStrings.CryptographicDerInvalidEncoding, e);
-        }
-    }
-
-    [SuppressMessage("Usage", "CA1801")]
     private static void DecodeCore(
         ref AsnValueReader reader,
         Asn1Tag expectedTag,
-        ReadOnlyMemory<byte> rebind,
         out GostECDsaPublicKeyParameters decoded)
     {
         decoded = default;

@@ -495,16 +495,6 @@ internal static class ECCurveOidMap
         return ECCurveOidDictionary.ContainsKey(oidValue);
     }
 
-    public static ECCurve GetNamedCurveByOid(string oidValue)
-    {
-        if (oidValue == null)
-            throw new ArgumentNullException(nameof(oidValue));
-        if (!ECCurveOidDictionary.ContainsKey(oidValue))
-            throw new NotImplementedException();
-
-        return ECCurve.CreateFromValue(oidValue);
-    }
-
     public static ECCurve GetExplicitCurveByOid(string oidValue)
     {
         if (oidValue == null)

@@ -47,9 +47,6 @@ internal static class CryptographyStrings
     public static string CryptographicInvalidIVSize
         => GetString("CryptographicInvalidIVSize");
 
-    public static string CryptographicInvalidOperation
-        => GetString("CryptographicInvalidOperation");
-
     public static string CryptographicInvalidPadding
         => GetString("CryptographicInvalidPadding");
 
@@ -57,21 +54,6 @@ internal static class CryptographyStrings
         => string.Format(
             GetString("CryptographicInvalidSignatureSize", nameof(size)),
             size);
-
-    public static string CryptographicMissingDomainParameters
-        => GetString("CryptographicMissingDomainParameters");
-
-    public static string CryptographicMissingECDsaKeyValue
-        => GetString("CryptographicMissingECDsaKeyValue");
-
-    public static string CryptographicMissingKey
-        => GetString("CryptographicMissingKey");
-
-    public static string CryptographicMissingOid
-        => GetString("CryptographicMissingOid");
-
-    public static string CryptographicMissingPublicKey
-        => GetString("CryptographicMissingPublicKey");
 
     public static string CryptographicSymmetricAlgorithmKeySet
         => GetString("CryptographicSymmetricAlgorithmKeySet");

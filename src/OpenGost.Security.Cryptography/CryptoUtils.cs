@@ -127,6 +127,21 @@ internal static class CryptoUtils
         }
     }
 
+    public static void ToBigEndian(BigInteger value, byte[] buffer, int offset, int count)
+    {
+        var right = offset + count;
+        for (var i = right - 1; i >= offset; i--)
+        {
+            if (value == BigInteger.Zero)
+                buffer[i] = 0;
+            else
+            {
+                buffer[i] = (byte)(value % 256);
+                value >>= 8;
+            }
+        }
+    }
+
     public static ECCurve Clone(this in ECCurve curve)
     {
         if (curve.IsNamed)
@@ -163,6 +178,24 @@ internal static class CryptoUtils
         {
             var temp = new byte[length + 1];
             Buffer.BlockCopy(value, 0, temp, 0, length);
+            value = temp;
+        }
+        return new BigInteger(value);
+    }
+
+    public static BigInteger UnsignedBigIntegerFromBigEndian(byte[] value)
+    {
+        var length = value.Length;
+        if (value[0] < 0x80)
+        {
+            value = (byte[])value.Clone();
+            Array.Reverse(value);
+        }
+        else
+        {
+            var temp = new byte[length + 1];
+            Buffer.BlockCopy(value, 0, temp, 1, length);
+            Array.Reverse(temp);
             value = temp;
         }
         return new BigInteger(value);

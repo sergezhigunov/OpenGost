@@ -53,17 +53,7 @@ public class GostECDsaManagedFacts
     }
 
     [Theory]
-    [InlineData("1.2.643.7.1.2.1.1.0")]
-    [InlineData("1.2.643.7.1.2.1.1.1")]
-    [InlineData("1.2.643.2.2.35.0")]
-    [InlineData("1.2.643.2.2.35.1")]
-    [InlineData("1.2.643.2.2.35.2")]
-    [InlineData("1.2.643.2.2.35.3")]
-    [InlineData("1.2.643.2.2.36.0")]
-    [InlineData("1.2.643.7.1.2.1.2.0")]
-    [InlineData("1.2.643.7.1.2.1.2.1")]
-    [InlineData("1.2.643.7.1.2.1.2.2")]
-    [InlineData("1.2.643.7.1.2.1.2.3")]
+    [MemberData(nameof(ECCurveFacts.SupportedOidValues), MemberType = typeof(ECCurveFacts))]
     public void SignHash_CreatesVerifiableSignature_IfParametersWasNotGenerated(string oidValue)
     {
         var namedCurve = ECCurve.CreateFromValue(oidValue);
@@ -336,7 +326,10 @@ public class GostECDsaManagedFacts
         const string methodPrefix = "urn:ietf:params:xml:ns:cpxmlsec:algorithms";
         var signatureMethod = $"{methodPrefix}:gostr34102012-gostr34112012-{algorithm.KeySize}";
         var digestMethod = $"{methodPrefix}:gostr34112012-{algorithm.KeySize}";
-        var document = new XmlDocument();
+        var document = new XmlDocument
+        {
+            PreserveWhitespace = true,
+        };
         document.LoadXml("<x/>");
         var root = document.DocumentElement!;
         var signedXml = new SignedXml(root)
@@ -364,12 +357,51 @@ public class GostECDsaManagedFacts
     }
 
     [Theory]
+    [MemberData(nameof(ECCurveFacts.SupportedOidValues), MemberType = typeof(ECCurveFacts))]
+    public void SignedXml_ComputeSignature_CreatesVerifiableSignature_IfParametersWasNotGenerated(string oidValue)
+    {
+        var namedCurve = ECCurve.CreateFromValue(oidValue);
+        using var algorithm = new GostECDsaManaged();
+        algorithm.GenerateKey(namedCurve);
+        const string methodPrefix = "urn:ietf:params:xml:ns:cpxmlsec:algorithms";
+        var signatureMethod = $"{methodPrefix}:gostr34102012-gostr34112012-{algorithm.KeySize}";
+        var digestMethod = $"{methodPrefix}:gostr34112012-{algorithm.KeySize}";
+        var document = new XmlDocument
+        {
+            PreserveWhitespace = true,
+        };
+        document.LoadXml("<x/>");
+        var root = document.DocumentElement!;
+        var signedXml = new SignedXml(root)
+        {
+            SigningKey = algorithm,
+        };
+        signedXml.SignedInfo.SignatureMethod = signatureMethod;
+        signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
+        var reference = new Reference
+        {
+            Uri = string.Empty,
+            DigestMethod = digestMethod,
+        };
+        reference.AddTransform(new XmlDsigEnvelopedSignatureTransform());
+        reference.AddTransform(new XmlDsigExcC14NTransform());
+        signedXml.AddReference(reference);
+
+        signedXml.ComputeSignature();
+
+        Assert.True(signedXml.CheckSignature(algorithm));
+    }
+
+    [Theory]
     [MemberData(nameof(XmlDSigTestCases))]
     public void SignedXml_CheckSignature_ReturnsTrue_IfSignatureValid(ECParameters parameters, string xml)
     {
         using var algorithm = new GostECDsaManaged();
         algorithm.ImportParameters(parameters);
-        var document = new XmlDocument();
+        var document = new XmlDocument
+        {
+            PreserveWhitespace = true,
+        };
         document.LoadXml(xml);
         var root = document.DocumentElement!;
         var signedXml = new SignedXml(root);
@@ -400,9 +432,9 @@ public class GostECDsaManagedFacts
             // Signature
             HexUtils.HexToByteArray(
                 // s
-                "409cbfc5f6148092df31b646f7d3d6bc4902a6985a233c65a14246ba646c4501" +
+                "01456c64ba4642a1653c235a98a60249bcd6d3f746b631df928014f6c5bf9c40" +
                 // r
-                "9304dc39fd43d03ab86727a45435057419a4ed6fd59ecd808214abf1d228aa41"),
+                "41aa28d2f1ab148280cd9ed56feda41974053554a42767b83ad043fd39dc0493"),
 
         };
         yield return new object[]
@@ -415,11 +447,11 @@ public class GostECDsaManagedFacts
             // Signature
             HexUtils.HexToByteArray(
                 // s
-                "4a5b3ee7bd53982ab99c91561feb6e6a40ce707fdf80605262f3c4e888e23c82" +
-                "f52fd533e9fb0b1c08bcad8a77565f32b6262d36a9e785658efe6f6994b38110" +
+                "1081b394696ffe8e6585e7a9362d26b6325f56778aadbc081c0bfbe933d52ff5" +
+                "823ce288e8c4f362526080df7f70ce406a6eeb1f56919cb92a9853bde73e5b4a" +
                 // r
-                "36ae73e14493e117335c9ccdcb3bc96002859906c997c19e1c0fb28684559254" +
-                "d3acfca8ee783c64c2dce02ec8a312e59e683c1e5e79dd231a0981a060fa862f"),
+                "2f86fa60a081091a23dd795e1e3c689ee512a3c82ee0dcc2643c78eea8fcacd3" +
+                "5492558486b20f1c9ec197c90699850260c93bcbcd9c5c3317e19344e173ae36"),
         };
     }
 
@@ -434,8 +466,8 @@ public class GostECDsaManagedFacts
             "hm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" /><Transform Algorithm=\"http://www.w3.org" +
             "/2001/10/xml-exc-c14n#\" /></Transforms><DigestMethod Algorithm=\"urn:ietf:params:xml:ns:cpxmlsec:algor" +
             "ithms:gostr34112012-256\" /><DigestValue>JNdsQmFfcmAYYn4g42yK6tw2Gj5Xyxx5ILX3YAlXxBE=</DigestValue></Re" +
-            "ference></SignedInfo><SignatureValue>PaW2aNI9T10zcFqL0JBaFIx9fqqk8yyAyh5rsHoOESnoszOqjQ6hVsAmoWsH/TMIOD" +
-            "GhHgvMBOJ6U86yq0eKbQ==</SignatureValue></Signature></x>",
+            "ference></SignedInfo><SignatureValue>duV5dfNuXJXX8b1I/fvWPJwpZBGA3ce9oqQelSBordwfprh3WdaeEXM6FJ4h9NpJxI" +
+            "nlktKpWJLLW2+mVB5EjQ==</SignatureValue></Signature></x>",
         };
         yield return new object[]
         {
@@ -446,9 +478,9 @@ public class GostECDsaManagedFacts
             "hm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" /><Transform Algorithm=\"http://www.w3.org" +
             "/2001/10/xml-exc-c14n#\" /></Transforms><DigestMethod Algorithm=\"urn:ietf:params:xml:ns:cpxmlsec:algor" +
             "ithms:gostr34112012-512\" /><DigestValue>SBO2V/znwwwIuO1uz0NpidHq5PWjW3IiAotyRuH2evF/wHWcLyFzZ7zI9KBgF3" +
-            "nrPF/NGk7RTdIwDVEbNd6YLg==</DigestValue></Reference></SignedInfo><SignatureValue>jI4sDu+baO3RAN9z1azJl9" +
-            "fK7FULxiHqgZf0/+CH27b6kPZ8yYGDGOlpkaHol6lB4DYNLk+qI/qubXkZ2rzQN9jwTX8a3zFvpo4QwtXYavBRuFu8HAntrysUQfhTB" +
-            "kB4jZsWI4IbAqGhK5T271xBb+LdWcbg7p+Ehmejr4VUYi0=</SignatureValue></Signature></x>",
+            "nrPF/NGk7RTdIwDVEbNd6YLg==</DigestValue></Reference></SignedInfo><SignatureValue>IG1vSunYd6O95lC/k/GTT4" +
+            "zgUhjF79bSqvPMTPU6aWQh1spqoaN6yjnHLu1UGY0BIJ4vEwvnCOKyhg9g9PoQoyb6Mjr86Cf5gs0LU56LyFeCDqb6eOtbEGdSo88EU" +
+            "sWg8oX62TlQ6ZwzicxUfgWCC4E61iV6tzPX3j0yc+a9ht4=</SignatureValue></Signature></x>",
         };
     }
 }

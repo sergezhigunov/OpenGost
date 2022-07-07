@@ -260,7 +260,8 @@ public class Streebog512Managed : Streebog512
 
         DoFinalTransform(_n, _sigma);
 
-        return _state;
+        HashValue = (byte[])_state.Clone();
+        return HashValue;
     }
 
     [SecuritySafeCritical]

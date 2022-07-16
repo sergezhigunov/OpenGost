@@ -6,6 +6,7 @@ using System.Xml;
 using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;
+using static OpenGostSignedXml;
 
 public class GostECDsaManagedFacts
 {
@@ -323,9 +324,9 @@ public class GostECDsaManagedFacts
     {
         using var algorithm = new GostECDsaManaged();
         algorithm.ImportParameters(parameters);
-        const string methodPrefix = "urn:ietf:params:xml:ns:cpxmlsec:algorithms";
-        var signatureMethod = $"{methodPrefix}:gostr34102012-gostr34112012-{algorithm.KeySize}";
-        var digestMethod = $"{methodPrefix}:gostr34112012-{algorithm.KeySize}";
+        var signatureMethod =
+            algorithm.KeySize == 512 ? XmlDsigGostECDsaStreebog512Url : XmlDsigGostECDsaStreebog256Url;
+        var digestMethod = algorithm.KeySize == 512 ? XmlDsigStreebog512Url : XmlDsigStreebog256Url;
         var document = new XmlDocument
         {
             PreserveWhitespace = true,
@@ -363,9 +364,9 @@ public class GostECDsaManagedFacts
         var namedCurve = ECCurve.CreateFromValue(oidValue);
         using var algorithm = new GostECDsaManaged();
         algorithm.GenerateKey(namedCurve);
-        const string methodPrefix = "urn:ietf:params:xml:ns:cpxmlsec:algorithms";
-        var signatureMethod = $"{methodPrefix}:gostr34102012-gostr34112012-{algorithm.KeySize}";
-        var digestMethod = $"{methodPrefix}:gostr34112012-{algorithm.KeySize}";
+        var signatureMethod =
+            algorithm.KeySize == 512 ? XmlDsigGostECDsaStreebog512Url : XmlDsigGostECDsaStreebog256Url;
+        var digestMethod = algorithm.KeySize == 512 ? XmlDsigStreebog512Url : XmlDsigStreebog256Url;
         var document = new XmlDocument
         {
             PreserveWhitespace = true,

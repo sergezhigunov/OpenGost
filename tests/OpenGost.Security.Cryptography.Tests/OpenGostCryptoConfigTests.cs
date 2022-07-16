@@ -26,10 +26,8 @@ public class OpenGostCryptoConfigTests
     [InlineData(typeof(CMACMagma), nameof(CMACMagma))]
     [InlineData(typeof(HMACStreebog256), nameof(HMACStreebog256))]
     [InlineData(typeof(HMACStreebog512), nameof(HMACStreebog512))]
-    [InlineData(typeof(GostECDsa256SignatureDescription),
-        "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102012-gostr34112012-256")]
-    [InlineData(typeof(GostECDsa512SignatureDescription),
-        "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102012-gostr34112012-512")]
+    [InlineData(typeof(GostECDsa256SignatureDescription), OpenGostSignedXml.XmlDsigGostECDsaStreebog256Url)]
+    [InlineData(typeof(GostECDsa512SignatureDescription), OpenGostSignedXml.XmlDsigGostECDsaStreebog512Url)]
     public void CryptoConfig_CreateFromName_ReturnsMapped(Type expectedType, string name)
     {
         var actual = CryptoConfig.CreateFromName(name);

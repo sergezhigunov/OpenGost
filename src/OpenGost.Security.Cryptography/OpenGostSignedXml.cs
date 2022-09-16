@@ -32,4 +32,16 @@ public static class OpenGostSignedXml
     /// for XML digital signatures.
     /// </summary>
     public const string XmlDsigStreebog512Url = $"{MethodPrefix}:{StreebogMethod}-512";
+
+    /// <summary>
+    /// Represents the Uniform Resource Identifier (URI) for the standard <see cref="HMACStreebog256"/> digest method
+    /// for XML digital signatures.
+    /// </summary>
+    public const string XmlDsigHMACStreebog256Url = $"{MethodPrefix}:hmac-{StreebogMethod}-256";
+
+    /// <summary>
+    /// Represents the Uniform Resource Identifier (URI) for the standard <see cref="HMACStreebog512"/> digest method
+    /// for XML digital signatures.
+    /// </summary>
+    public const string XmlDsigHMACStreebog512Url = $"{MethodPrefix}:hmac-{StreebogMethod}-512";
 }

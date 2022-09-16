@@ -1,10 +1,9 @@
 ﻿using System.Security;
 using System.Security.Cryptography;
-
 namespace OpenGost.Security.Cryptography;
-
 using static CryptoConfig;
 using static CryptoConstants;
+using static OpenGostSignedXml;
 
 /// <summary>
 /// Contains an entry point to configure cryptographic services.
@@ -36,12 +35,12 @@ public static class OpenGostCryptoConfig
         AddAlgorithm(typeof(CMACGrasshopper), CMACGrasshopperAlgorithmName);
         AddAlgorithm(typeof(MagmaManaged), MagmaAlgorithmName);
         AddAlgorithm(typeof(CMACMagma), CMACMagmaAlgorithmName);
-        AddAlgorithm(typeof(Streebog256Managed), Streebog256AlgorithmName, OpenGostSignedXml.XmlDsigStreebog256Url);
-        AddAlgorithm(typeof(HMACStreebog256), HMACStreebog256AlgorithmName);
-        AddAlgorithm(typeof(Streebog512Managed), Streebog512AlgorithmName, OpenGostSignedXml.XmlDsigStreebog512Url);
-        AddAlgorithm(typeof(HMACStreebog512), HMACStreebog512AlgorithmName);
-        AddAlgorithm(typeof(GostECDsa256SignatureDescription), OpenGostSignedXml.XmlDsigGostECDsaStreebog256Url);
-        AddAlgorithm(typeof(GostECDsa512SignatureDescription), OpenGostSignedXml.XmlDsigGostECDsaStreebog512Url);
+        AddAlgorithm(typeof(Streebog256Managed), Streebog256AlgorithmName, XmlDsigStreebog256Url);
+        AddAlgorithm(typeof(HMACStreebog256), HMACStreebog256AlgorithmName, XmlDsigHMACStreebog256Url);
+        AddAlgorithm(typeof(Streebog512Managed), Streebog512AlgorithmName, XmlDsigStreebog512Url);
+        AddAlgorithm(typeof(HMACStreebog512), HMACStreebog512AlgorithmName, XmlDsigHMACStreebog512Url);
+        AddAlgorithm(typeof(GostECDsa256SignatureDescription), XmlDsigGostECDsaStreebog256Url);
+        AddAlgorithm(typeof(GostECDsa512SignatureDescription), XmlDsigGostECDsaStreebog512Url);
         AddOID(Streebog256OidValue, Streebog256AlgorithmName);
         AddOID(Streebog512OidValue, Streebog512AlgorithmName);
     }

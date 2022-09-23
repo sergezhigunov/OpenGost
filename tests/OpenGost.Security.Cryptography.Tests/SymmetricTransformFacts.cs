@@ -125,7 +125,7 @@ public class SymmetricTransformFacts
             () => encryptor.TransformBlock(inputBuffer, inputOffset, inputCount, outputBuffer, -1));
         Assert.Throws<ArgumentOutOfRangeException>(nameof(inputCount),
             () => encryptor.TransformBlock(inputBuffer, inputOffset, 0, outputBuffer, outputOffset));
-        Assert.Throws<ArgumentException>(null,
+        Assert.Throws<ArgumentOutOfRangeException>(nameof(inputCount),
             () => encryptor.TransformBlock(inputBuffer, inputCount, inputCount, outputBuffer, outputOffset));
         Assert.Throws<CryptographicException>(
             () => encryptor.TransformBlock(inputBuffer, inputOffset, inputCount - 1, outputBuffer, outputOffset));
@@ -147,7 +147,7 @@ public class SymmetricTransformFacts
             () => encryptor.TransformFinalBlock(inputBuffer, -1, inputCount));
         Assert.Throws<ArgumentOutOfRangeException>(nameof(inputCount),
             () => encryptor.TransformFinalBlock(inputBuffer, inputOffset, -1));
-        Assert.Throws<ArgumentException>(null,
+        Assert.Throws<ArgumentOutOfRangeException>(nameof(inputCount),
             () => encryptor.TransformFinalBlock(inputBuffer, inputCount, inputCount));
         Assert.Throws<CryptographicException>(
             () => decryptor.TransformFinalBlock(inputBuffer, inputOffset, inputCount - 1));

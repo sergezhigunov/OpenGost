@@ -231,10 +231,10 @@ public abstract class SymmetricTransform : ICryptoTransform
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value of the <paramref name="outputOffset" /> parameter is negative.
     /// </exception>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="ArgumentOutOfRangeException">
     /// The length of the input buffer is less than the sum of the input offset and the input count.
     /// </exception>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="ArgumentOutOfRangeException">
     /// The value of the <paramref name="inputCount" /> parameter is greater
     /// than the length of the <paramref name="inputBuffer" /> parameter.
     /// </exception>
@@ -261,8 +261,8 @@ public abstract class SymmetricTransform : ICryptoTransform
         if (inputCount <= 0)
             throw new ArgumentOutOfRangeException(nameof(inputCount), inputCount,
                 CryptographyStrings.ArgumentOutOfRangeNeedPositiveNum);
-        if (inputBuffer.Length - inputCount < inputOffset)
-            throw new ArgumentException(CryptographyStrings.ArgumentInvalidOffLen);
+        if (inputCount > inputBuffer.Length - inputOffset)
+            throw new ArgumentOutOfRangeException(nameof(inputCount), CryptographyStrings.ArgumentInvalidOffLen);
         if (inputCount % InputBlockSize != 0)
             throw new CryptographicException(CryptographyStrings.CryptographicInvalidDataSize);
 
@@ -324,7 +324,7 @@ public abstract class SymmetricTransform : ICryptoTransform
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value of the <paramref name="inputCount" /> parameter is negative.
     /// </exception>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="ArgumentOutOfRangeException">
     /// The length of the input buffer is less than the sum of the input offset and the input count.
     /// </exception>
     /// <exception cref="CryptographicException">
@@ -343,8 +343,8 @@ public abstract class SymmetricTransform : ICryptoTransform
         if (inputCount < 0)
             throw new ArgumentOutOfRangeException(nameof(inputCount), inputOffset,
                 CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
-        if (inputBuffer.Length - inputCount < inputOffset)
-            throw new ArgumentException(CryptographyStrings.ArgumentInvalidOffLen);
+        if (inputCount > inputBuffer.Length - inputOffset)
+            throw new ArgumentOutOfRangeException(nameof(inputCount), CryptographyStrings.ArgumentInvalidOffLen);
 
         EnsureKeyExpanded();
 

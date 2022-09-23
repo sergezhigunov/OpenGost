@@ -46,8 +46,8 @@ public sealed class MagmaManagedTransform : SymmetricTransform
         int blockSize,
         CipherMode cipherMode,
         PaddingMode paddingMode,
-        SymmetricTransformMode transformMode)
-        : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
+        bool encrypting)
+        : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, encrypting)
     { }
 
     /// <summary>

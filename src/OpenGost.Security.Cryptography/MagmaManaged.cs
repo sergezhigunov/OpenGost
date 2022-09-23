@@ -54,7 +54,7 @@ public sealed class MagmaManaged : Magma
     /// </returns>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
     {
-        return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Decrypt);
+        return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, false);
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ public sealed class MagmaManaged : Magma
     /// </returns>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
     {
-        return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Encrypt);
+        return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, true);
     }
 
     /// <summary>

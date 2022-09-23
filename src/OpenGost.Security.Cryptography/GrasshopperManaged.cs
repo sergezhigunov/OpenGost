@@ -54,7 +54,7 @@ public sealed class GrasshopperManaged : Grasshopper
     /// A symmetric <see cref="Grasshopper"/> decryptor object.
     /// </returns>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
-        => new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Decrypt);
+        => new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, false);
 
     /// <summary>
     /// Creates a symmetric <see cref="Grasshopper"/> encryptor object
@@ -70,7 +70,7 @@ public sealed class GrasshopperManaged : Grasshopper
     /// A symmetric <see cref="Grasshopper"/> encryptor object.
     /// </returns>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
-        => new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, SymmetricTransformMode.Encrypt);
+        => new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, true);
 
     /// <summary>
     /// Generates a random initialization vector to be used for the algorithm.

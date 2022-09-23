@@ -19,8 +19,8 @@ public class SymmetricTransformFacts
 
     private static PaddingMode[] PaddingModes { get; }
         = { PaddingMode.None, PaddingMode.Zeros, PaddingMode.ANSIX923, PaddingMode.PKCS7, PaddingMode.ISO10126 };
-    private static SymmetricTransformMode[] TransformModes { get; }
-        = { SymmetricTransformMode.Encrypt, SymmetricTransformMode.Decrypt };
+    private static bool[] Encrypting { get; }
+        = { true, false };
 
     private static byte[][] BlockSizeMultiplePlainTexts { get; } =
     {
@@ -56,7 +56,7 @@ public class SymmetricTransformFacts
                 blockSize,
                 CipherMode.ECB,
                 PaddingMode.None,
-                SymmetricTransformMode.Encrypt));
+                true));
 
         Assert.Throws<ArgumentOutOfRangeException>(nameof(blockSize),
             () => new SimpleSymmetricTransform(
@@ -65,7 +65,7 @@ public class SymmetricTransformFacts
                 0,
                 CipherMode.ECB,
                 PaddingMode.None,
-                SymmetricTransformMode.Encrypt));
+                true));
 
         Assert.Throws<ArgumentNullException>(nameof(iv),
             () => new SimpleSymmetricTransform(
@@ -74,7 +74,7 @@ public class SymmetricTransformFacts
                 blockSize,
                 CipherMode.CBC,
                 PaddingMode.None,
-                SymmetricTransformMode.Encrypt));
+                true));
 
         Assert.Throws<ArgumentNullException>(nameof(iv),
             () => new SimpleSymmetricTransform(
@@ -83,7 +83,7 @@ public class SymmetricTransformFacts
                 blockSize,
                 CipherMode.CFB,
                 PaddingMode.None,
-                SymmetricTransformMode.Encrypt));
+                true));
 
         Assert.Throws<ArgumentNullException>(nameof(iv),
             () => new SimpleSymmetricTransform(
@@ -92,7 +92,7 @@ public class SymmetricTransformFacts
                 blockSize,
                 CipherMode.OFB,
                 PaddingMode.None,
-                SymmetricTransformMode.Encrypt));
+                true));
 
         Assert.Throws<CryptographicException>(
             () => new SimpleSymmetricTransform(
@@ -101,7 +101,7 @@ public class SymmetricTransformFacts
                 blockSize,
                 CipherMode.CTS,
                 PaddingMode.None,
-                SymmetricTransformMode.Encrypt));
+                true));
     }
 
     [Fact]
@@ -158,7 +158,7 @@ public class SymmetricTransformFacts
     {
         var crossPaddingTransformParameters =
             from p in PaddingModes
-            from t in TransformModes
+            from t in Encrypting
             select new { PaddingMode = p, TransformMode = t };
 
         var allSupportedParameters =
@@ -459,10 +459,10 @@ public class SymmetricTransformFacts
         }
 
         public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
-            => CreateTransform(rgbKey, rgbIV, SymmetricTransformMode.Decrypt);
+            => CreateTransform(rgbKey, rgbIV, false);
 
         public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
-            => CreateTransform(rgbKey, rgbIV, SymmetricTransformMode.Encrypt);
+            => CreateTransform(rgbKey, rgbIV, true);
 
         public override void GenerateIV()
         {
@@ -474,8 +474,8 @@ public class SymmetricTransformFacts
             KeyValue = CryptoUtils.GenerateRandomBytes(KeySizeValue / 8);
         }
 
-        private ICryptoTransform CreateTransform(byte[] rgbKey, byte[]? rgbIV, SymmetricTransformMode transformMode)
-            => new SimpleSymmetricTransform(rgbKey, rgbIV, BlockSizeValue, ModeValue, PaddingValue, transformMode);
+        private ICryptoTransform CreateTransform(byte[] rgbKey, byte[]? rgbIV, bool encrypting)
+            => new SimpleSymmetricTransform(rgbKey, rgbIV, BlockSizeValue, ModeValue, PaddingValue, encrypting);
     }
 
     private class SimpleSymmetricTransform : SymmetricTransform
@@ -488,8 +488,8 @@ public class SymmetricTransformFacts
             int blockSize,
             CipherMode cipherMode,
             PaddingMode paddingMode,
-            SymmetricTransformMode transformMode)
-            : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, transformMode)
+            bool encrypting)
+            : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, encrypting)
         { }
 
         private bool GenerateKeyExpansionCalled { get; set; }

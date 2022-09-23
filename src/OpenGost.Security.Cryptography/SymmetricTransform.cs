@@ -14,7 +14,7 @@ namespace OpenGost.Security.Cryptography;
 [SuppressMessage("Security", "CA5358")]
 public abstract class SymmetricTransform : ICryptoTransform
 {
-    private readonly SymmetricTransformMode _transformMode;
+    private readonly bool _encrypting;
     private readonly CipherMode _cipherMode;
     private readonly PaddingMode _paddingMode;
 
@@ -77,7 +77,7 @@ public abstract class SymmetricTransform : ICryptoTransform
     /// <param name="paddingMode">
     /// The padding mode used in the symmetric transform.
     /// </param>
-    /// <param name="transformMode">
+    /// <param name="encrypting">
     /// The direction mode of the symmetric transform.
     /// </param>
     /// <exception cref="ArgumentNullException">
@@ -99,7 +99,7 @@ public abstract class SymmetricTransform : ICryptoTransform
         int blockSize,
         CipherMode cipherMode,
         PaddingMode paddingMode,
-        SymmetricTransformMode transformMode)
+        bool encrypting)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
@@ -107,7 +107,7 @@ public abstract class SymmetricTransform : ICryptoTransform
             throw new ArgumentOutOfRangeException(nameof(blockSize),
                 CryptographyStrings.ArgumentOutOfRangeNeedPositiveNum);
 
-        _transformMode = transformMode;
+        _encrypting = encrypting;
         InputBlockSize = blockSize / 8;
         _cipherMode = cipherMode;
         _paddingMode = paddingMode;
@@ -268,7 +268,7 @@ public abstract class SymmetricTransform : ICryptoTransform
 
         EnsureKeyExpanded();
 
-        if (_transformMode == SymmetricTransformMode.Encrypt)
+        if (_encrypting)
             return EncryptData(inputBuffer, inputOffset, inputCount, ref outputBuffer!, outputOffset, false);
         else
         {
@@ -349,7 +349,7 @@ public abstract class SymmetricTransform : ICryptoTransform
         EnsureKeyExpanded();
 
         byte[] transformedBytes = null!;
-        if (_transformMode == SymmetricTransformMode.Encrypt)
+        if (_encrypting)
             EncryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes!, 0, true);
         else
         {

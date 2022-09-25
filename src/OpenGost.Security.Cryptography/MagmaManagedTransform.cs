@@ -5,12 +5,7 @@ using System.Security.Cryptography;
 
 namespace OpenGost.Security.Cryptography;
 
-/// <summary>
-/// Performs a cryptographic transformation of data using the <see cref="Magma"/> algorithm.
-/// This class cannot be inherited.
-/// </summary>
-[ComVisible(true)]
-public sealed class MagmaManagedTransform : SymmetricTransform
+internal sealed class MagmaManagedTransform : SymmetricTransform
 {
     #region Constants
 
@@ -50,12 +45,6 @@ public sealed class MagmaManagedTransform : SymmetricTransform
         : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, encrypting)
     { }
 
-    /// <summary>
-    /// Initializes the private key expansion.
-    /// </summary>
-    /// <param name="key">
-    /// The private key to be used for the key expansion.
-    /// </param>
     [SecuritySafeCritical]
     protected override unsafe void GenerateKeyExpansion(byte[] key)
     {
@@ -66,21 +55,6 @@ public sealed class MagmaManagedTransform : SymmetricTransform
             CryptoUtils.UInt32FromBigEndian(keyExpansion, 8, keyPtr);
     }
 
-    /// <summary>
-    /// Implements the block cipher encryption function of <see cref="MagmaManaged"/> algorithm.
-    /// </summary>
-    /// <param name="inputBuffer">
-    /// The input to perform the operation on.
-    /// </param>
-    /// <param name="inputOffset">
-    /// The offset into the input byte array to begin using data from.
-    /// </param>
-    /// <param name="outputBuffer">
-    /// The output to write the data to.
-    /// </param>
-    /// <param name="outputOffset">
-    /// The offset into the output byte array to begin writing data to.
-    /// </param>
     [SecuritySafeCritical]
     protected override unsafe void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
     {
@@ -97,21 +71,6 @@ public sealed class MagmaManagedTransform : SymmetricTransform
         FlushRegisters(outputBuffer, outputOffset, a0, a1);
     }
 
-    /// <summary>
-    /// Implements the block cipher decryption function of <see cref="MagmaManaged"/> algorithm.
-    /// </summary>
-    /// <param name="inputBuffer">
-    /// The input to perform the operation on.
-    /// </param>
-    /// <param name="inputOffset">
-    /// The offset into the input byte array to begin using data from.
-    /// </param>
-    /// <param name="outputBuffer">
-    /// The output to write the data to.
-    /// </param>
-    /// <param name="outputOffset">
-    /// The offset into the output byte array to begin writing data to.
-    /// </param>
     [SecuritySafeCritical]
     protected override unsafe void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
     {
@@ -154,14 +113,6 @@ public sealed class MagmaManagedTransform : SymmetricTransform
         }
     }
 
-    /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="MagmaManagedTransform" />
-    /// class and optionally releases the managed resources.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources;
-    /// <see langword="false"/> to release only unmanaged resources.
-    /// </param>
     protected override void Dispose(bool disposing)
     {
         if (disposing)

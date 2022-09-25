@@ -6,12 +6,7 @@ using System.Security.Cryptography;
 
 namespace OpenGost.Security.Cryptography;
 
-/// <summary>
-/// Performs a cryptographic transformation of data using the <see cref="Grasshopper"/>
-/// algorithm. This class cannot be inherited.
-/// </summary>
-[ComVisible(true)]
-public sealed class GrasshopperManagedTransform : SymmetricTransform
+internal sealed class GrasshopperManagedTransform : SymmetricTransform
 {
     #region Constants
 
@@ -84,12 +79,6 @@ public sealed class GrasshopperManagedTransform : SymmetricTransform
         : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, encrypting)
     { }
 
-    /// <summary>
-    /// Initializes the private key expansion.
-    /// </summary>
-    /// <param name="key">
-    /// The private key to be used for the key expansion.
-    /// </param>
     [SecuritySafeCritical]
     protected override void GenerateKeyExpansion(byte[] key)
     {
@@ -138,14 +127,6 @@ public sealed class GrasshopperManagedTransform : SymmetricTransform
         }
     }
 
-    /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="GrasshopperManagedTransform" />
-    /// class and optionally releases the managed resources.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources;
-    /// <see langword="false"/> to release only unmanaged resources.
-    /// </param>
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -156,21 +137,6 @@ public sealed class GrasshopperManagedTransform : SymmetricTransform
         base.Dispose(disposing);
     }
 
-    /// <summary>
-    /// Implements the block cipher encryption function of <see cref="GrasshopperManaged"/> algorithm.
-    /// </summary>
-    /// <param name="inputBuffer">
-    /// The input to perform the operation on.
-    /// </param>
-    /// <param name="inputOffset">
-    /// The offset into the input byte array to begin using data from.
-    /// </param>
-    /// <param name="outputBuffer">
-    /// The output to write the data to.
-    /// </param>
-    /// <param name="outputOffset">
-    /// The offset into the output byte array to begin writing data to.
-    /// </param>
     [SecuritySafeCritical]
     protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
     {
@@ -181,21 +147,6 @@ public sealed class GrasshopperManagedTransform : SymmetricTransform
         }
     }
 
-    /// <summary>
-    /// Implements the block cipher decryption function of <see cref="GrasshopperManaged"/> algorithm.
-    /// </summary>
-    /// <param name="inputBuffer">
-    /// The input to perform the operation on.
-    /// </param>
-    /// <param name="inputOffset">
-    /// The offset into the input byte array to begin using data from.
-    /// </param>
-    /// <param name="outputBuffer">
-    /// The output to write the data to.
-    /// </param>
-    /// <param name="outputOffset">
-    /// The offset into the output byte array to begin writing data to.
-    /// </param>
     [SecuritySafeCritical]
     protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
     {

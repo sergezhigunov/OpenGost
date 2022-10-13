@@ -17,6 +17,16 @@ public class GostECDsaCertificateExtensionsFacts
             () => certificate.GetGostECDsaPublicKey());
     }
 
+    [Fact]
+    public void GetGostECDsaPublicKey_IfRSACertificate_ReturnsNull()
+    {
+        using var certificate = GetCertificate("rfc5280_cert1");
+
+        var publicKey = certificate.GetGostECDsaPublicKey();
+
+        Assert.Null(publicKey);
+    }
+
     [Theory]
     [MemberData(nameof(TestCases))]
     public void GetGostECDsaPublicKey_ReturnsPublicKey(
@@ -26,9 +36,7 @@ public class GostECDsaCertificateExtensionsFacts
         string publicKeyYHexData,
         string privateKeyHexData)
     {
-        using var certificate = new X509Certificate2(
-            ResourceUtils.GetBinaryResource(
-                $"OpenGost.Security.Cryptography.Tests.Resources.{certificateName}.cer"));
+        using var certificate = GetCertificate(certificateName);
         var point = new ECPoint
         {
             X = HexUtils.HexToByteArray(publicKeyXHexData),
@@ -45,6 +53,13 @@ public class GostECDsaCertificateExtensionsFacts
         Assert.Equal(point.X, parameters.Q.X);
         Assert.Equal(point.Y, parameters.Q.Y);
         Assert.Null(parameters.D);
+    }
+
+    private static X509Certificate2 GetCertificate(string certificateName)
+    {
+        return new X509Certificate2(
+            ResourceUtils.GetBinaryResource(
+                $"OpenGost.Security.Cryptography.Tests.Resources.{certificateName}.cer"));
     }
 
     public static IEnumerable<object[]> TestCases()

@@ -39,23 +39,16 @@ public static class GostECDsaCertificateExtensions
             return null;
 
         var publicKey = certificate.PublicKey;
-        GostECDsa? result = publicKey.EncodedKeyValue.Oid.Value switch
+        var parameters = ReadParameters(publicKey);
+        var result = GostECDsa.Create();
+        try
         {
-            GostECDsa256OidValue or GostECDsa512OidValue => GostECDsa.Create(),
-            _ => null
-        };
-        if (result is not null)
+            result.ImportParameters(parameters);
+        }
+        catch
         {
-            try
-            {
-                var parameters = ReadParameters(publicKey);
-                result.ImportParameters(parameters);
-            }
-            catch
-            {
-                result.Dispose();
-                throw;
-            }
+            result.Dispose();
+            throw;
         }
         return result;
     }

@@ -66,6 +66,22 @@ public class HMACStreebog512 : HMAC
     }
 
     /// <summary>
+    /// Releases unmanaged resources used by the <see cref="HMACStreebog512"/> object
+    /// and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true"/> to release both managed and unmanaged resources;
+    /// <see langword="false"/> to release only unmanaged resources.
+    /// </param>
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+            _hmacCommon.Dispose();
+
+        base.Dispose(disposing);
+    }
+
+    /// <summary>
     /// Routes data written to the object into the <see cref="HMACStreebog512"/> hash
     /// algorithm for computing the hash.
     /// </summary>

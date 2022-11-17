@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿using System.Text;
 using BenchmarkDotNet.Attributes;
 
 namespace OpenGost.Security.Cryptography.Benchmarks;

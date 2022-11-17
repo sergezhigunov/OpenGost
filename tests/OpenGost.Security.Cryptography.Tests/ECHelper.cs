@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
 using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;

@@ -1,5 +1,4 @@
 ﻿using System.Security;
-using System.Security.Cryptography;
 namespace OpenGost.Security.Cryptography;
 using static CryptoConfig;
 using static CryptoConstants;

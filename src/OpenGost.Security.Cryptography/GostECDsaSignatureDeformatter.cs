@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace OpenGost.Security.Cryptography;
+﻿namespace OpenGost.Security.Cryptography;
 
 internal class GostECDsaSignatureDeformatter : AsymmetricSignatureDeformatter
 {

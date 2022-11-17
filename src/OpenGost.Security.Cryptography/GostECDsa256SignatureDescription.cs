@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace OpenGost.Security.Cryptography;
+﻿namespace OpenGost.Security.Cryptography;
 
 /// <summary>
 /// Contains information about the properties of a 256-bit <see cref="GostECDsa"/> digital signature.

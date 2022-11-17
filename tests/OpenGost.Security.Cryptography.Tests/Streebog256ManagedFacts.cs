@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace OpenGost.Security.Cryptography.Tests;
+﻿namespace OpenGost.Security.Cryptography.Tests;
 
 public class Streebog256ManagedFacts : HashAlgorithmTest<Streebog256Managed>
 {

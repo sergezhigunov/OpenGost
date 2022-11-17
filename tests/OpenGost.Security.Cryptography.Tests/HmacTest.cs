@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace OpenGost.Security.Cryptography.Tests;
+﻿namespace OpenGost.Security.Cryptography.Tests;
 
 public abstract class HmacTest<T>
     where T : HMAC, new()

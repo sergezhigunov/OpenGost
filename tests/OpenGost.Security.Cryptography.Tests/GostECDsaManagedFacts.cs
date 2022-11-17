@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography.Xml;
 using System.Xml;
-using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;
 using static OpenGostSignedXml;

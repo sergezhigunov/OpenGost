@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography.X509Certificates;
-using Xunit;
 
 namespace OpenGost.Security.Cryptography.Tests;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography;

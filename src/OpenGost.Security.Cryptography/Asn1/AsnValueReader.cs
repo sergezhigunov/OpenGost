@@ -1,5 +1,4 @@
-﻿using System;
-using System.Formats.Asn1;
+﻿using System.Formats.Asn1;
 using System.Security;
 
 namespace OpenGost.Security.Cryptography.Asn1;

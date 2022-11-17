@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography;
@@ -21,7 +20,6 @@ public sealed class GrasshopperManaged : Grasshopper
     /// <see cref="CipherMode.CBC"/>, <see cref="CipherMode.ECB"/>,
     /// <see cref="CipherMode.OFB"/>, <see cref="CipherMode.CFB"/>.
     /// </exception>
-    [SuppressMessage("Security", "CA5358")]
     public override CipherMode Mode
     {
         set

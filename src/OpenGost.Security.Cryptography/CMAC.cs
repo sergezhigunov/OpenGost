@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography;
@@ -87,7 +86,6 @@ public abstract class CMAC : KeyedHashAlgorithm
     /// <exception cref="CryptographicException">
     /// Specified symmetric block size is not valid for this algorithm.
     /// </exception>
-    [SuppressMessage("Maintainability", "CA1508")]
     public string SymmetricAlgorithmName
     {
         get => _symmetricAlgorithmName;

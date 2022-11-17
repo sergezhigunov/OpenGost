@@ -79,10 +79,8 @@ internal sealed class HMACCommon : IDisposable
     {
         if (disposing)
         {
-            if (_hash1 != null)
-                _hash1.Dispose();
-            if (_hash2 != null)
-                _hash2.Dispose();
+            _hash1?.Dispose();
+            _hash2?.Dispose();
             CryptoUtils.EraseData(ref _inner!);
             CryptoUtils.EraseData(ref _outer!);
         }
@@ -90,10 +88,8 @@ internal sealed class HMACCommon : IDisposable
 
     private void UpdateIOPadBuffers()
     {
-        if (_inner == null)
-            _inner = new byte[_blockSize];
-        if (_outer == null)
-            _outer = new byte[_blockSize];
+        _inner ??= new byte[_blockSize];
+        _outer ??= new byte[_blockSize];
 
         int i;
         for (i = 0; i < _blockSize; i++)

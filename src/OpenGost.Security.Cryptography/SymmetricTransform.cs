@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using OpenGost.Security.Cryptography.Properties;
+﻿using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography;
 
-[SuppressMessage("Security", "CA5358")]
 internal abstract class SymmetricTransform : ICryptoTransform
 {
     private readonly bool _encrypting;

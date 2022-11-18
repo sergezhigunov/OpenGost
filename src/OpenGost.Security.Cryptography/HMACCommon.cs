@@ -12,15 +12,13 @@ internal sealed class HMACCommon : IDisposable
     private bool _hashing;
 
     public byte[] ActualKey { get; private set; } = null!;
-    public int HashSize => _hash1.HashSize;
-    public string HashName { get; }
+    public int HashSizeInBits => _hash1.HashSize;
 
-    public HMACCommon(string hashName, byte[] key, int blockSize)
+    public HMACCommon(string hashAlgorithmId, byte[] key, int blockSize)
     {
-        HashName = hashName;
         _blockSize = blockSize;
-        _hash1 = HashAlgorithm.Create(hashName);
-        _hash2 = HashAlgorithm.Create(hashName);
+        _hash1 = HashAlgorithm.Create(hashAlgorithmId);
+        _hash2 = HashAlgorithm.Create(hashAlgorithmId);
         ChangeKey(key);
     }
 

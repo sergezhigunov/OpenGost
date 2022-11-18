@@ -56,11 +56,11 @@ public class HMACStreebog512 : HMAC
         if (key is null)
             throw new ArgumentNullException(nameof(key));
 
+        HashName = CryptoConstants.Streebog512AlgorithmName;
         _hmacCommon = new HMACCommon(CryptoConstants.Streebog512AlgorithmName, key, BlockSize);
         base.Key = _hmacCommon.ActualKey;
-        HashName = _hmacCommon.HashName;
         BlockSizeValue = BlockSize;
-        HashSizeValue = _hmacCommon.HashSize;
+        HashSizeValue = _hmacCommon.HashSizeInBits;
     }
 
     /// <summary>

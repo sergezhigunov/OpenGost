@@ -3,11 +3,59 @@
 public abstract class HmacTest<T>
     where T : HMAC, new()
 {
-    protected abstract int BlockSize { get; }
+    protected virtual int BlockSize => 64;
 
     protected abstract HashAlgorithm CreateHashAlgorithm();
 
-    protected void VerifyHmac(string dataHex, string keyHex, string digestHex)
+    protected abstract T CreateHMAC(byte[] key);
+
+    [Fact]
+    public void Constructor_WithoutParameters_InitializesInstance()
+    {
+        var hmac = new T();
+
+        var key = hmac.Key;
+        Assert.Contains(key, x => x != 0);
+        Assert.Equal(BlockSize, key.Length);
+
+        // make sure the getter returns different objects each time
+        Assert.NotSame(key, hmac.Key);
+        Assert.NotSame(hmac.Key, hmac.Key);
+
+        // make sure the setter didn't cache the exact object we passed in
+        key[0] = (byte)(key[0] + 1);
+        Assert.NotEqual<byte>(key, hmac.Key);
+    }
+
+    [Fact]
+    public void Constructor_WhenKeyIsNull_ThrowsArgumentNullException()
+    {
+        var key = default(byte[])!;
+
+        Assert.Throws<ArgumentNullException>(nameof(key), () => CreateHMAC(key));
+    }
+
+    [Fact]
+    public void Key_WhenSetsNull_ThrowsArgumentNullException()
+    {
+        using var hmac = new T();
+        var value = default(byte[])!;
+
+        Assert.Throws<ArgumentNullException>(nameof(value), () => hmac.Key = value);
+    }
+
+    [Fact]
+    public void Key_WhenSetsAfterStart_ThrowsCryptographicException()
+    {
+        using var hmac = new T();
+        var value = hmac.Key;
+        var input = CryptoUtils.GenerateRandomBytes(1);
+        hmac.TransformBlock(input, 0, input.Length, input, 0);
+
+        Assert.Throws<CryptographicException>(() => hmac.Key = value);
+    }
+
+    public virtual void VerifyHmac(string dataHex, string keyHex, string digestHex)
     {
         var digestBytes = digestHex.HexToByteArray();
         byte[] computedDigest;
@@ -33,7 +81,8 @@ public abstract class HmacTest<T>
         Assert.Equal(digestBytes, computedDigest);
     }
 
-    public virtual void VerifyHmacRfc2104()
+    [Fact]
+    public void VerifyHmacRfc2104()
     {
         // Ensure that keys shorter than the threshold don't get altered.
         using (var hmac = new T())

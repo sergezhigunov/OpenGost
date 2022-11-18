@@ -38,7 +38,7 @@ public class HMACStreebog256 : HMAC
     /// class with a randomly generated key.
     /// </summary>
     public HMACStreebog256()
-        : this(CryptoUtils.GenerateRandomBytes(64))
+        : this(CryptoUtils.GenerateRandomBytes(BlockSize))
     { }
 
     /// <summary>

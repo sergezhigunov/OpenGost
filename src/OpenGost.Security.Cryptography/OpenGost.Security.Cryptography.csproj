@@ -22,7 +22,7 @@ This is the first public release.
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Formats.Asn1" Version="7.0.0" />
+    <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>

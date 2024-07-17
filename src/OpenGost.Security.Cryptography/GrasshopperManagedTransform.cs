@@ -84,8 +84,8 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
                 new byte[16], new byte[16],
                 null!, null!, null!, null!, null!, null!, null!, null!
         };
-        Buffer.BlockCopy(key, 0, _keyExpansion[0], 0, 16);
-        Buffer.BlockCopy(key, 16, _keyExpansion[1], 0, 16);
+        Buffer.BlockCopy(key, 0, _keyExpansion[0]!, 0, 16);
+        Buffer.BlockCopy(key, 16, _keyExpansion[1]!, 0, 16);
 
         unsafe
         {

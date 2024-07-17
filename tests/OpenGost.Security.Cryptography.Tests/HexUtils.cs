@@ -10,7 +10,7 @@ internal static class HexUtils
 
     public static byte[] HexToByteArray(this string hexString)
     {
-        if (hexString == null)
+        if (hexString is null)
             throw new ArgumentNullException(nameof(hexString));
         var hexStringLength = hexString.Length;
         if (hexStringLength % 2 != 0)
@@ -35,7 +35,7 @@ internal static class HexUtils
 
     public static string ToHexString(this byte[] bytes)
     {
-        if (bytes == null)
+        if (bytes is null)
             throw new ArgumentNullException(nameof(bytes));
 
         var builder = new StringBuilder(bytes.Length * 2);
@@ -53,9 +53,9 @@ internal static class HexUtils
         if (character >= '0' && character <= '9')
             return (byte)(character - '0');
         else if (character >= 'a' && character <= 'f')
-            return (byte)((character - 'a') + 10);
+            return (byte)(character - 'a' + 10);
         else if (character >= 'A' && character <= 'F')
-            return (byte)((character - 'A') + 10);
+            return (byte)(character - 'A' + 10);
         throw new FormatException($"Invalid character '{character}'.");
     }
 

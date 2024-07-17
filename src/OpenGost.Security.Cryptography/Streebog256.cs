@@ -39,7 +39,7 @@ public abstract class Streebog256 : HashAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new Streebog256 Create(string algorithmName)
-        => (Streebog256)CryptoConfig.CreateFromName(algorithmName);
+        => (Streebog256)CryptoConfig.CreateFromName(algorithmName)!;
 
     #endregion
 }

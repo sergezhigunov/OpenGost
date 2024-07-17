@@ -69,11 +69,11 @@ public sealed class GostECDsaManaged : GostECDsa
         out byte[] privateKey)
     {
         var explicitCurve = GetExplicitCurve(curve);
-        int size = explicitCurve.Prime.Length;
+        int size = explicitCurve.Prime!.Length;
         var prime = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Prime);
-        var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order) /
-            CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor);
-        var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A);
+        var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order!) /
+            CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor!);
+        var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A!);
         privateKey = CryptoUtils.GenerateRandomBytes(size);
         var key = CryptoUtils.UnsignedBigIntegerFromLittleEndian(privateKey) % subgroupOrder;
         CryptoUtils.ToLittleEndian(key, privateKey, 0, size);
@@ -126,7 +126,7 @@ public sealed class GostECDsaManaged : GostECDsa
         ThrowIfDisposed();
 
         parameters.Validate();
-        KeySize = parameters.Q.X.Length * 8;
+        KeySize = parameters.Q.X!.Length * 8;
 
         _curve = parameters.Curve.Clone();
         _publicKey = parameters.Q.Clone();
@@ -151,8 +151,12 @@ public sealed class GostECDsaManaged : GostECDsa
     /// </exception>
     public override byte[] SignHash(byte[] hash)
     {
-        if (hash == null)
-            throw new ArgumentNullException(nameof(hash));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(hash);
+#else
+            if (hash is null)
+                throw new ArgumentNullException(nameof(hash));
+#endif
 
         ThrowIfDisposed();
 
@@ -171,13 +175,13 @@ public sealed class GostECDsaManaged : GostECDsa
         in byte[] privateKey)
     {
         var explicitCurve = GetExplicitCurve(curve);
-        var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order) /
-            CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor);
+        var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order!) /
+            CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor!);
         var e = CryptoUtils.UnsignedBigIntegerFromLittleEndian(hash) % subgroupOrder;
         if (e == BigInteger.Zero)
             e = BigInteger.One;
-        var prime = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Prime);
-        var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A);
+        var prime = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Prime!);
+        var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A!);
         var d = CryptoUtils.UnsignedBigIntegerFromLittleEndian(privateKey) % subgroupOrder;
         int size = hash.Length;
         var buffer = new byte[size];
@@ -228,10 +232,15 @@ public sealed class GostECDsaManaged : GostECDsa
     /// </exception>
     public override bool VerifyHash(byte[] hash, byte[] signature)
     {
-        if (hash == null)
-            throw new ArgumentNullException(nameof(hash));
-        if (signature == null)
-            throw new ArgumentNullException(nameof(signature));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(hash);
+        ArgumentNullException.ThrowIfNull(signature);
+#else
+            if (hash is null)
+                throw new ArgumentNullException(nameof(hash));
+            if (signature is null)
+                throw new ArgumentNullException(nameof(signature));
+#endif
 
         ThrowIfDisposed();
 
@@ -257,8 +266,8 @@ public sealed class GostECDsaManaged : GostECDsa
         in ECPoint publicKey)
     {
         var explicitCurve = GetExplicitCurve(curve);
-        var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order) /
-            CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor);
+        var subgroupOrder = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Order!) /
+            CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Cofactor!);
         int size = hash.Length;
         var array = new byte[size];
         Buffer.BlockCopy(signature, 0, array, 0, size);
@@ -275,8 +284,8 @@ public sealed class GostECDsaManaged : GostECDsa
         var v = BigInteger.ModPow(e, subgroupOrder - 2, subgroupOrder) % subgroupOrder;
         var z1 = s * v % subgroupOrder;
         var z2 = (subgroupOrder - r) * v % subgroupOrder;
-        var prime = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Prime);
-        var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A);
+        var prime = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.Prime!);
+        var a = CryptoUtils.UnsignedBigIntegerFromLittleEndian(explicitCurve.A!);
         var c = BigIntegerPoint.Add(
             BigIntegerPoint.Multiply(new BigIntegerPoint(explicitCurve.G), z1, prime, a),
             BigIntegerPoint.Multiply(new BigIntegerPoint(publicKey), z2, prime, a),
@@ -322,15 +331,19 @@ public sealed class GostECDsaManaged : GostECDsa
         return curve.CurveType switch
         {
             ECCurve.ECCurveType.PrimeShortWeierstrass => curve,
-            ECCurve.ECCurveType.Named => ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value),
+            ECCurve.ECCurveType.Named => ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value!),
             _ => throw new NotImplementedException(),
         };
     }
 
     private void ThrowIfDisposed()
     {
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(_disposed, this);
+#else
         if (_disposed)
             throw new ObjectDisposedException(GetType().FullName);
+#endif
     }
 
     private static ECCurve GetDefaultCurve(int keySize)

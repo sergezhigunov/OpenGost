@@ -8,7 +8,7 @@ namespace OpenGost.Security.Cryptography;
 [ComVisible(true)]
 public abstract class GostECDsa : ECDsa
 {
-    private static readonly KeySizes[] _legalKeySizes = { new KeySizes(256, 512, 256) };
+    private static readonly KeySizes[] _legalKeySizes = { new(256, 512, 256) };
 
     /// <summary>
     /// Gets the name of the signature algorithm.
@@ -50,7 +50,7 @@ public abstract class GostECDsa : ECDsa
     /// </returns>
     [ComVisible(false)]
     public static new GostECDsa Create(string algorithmName)
-        => (GostECDsa)CryptoConfig.CreateFromName(algorithmName);
+        => (GostECDsa)CryptoConfig.CreateFromName(algorithmName)!;
 
     #endregion
 }

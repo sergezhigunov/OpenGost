@@ -58,8 +58,12 @@ public abstract class CMAC : KeyedHashAlgorithm
         get => (byte[])KeyValue.Clone();
         set
         {
-            if (value == null)
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(value);
+#else
+            if (value is null)
                 throw new ArgumentNullException(nameof(value));
+#endif
             if (_hashing)
                 throw new CryptographicException(CryptographyStrings.CryptographicSymmetricAlgorithmKeySet);
 
@@ -98,18 +102,13 @@ public abstract class CMAC : KeyedHashAlgorithm
             if (_hashing)
                 throw new CryptographicException(CryptographyStrings.CryptographicSymmetricAlgorithmNameSet);
 
-            _symmetricAlgorithm = SymmetricAlgorithm.Create(value);
-
-            if (_symmetricAlgorithm == null)
+            _symmetricAlgorithm = SymmetricAlgorithm.Create(value) ??
                 throw new CryptographicException(
                     CryptographyStrings.CryptographicUnknownSymmetricAlgorithm(value));
 
             _symmetricAlgorithmName = value;
-
             HashSizeValue = _symmetricAlgorithm.BlockSize;
-
             _irreduciblePolynomial = GetIrreduciblePolynomial(HashSizeValue);
-
             _bytesPerBlock = HashSizeValue / 8;
 
             // By definition, the symmetric algorithm takes an IV=0
@@ -266,13 +265,13 @@ public abstract class CMAC : KeyedHashAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new CMAC Create(string algorithmName)
-        => (CMAC)CryptoConfig.CreateFromName(algorithmName);
+        => (CMAC)CryptoConfig.CreateFromName(algorithmName)!;
 
     #endregion
 
     private void EnsureEncryptorInitialized()
     {
-        if (_encryptor == null)
+        if (_encryptor is null)
         {
             _hashing = true;
             _symmetricAlgorithm.Key = Key;

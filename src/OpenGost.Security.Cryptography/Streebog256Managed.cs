@@ -65,7 +65,7 @@ public class Streebog256Managed : Streebog256
             Array.Empty<byte>(),
             0, 0);
         var hash = new byte[32];
-        Buffer.BlockCopy(_innerAlgorithm.Hash, 32, hash, 0, 32);
+        Buffer.BlockCopy(_innerAlgorithm.Hash!, 32, hash, 0, 32);
         HashValue = hash;
         return hash;
     }

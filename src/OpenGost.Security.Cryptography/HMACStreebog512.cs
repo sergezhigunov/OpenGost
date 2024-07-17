@@ -25,8 +25,12 @@ public class HMACStreebog512 : HMAC
     {
         set
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(value);
+#else
             if (value is null)
                 throw new ArgumentNullException(nameof(value));
+#endif
 
             _hmacCommon.ChangeKey(value);
             base.Key = _hmacCommon.ActualKey;
@@ -53,8 +57,12 @@ public class HMACStreebog512 : HMAC
     /// </exception>
     public HMACStreebog512(byte[] key)
     {
-        if (key is null)
-            throw new ArgumentNullException(nameof(key));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(key);
+#else
+            if (key is null)
+                throw new ArgumentNullException(nameof(key));
+#endif
 
         HashName = CryptoConstants.Streebog512AlgorithmName;
         _hmacCommon = new HMACCommon(CryptoConstants.Streebog512AlgorithmName, key, BlockSize);

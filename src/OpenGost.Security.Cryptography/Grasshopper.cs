@@ -11,8 +11,8 @@ namespace OpenGost.Security.Cryptography;
 public abstract class Grasshopper : SymmetricAlgorithm
 {
     private static readonly KeySizes[]
-        _legalBlockSizes = { new KeySizes(128, 128, 0) },
-        _legalKeySizes = { new KeySizes(256, 256, 0) };
+        _legalBlockSizes = { new(128, 128, 0) },
+        _legalKeySizes = { new(256, 256, 0) };
 
     /// <summary>
     /// Initializes a new instance of <see cref="Grasshopper"/>.
@@ -62,8 +62,12 @@ public abstract class Grasshopper : SymmetricAlgorithm
     {
         set
         {
-            if (value == null)
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(value);
+#else
+            if (value is null)
                 throw new ArgumentNullException(nameof(value));
+#endif
             if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0)
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidIVSize);
 
@@ -95,7 +99,7 @@ public abstract class Grasshopper : SymmetricAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new Grasshopper Create(string algorithmName)
-        => (Grasshopper)CryptoConfig.CreateFromName(algorithmName);
+        => (Grasshopper)CryptoConfig.CreateFromName(algorithmName)!;
 
     #endregion
 }

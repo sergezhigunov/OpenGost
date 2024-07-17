@@ -13,8 +13,8 @@ internal struct BigIntegerPoint
 
     public BigIntegerPoint(in ECPoint point)
     {
-        X = CryptoUtils.UnsignedBigIntegerFromLittleEndian(point.X);
-        Y = CryptoUtils.UnsignedBigIntegerFromLittleEndian(point.Y);
+        X = CryptoUtils.UnsignedBigIntegerFromLittleEndian(point.X!);
+        Y = CryptoUtils.UnsignedBigIntegerFromLittleEndian(point.Y!);
     }
 
     public ECPoint ToECPoint(int size)

@@ -423,7 +423,7 @@ internal static class ECCurveOidMap
     {
         get
         {
-            if (_ecCurveOidDictionary == null)
+            if (_ecCurveOidDictionary is null)
             {
                 var ecCurveOidDictionary = new Dictionary<string, ECCurve>
                 {
@@ -453,15 +453,23 @@ internal static class ECCurveOidMap
 
     public static bool OidValueRegistered(string oidValue)
     {
-        if (oidValue == null)
-            throw new ArgumentNullException(nameof(oidValue));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(oidValue);
+#else
+            if (oidValue is null)
+                throw new ArgumentNullException(nameof(oidValue));
+#endif
         return ECCurveOidDictionary.ContainsKey(oidValue);
     }
 
     public static ECCurve GetExplicitCurveByOid(string oidValue)
     {
-        if (oidValue == null)
-            throw new ArgumentNullException(nameof(oidValue));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(oidValue);
+#else
+            if (oidValue is null)
+                throw new ArgumentNullException(nameof(oidValue));
+#endif
         if (!ECCurveOidDictionary.ContainsKey(oidValue))
             throw new NotImplementedException();
 

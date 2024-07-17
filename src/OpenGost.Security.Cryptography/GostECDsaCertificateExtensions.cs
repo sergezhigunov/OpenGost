@@ -32,8 +32,12 @@ public static class GostECDsaCertificateExtensions
     /// </exception>
     public static GostECDsa? GetGostECDsaPublicKey(this X509Certificate2 certificate)
     {
-        if (certificate == null)
-            throw new ArgumentNullException(nameof(certificate));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(certificate);
+#else
+            if (certificate is null)
+                throw new ArgumentNullException(nameof(certificate));
+#endif
 
         if (!IsGostECDsa(certificate))
             return null;
@@ -70,7 +74,7 @@ public static class GostECDsaCertificateExtensions
     /// </exception>
     public static GostECDsa? GetGostECDsaPrivateKey(this X509Certificate2 certificate)
     {
-        if (certificate == null)
+        if (certificate is null)
             throw new ArgumentNullException(nameof(certificate));
 
         if (!certificate.HasPrivateKey || !IsGostECDsa(certificate))
@@ -88,7 +92,7 @@ public static class GostECDsaCertificateExtensions
 
         foreach (var extension in certificate.Extensions)
         {
-            if (extension.Oid.Value == "2.5.29.15")
+            if (extension.Oid?.Value == "2.5.29.15")
             {
                 var ext = (X509KeyUsageExtension)extension;
 

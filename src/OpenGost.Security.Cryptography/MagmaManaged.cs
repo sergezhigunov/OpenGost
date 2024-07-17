@@ -49,7 +49,7 @@ public sealed class MagmaManaged : Magma
     /// <returns>
     /// A symmetric <see cref="Magma"/> decryptor object.
     /// </returns>
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, false);
     }
@@ -66,7 +66,7 @@ public sealed class MagmaManaged : Magma
     /// <returns>
     /// A symmetric <see cref="Magma"/> encryptor object.
     /// </returns>
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         return new MagmaManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, true);
     }

@@ -17,6 +17,7 @@
     <AnalysisLevel>latest-all</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <NoWarn>$(NoWarn);CA1508;CA1859;CA5358;NU1903;SYSLIB0045</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

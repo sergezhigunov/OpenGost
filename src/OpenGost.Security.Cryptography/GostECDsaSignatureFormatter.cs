@@ -1,14 +1,18 @@
 ﻿namespace OpenGost.Security.Cryptography;
 
-internal class GostECDsaSignatureFormatter :  AsymmetricSignatureFormatter
+internal sealed class GostECDsaSignatureFormatter : AsymmetricSignatureFormatter
 {
     private GostECDsa? _key;
 
     public override byte[] CreateSignature(byte[] rgbHash)
     {
-        if (rgbHash == null)
-            throw new ArgumentNullException(nameof(rgbHash));
-        if (_key == null)
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(rgbHash);
+#else
+            if (rgbHash is null)
+                throw new ArgumentNullException(nameof(rgbHash));
+#endif
+        if (_key is null)
             throw new CryptographicUnexpectedOperationException();
 
         return _key.SignHash(rgbHash);
@@ -20,8 +24,12 @@ internal class GostECDsaSignatureFormatter :  AsymmetricSignatureFormatter
 
     public override void SetKey(AsymmetricAlgorithm key)
     {
-        if (key == null)
-            throw new ArgumentNullException(nameof(key));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(key);
+#else
+            if (key is null)
+                throw new ArgumentNullException(nameof(key));
+#endif
 
         _key = (GostECDsa)key;
     }

@@ -50,7 +50,7 @@ public sealed class GrasshopperManaged : Grasshopper
     /// <returns>
     /// A symmetric <see cref="Grasshopper"/> decryptor object.
     /// </returns>
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
         => new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, false);
 
     /// <summary>
@@ -66,7 +66,7 @@ public sealed class GrasshopperManaged : Grasshopper
     /// <returns>
     /// A symmetric <see cref="Grasshopper"/> encryptor object.
     /// </returns>
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
         => new GrasshopperManagedTransform(rgbKey, rgbIV, BlockSize, Mode, Padding, true);
 
     /// <summary>

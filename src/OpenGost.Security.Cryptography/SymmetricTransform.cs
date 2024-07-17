@@ -31,8 +31,12 @@ internal abstract class SymmetricTransform : ICryptoTransform
         PaddingMode paddingMode,
         bool encrypting)
     {
-        if (key == null)
-            throw new ArgumentNullException(nameof(key));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(key);
+#else
+            if (key is null)
+                throw new ArgumentNullException(nameof(key));
+#endif
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(nameof(blockSize),
                 CryptographyStrings.ArgumentOutOfRangeNeedPositiveNum);
@@ -50,8 +54,12 @@ internal abstract class SymmetricTransform : ICryptoTransform
             case CipherMode.CBC:
             case CipherMode.CFB:
             case CipherMode.OFB:
-                if (iv == null)
+#if NET6_0_OR_GREATER
+                ArgumentNullException.ThrowIfNull(iv);
+#else
+                if (iv is null)
                     throw new ArgumentNullException(nameof(iv));
+#endif
                 _rgbIV = (byte[])iv.Clone();
                 _stateBuffer = new byte[_rgbIV.Length];
                 _tempBuffer = new byte[InputBlockSize];
@@ -84,7 +92,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
 
         if (_cipherMode == CipherMode.CBC || _cipherMode == CipherMode.CFB || _cipherMode == CipherMode.OFB)
         {
-            Buffer.BlockCopy(_rgbIV, 0, _stateBuffer, 0, _rgbIV!.Length);
+            Buffer.BlockCopy(_rgbIV!, 0, _stateBuffer!, 0, _rgbIV!.Length);
         }
     }
 
@@ -95,10 +103,15 @@ internal abstract class SymmetricTransform : ICryptoTransform
         byte[] outputBuffer,
         int outputOffset)
     {
-        if (inputBuffer == null)
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(inputBuffer);
+        ArgumentNullException.ThrowIfNull(outputBuffer);
+#else
+        if (inputBuffer is null)
             throw new ArgumentNullException(nameof(inputBuffer));
-        if (outputBuffer == null)
+        if (outputBuffer is null)
             throw new ArgumentNullException(nameof(outputBuffer));
+#endif
         if (inputOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset,
                 CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
@@ -123,7 +136,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
                 return DecryptData(inputBuffer, inputOffset, inputCount, ref outputBuffer!, outputOffset, false);
             else
             {
-                if (_depadBuffer == null)
+                if (_depadBuffer is null)
                 {
                     _depadBuffer = new byte[InputBlockSize];
                     // copy the last InputBlockSize bytes to _depadBuffer
@@ -149,8 +162,12 @@ internal abstract class SymmetricTransform : ICryptoTransform
 
     public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
     {
-        if (inputBuffer == null)
-            throw new ArgumentNullException(nameof(inputBuffer));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(inputBuffer);
+#else
+            if (inputBuffer is null)
+                throw new ArgumentNullException(nameof(inputBuffer));
+#endif
         if (inputOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset,
                 CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
@@ -170,7 +187,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
             if (inputCount % InputBlockSize != 0)
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidDataSize);
 
-            if (_depadBuffer == null)
+            if (_depadBuffer is null)
                 DecryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes!, 0, true);
             else
             {
@@ -232,7 +249,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
                 padSize = padBytes.Length;
         }
 
-        if (outputBuffer == null)
+        if (outputBuffer is null)
         {
             outputBuffer = new byte[inputCount + padSize];
             outputOffset = 0;
@@ -412,7 +429,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
         int outputOffset,
         bool isFinalTransform)
     {
-        if (outputBuffer == null)
+        if (outputBuffer is null)
         {
             outputBuffer = new byte[inputCount];
             outputOffset = 0;

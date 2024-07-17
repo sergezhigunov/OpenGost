@@ -17,9 +17,9 @@ internal ref struct AsnValueReader
         _ruleSet = ruleSet;
     }
 
-    public bool HasData => !_span.IsEmpty;
+    public readonly bool HasData => !_span.IsEmpty;
 
-    public void ThrowIfNotEmpty()
+    public readonly void ThrowIfNotEmpty()
     {
         if (!_span.IsEmpty)
         {
@@ -27,7 +27,7 @@ internal ref struct AsnValueReader
         }
     }
 
-    public Asn1Tag PeekTag()
+    public readonly Asn1Tag PeekTag()
     {
         return Asn1Tag.Decode(_span, out _);
     }

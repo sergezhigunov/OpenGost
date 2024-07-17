@@ -11,8 +11,8 @@ namespace OpenGost.Security.Cryptography;
 public abstract class Magma : SymmetricAlgorithm
 {
     private static readonly KeySizes[]
-        _legalBlockSizes = { new KeySizes(64, 64, 0) },
-        _legalKeySizes = { new KeySizes(256, 256, 0) };
+        _legalBlockSizes = { new(64, 64, 0) },
+        _legalKeySizes = { new(256, 256, 0) };
 
     /// <summary>
     /// Initializes a new instance of <see cref="Magma"/>.
@@ -62,8 +62,12 @@ public abstract class Magma : SymmetricAlgorithm
     {
         set
         {
-            if (value == null)
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(value);
+#else
+            if (value is null)
                 throw new ArgumentNullException(nameof(value));
+#endif
             if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0)
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidIVSize);
 
@@ -95,7 +99,7 @@ public abstract class Magma : SymmetricAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new Magma Create(string algorithmName)
-        => (Magma)CryptoConfig.CreateFromName(algorithmName);
+        => (Magma)CryptoConfig.CreateFromName(algorithmName)!;
 
     #endregion
 }

@@ -6,7 +6,7 @@ public class HmacStreebog512Facts : HmacTest<HMACStreebog512>
         => Streebog512.Create();
 
     protected override HMACStreebog512 CreateHMAC(byte[] key)
-        => new HMACStreebog512(key);
+        => new(key);
 
     [Theory]
     [InlineData("0126bdb87800af214341456563780100",

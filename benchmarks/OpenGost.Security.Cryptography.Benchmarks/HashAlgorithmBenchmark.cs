@@ -14,7 +14,7 @@ public abstract class HashAlgorithmBenchmark<T> : IDisposable
     protected T HashAlgorithm { get; } = new T();
 
     [Benchmark]
-    public byte[] HashEmptyData() => HashAlgorithm.ComputeHash(Array.Empty<byte>());
+    public byte[] HashEmptyData() => HashAlgorithm.ComputeHash([]);
 
     [Benchmark]
     public byte[] HashData() => HashAlgorithm.ComputeHash(_data);

@@ -59,12 +59,12 @@ internal sealed class HMACCommon : IDisposable
             _hash1.TransformBlock(_inner, 0, _inner.Length, _inner, 0);
             _hashing = true;
         }
-        _hash1.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        _hash1.TransformFinalBlock([], 0, 0);
         var hashValue1 = _hash1.Hash!;
         _hash2.TransformBlock(_outer, 0, _outer.Length, _outer, 0);
         _hash2.TransformBlock(hashValue1, 0, hashValue1.Length, hashValue1, 0);
         _hashing = false;
-        _hash2.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        _hash2.TransformFinalBlock([], 0, 0);
         return _hash2.Hash!;
     }
 

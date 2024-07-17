@@ -4,18 +4,12 @@ using System.Security;
 namespace OpenGost.Security.Cryptography.Asn1;
 
 [SecuritySafeCritical]
-internal ref struct AsnValueReader
+internal ref struct AsnValueReader(ReadOnlySpan<byte> span, AsnEncodingRules ruleSet)
 {
     private static readonly byte[] _singleByte = new byte[1];
 
-    private ReadOnlySpan<byte> _span;
-    private readonly AsnEncodingRules _ruleSet;
-
-    public AsnValueReader(ReadOnlySpan<byte> span, AsnEncodingRules ruleSet)
-    {
-        _span = span;
-        _ruleSet = ruleSet;
-    }
+    private ReadOnlySpan<byte> _span = span;
+    private readonly AsnEncodingRules _ruleSet = ruleSet;
 
     public readonly bool HasData => !_span.IsEmpty;
 

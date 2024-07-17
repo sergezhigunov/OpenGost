@@ -2,20 +2,14 @@
 
 namespace OpenGost.Security.Cryptography;
 
-internal struct BigIntegerPoint
+internal struct BigIntegerPoint(in ECPoint point)
 {
     private static readonly BigInteger _two = 2;
     private static readonly BigInteger _three = 3;
 
-    public BigInteger X { get; private set; }
+    public BigInteger X { get; private set; } = CryptoUtils.UnsignedBigIntegerFromLittleEndian(point.X!);
 
-    public BigInteger Y { get; private set; }
-
-    public BigIntegerPoint(in ECPoint point)
-    {
-        X = CryptoUtils.UnsignedBigIntegerFromLittleEndian(point.X!);
-        Y = CryptoUtils.UnsignedBigIntegerFromLittleEndian(point.Y!);
-    }
+    public BigInteger Y { get; private set; } = CryptoUtils.UnsignedBigIntegerFromLittleEndian(point.Y!);
 
     public ECPoint ToECPoint(int size)
     {

@@ -11,8 +11,8 @@ namespace OpenGost.Security.Cryptography;
 public abstract class Magma : SymmetricAlgorithm
 {
     private static readonly KeySizes[]
-        _legalBlockSizes = { new(64, 64, 0) },
-        _legalKeySizes = { new(256, 256, 0) };
+        _legalBlockSizes = [new(64, 64, 0)],
+        _legalKeySizes = [new(256, 256, 0)];
 
     /// <summary>
     /// Initializes a new instance of <see cref="Magma"/>.

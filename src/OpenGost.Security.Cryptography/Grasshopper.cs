@@ -11,8 +11,8 @@ namespace OpenGost.Security.Cryptography;
 public abstract class Grasshopper : SymmetricAlgorithm
 {
     private static readonly KeySizes[]
-        _legalBlockSizes = { new(128, 128, 0) },
-        _legalKeySizes = { new(256, 256, 0) };
+        _legalBlockSizes = [new(128, 128, 0)],
+        _legalKeySizes = [new(256, 256, 0)];
 
     /// <summary>
     /// Initializes a new instance of <see cref="Grasshopper"/>.

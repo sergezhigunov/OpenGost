@@ -60,11 +60,10 @@ public class GostECDsaCertificateExtensionsFacts
 
     public static IEnumerable<object[]> TestCases()
     {
-        return new[]
-        {
+        return
+        [
             // 256-bit example
-            new object[]
-            {
+            [
                 // Certificate name
                 "GostECDsa256",
                 // Curve OID
@@ -75,10 +74,9 @@ public class GostECDsaCertificateExtensionsFacts
                 "43e69c1ff74fe2e2f1749859abf677d1c0c60fe28d0f83598e9f9465697358ad",
                 // D
                 "249939faa839edc3f2aafe0f643de4463c924abbeac6a73230dd5c3e621dcfbf",
-            },
+            ],
             // 512-bit example
-            new object[]
-            {
+            [
                 // Certificate name
                 "GostECDsa512",
                 // Curve OID
@@ -92,8 +90,8 @@ public class GostECDsaCertificateExtensionsFacts
                 // D
                 "4b07cb6b4e014ea4e67d0c5f17fd33fd488cb4eec876b987e57c0741e6307575" +
                 "352446ee5aa02b99679efe8d5280f3b76de6414c7782b42e975fecd4dc1cc03f",
-            },
-        };
+            ],
+        ];
     }
 
 }

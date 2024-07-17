@@ -40,10 +40,10 @@ public class CreationFactoriesFacts
     public static IEnumerable<object?[]> ExplicitCreateFactories()
     {
         static object?[] TestCase(Type type, Func<string, object?> factory)
-            => new object?[] { type, factory, type.Name };
+            => [type, factory, type.Name];
 
-        return new[]
-        {
+        return
+        [
             TestCase(typeof(GostECDsa), GostECDsa.Create),
             TestCase(typeof(Grasshopper), Grasshopper.Create),
             TestCase(typeof(Magma), Magma.Create),
@@ -51,8 +51,6 @@ public class CreationFactoriesFacts
             TestCase(typeof(Streebog512), Streebog512.Create),
             TestCase(typeof(CMACGrasshopper), CMAC.Create),
             TestCase(typeof(CMACMagma), CMAC.Create),
-
-#pragma warning disable SYSLIB0045
             TestCase(typeof(GostECDsa), ECDsa.Create),
             TestCase(typeof(GostECDsa), AsymmetricAlgorithm.Create),
             TestCase(typeof(Grasshopper), SymmetricAlgorithm.Create),
@@ -69,22 +67,21 @@ public class CreationFactoriesFacts
             TestCase(typeof(HMACStreebog512), HashAlgorithm.Create),
             TestCase(typeof(HMACStreebog512), KeyedHashAlgorithm.Create),
             TestCase(typeof(HMACStreebog512), HMAC.Create),
-#pragma warning restore SYSLIB0045
-        };
+        ];
     }
 
     public static IEnumerable<object[]> ImplicitCreateFactories()
     {
         static Func<T> Func<T>(Func<T> func) => func;
 
-        return new[]
-        {
-                new object[] { typeof(CMACGrasshopper), Func(CMAC.Create), },
-                new object[] { typeof(GostECDsa), Func(GostECDsa.Create), },
-                new object[] { typeof(Grasshopper), Func(Grasshopper.Create), },
-                new object[] { typeof(Magma), Func(Magma.Create), },
-                new object[] { typeof(Streebog256), Func(Streebog256.Create), },
-                new object[] { typeof(Streebog512), Func(Streebog512.Create), },
-            };
+        return
+        [
+                [typeof(CMACGrasshopper), Func(CMAC.Create),],
+                [typeof(GostECDsa), Func(GostECDsa.Create),],
+                [typeof(Grasshopper), Func(Grasshopper.Create),],
+                [typeof(Magma), Func(Magma.Create),],
+                [typeof(Streebog256), Func(Streebog256.Create),],
+                [typeof(Streebog512), Func(Streebog512.Create),],
+            ];
     }
 }

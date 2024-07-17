@@ -119,7 +119,7 @@ public class GostECDsaManagedFacts
     [Theory]
     [InlineData(256)]
     [InlineData(512)]
-    public void VerifyHash_ReturnsFalse_IfParametersWasNotGenereated(int keySize)
+    public void VerifyHash_ReturnsFalse_IfParametersWasNotGenerated(int keySize)
     {
         var hash = CryptoUtils.GenerateRandomBytes(keySize / 8);
         var signature = CryptoUtils.GenerateRandomBytes(keySize / 4);

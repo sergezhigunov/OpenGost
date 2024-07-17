@@ -6,7 +6,7 @@ public class HmacStreebog256Facts : HmacTest<HMACStreebog256>
         => Streebog256.Create();
 
     protected override HMACStreebog256 CreateHMAC(byte[] key)
-        => new HMACStreebog256(key);
+        => new(key);
 
     [Theory]
     [InlineData("0126bdb87800af214341456563780100",

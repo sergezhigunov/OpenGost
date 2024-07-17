@@ -21,10 +21,9 @@ public class GrasshopperFacts : SymmetricAlgorithmTest<GrasshopperManaged>
         => base.Verify(mode, padding, plainText, cipherText, key, iv);
 
 
-    public static object[][] Data { get; } = new[]
-    {
-        new object[]
-        {
+    public static object[][] Data { get; } =
+    [
+        [
             CipherMode.ECB,
             PaddingMode.None,
             PlainText,
@@ -32,9 +31,8 @@ public class GrasshopperFacts : SymmetricAlgorithmTest<GrasshopperManaged>
             "f0ca33549d247ceef3f5a5313bd4b157d0b09ccde830b9eb3a02c4c5aa8ada98",
             Key,
             IV,
-        },
-        new object[]
-        {
+        ],
+        [
             CipherMode.CBC,
             PaddingMode.None,
             PlainText,
@@ -42,9 +40,8 @@ public class GrasshopperFacts : SymmetricAlgorithmTest<GrasshopperManaged>
             "fe7babf1e91999e85640e8b0f49d90d0167688065a895c631a2d9a1560b63970",
             Key,
             IV,
-        },
-        new object[]
-        {
+        ],
+        [
             CipherMode.CFB,
             PaddingMode.None,
             PlainText,
@@ -52,9 +49,8 @@ public class GrasshopperFacts : SymmetricAlgorithmTest<GrasshopperManaged>
             "79f2a8eb5cc68d38842d264e97a238b54ffebecd4e922de6c75bd9dd44fbf4d1",
             Key,
             IV,
-        },
-        new object[]
-        {
+        ],
+        [
             CipherMode.OFB,
             PaddingMode.None,
             PlainText,
@@ -62,8 +58,8 @@ public class GrasshopperFacts : SymmetricAlgorithmTest<GrasshopperManaged>
             "66a257ac3ca0b8b1c80fe7fc10288a13203ebbc066138660a0292243f6903150",
             Key,
             IV,
-        },
-    };
+        ],
+    ];
 }
 
 

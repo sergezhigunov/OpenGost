@@ -333,7 +333,7 @@ public class GostECDsaManagedFacts
         {
             SigningKey = algorithm,
         };
-        signedXml.SignedInfo.SignatureMethod = signatureMethod;
+        signedXml.SignedInfo!.SignatureMethod = signatureMethod;
         signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
         var reference = new Reference
         {
@@ -348,8 +348,10 @@ public class GostECDsaManagedFacts
 
         var signature = signedXml.Signature;
         Assert.NotNull(signature);
+        Assert.NotNull(signature.SignatureValue);
         Assert.Equal(algorithm.KeySize / 4, signature.SignatureValue.Length);
         Assert.Same(signedXml.SignedInfo, signature.SignedInfo);
+        Assert.NotNull(reference.DigestValue);
         Assert.Equal(algorithm.KeySize / 8, reference.DigestValue.Length);
     }
 
@@ -373,7 +375,7 @@ public class GostECDsaManagedFacts
         {
             SigningKey = algorithm,
         };
-        signedXml.SignedInfo.SignatureMethod = signatureMethod;
+        signedXml.SignedInfo!.SignatureMethod = signatureMethod;
         signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
         var reference = new Reference
         {
@@ -411,73 +413,73 @@ public class GostECDsaManagedFacts
         Assert.True(result);
     }
 
-    public static IEnumerable<object[]> TestDomainParameters()
+    public static TheoryData<ECParameters> TestDomainParameters()
+    => new()
     {
-        yield return new object[] { TestDomainParameters256, };
-        yield return new object[] { TestDomainParameters512, };
-    }
+        { TestDomainParameters256 },
+        { TestDomainParameters512 },
+    };
 
     // Test cases as described in GOST 34.10-2018
-    public static IEnumerable<object[]> TestCases()
-    {
-        yield return new object[]
+    public static TheoryData<ECParameters, byte[], byte[]> TestCases
+        => new()
         {
-            TestDomainParameters256,
-            // Hash
-            HexUtils.HexToByteArray(
-                "e53e042b67e6ec678e2e02b12a0352ce1fc6eee0529cc088119ad872b3c1fb2d"),
-            // Signature
-            HexUtils.HexToByteArray(
-                // s
-                "01456c64ba4642a1653c235a98a60249bcd6d3f746b631df928014f6c5bf9c40" +
-                // r
-                "41aa28d2f1ab148280cd9ed56feda41974053554a42767b83ad043fd39dc0493"),
+            {
+                TestDomainParameters256,
+                // Hash
+                HexUtils.HexToByteArray(
+                    "e53e042b67e6ec678e2e02b12a0352ce1fc6eee0529cc088119ad872b3c1fb2d"),
+                // Signature
+                HexUtils.HexToByteArray(
+                    // s
+                    "01456c64ba4642a1653c235a98a60249bcd6d3f746b631df928014f6c5bf9c40" +
+                    // r
+                    "41aa28d2f1ab148280cd9ed56feda41974053554a42767b83ad043fd39dc0493")
 
+            },
+            {
+                TestDomainParameters512,
+                // Hash
+                HexUtils.HexToByteArray(
+                    "8c5b0772297d77c64f0c561ddbde7a405a5d7c646c97394341f4936553ee8471" +
+                    "91c5b03570141da733c570c1f9b6091b53ab8d4d7c4a4f5c61e0c9accff35437"),
+                // Signature
+                HexUtils.HexToByteArray(
+                    // s
+                    "1081b394696ffe8e6585e7a9362d26b6325f56778aadbc081c0bfbe933d52ff5" +
+                    "823ce288e8c4f362526080df7f70ce406a6eeb1f56919cb92a9853bde73e5b4a" +
+                    // r
+                    "2f86fa60a081091a23dd795e1e3c689ee512a3c82ee0dcc2643c78eea8fcacd3" +
+                    "5492558486b20f1c9ec197c90699850260c93bcbcd9c5c3317e19344e173ae36")
+            }
         };
-        yield return new object[]
-        {
-            TestDomainParameters512,
-            // Hash
-            HexUtils.HexToByteArray(
-                "8c5b0772297d77c64f0c561ddbde7a405a5d7c646c97394341f4936553ee8471" +
-                "91c5b03570141da733c570c1f9b6091b53ab8d4d7c4a4f5c61e0c9accff35437"),
-            // Signature
-            HexUtils.HexToByteArray(
-                // s
-                "1081b394696ffe8e6585e7a9362d26b6325f56778aadbc081c0bfbe933d52ff5" +
-                "823ce288e8c4f362526080df7f70ce406a6eeb1f56919cb92a9853bde73e5b4a" +
-                // r
-                "2f86fa60a081091a23dd795e1e3c689ee512a3c82ee0dcc2643c78eea8fcacd3" +
-                "5492558486b20f1c9ec197c90699850260c93bcbcd9c5c3317e19344e173ae36"),
-        };
-    }
 
-    public static IEnumerable<object[]> XmlDSigTestCases()
-    {
-        yield return new object[]
+    public static TheoryData<ECParameters, string> XmlDSigTestCases { get; }
+        = new()
         {
-            TestDomainParameters256,
-            "<x><Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><SignedInfo><CanonicalizationMethod Algorith" +
-            "m=\"http://www.w3.org/2001/10/xml-exc-c14n#\" /><SignatureMethod Algorithm=\"urn:ietf:params:xml:ns:cpx" +
-            "mlsec:algorithms:gostr34102012-gostr34112012-256\" /><Reference URI=\"\"><Transforms><Transform Algorit" +
-            "hm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" /><Transform Algorithm=\"http://www.w3.org" +
-            "/2001/10/xml-exc-c14n#\" /></Transforms><DigestMethod Algorithm=\"urn:ietf:params:xml:ns:cpxmlsec:algor" +
-            "ithms:gostr34112012-256\" /><DigestValue>JNdsQmFfcmAYYn4g42yK6tw2Gj5Xyxx5ILX3YAlXxBE=</DigestValue></Re" +
-            "ference></SignedInfo><SignatureValue>duV5dfNuXJXX8b1I/fvWPJwpZBGA3ce9oqQelSBordwfprh3WdaeEXM6FJ4h9NpJxI" +
-            "nlktKpWJLLW2+mVB5EjQ==</SignatureValue></Signature></x>",
+            {
+                TestDomainParameters256,
+                "<x><Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><SignedInfo><CanonicalizationMethod Algor" +
+                "ithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\" /><SignatureMethod Algorithm=\"urn:ietf:params:xml:" +
+                "ns:cpxmlsec:algorithms:gostr34102012-gostr34112012-256\" /><Reference URI=\"\"><Transforms><Transfor" +
+                "m Algorithm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" /><Transform Algorithm=\"http:" +
+                "//www.w3.org/2001/10/xml-exc-c14n#\" /></Transforms><DigestMethod Algorithm=\"urn:ietf:params:xml:ns" +
+                ":cpxmlsec:algorithms:gostr34112012-256\" /><DigestValue>JNdsQmFfcmAYYn4g42yK6tw2Gj5Xyxx5ILX3YAlXxBE=" +
+                "</DigestValue></Reference></SignedInfo><SignatureValue>duV5dfNuXJXX8b1I/fvWPJwpZBGA3ce9oqQelSBordwfp" +
+                "rh3WdaeEXM6FJ4h9NpJxInlktKpWJLLW2+mVB5EjQ==</SignatureValue></Signature></x>"
+            },
+            {
+                TestDomainParameters512,
+                "<x><Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><SignedInfo><CanonicalizationMethod Algor" +
+                "ithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\" /><SignatureMethod Algorithm=\"urn:ietf:params:xml:" +
+                "ns:cpxmlsec:algorithms:gostr34102012-gostr34112012-512\" /><Reference URI=\"\"><Transforms><Transfor" +
+                "m Algorithm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" /><Transform Algorithm=\"http:" +
+                "//www.w3.org/2001/10/xml-exc-c14n#\" /></Transforms><DigestMethod Algorithm=\"urn:ietf:params:xml:ns" +
+                ":cpxmlsec:algorithms:gostr34112012-512\" /><DigestValue>SBO2V/znwwwIuO1uz0NpidHq5PWjW3IiAotyRuH2evF/" +
+                "wHWcLyFzZ7zI9KBgF3nrPF/NGk7RTdIwDVEbNd6YLg==</DigestValue></Reference></SignedInfo><SignatureValue>I" +
+                "G1vSunYd6O95lC/k/GTT4zgUhjF79bSqvPMTPU6aWQh1spqoaN6yjnHLu1UGY0BIJ4vEwvnCOKyhg9g9PoQoyb6Mjr86Cf5gs0LU" +
+                "56LyFeCDqb6eOtbEGdSo88EUsWg8oX62TlQ6ZwzicxUfgWCC4E61iV6tzPX3j0yc+a9ht4=</SignatureValue></Signature>" +
+                "</x>"
+            },
         };
-        yield return new object[]
-        {
-            TestDomainParameters512,
-            "<x><Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><SignedInfo><CanonicalizationMethod Algorith" +
-            "m=\"http://www.w3.org/2001/10/xml-exc-c14n#\" /><SignatureMethod Algorithm=\"urn:ietf:params:xml:ns:cpx" +
-            "mlsec:algorithms:gostr34102012-gostr34112012-512\" /><Reference URI=\"\"><Transforms><Transform Algorit" +
-            "hm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" /><Transform Algorithm=\"http://www.w3.org" +
-            "/2001/10/xml-exc-c14n#\" /></Transforms><DigestMethod Algorithm=\"urn:ietf:params:xml:ns:cpxmlsec:algor" +
-            "ithms:gostr34112012-512\" /><DigestValue>SBO2V/znwwwIuO1uz0NpidHq5PWjW3IiAotyRuH2evF/wHWcLyFzZ7zI9KBgF3" +
-            "nrPF/NGk7RTdIwDVEbNd6YLg==</DigestValue></Reference></SignedInfo><SignatureValue>IG1vSunYd6O95lC/k/GTT4" +
-            "zgUhjF79bSqvPMTPU6aWQh1spqoaN6yjnHLu1UGY0BIJ4vEwvnCOKyhg9g9PoQoyb6Mjr86Cf5gs0LU56LyFeCDqb6eOtbEGdSo88EU" +
-            "sWg8oX62TlQ6ZwzicxUfgWCC4E61iV6tzPX3j0yc+a9ht4=</SignatureValue></Signature></x>",
-        };
-    }
 }

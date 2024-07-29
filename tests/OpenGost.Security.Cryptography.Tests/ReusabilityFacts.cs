@@ -15,14 +15,12 @@ public class ReusabilityFacts
         Assert.Equal(hash1, hash2);
     }
 
-    public static IEnumerable<object[]> ReusabilityHashAlgorithms()
-    {
-        return
-        [
-            [() => new Streebog256Managed(),],
-            [() => new Streebog512Managed(),],
-            [() => new CMACGrasshopper(),],
-            [() => new CMACMagma(),],
-        ];
-    }
+    public static TheoryData<Func<HashAlgorithm>> ReusabilityHashAlgorithms()
+        => new()
+        {
+            { () => new Streebog256Managed() },
+            { () => new Streebog512Managed() },
+            { () => new CMACGrasshopper() },
+            { () => new CMACMagma() },
+        };
 }

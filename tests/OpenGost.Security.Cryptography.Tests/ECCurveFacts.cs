@@ -13,9 +13,11 @@ public class ECCurveFacts
     }
 
     [Theory]
-    [MemberData(nameof(SupportedOids))]
-    public void CreateFromOid_CreatesValidInstance(Oid curveOid)
+    [MemberData(nameof(SupportedOidValues))]
+    public void CreateFromOid_CreatesValidInstance(string oidValue)
     {
+        var curveOid = new Oid(oidValue);
+
         var curve = ECCurve.CreateFromOid(curveOid);
 
         ValidateNamedCurve(curve);
@@ -23,34 +25,25 @@ public class ECCurveFacts
         Assert.Equal(curveOid.FriendlyName, curve.Oid.FriendlyName);
     }
 
-    public static IEnumerable<object[]> SupportedOidValues()
-    {
-        foreach (var oidValue in new[]
+    public static TheoryData<string> SupportedOidValues { get; }
+        = new()
         {
-            "1.2.643.7.1.2.1.1.0",
-            "1.2.643.7.1.2.1.1.1",
-            "1.2.643.7.1.2.1.1.2",
-            "1.2.643.7.1.2.1.1.3",
-            "1.2.643.7.1.2.1.1.4",
-            "1.2.643.2.2.35.0",
-            "1.2.643.2.2.35.1",
-            "1.2.643.2.2.35.2",
-            "1.2.643.2.2.35.3",
-            "1.2.643.2.2.36.0",
-            "1.2.643.2.2.36.1",
-            "1.2.643.7.1.2.1.2.0",
-            "1.2.643.7.1.2.1.2.1",
-            "1.2.643.7.1.2.1.2.2",
-            "1.2.643.7.1.2.1.2.3",
-        })
-        yield return new[] { oidValue };
-    }
-
-    public static IEnumerable<object[]> SupportedOids()
-    {
-        foreach (var oidValue in SupportedOidValues())
-            yield return new[] { new Oid((string)oidValue.First()) };
-    }
+            { "1.2.643.7.1.2.1.1.0" },
+            { "1.2.643.7.1.2.1.1.1" },
+            { "1.2.643.7.1.2.1.1.2" },
+            { "1.2.643.7.1.2.1.1.3" },
+            { "1.2.643.7.1.2.1.1.4" },
+            { "1.2.643.2.2.35.0" },
+            { "1.2.643.2.2.35.1" },
+            { "1.2.643.2.2.35.2" },
+            { "1.2.643.2.2.35.3" },
+            { "1.2.643.2.2.36.0" },
+            { "1.2.643.2.2.36.1" },
+            { "1.2.643.7.1.2.1.2.0" },
+            { "1.2.643.7.1.2.1.2.1" },
+            { "1.2.643.7.1.2.1.2.2" },
+            { "1.2.643.7.1.2.1.2.3" },
+        };
 
     private static void ValidateNamedCurve(ECCurve curve)
     {

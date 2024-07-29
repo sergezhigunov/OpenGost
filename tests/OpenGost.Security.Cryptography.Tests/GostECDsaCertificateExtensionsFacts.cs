@@ -58,12 +58,11 @@ public class GostECDsaCertificateExtensionsFacts
                 $"OpenGost.Security.Cryptography.Tests.Resources.{certificateName}.cer"));
     }
 
-    public static IEnumerable<object[]> TestCases()
-    {
-        return
-        [
+    public static TheoryData<string, string, string, string, string> TestCases
+        => new()
+        {
             // 256-bit example
-            [
+            {
                 // Certificate name
                 "GostECDsa256",
                 // Curve OID
@@ -73,10 +72,10 @@ public class GostECDsaCertificateExtensionsFacts
                 // Y
                 "43e69c1ff74fe2e2f1749859abf677d1c0c60fe28d0f83598e9f9465697358ad",
                 // D
-                "249939faa839edc3f2aafe0f643de4463c924abbeac6a73230dd5c3e621dcfbf",
-            ],
+                "249939faa839edc3f2aafe0f643de4463c924abbeac6a73230dd5c3e621dcfbf"
+            },
             // 512-bit example
-            [
+            {
                 // Certificate name
                 "GostECDsa512",
                 // Curve OID
@@ -89,9 +88,8 @@ public class GostECDsaCertificateExtensionsFacts
                 "14bd1ce1353a694461a5d7e108636bf3cd4b9af63f4e97f800a32fcb34a4087e",
                 // D
                 "4b07cb6b4e014ea4e67d0c5f17fd33fd488cb4eec876b987e57c0741e6307575" +
-                "352446ee5aa02b99679efe8d5280f3b76de6414c7782b42e975fecd4dc1cc03f",
-            ],
-        ];
-    }
+                "352446ee5aa02b99679efe8d5280f3b76de6414c7782b42e975fecd4dc1cc03f"
+            },
+        };
 
 }

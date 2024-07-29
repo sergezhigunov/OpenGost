@@ -1,18 +1,16 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿#if !NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenGost.Security.Cryptography.Tests;
 
 [ExcludeFromCodeCoverage]
-internal static class HexUtils
+internal static class Convert
 {
-    private const string HexAlphabet = "0123456789abcdef";
-
-    public static byte[] HexToByteArray(this string hexString)
+    public static byte[] FromHexString(this string s)
     {
-        if (hexString is null)
-            throw new ArgumentNullException(nameof(hexString));
-        var hexStringLength = hexString.Length;
+        if (s is null)
+            throw new ArgumentNullException(nameof(s));
+        var hexStringLength = s.Length;
         if (hexStringLength % 2 != 0)
             throw CreateTextIncorrectFormatException(null);
 
@@ -22,8 +20,8 @@ internal static class HexUtils
             try
             {
                 retval[j] = (byte)
-                    ((hexString[i].GetHexadecimalIndex() << 4) ^
-                    hexString[i + 1].GetHexadecimalIndex());
+                    ((s[i].GetHexadecimalIndex() << 4) ^
+                    s[i + 1].GetHexadecimalIndex());
             }
             catch (FormatException formatException)
             {
@@ -31,21 +29,6 @@ internal static class HexUtils
             }
         }
         return retval;
-    }
-
-    public static string ToHexString(this byte[] bytes)
-    {
-        if (bytes is null)
-            throw new ArgumentNullException(nameof(bytes));
-
-        var builder = new StringBuilder(bytes.Length * 2);
-
-        foreach (var b in bytes)
-        {
-            builder.Append(HexAlphabet[b >> 4]);
-            builder.Append(HexAlphabet[b & 0x0F]);
-        }
-        return builder.ToString();
     }
 
     private static byte GetHexadecimalIndex(this char character)
@@ -62,3 +45,4 @@ internal static class HexUtils
     private static FormatException CreateTextIncorrectFormatException(Exception? innerException)
         => new("Input text has incorrect format.", innerException);
 }
+#endif

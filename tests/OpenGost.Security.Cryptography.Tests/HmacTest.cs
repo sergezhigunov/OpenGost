@@ -57,14 +57,14 @@ public abstract class HmacTest<T>
 
     public virtual void VerifyHmac(string dataHex, string keyHex, string digestHex)
     {
-        var digestBytes = digestHex.HexToByteArray();
+        var digestBytes = Convert.FromHexString(digestHex);
         byte[] computedDigest;
 
         using (var hmac = new T())
         {
             Assert.True(hmac.HashSize > 0);
 
-            var key = keyHex.HexToByteArray();
+            var key = Convert.FromHexString(keyHex);
             hmac.Key = key;
 
             // make sure the getter returns different objects each time
@@ -75,7 +75,7 @@ public abstract class HmacTest<T>
             key[0] = (byte)(key[0] + 1);
             Assert.NotEqual<byte>(key, hmac.Key);
 
-            computedDigest = hmac.ComputeHash(dataHex.HexToByteArray());
+            computedDigest = hmac.ComputeHash(Convert.FromHexString(dataHex));
         }
 
         Assert.Equal(digestBytes, computedDigest);

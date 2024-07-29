@@ -13,10 +13,10 @@ public class GostECDsaManagedFacts
         Curve = ECCurve.CreateFromValue("1.2.643.7.1.2.1.1.0"),
         Q = new ECPoint
         {
-            X = "0bd86fe5d8db89668f789b4e1dba8585c5508b45ec5b59d8906ddb70e2492b7f".HexToByteArray(),
-            Y = "da77ff871a10fbdf2766d293c5d164afbb3c7b973a41c885d11d70d689b4f126".HexToByteArray(),
+            X = Convert.FromHexString("0bd86fe5d8db89668f789b4e1dba8585c5508b45ec5b59d8906ddb70e2492b7f"),
+            Y = Convert.FromHexString("da77ff871a10fbdf2766d293c5d164afbb3c7b973a41c885d11d70d689b4f126"),
         },
-        D = "283bec9198ce191dee7e39491f96601bc1729ad39d35ed10beb99b78de9a927a".HexToByteArray(),
+        D = Convert.FromHexString("283bec9198ce191dee7e39491f96601bc1729ad39d35ed10beb99b78de9a927a"),
     };
 
     private static ECParameters TestDomainParameters512 { get; } = new ECParameters
@@ -24,19 +24,16 @@ public class GostECDsaManagedFacts
         Curve = ECCurve.CreateFromValue("1.2.643.7.1.2.1.2.0"),
         Q = new ECPoint
         {
-            X = (
+            X = Convert.FromHexString(
                 "e1ef30d52c6133ddd99d1d5c41455cf7df4d8b4c925bbc69af1433d15658515a" +
-                "dd2146850c325c5b81c133be655aa8c4d440e7b98a8d59487b0c7696bcc55d11")
-                .HexToByteArray(),
-            Y = (
+                "dd2146850c325c5b81c133be655aa8c4d440e7b98a8d59487b0c7696bcc55d11"),
+            Y = Convert.FromHexString(
                 "ecbe7736a9ec357ff2fd39931f4e114cb8cda359270ac7f0e7ff43d9419419ea" +
-                "61fd2ab77f5d9f63523d3b50a04f63e2a0cf51b7c13adc21560f0bd40cc9c737")
-                .HexToByteArray(),
+                "61fd2ab77f5d9f63523d3b50a04f63e2a0cf51b7c13adc21560f0bd40cc9c737"),
         },
-        D = (
+        D = Convert.FromHexString(
             "d48da11f826729c6dfaa18fd7b6b63a214277e82d2da223356a000223b12e872" +
-            "20108b508e50e70e70694651e8a09130c9d75677d43609a41b24aead8a04a60b")
-            .HexToByteArray(),
+            "20108b508e50e70e70694651e8a09130c9d75677d43609a41b24aead8a04a60b"),
     };
 
     #endregion
@@ -427,10 +424,10 @@ public class GostECDsaManagedFacts
             {
                 TestDomainParameters256,
                 // Hash
-                HexUtils.HexToByteArray(
+                Convert.FromHexString(
                     "e53e042b67e6ec678e2e02b12a0352ce1fc6eee0529cc088119ad872b3c1fb2d"),
                 // Signature
-                HexUtils.HexToByteArray(
+                Convert.FromHexString(
                     // s
                     "01456c64ba4642a1653c235a98a60249bcd6d3f746b631df928014f6c5bf9c40" +
                     // r
@@ -440,11 +437,11 @@ public class GostECDsaManagedFacts
             {
                 TestDomainParameters512,
                 // Hash
-                HexUtils.HexToByteArray(
+                Convert.FromHexString(
                     "8c5b0772297d77c64f0c561ddbde7a405a5d7c646c97394341f4936553ee8471" +
                     "91c5b03570141da733c570c1f9b6091b53ab8d4d7c4a4f5c61e0c9accff35437"),
                 // Signature
-                HexUtils.HexToByteArray(
+                Convert.FromHexString(
                     // s
                     "1081b394696ffe8e6585e7a9362d26b6325f56778aadbc081c0bfbe933d52ff5" +
                     "823ce288e8c4f362526080df7f70ce406a6eeb1f56919cb92a9853bde73e5b4a" +

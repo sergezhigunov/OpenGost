@@ -29,14 +29,14 @@ public abstract class CmacTest<T>
 
     public virtual void VerifyCmac(string dataHex, string keyHex, string digestHex)
     {
-        var digestBytes = digestHex.HexToByteArray();
+        var digestBytes = Convert.FromHexString(digestHex);
         byte[] computedDigest;
 
         using (var cmac = new T())
         {
             Assert.True(cmac.HashSize > 0);
 
-            var key = keyHex.HexToByteArray();
+            var key = Convert.FromHexString(keyHex);
             cmac.Key = key;
 
             // make sure the getter returns different objects each time
@@ -47,7 +47,7 @@ public abstract class CmacTest<T>
             key[0] = (byte)(key[0] + 1);
             Assert.NotEqual<byte>(key, cmac.Key);
 
-            computedDigest = cmac.ComputeHash(dataHex.HexToByteArray());
+            computedDigest = cmac.ComputeHash(Convert.FromHexString(dataHex));
         }
 
         Assert.Equal(digestBytes, computedDigest);

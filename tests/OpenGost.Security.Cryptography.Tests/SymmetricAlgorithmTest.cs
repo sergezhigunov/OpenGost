@@ -62,9 +62,9 @@ public abstract class SymmetricAlgorithmTest<T>
         string ivHex)
     {
         byte[]
-            plainTextBytes = plainTextHex.HexToByteArray(),
-            keyBytes = keyHex.HexToByteArray(),
-            ivBytes = ivHex.HexToByteArray();
+            plainTextBytes = Convert.FromHexString(plainTextHex),
+            keyBytes = Convert.FromHexString(keyHex),
+            ivBytes = Convert.FromHexString(ivHex);
 
         using var algorithm = new T { Mode = mode, Padding = padding, Key = keyBytes, IV = ivBytes };
         byte[] encryptedBytes;
@@ -78,7 +78,7 @@ public abstract class SymmetricAlgorithmTest<T>
 
         Assert.NotEqual(plainTextBytes, encryptedBytes);
 
-        var cipherTextBytes = cipherTextHex.HexToByteArray();
+        var cipherTextBytes = Convert.FromHexString(cipherTextHex);
 
         Assert.Equal(cipherTextBytes, encryptedBytes);
 

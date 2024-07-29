@@ -35,10 +35,10 @@ public class GostECDsaCertificateExtensionsFacts
         using var certificate = GetCertificate(certificateName);
         var point = new ECPoint
         {
-            X = HexUtils.HexToByteArray(publicKeyXHexData),
-            Y = HexUtils.HexToByteArray(publicKeyYHexData),
+            X = Convert.FromHexString(publicKeyXHexData),
+            Y = Convert.FromHexString(publicKeyYHexData),
         };
-        _ = HexUtils.HexToByteArray(privateKeyHexData);
+        _ = Convert.FromHexString(privateKeyHexData);
 
         using var publicKey = certificate.GetGostECDsaPublicKey();
 

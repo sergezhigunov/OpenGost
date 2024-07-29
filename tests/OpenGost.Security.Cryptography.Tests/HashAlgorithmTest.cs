@@ -4,7 +4,7 @@ public abstract class HashAlgorithmTest<T>
     where T : HashAlgorithm, new()
 {
     protected void Verify(string input, string expected)
-        => Verify(input.HexToByteArray(), expected.HexToByteArray());
+        => Verify(Convert.FromHexString(input), Convert.FromHexString(expected));
 
     protected void Verify(byte[] input, byte[] expected)
     {

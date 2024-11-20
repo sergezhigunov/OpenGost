@@ -141,6 +141,9 @@
   <data name="CryptographicInvalidCipherMode" xml:space="preserve">
     <value>Заданный режим шифрования недопустим для этого алгоритма.</value>
   </data>
+  <data name="CryptographicInvalidPaddingMode" xml:space="preserve">
+    <value>Заданный режим дополнения недопустим для этого алгоритма.</value>
+  </data>
   <data name="CryptographicInvalidDataSize" xml:space="preserve">
     <value>Недопустимая длина данных для выполнения операции.</value>
   </data>

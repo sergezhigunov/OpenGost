@@ -24,7 +24,7 @@ public sealed class GrasshopperManaged : Grasshopper
     {
         set
         {
-            if (value < CipherMode.CBC || CipherMode.CFB < value)
+            if (value is < CipherMode.CBC or > CipherMode.CFB)
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidCipherMode);
 
             ModeValue = value;

@@ -53,7 +53,7 @@ public class GostECDsaCertificateExtensionsFacts
 
     private static X509Certificate2 GetCertificate(string certificateName)
     {
-        return new X509Certificate2(
+        return X509CertificateLoader.LoadCertificate(
             ResourceUtils.GetBinaryResource(
                 $"OpenGost.Security.Cryptography.Tests.Resources.{certificateName}.cer"));
     }

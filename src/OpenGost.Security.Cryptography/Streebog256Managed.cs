@@ -61,9 +61,7 @@ public class Streebog256Managed : Streebog256
     /// </returns>
     protected override byte[] HashFinal()
     {
-        _innerAlgorithm.TransformFinalBlock(
-            [],
-            0, 0);
+        _ = _innerAlgorithm.TransformFinalBlock([], 0, 0);
         var hash = new byte[32];
         Buffer.BlockCopy(_innerAlgorithm.Hash!, 32, hash, 0, 32);
         HashValue = hash;

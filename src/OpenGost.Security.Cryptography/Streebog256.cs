@@ -16,8 +16,6 @@ public abstract class Streebog256 : HashAlgorithm
         HashSizeValue = 256;
     }
 
-    #region Creation factory methods
-
     /// <summary>
     /// Creates an instance of the default implementation of <see cref="Streebog256"/> algorithm.
     /// </summary>
@@ -26,20 +24,5 @@ public abstract class Streebog256 : HashAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new Streebog256 Create()
-        => Create(CryptoConstants.Streebog256AlgorithmName);
-
-    /// <summary>
-    /// Creates an instance of a specified implementation of <see cref="Streebog256"/> algorithm.
-    /// </summary>
-    /// <param name="algorithmName">
-    /// The name of the specific implementation of <see cref="Streebog256"/> to be used.
-    /// </param>
-    /// <returns>
-    /// A new instance of <see cref="Streebog256"/> using the specified implementation.
-    /// </returns>
-    [ComVisible(false)]
-    public static new Streebog256 Create(string algorithmName)
-        => (Streebog256)CryptoConfig.CreateFromName(algorithmName)!;
-
-    #endregion
+        => new Streebog256Managed();
 }

@@ -6,12 +6,8 @@ internal sealed class GostECDsaSignatureFormatter : AsymmetricSignatureFormatter
 
     public override byte[] CreateSignature(byte[] rgbHash)
     {
-#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(rgbHash);
-#else
-            if (rgbHash is null)
-                throw new ArgumentNullException(nameof(rgbHash));
-#endif
+
         if (_key is null)
             throw new CryptographicUnexpectedOperationException();
 
@@ -24,12 +20,7 @@ internal sealed class GostECDsaSignatureFormatter : AsymmetricSignatureFormatter
 
     public override void SetKey(AsymmetricAlgorithm key)
     {
-#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(key);
-#else
-            if (key is null)
-                throw new ArgumentNullException(nameof(key));
-#endif
 
         _key = (GostECDsa)key;
     }

@@ -17,7 +17,7 @@ public static class OpenGostCryptoConfig
     /// </summary>
     public static void ConfigureCryptographicServices()
     {
-        if(!_configured)
+        if (!_configured)
             lock (_syncRoot)
                 if (!_configured)
                 {

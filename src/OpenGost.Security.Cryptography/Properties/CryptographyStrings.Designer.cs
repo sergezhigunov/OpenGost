@@ -33,6 +33,9 @@ internal static class CryptographyStrings
     public static string CryptographicInvalidCipherMode
         => GetString("CryptographicInvalidCipherMode");
 
+    public static string CryptographicInvalidPaddingMode
+        => GetString("CryptographicInvalidPaddingMode");
+
     public static string CryptographicInvalidDataSize
         => GetString("CryptographicInvalidDataSize");
 

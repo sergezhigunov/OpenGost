@@ -141,6 +141,9 @@
   <data name="CryptographicInvalidCipherMode" xml:space="preserve">
     <value>Specified cipher mode is not valid for this algorithm.</value>
   </data>
+  <data name="CryptographicInvalidPaddingMode" xml:space="preserve">
+    <value>Specified padding mode is not valid for this algorithm.</value>
+  </data>
   <data name="CryptographicInvalidDataSize" xml:space="preserve">
     <value>Length of the data to transform is invalid.</value>
   </data>

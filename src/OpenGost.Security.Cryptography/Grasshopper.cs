@@ -62,12 +62,9 @@ public abstract class Grasshopper : SymmetricAlgorithm
     {
         set
         {
-#if NET6_0_OR_GREATER
+
             ArgumentNullException.ThrowIfNull(value);
-#else
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
-#endif
+
             if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0)
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidIVSize);
 
@@ -75,8 +72,6 @@ public abstract class Grasshopper : SymmetricAlgorithm
             IVValue = (byte[])value.Clone();
         }
     }
-
-    #region Creation factory methods
 
     /// <summary>
     /// Creates an instance of the default implementation of <see cref="Grasshopper"/> algorithm.
@@ -86,20 +81,5 @@ public abstract class Grasshopper : SymmetricAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new Grasshopper Create()
-        => Create(CryptoConstants.GrasshopperAlgorithmName);
-
-    /// <summary>
-    /// Creates an instance of a specified implementation of <see cref="Grasshopper"/> algorithm.
-    /// </summary>
-    /// <param name="algorithmName">
-    /// The name of the specific implementation of <see cref="Grasshopper"/> to be used.
-    /// </param>
-    /// <returns>
-    /// A new instance of <see cref="Grasshopper"/> using the specified implementation.
-    /// </returns>
-    [ComVisible(false)]
-    public static new Grasshopper Create(string algorithmName)
-        => (Grasshopper)CryptoConfig.CreateFromName(algorithmName)!;
-
-    #endregion
+        => new GrasshopperManaged();
 }

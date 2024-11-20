@@ -27,8 +27,6 @@ public abstract class GostECDsa : ECDsa
         KeySizeValue = 512;
     }
 
-    #region Creation factory methods
-
     /// <summary>
     /// Creates an instance of the default implementation of <see cref="GostECDsa"/> algorithm.
     /// </summary>
@@ -37,20 +35,5 @@ public abstract class GostECDsa : ECDsa
     /// </returns>
     [ComVisible(false)]
     public static new GostECDsa Create()
-        => Create(CryptoConstants.GostECDsaAlgorithmName);
-
-    /// <summary>
-    /// Creates an instance of a specified implementation of <see cref="GostECDsa"/> algorithm.
-    /// </summary>
-    /// <param name="algorithmName">
-    /// The name of the specific implementation of <see cref="GostECDsa"/> to be used.
-    /// </param>
-    /// <returns>
-    /// A new instance of <see cref="GostECDsa"/> using the specified implementation.
-    /// </returns>
-    [ComVisible(false)]
-    public static new GostECDsa Create(string algorithmName)
-        => (GostECDsa)CryptoConfig.CreateFromName(algorithmName)!;
-
-    #endregion
+        => new GostECDsaManaged();
 }

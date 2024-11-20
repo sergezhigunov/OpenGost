@@ -62,12 +62,8 @@ public abstract class Magma : SymmetricAlgorithm
     {
         set
         {
-#if NET6_0_OR_GREATER
             ArgumentNullException.ThrowIfNull(value);
-#else
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
-#endif
+
             if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0)
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidIVSize);
 
@@ -75,8 +71,6 @@ public abstract class Magma : SymmetricAlgorithm
             IVValue = (byte[])value.Clone();
         }
     }
-
-    #region Creation factory methods
 
     /// <summary>
     /// Creates an instance of the default implementation of <see cref="Magma"/> algorithm.
@@ -86,20 +80,5 @@ public abstract class Magma : SymmetricAlgorithm
     /// </returns>
     [ComVisible(false)]
     public static new Magma Create()
-        => Create(CryptoConstants.MagmaAlgorithmName);
-
-    /// <summary>
-    /// Creates an instance of a specified implementation of <see cref="Magma"/> algorithm.
-    /// </summary>
-    /// <param name="algorithmName">
-    /// The name of the specific implementation of <see cref="Magma"/> to be used.
-    /// </param>
-    /// <returns>
-    /// A new instance of <see cref="Magma"/> using the specified implementation.
-    /// </returns>
-    [ComVisible(false)]
-    public static new Magma Create(string algorithmName)
-        => (Magma)CryptoConfig.CreateFromName(algorithmName)!;
-
-    #endregion
+        => new MagmaManaged();
 }

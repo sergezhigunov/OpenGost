@@ -10,22 +10,20 @@ namespace OpenGost.Security.Cryptography;
 [ComVisible(true)]
 public abstract class CMAC : KeyedHashAlgorithm
 {
-    private static readonly IReadOnlyDictionary<int, byte[]> _irreduciblePolynomials = new Dictionary<int, byte[]>
-    {
-        [64] =
+    private static readonly byte[]
+        _irreduciblePolynomial64 =
         [
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1B
         ],
-        [128] =
+        _irreduciblePolynomial128 =
         [
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x87
         ],
-        [256] =
+        _irreduciblePolynomial256 =
         [
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x25
-        ],
-    };
+        ];
 
     private SymmetricAlgorithm _symmetricAlgorithm = null!;
     private ICryptoTransform? _encryptor;
@@ -58,12 +56,8 @@ public abstract class CMAC : KeyedHashAlgorithm
         get => (byte[])KeyValue.Clone();
         set
         {
-#if NET6_0_OR_GREATER
             ArgumentNullException.ThrowIfNull(value);
-#else
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
-#endif
+
             if (_hashing)
                 throw new CryptographicException(CryptographyStrings.CryptographicSymmetricAlgorithmKeySet);
 
@@ -170,19 +164,19 @@ public abstract class CMAC : KeyedHashAlgorithm
             Buffer.BlockCopy(array, ibStart, _buffer, _bufferLength, bytesToCopy);
             ibStart += bytesToCopy;
             cbSize -= bytesToCopy;
-            _encryptor!.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
+            _ = _encryptor!.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
             _bufferLength = 0;
         }
 
         if (cbSize >= _bytesPerBlock && _bufferLength == _bytesPerBlock)
         {
-            _encryptor!.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
+            _ = _encryptor!.TransformBlock(_buffer, 0, _bytesPerBlock, _temp, 0);
             _bufferLength = 0;
         }
 
         while (cbSize > _bytesPerBlock)
         {
-            _encryptor!.TransformBlock(array, ibStart, _bytesPerBlock, _temp, 0);
+            _ = _encryptor!.TransformBlock(array, ibStart, _bytesPerBlock, _temp, 0);
             ibStart += _bytesPerBlock;
             cbSize -= _bytesPerBlock;
         }
@@ -242,8 +236,6 @@ public abstract class CMAC : KeyedHashAlgorithm
         base.Dispose(disposing);
     }
 
-    #region Creation factory methods
-
     /// <summary>
     /// Creates an instance of the default implementation of <see cref="CMAC"/> algorithm.
     /// </summary>
@@ -251,8 +243,11 @@ public abstract class CMAC : KeyedHashAlgorithm
     /// A new instance of <see cref="CMAC"/>.
     /// </returns>
     [ComVisible(false)]
+    [Obsolete(Obsoletions.DefaultCryptoAlgorithmsMessage,
+        DiagnosticId = Obsoletions.DefaultCryptoAlgorithmsDiagId,
+        UrlFormat = Obsoletions.SharedUrlFormat)]
     public static new CMAC Create()
-        => Create(CryptoConstants.CMACGrasshopperAlgorithmName);
+        => new CMACGrasshopper();
 
     /// <summary>
     /// Creates an instance of a specified implementation of <see cref="CMAC"/> algorithm.
@@ -266,8 +261,6 @@ public abstract class CMAC : KeyedHashAlgorithm
     [ComVisible(false)]
     public static new CMAC Create(string algorithmName)
         => (CMAC)CryptoConfig.CreateFromName(algorithmName)!;
-
-    #endregion
 
     private void EnsureEncryptorInitialized()
     {
@@ -319,9 +312,12 @@ public abstract class CMAC : KeyedHashAlgorithm
 
     private static byte[] GetIrreduciblePolynomial(int blockSize)
     {
-        if (_irreduciblePolynomials.TryGetValue(blockSize, out var result))
-            return result;
-
-        throw new CryptographicException(CryptographyStrings.CryptographicInvalidBlockSize);
+        return blockSize switch
+        {
+            64 => _irreduciblePolynomial64,
+            128 => _irreduciblePolynomial128,
+            256 => _irreduciblePolynomial256,
+            _ => throw new CryptographicException(CryptographyStrings.CryptographicInvalidBlockSize),
+        };
     }
 }

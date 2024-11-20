@@ -31,12 +31,8 @@ internal abstract class SymmetricTransform : ICryptoTransform
         PaddingMode paddingMode,
         bool encrypting)
     {
-#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(key);
-#else
-            if (key is null)
-                throw new ArgumentNullException(nameof(key));
-#endif
+
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(nameof(blockSize),
                 CryptographyStrings.ArgumentOutOfRangeNeedPositiveNum);
@@ -54,18 +50,14 @@ internal abstract class SymmetricTransform : ICryptoTransform
             case CipherMode.CBC:
             case CipherMode.CFB:
             case CipherMode.OFB:
-#if NET6_0_OR_GREATER
                 ArgumentNullException.ThrowIfNull(iv);
-#else
-                if (iv is null)
-                    throw new ArgumentNullException(nameof(iv));
-#endif
                 _rgbIV = (byte[])iv.Clone();
                 _stateBuffer = new byte[_rgbIV.Length];
                 _tempBuffer = new byte[InputBlockSize];
                 Reset();
                 break;
 
+            case CipherMode.CTS:
             default:
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidCipherMode);
         }
@@ -90,7 +82,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
     {
         CryptoUtils.EraseData(ref _depadBuffer);
 
-        if (_cipherMode == CipherMode.CBC || _cipherMode == CipherMode.CFB || _cipherMode == CipherMode.OFB)
+        if (_cipherMode is CipherMode.CBC or CipherMode.CFB or CipherMode.OFB)
         {
             Buffer.BlockCopy(_rgbIV!, 0, _stateBuffer!, 0, _rgbIV!.Length);
         }
@@ -103,15 +95,8 @@ internal abstract class SymmetricTransform : ICryptoTransform
         byte[] outputBuffer,
         int outputOffset)
     {
-#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(inputBuffer);
         ArgumentNullException.ThrowIfNull(outputBuffer);
-#else
-        if (inputBuffer is null)
-            throw new ArgumentNullException(nameof(inputBuffer));
-        if (outputBuffer is null)
-            throw new ArgumentNullException(nameof(outputBuffer));
-#endif
         if (inputOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset,
                 CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
@@ -132,7 +117,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
             return EncryptData(inputBuffer, inputOffset, inputCount, ref outputBuffer!, outputOffset, false);
         else
         {
-            if (_paddingMode == PaddingMode.Zeros || _paddingMode == PaddingMode.None)
+            if (_paddingMode is PaddingMode.Zeros or PaddingMode.None)
                 return DecryptData(inputBuffer, inputOffset, inputCount, ref outputBuffer!, outputOffset, false);
             else
             {
@@ -149,7 +134,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
                 else
                 {
                     // we already have a depad buffer, so we need to decrypt that info first & copy it out
-                    DecryptData(_depadBuffer, 0, _depadBuffer.Length, ref outputBuffer!, outputOffset, false);
+                    _ = DecryptData(_depadBuffer, 0, _depadBuffer.Length, ref outputBuffer!, outputOffset, false);
                     outputOffset += OutputBlockSize;
                     var inputToProcess = inputCount - InputBlockSize;
                     Buffer.BlockCopy(inputBuffer, inputOffset + inputToProcess, _depadBuffer, 0, InputBlockSize);
@@ -162,12 +147,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
 
     public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
     {
-#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(inputBuffer);
-#else
-            if (inputBuffer is null)
-                throw new ArgumentNullException(nameof(inputBuffer));
-#endif
         if (inputOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset,
                 CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
@@ -181,20 +161,20 @@ internal abstract class SymmetricTransform : ICryptoTransform
 
         byte[] transformedBytes = null!;
         if (_encrypting)
-            EncryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes!, 0, true);
+            _ = EncryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes!, 0, true);
         else
         {
             if (inputCount % InputBlockSize != 0)
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidDataSize);
 
             if (_depadBuffer is null)
-                DecryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes!, 0, true);
+                _ = DecryptData(inputBuffer, inputOffset, inputCount, ref transformedBytes!, 0, true);
             else
             {
                 var temp = new byte[_depadBuffer.Length + inputCount];
                 Buffer.BlockCopy(_depadBuffer, 0, temp, 0, _depadBuffer.Length);
                 Buffer.BlockCopy(inputBuffer, inputOffset, temp, _depadBuffer.Length, inputCount);
-                DecryptData(temp, 0, temp.Length, ref transformedBytes!, 0, true);
+                _ = DecryptData(temp, 0, temp.Length, ref transformedBytes!, 0, true);
             }
         }
         Reset();
@@ -306,6 +286,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
                 }
                 break;
 
+            case CipherMode.CTS:
             default:
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidCipherMode);
         }
@@ -356,6 +337,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
                     InputBlockSize);
                 break;
 
+            case CipherMode.CTS:
             default:
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidCipherMode);
         }
@@ -384,6 +366,9 @@ internal abstract class SymmetricTransform : ICryptoTransform
             case PaddingMode.ISO10126:
                 padSize = InputBlockSize - lonelyBytes;
                 break;
+
+            default:
+                throw new CryptographicException(CryptographyStrings.CryptographicInvalidPaddingMode);
         }
 
         if (padSize != 0)
@@ -415,6 +400,9 @@ internal abstract class SymmetricTransform : ICryptoTransform
                     // and change the last byte
                     padBytes[padSize - 1] = (byte)padSize;
                     break;
+
+                default:
+                    throw new CryptographicException(CryptographyStrings.CryptographicInvalidPaddingMode);
             }
         }
 
@@ -483,6 +471,7 @@ internal abstract class SymmetricTransform : ICryptoTransform
                 }
                 break;
 
+            case CipherMode.CTS:
             default:
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidCipherMode);
         }
@@ -525,6 +514,9 @@ internal abstract class SymmetricTransform : ICryptoTransform
                 // no additional check, just ignore the random bytes
                 RemovePadding(ref outputBuffer, padSize);
                 break;
+
+            default:
+                throw new CryptographicException(CryptographyStrings.CryptographicInvalidCipherMode);
         }
 
         return outputBuffer.Length;

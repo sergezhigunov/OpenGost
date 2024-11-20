@@ -3,7 +3,9 @@ using OpenGost.Security.Cryptography;
 using OpenGost.Security.Cryptography.Asn1;
 using OpenGost.Security.Cryptography.Properties;
 
+#pragma warning disable IDE0130
 namespace System.Security.Cryptography.X509Certificates;
+#pragma warning restore IDE0130
 
 using static CryptoConstants;
 
@@ -32,12 +34,7 @@ public static class GostECDsaCertificateExtensions
     /// </exception>
     public static GostECDsa? GetGostECDsaPublicKey(this X509Certificate2 certificate)
     {
-#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(certificate);
-#else
-            if (certificate is null)
-                throw new ArgumentNullException(nameof(certificate));
-#endif
 
         if (!IsGostECDsa(certificate))
             return null;
@@ -87,7 +84,7 @@ public static class GostECDsaCertificateExtensions
     private static bool IsGostECDsa(X509Certificate2 certificate)
     {
         var value = certificate.PublicKey.Oid.Value;
-        if (value != GostECDsa256OidValue && value != GostECDsa512OidValue)
+        if (value is not GostECDsa256OidValue and not GostECDsa512OidValue)
             return false;
 
         foreach (var extension in certificate.Extensions)

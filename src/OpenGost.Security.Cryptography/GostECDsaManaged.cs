@@ -151,12 +151,7 @@ public sealed class GostECDsaManaged : GostECDsa
     /// </exception>
     public override byte[] SignHash(byte[] hash)
     {
-#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(hash);
-#else
-            if (hash is null)
-                throw new ArgumentNullException(nameof(hash));
-#endif
 
         ThrowIfDisposed();
 
@@ -232,15 +227,8 @@ public sealed class GostECDsaManaged : GostECDsa
     /// </exception>
     public override bool VerifyHash(byte[] hash, byte[] signature)
     {
-#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(hash);
         ArgumentNullException.ThrowIfNull(signature);
-#else
-            if (hash is null)
-                throw new ArgumentNullException(nameof(hash));
-            if (signature is null)
-                throw new ArgumentNullException(nameof(signature));
-#endif
 
         ThrowIfDisposed();
 
@@ -332,18 +320,17 @@ public sealed class GostECDsaManaged : GostECDsa
         {
             ECCurve.ECCurveType.PrimeShortWeierstrass => curve,
             ECCurve.ECCurveType.Named => ECCurveOidMap.GetExplicitCurveByOid(curve.Oid.Value!),
+            ECCurve.ECCurveType.Implicit or
+            ECCurve.ECCurveType.PrimeTwistedEdwards or
+            ECCurve.ECCurveType.PrimeMontgomery or
+            ECCurve.ECCurveType.Characteristic2 or
             _ => throw new NotImplementedException(),
         };
     }
 
     private void ThrowIfDisposed()
     {
-#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-        if (_disposed)
-            throw new ObjectDisposedException(GetType().FullName);
-#endif
     }
 
     private static ECCurve GetDefaultCurve(int keySize)

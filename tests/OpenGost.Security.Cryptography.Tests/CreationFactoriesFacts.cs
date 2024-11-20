@@ -40,36 +40,16 @@ public class CreationFactoriesFacts
     public static TheoryData<Type, Func<string, object?>> ExplicitCreateFactories()
         => new()
         {
-            { typeof(GostECDsa), GostECDsa.Create },
-            { typeof(Grasshopper), Grasshopper.Create },
-            { typeof(Magma), Magma.Create },
-            { typeof(Streebog256), Streebog256.Create },
-            { typeof(Streebog512), Streebog512.Create },
             { typeof(CMACGrasshopper), CMAC.Create },
             { typeof(CMACMagma), CMAC.Create },
-            { typeof(GostECDsa), ECDsa.Create },
-            { typeof(GostECDsa), AsymmetricAlgorithm.Create },
-            { typeof(Grasshopper), SymmetricAlgorithm.Create },
-            { typeof(Magma), SymmetricAlgorithm.Create },
-            { typeof(Streebog256), HashAlgorithm.Create },
-            { typeof(Streebog512), HashAlgorithm.Create },
-            { typeof(CMACGrasshopper), HashAlgorithm.Create },
-            { typeof(CMACGrasshopper), KeyedHashAlgorithm.Create },
-            { typeof(CMACMagma), HashAlgorithm.Create },
-            { typeof(CMACMagma), KeyedHashAlgorithm.Create },
-            { typeof(HMACStreebog256), HashAlgorithm.Create },
-            { typeof(HMACStreebog256), KeyedHashAlgorithm.Create },
-            { typeof(HMACStreebog256), HMAC.Create },
-            { typeof(HMACStreebog512), HashAlgorithm.Create },
-            { typeof(HMACStreebog512), KeyedHashAlgorithm.Create },
-            { typeof(HMACStreebog512), HMAC.Create },
         };
 
     public static TheoryData<Type, Func<object>> ImplicitCreateFactories()
         => new()
         {
+#pragma warning disable SYSLIB0007
             { typeof(CMACGrasshopper), CMAC.Create },
-            { typeof(CMACGrasshopper), CMAC.Create },
+#pragma warning restore SYSLIB0007
             { typeof(GostECDsa), GostECDsa.Create },
             { typeof(Grasshopper), Grasshopper.Create },
             { typeof(Magma), Magma.Create },

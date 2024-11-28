@@ -51,20 +51,13 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
 
     #region Lookup tables
 
-    private static readonly byte[]
-        _lookup16 = InitializeLookupTable(16),
-        _lookup32 = InitializeLookupTable(32),
-        _lookup133 = InitializeLookupTable(133),
-        _lookup148 = InitializeLookupTable(148),
-        _lookup192 = InitializeLookupTable(192),
-        _lookup194 = InitializeLookupTable(194),
-        _lookup251 = InitializeLookupTable(251);
+    private static readonly byte[] _lookup = InitializeLookupTable();
 
-    private static readonly byte[][][] _iterationConstants = InitializeIterationConstants();
+    private static readonly byte[] _iterationConstants = InitializeIterationConstants();
 
     #endregion
 
-    private byte[]?[]? _keyExpansion;
+    private byte[]? _key;
 
     internal GrasshopperManagedTransform(
         byte[] rgbKey,
@@ -79,45 +72,38 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
     [SecuritySafeCritical]
     protected override void GenerateKeyExpansion(byte[] key)
     {
-        _keyExpansion =
-        [
-                new byte[16], new byte[16],
-                null!, null!, null!, null!, null!, null!, null!, null!
-        ];
-        Buffer.BlockCopy(key, 0, _keyExpansion[0]!, 0, 16);
-        Buffer.BlockCopy(key, 16, _keyExpansion[1]!, 0, 16);
+        _key = new byte[160];
+        Buffer.BlockCopy(key, 0, _key, 0, 32);
 
         unsafe
         {
             var t = stackalloc byte[16];
 
-            fixed (byte* s = _forwardSubstitutionBox,
-                t16 = _lookup16,
-                t32 = _lookup32,
-                t133 = _lookup133,
-                t148 = _lookup148,
-                t192 = _lookup192,
-                t194 = _lookup194,
-                t251 = _lookup251)
+            fixed (byte* s = _forwardSubstitutionBox, t16 = _lookup, k = _key, c = _iterationConstants)
             {
+                var t32 = t16 + 256;
+                var t133 = t16 + 256 * 2;
+                var t148 = t16 + 256 * 3;
+                var t192 = t16 + 256 * 4;
+                var t194 = t16 + 256 * 5;
+                var t251 = t16 + 256 * 6;
                 for (var i = 0; i < 4; i++)
                 {
-                    _keyExpansion[2 * i + 2] = (byte[])_keyExpansion[2 * i]!.Clone();
-                    _keyExpansion[2 * i + 3] = (byte[])_keyExpansion[2 * i + 1]!.Clone();
+                    var start = (2 * i) * 16;
+                    var newStart = start + 32;
+                    Buffer.BlockCopy(_key, start, _key, newStart, 32);
 
-                    fixed (byte* l = _keyExpansion[2 * i + 2], h = _keyExpansion[2 * i + 3])
+                    var l = k + newStart;
+                    var h = k + newStart + 16;
+
+                    for (var j = 0; j < 8; j++)
                     {
-                        for (var j = 0; j < 8; j++)
-                        {
-                            fixed (byte* c = _iterationConstants[i][j])
-                                Xor(c, l, t);
-
-                            Substitute(s, t);
-                            DoLinearTransformForward(t, t16, t32, t133, t148, t192, t194, t251);
-                            Xor(t, h);
-                            Copy(l, h);
-                            Copy(t, l);
-                        }
+                        Xor(c + (8 * i + j) * 16, l, t);
+                        Substitute(s, t);
+                        DoLinearTransformForward(t, t16, t32, t133, t148, t192, t194, t251);
+                        Xor(t, h);
+                        Copy(l, h);
+                        Copy(t, l);
                     }
                 }
             }
@@ -127,10 +113,7 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
     protected override void Dispose(bool disposing)
     {
         if (disposing)
-        {
-            CryptoUtils.EraseData(ref _keyExpansion);
-        }
-
+            CryptoUtils.EraseData(ref _key);
         base.Dispose(disposing);
     }
 
@@ -139,8 +122,8 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
     {
         unsafe
         {
-            fixed (byte* input = inputBuffer, output = outputBuffer)
-                EncryptBlock(_keyExpansion!, input + inputOffset, output + outputOffset);
+            fixed (byte* k = _key!, input = inputBuffer, output = outputBuffer)
+                EncryptBlock(k, input + inputOffset, output + outputOffset);
         }
     }
 
@@ -149,60 +132,49 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
     {
         unsafe
         {
-            fixed (byte* input = inputBuffer, output = outputBuffer)
-                DecryptBlock(_keyExpansion!, input + inputOffset, output + outputOffset);
+            fixed (byte* k = _key, input = inputBuffer, output = outputBuffer)
+                DecryptBlock(k, input + inputOffset, output + outputOffset);
         }
     }
 
     [SecurityCritical]
-    private static unsafe void EncryptBlock(byte[][] keyExpansion, byte* input, byte* output)
+    private static unsafe void EncryptBlock(byte* k, byte* input, byte* output)
     {
-
-        fixed (byte* k = keyExpansion[0])
-            Xor(input, k, output);
-
-        fixed (byte* s = _forwardSubstitutionBox,
-            t16 = _lookup16,
-            t32 = _lookup32,
-            t133 = _lookup133,
-            t148 = _lookup148,
-            t192 = _lookup192,
-            t194 = _lookup194,
-            t251 = _lookup251)
+        Xor(input, k, output);
+        fixed (byte* s = _forwardSubstitutionBox, t16 = _lookup)
         {
+            var t32 = t16 + 256;
+            var t133 = t16 + 256 * 2;
+            var t148 = t16 + 256 * 3;
+            var t192 = t16 + 256 * 4;
+            var t194 = t16 + 256 * 5;
+            var t251 = t16 + 256 * 6;
             for (var i = 1; i < 10; i++)
             {
                 Substitute(s, output);
                 DoLinearTransformForward(output, t16, t32, t133, t148, t192, t194, t251);
-
-                fixed (byte* k = keyExpansion[i])
-                    Xor(output, k);
+                Xor(output, k + i * 16);
             }
         }
     }
 
     [SecurityCritical]
-    private static unsafe void DecryptBlock(byte[][] keyExpansion, byte* input, byte* output)
+    private static unsafe void DecryptBlock(byte* k, byte* input, byte* output)
     {
-        fixed (byte* k = keyExpansion[9])
-            Xor(input, k, output);
-
-        fixed (byte* s = _backwardSubstitutionBox,
-            t16 = _lookup16,
-            t32 = _lookup32,
-            t133 = _lookup133,
-            t148 = _lookup148,
-            t192 = _lookup192,
-            t194 = _lookup194,
-            t251 = _lookup251)
+        Xor(input, k + 9 * 16, output);
+        fixed (byte* s = _backwardSubstitutionBox, t16 = _lookup)
         {
+            var t32 = t16 + 256;
+            var t133 = t16 + 256 * 2;
+            var t148 = t16 + 256 * 3;
+            var t192 = t16 + 256 * 4;
+            var t194 = t16 + 256 * 5;
+            var t251 = t16 + 256 * 6;
             for (var i = 8; i >= 0; i--)
             {
                 DoLinearTransformBackward(output, t16, t32, t133, t148, t192, t194, t251);
                 Substitute(s, output);
-
-                fixed (byte* k = keyExpansion[i])
-                    Xor(output, k);
+                Xor(output, k + i * 16);
             }
         }
     }
@@ -522,35 +494,25 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
     }
 
     [SecuritySafeCritical]
-    private static byte[][][] InitializeIterationConstants()
+    private static byte[] InitializeIterationConstants()
     {
-        var retval = new byte[4][][];
+        var retval = GC.AllocateArray<byte>(512);
 
         unsafe
         {
-            fixed (byte*
-                t16 = _lookup16,
-                t32 = _lookup32,
-                t133 = _lookup133,
-                t148 = _lookup148,
-                t192 = _lookup192,
-                t194 = _lookup194,
-                t251 = _lookup251)
+            fixed (byte* t16 = _lookup, ptr = retval)
             {
-                for (var i = 0; i < 4; i++)
+                var t32 = t16 + 256;
+                var t133 = t16 + 256 * 2;
+                var t148 = t16 + 256 * 3;
+                var t192 = t16 + 256 * 4;
+                var t194 = t16 + 256 * 5;
+                var t251 = t16 + 256 * 6;
+                for (var i = 0; i < 32; i++)
                 {
-                    var row = new byte[8][];
-
-                    for (var j = 0; j < 8; j++)
-                    {
-                        var iterConst = new byte[16];
-                        iterConst[15] = (byte)(i * 8 + j + 1); ;
-                        fixed (byte* c = iterConst)
-                            DoLinearTransformForward(c, t16, t32, t133, t148, t192, t194, t251);
-                        row[j] = iterConst;
-                    }
-
-                    retval[i] = row;
+                    var c = ptr + i * 16;
+                    c[15] = (byte)(i + 1);
+                    DoLinearTransformForward(c, t16, t32, t133, t148, t192, t194, t251);
                 }
             }
         }
@@ -558,12 +520,33 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         return retval;
     }
 
-    private static byte[] InitializeLookupTable(byte c)
+    [SecuritySafeCritical]
+    private static byte[] InitializeLookupTable()
     {
-        var row = new byte[256];
-        for (var j = 0; j < 256; j++)
+        var lookup = GC.AllocateArray<byte>(7 * 256);
+        unsafe
         {
-            var x = j;
+            fixed (byte* ptr = lookup)
+            {
+                InitializeLookupRow(ptr, 16);
+                InitializeLookupRow(ptr + 256, 32);
+                InitializeLookupRow(ptr + 256 * 2, 133);
+                InitializeLookupRow(ptr + 256 * 3, 148);
+                InitializeLookupRow(ptr + 256 * 4, 192);
+                InitializeLookupRow(ptr + 256 * 5, 194);
+                InitializeLookupRow(ptr + 256 * 6, 251);
+            }
+        }
+
+        return lookup;
+    }
+
+    [SecurityCritical]
+    private static unsafe void InitializeLookupRow(byte* row, byte c)
+    {
+        for (var i = 0; i < 256; i++)
+        {
+            var x = i;
             var z = 0;
             int y = c;
 
@@ -575,9 +558,7 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
                 y >>= 1;
             }
 
-            row[j] = (byte)z;
+            row[i] = (byte)z;
         }
-
-        return row;
     }
 }

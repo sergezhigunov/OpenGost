@@ -31,19 +31,6 @@ internal static class CryptoUtils
         }
     }
 
-    public static void EraseData<T>(ref T[]?[]? data)
-        where T : struct
-    {
-        if (data != null)
-        {
-            var length = data.Length;
-            for (var i = 0; i < length; i++)
-                EraseData(ref data[i]);
-
-            data = null;
-        }
-    }
-
     public static void Xor(
         byte[] left,
         int leftOffset,

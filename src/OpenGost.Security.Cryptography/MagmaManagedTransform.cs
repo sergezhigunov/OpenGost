@@ -5,29 +5,9 @@ namespace OpenGost.Security.Cryptography;
 
 internal sealed class MagmaManagedTransform : SymmetricTransform
 {
-    #region Constants
-
-    private static readonly byte[][] _substitutionBox =
-    [
-        [0xC, 0x4, 0x6, 0x2, 0xA, 0x5, 0xB, 0x9, 0xE, 0x8, 0xD, 0x7, 0x0, 0x3, 0xF, 0x1],
-        [0x6, 0x8, 0x2, 0x3, 0x9, 0xA, 0x5, 0xC, 0x1, 0xE, 0x4, 0x7, 0xB, 0xD, 0x0, 0xF],
-        [0xB, 0x3, 0x5, 0x8, 0x2, 0xF, 0xA, 0xD, 0xE, 0x1, 0x7, 0x4, 0xC, 0x9, 0x6, 0x0],
-        [0xC, 0x8, 0x2, 0x1, 0xD, 0x4, 0xF, 0x6, 0x7, 0x0, 0xA, 0x5, 0x3, 0xE, 0x9, 0xB],
-        [0x7, 0xF, 0x5, 0xA, 0x8, 0x1, 0x6, 0xD, 0x0, 0x9, 0x3, 0xE, 0xB, 0x4, 0x2, 0xC],
-        [0x5, 0xD, 0xF, 0x6, 0x9, 0x2, 0xC, 0xA, 0xB, 0x7, 0x8, 0x1, 0x4, 0x3, 0xE, 0x0],
-        [0x8, 0xE, 0x2, 0x5, 0x6, 0x9, 0x1, 0xC, 0xF, 0x4, 0xB, 0x0, 0xD, 0xA, 0x3, 0x7],
-        [0x1, 0x7, 0xE, 0xD, 0x0, 0x5, 0x8, 0x3, 0x4, 0xF, 0xA, 0x6, 0x9, 0xC, 0xB, 0x2]
-    ];
-
-    #endregion
-
     #region Lookup tables
 
-    private static readonly uint[]
-        _lookup0 = InitializeLookupTable(0),
-        _lookup1 = InitializeLookupTable(1),
-        _lookup2 = InitializeLookupTable(2),
-        _lookup3 = InitializeLookupTable(3);
+    private static readonly uint[] _lookup = InitializeLookupTable();
 
     #endregion
 
@@ -58,8 +38,11 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
     {
         LoadRegisters(inputBuffer, inputOffset, out var a0, out var a1);
 
-        fixed (uint* k = _keyExpansion, lookup0 = _lookup0, lookup1 = _lookup1, lookup2 = _lookup2, lookup3 = _lookup3)
+        fixed (uint* k = _keyExpansion, lookup0 = _lookup)
         {
+            var lookup1 = lookup0 + 256;
+            var lookup2 = lookup0 + 256 * 2;
+            var lookup3 = lookup0 + 256 * 3;
             ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
             ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
             ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
@@ -74,8 +57,11 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
     {
         LoadRegisters(inputBuffer, inputOffset, out var a0, out var a1);
 
-        fixed (uint* k = _keyExpansion, lookup0 = _lookup0, lookup1 = _lookup1, lookup2 = _lookup2, lookup3 = _lookup3)
+        fixed (uint* k = _keyExpansion, lookup0 = _lookup)
         {
+            var lookup1 = lookup0 + 256;
+            var lookup2 = lookup0 + 256 * 2;
+            var lookup3 = lookup0 + 256 * 3;
             ComputeEightRoundsForwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
             ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
             ComputeEightRoundsBackwardKeyOrder(k, lookup0, lookup1, lookup2, lookup3, ref a0, ref a1);
@@ -165,14 +151,53 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
             lookup3[data >> 24];
     }
 
-    private static uint[] InitializeLookupTable(int tableNumber)
+    private static uint[] InitializeLookupTable()
     {
-        var lookupTable = new uint[256];
+        var lookupTable = GC.AllocateArray<uint>(256 * 4, true);
+        unsafe
+        {
+            byte* substitutionBox = stackalloc byte[]
+            {
+                0xC, 0x4, 0x6, 0x2, 0xA, 0x5, 0xB, 0x9, 0xE, 0x8, 0xD, 0x7, 0x0, 0x3, 0xF, 0x1,
+                0x6, 0x8, 0x2, 0x3, 0x9, 0xA, 0x5, 0xC, 0x1, 0xE, 0x4, 0x7, 0xB, 0xD, 0x0, 0xF,
+                0xB, 0x3, 0x5, 0x8, 0x2, 0xF, 0xA, 0xD, 0xE, 0x1, 0x7, 0x4, 0xC, 0x9, 0x6, 0x0,
+                0xC, 0x8, 0x2, 0x1, 0xD, 0x4, 0xF, 0x6, 0x7, 0x0, 0xA, 0x5, 0x3, 0xE, 0x9, 0xB,
+                0x7, 0xF, 0x5, 0xA, 0x8, 0x1, 0x6, 0xD, 0x0, 0x9, 0x3, 0xE, 0xB, 0x4, 0x2, 0xC,
+                0x5, 0xD, 0xF, 0x6, 0x9, 0x2, 0xC, 0xA, 0xB, 0x7, 0x8, 0x1, 0x4, 0x3, 0xE, 0x0,
+                0x8, 0xE, 0x2, 0x5, 0x6, 0x9, 0x1, 0xC, 0xF, 0x4, 0xB, 0x0, 0xD, 0xA, 0x3, 0x7,
+                0x1, 0x7, 0xE, 0xD, 0x0, 0x5, 0x8, 0x3, 0x4, 0xF, 0xA, 0x6, 0x9, 0xC, 0xB, 0x2,
+            };
 
-        for (var b = 0; b < 256; b++)
-            lookupTable[b] = RotateElevenBitsLeft((_substitutionBox[2 * tableNumber][b & 0x0f] ^
-                (uint)_substitutionBox[2 * tableNumber + 1][b >> 4] << 4) << tableNumber * 8);
+            fixed (uint* lookupTableFixed = lookupTable)
+                for (var tableNumber = 0; tableNumber < 4; tableNumber++)
+                {
+                    var section = tableNumber << 3;
+                    var shift = section << 2;
+                    var sbox1 = substitutionBox + shift;
+                    var sbox2 = substitutionBox + shift + 16;
+                    var lookup = lookupTableFixed + (shift << 3);
+                    for (var a = 0; a < 256; a += 4)
+                    {
+                        InitializeSubstituteAndRotateElevenBits(lookup, sbox1, sbox2, a, section);
+                        InitializeSubstituteAndRotateElevenBits(lookup, sbox1, sbox2, a + 1, section);
+                        InitializeSubstituteAndRotateElevenBits(lookup, sbox1, sbox2, a + 2, section);
+                        InitializeSubstituteAndRotateElevenBits(lookup, sbox1, sbox2, a + 3, section);
+                    }
+                }
+        }
 
         return lookupTable;
+    }
+
+    [SecurityCritical]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static unsafe void InitializeSubstituteAndRotateElevenBits(
+        uint* lookup,
+        byte* sbox1,
+        byte* sbox2,
+        int b,
+        int shift)
+    {
+        lookup[b] = RotateElevenBitsLeft((sbox1[b & 0x0f] ^ (uint)sbox2[b >> 4] << 4) << shift);
     }
 }

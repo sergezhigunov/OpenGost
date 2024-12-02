@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Security;
 
 namespace OpenGost.Security.Cryptography;
@@ -134,11 +135,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         a0 ^= SubstituteAndRotateElevenBits(a1 + k[0], lookup0, lookup1, lookup2, lookup3);
     }
 
-    private static uint RotateElevenBitsLeft(uint input)
-    {
-        return input << 11 | input >> 21;
-    }
-
     [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe uint SubstituteAndRotateElevenBits(uint data, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3)
@@ -198,6 +194,8 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         int b,
         int shift)
     {
-        lookup[b] = RotateElevenBitsLeft((sbox1[b & 0x0f] ^ (uint)sbox2[b >> 4] << 4) << shift);
+        lookup[b] = BitOperations.RotateLeft(
+            offset: 11,
+            value: (sbox1[b & 0x0f] ^ (uint)sbox2[b >> 4] << 4) << shift);
     }
 }

@@ -4,25 +4,7 @@
     <TargetFrameworks>net9.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Description>An open-source .NET library providing the modern Russian national standard cryptographic algorithms</Description>
-    <PackageReleaseNotes>
-0.2.2
-• Added – `net6.0` and `net8.0` target frameworks support.
-• Fixed - Microsoft Security Advisory CVE-2024-3809. https://github.com/advisories/GHSA-447r-wph3-92pm.
-
-0.2.1
-• Added – New elliptic curves support (1.2.643.7.1.2.1.1.2, 1.2.643.7.1.2.1.1.3, 1.2.643.7.1.2.1.1.4, 1.2.643.2.2.36.1)
-• Fixed - A few incorrect elliptic curve parameter values
-• Fixed - GostECDsa incorrect implementation
-• Fixed - Streebog hash algorithms may return zeroes in some cases
-
-0.2.0
-• Added – Cryptographic services configuration support
-• Added - XML Digital Signature support
-• Added - GOST X.509 certificate public key extraction method
-
-0.1.0
-This is the first public release.
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)ReleaseNotes.txt'))</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

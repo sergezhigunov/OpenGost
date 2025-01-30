@@ -5,29 +5,28 @@ namespace OpenGost.Security.Cryptography.Tests;
 
 internal static class ResourceUtils
 {
-    private static XmlReaderSettings Settings { get; } = new XmlReaderSettings
+    public static XmlDocument GetXmlDocument(string fileName)
     {
-        CheckCharacters = false,
-        IgnoreComments = true,
-        IgnoreProcessingInstructions = true,
-        IgnoreWhitespace = true,
-    };
+        var document = new XmlDocument
+        {
+            PreserveWhitespace = true,
+        };
+        using var stream = GetResourceStream(fileName);
+        using var reader = XmlReader.Create(stream);
+        document.Load(reader);
+        return document;
+    }
 
-    public static XmlReader GetXmlResource(string resourceName)
-        => XmlReader.Create(GetResourceStream(resourceName), Settings, resourceName);
-
-    public static byte[] GetBinaryResource(string resourceName)
+    public static byte[] GetBinary(string fileName)
     {
         using var memoryStream = new MemoryStream();
-        using (var resourceStream = GetResourceStream(resourceName, Assembly.GetExecutingAssembly()))
+        using (var resourceStream = GetResourceStream(fileName))
             resourceStream.CopyTo(memoryStream);
 
         return memoryStream.ToArray();
     }
 
-    private static Stream GetResourceStream(string resourceName)
-        => GetResourceStream(resourceName, Assembly.GetExecutingAssembly());
-
-    private static Stream GetResourceStream(string resourceName, Assembly assembly)
-       => assembly.GetManifestResourceStream(resourceName)!;
+    private static Stream GetResourceStream(string fileName)
+       => Assembly.GetExecutingAssembly()
+        .GetManifestResourceStream($"OpenGost.Security.Cryptography.Tests.Resources.{fileName}")!;
 }

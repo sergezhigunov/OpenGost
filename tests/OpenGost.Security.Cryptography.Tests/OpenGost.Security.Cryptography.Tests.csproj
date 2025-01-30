@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\**\*.cer" />
-    <EmbeddedResource Include="Resources\**\*.cer" />
+    <None Remove="Resources\**\*.*" />
+    <EmbeddedResource Include="Resources\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,8 +7,6 @@ using OpenGost.Security.Cryptography.Properties;
 namespace System.Security.Cryptography.X509Certificates;
 #pragma warning restore IDE0130
 
-using static CryptoConstants;
-
 /// <summary>
 /// Provides extension methods for retrieving GOST 34.10-2018 <see cref="ECDsa"/> implementations for the
 /// public and private keys of a <see cref="X509Certificate2"/> certificate.
@@ -71,8 +69,7 @@ public static class GostECDsaCertificateExtensions
     /// </exception>
     public static GostECDsa? GetGostECDsaPrivateKey(this X509Certificate2 certificate)
     {
-        if (certificate is null)
-            throw new ArgumentNullException(nameof(certificate));
+        ArgumentNullException.ThrowIfNull(certificate);
 
         if (!certificate.HasPrivateKey || !IsGostECDsa(certificate))
             return null;
@@ -84,12 +81,12 @@ public static class GostECDsaCertificateExtensions
     private static bool IsGostECDsa(X509Certificate2 certificate)
     {
         var value = certificate.PublicKey.Oid.Value;
-        if (value is not GostECDsa256OidValue and not GostECDsa512OidValue)
+        if (value is not Oids.GostECDsa256 and not Oids.GostECDsa512)
             return false;
 
         foreach (var extension in certificate.Extensions)
         {
-            if (extension.Oid?.Value == "2.5.29.15")
+            if (extension.Oid?.Value == Oids.KeyUsage)
             {
                 var ext = (X509KeyUsageExtension)extension;
 

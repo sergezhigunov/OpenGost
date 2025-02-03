@@ -38,7 +38,7 @@ public static class OpenGostCryptoConfig
         AddAlgorithm(typeof(HMACStreebog512), HMACStreebog512AlgorithmName, XmlDsigHMACStreebog512Url);
         AddAlgorithm(typeof(GostECDsa256SignatureDescription), XmlDsigGostECDsaStreebog256Url);
         AddAlgorithm(typeof(GostECDsa512SignatureDescription), XmlDsigGostECDsaStreebog512Url);
-        AddOID(Streebog256OidValue, Streebog256AlgorithmName);
-        AddOID(Streebog512OidValue, Streebog512AlgorithmName);
+        AddOID(Oids.Streebog256, Streebog256AlgorithmName);
+        AddOID(Oids.Streebog512, Streebog512AlgorithmName);
     }
 }

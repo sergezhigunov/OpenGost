@@ -2,8 +2,6 @@
 
 internal static class ECCurveOidMap
 {
-    #region Constants
-
     private static ECCurve ECCurve256ParamsetTest { get; } = new ECCurve
     {
         CurveType = ECCurve.ECCurveType.PrimeShortWeierstrass,
@@ -415,8 +413,6 @@ internal static class ECCurveOidMap
         },
     };
 
-    #endregion
-
     private static volatile IReadOnlyDictionary<string, ECCurve>? _ecCurveOidDictionary;
 
     private static IReadOnlyDictionary<string, ECCurve> ECCurveOidDictionary
@@ -427,21 +423,21 @@ internal static class ECCurveOidMap
             {
                 var ecCurveOidDictionary = new Dictionary<string, ECCurve>
                 {
-                    { "1.2.643.7.1.2.1.1.0", ECCurve256ParamsetTest },
-                    { "1.2.643.7.1.2.1.1.1", ECCurve256ParamsetA },
-                    { "1.2.643.7.1.2.1.1.2", ECCurve256ParamsetB },
-                    { "1.2.643.7.1.2.1.1.3", ECCurve256ParamsetC },
-                    { "1.2.643.7.1.2.1.1.4", ECCurve256ParamsetD },
-                    { "1.2.643.2.2.35.0", ECCurve256ParamsetTest },
-                    { "1.2.643.2.2.35.1", ECCurve256ParamsetB },
-                    { "1.2.643.2.2.35.2", ECCurve256ParamsetC },
-                    { "1.2.643.2.2.35.3", ECCurve256ParamsetD },
-                    { "1.2.643.2.2.36.0", ECCurve256ParamsetB },
-                    { "1.2.643.2.2.36.1", ECCurve256ParamsetD },
-                    { "1.2.643.7.1.2.1.2.0", ECCurve512ParamsetTest },
-                    { "1.2.643.7.1.2.1.2.1", ECCurve512ParamsetA },
-                    { "1.2.643.7.1.2.1.2.2", ECCurve512ParamsetB },
-                    { "1.2.643.7.1.2.1.2.3", ECCurve512ParamsetC },
+                    [Oids.ECCurve256TestParamSet] = ECCurve256ParamsetTest,
+                    [Oids.ECCurve256ParamSetA] = ECCurve256ParamsetA,
+                    [Oids.ECCurve256ParamSetB] = ECCurve256ParamsetB,
+                    [Oids.ECCurve256ParamSetC] = ECCurve256ParamsetC,
+                    [Oids.ECCurve256ParamSetD] = ECCurve256ParamsetD,
+                    [Oids.ECCurveCryptoProTestParamSet] = ECCurve256ParamsetTest,
+                    [Oids.ECCurveCryptoProParamSetA] = ECCurve256ParamsetB,
+                    [Oids.ECCurveCryptoProParamSetB] = ECCurve256ParamsetC,
+                    [Oids.ECCurveCryptoProParamSetC] = ECCurve256ParamsetD,
+                    [Oids.ECCurveCryptoProParamSetXchA] = ECCurve256ParamsetB,
+                    [Oids.ECCurveCryptoProParamSetXchB] = ECCurve256ParamsetD,
+                    [Oids.ECCurve512TestParamSet] = ECCurve512ParamsetTest,
+                    [Oids.ECCurve512ParamSetA] = ECCurve512ParamsetA,
+                    [Oids.ECCurve512ParamSetB] = ECCurve512ParamsetB,
+                    [Oids.ECCurve512ParamSetC] = ECCurve512ParamsetC,
                 };
 
                 _ecCurveOidDictionary = ecCurveOidDictionary;

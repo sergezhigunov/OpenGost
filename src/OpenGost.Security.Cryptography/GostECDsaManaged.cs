@@ -336,7 +336,7 @@ public sealed class GostECDsaManaged : GostECDsa
     private static ECCurve GetDefaultCurve(int keySize)
         => keySize switch
         {
-            512 => ECCurve.CreateFromValue("1.2.643.7.1.2.1.2.1"),
-            _ => ECCurve.CreateFromValue("1.2.643.7.1.2.1.1.1"),
+            512 => ECCurve.CreateFromValue(Oids.ECCurve512ParamSetA),
+            _ => ECCurve.CreateFromValue(Oids.ECCurve256ParamSetA),
         };
 }

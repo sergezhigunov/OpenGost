@@ -14,8 +14,4 @@ internal static class CryptoConstants
     public const string Streebog512AlgorithmName = nameof(Streebog512);
     public const string HMACStreebog512AlgorithmName = nameof(HMACStreebog512);
 
-    public const string GostECDsa256OidValue = "1.2.643.7.1.1.1.1";
-    public const string GostECDsa512OidValue = "1.2.643.7.1.1.1.2";
-    public const string Streebog256OidValue = "1.2.643.7.1.1.2.2";
-    public const string Streebog512OidValue = "1.2.643.7.1.1.2.3";
 }

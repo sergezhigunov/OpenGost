@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<asn:Sequence
+  xmlns:asn="http://schemas.dot.net/asnxml/201808/"
+  name="GostECDsaPublicKeyParameters"
+  namespace="OpenGost.Security.Cryptography.Asn1">
+
+  <!--
+    https://www.rfc-editor.org/rfc/rfc9215.html#section-4.2
+
+    GostR3410-2012-PublicKeyParameters ::= SEQUENCE {
+        publicKeyParamSet OBJECT IDENTIFIER,
+        digestParamSet OBJECT IDENTIFIER OPTIONAL
+    }
+  -->
+  <asn:ObjectIdentifier name="PublicKeyParamSet" />
+  <asn:ObjectIdentifier name="DigestParamSet" optional="true" />
+</asn:Sequence>

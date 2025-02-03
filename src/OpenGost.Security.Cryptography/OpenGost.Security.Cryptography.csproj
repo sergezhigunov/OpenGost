@@ -12,6 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AsnXml Include="Asn1/**/*.xml" />
+    <Compile Update="Asn1/**/*.xml.cs">
+      <DependentUpon>$([System.Text.RegularExpressions.Regex]::Replace(%(Filename), '\cs$', ''))</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Update="Properties\CryptographyStrings.resx">
       <Generator></Generator>
     </EmbeddedResource>
@@ -35,6 +42,8 @@
       <DependentUpon>CryptographyStrings.Designer.tt</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)\Asn1\AsnXml.targets" />
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />

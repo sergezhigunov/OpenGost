@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Security;
 
 namespace OpenGost.Security.Cryptography;
 
@@ -24,7 +23,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, encrypting)
     { }
 
-    [SecuritySafeCritical]
     protected override unsafe void GenerateKeyExpansion(byte[] key)
     {
         _keyExpansion = new uint[8];
@@ -34,7 +32,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
             CryptoUtils.UInt32FromBigEndian(keyExpansion, 8, keyPtr);
     }
 
-    [SecuritySafeCritical]
     protected override unsafe void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
     {
         LoadRegisters(inputBuffer, inputOffset, out var a0, out var a1);
@@ -53,7 +50,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         FlushRegisters(outputBuffer, outputOffset, a0, a1);
     }
 
-    [SecuritySafeCritical]
     protected override unsafe void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
     {
         LoadRegisters(inputBuffer, inputOffset, out var a0, out var a1);
@@ -72,7 +68,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         FlushRegisters(outputBuffer, outputOffset, a0, a1);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void LoadRegisters(byte[] inputBuffer, int inputOffset, out uint a0, out uint a1)
     {
@@ -85,7 +80,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         }
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void FlushRegisters(byte[] outputBuffer, int outputOffset, uint a0, uint a1)
     {
@@ -107,7 +101,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         base.Dispose(disposing);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void ComputeEightRoundsForwardKeyOrder(uint* k, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3, ref uint a0, ref uint a1)
     {
@@ -121,7 +114,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         a0 ^= SubstituteAndRotateElevenBits(a1 + k[7], lookup0, lookup1, lookup2, lookup3);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void ComputeEightRoundsBackwardKeyOrder(uint* k, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3, ref uint a0, ref uint a1)
     {
@@ -135,7 +127,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         a0 ^= SubstituteAndRotateElevenBits(a1 + k[0], lookup0, lookup1, lookup2, lookup3);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe uint SubstituteAndRotateElevenBits(uint data, uint* lookup0, uint* lookup1, uint* lookup2, uint* lookup3)
     {
@@ -185,7 +176,6 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         return lookupTable;
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void InitializeSubstituteAndRotateElevenBits(
         uint* lookup,

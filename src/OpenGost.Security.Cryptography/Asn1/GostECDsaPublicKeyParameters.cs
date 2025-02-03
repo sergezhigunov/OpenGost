@@ -1,18 +1,15 @@
 ﻿using System.Formats.Asn1;
 using System.Runtime.InteropServices;
-using System.Security;
 using OpenGost.Security.Cryptography.Properties;
 
 namespace OpenGost.Security.Cryptography.Asn1;
 
-[SecuritySafeCritical]
 [StructLayout(LayoutKind.Sequential)]
 internal struct GostECDsaPublicKeyParameters
 {
     public string PublicKeyParamSet;
     public string? DigestParamSet;
 
-    [SecuritySafeCritical]
     public static GostECDsaPublicKeyParameters Decode(ReadOnlyMemory<byte> encoded, AsnEncodingRules ruleSet)
     {
         return Decode(Asn1Tag.Sequence, encoded, ruleSet);

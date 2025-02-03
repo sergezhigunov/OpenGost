@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Security;
 
 namespace OpenGost.Security.Cryptography;
 
@@ -44,7 +43,6 @@ internal static class CryptoUtils
             result[resultOffset + i] = (byte)(left[leftOffset + i] ^ right[rightOffset + i]);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void UInt64ToLittleEndian(byte* block, ulong* x, int digits)
     {
@@ -52,7 +50,6 @@ internal static class CryptoUtils
             UInt64ToLittleEndian(block + j, x[i]);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void UInt64ToLittleEndian(byte* block, ulong value)
     {
@@ -66,7 +63,6 @@ internal static class CryptoUtils
         block[7] = (byte)(value >> 56);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void UInt32ToBigEndian(byte* block, uint value)
     {
@@ -76,7 +72,6 @@ internal static class CryptoUtils
         block[3] = (byte)value;
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void UInt32FromBigEndian(uint* x, int digits, byte* block)
     {
@@ -84,7 +79,6 @@ internal static class CryptoUtils
             x[i] = UInt32FromBigEndian(block + j);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe uint UInt32FromBigEndian(byte* block)
         => (uint)(*block << 24) | (uint)(block[1] << 16) | (uint)(block[2] << 8) | (block[3]);

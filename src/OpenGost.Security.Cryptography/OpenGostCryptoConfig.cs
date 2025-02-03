@@ -1,5 +1,4 @@
-﻿using System.Security;
-namespace OpenGost.Security.Cryptography;
+﻿namespace OpenGost.Security.Cryptography;
 using static CryptoConfig;
 using static CryptoConstants;
 using static OpenGostSignedXml;
@@ -26,7 +25,6 @@ public static class OpenGostCryptoConfig
                 }
     }
 
-    [SecuritySafeCritical]
     private static void ConfigureCryptographicServicesCore()
     {
         AddAlgorithm(typeof(GostECDsaManaged), GostECDsaAlgorithmName);

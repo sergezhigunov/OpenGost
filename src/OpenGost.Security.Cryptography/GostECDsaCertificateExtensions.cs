@@ -109,7 +109,6 @@ public static class GostECDsaCertificateExtensions
         return true;
     }
 
-    [SecuritySafeCritical]
     private static ECParameters ReadParameters(PublicKey publicKey)
     {
         var curve = ReadCurve(publicKey.EncodedParameters.RawData);
@@ -117,7 +116,6 @@ public static class GostECDsaCertificateExtensions
         return new ECParameters { Curve = curve, Q = publicPoint };
     }
 
-    [SecuritySafeCritical]
     private static ECPoint ReadPublicKey(ReadOnlyMemory<byte> encodedKeyValue)
     {
         var reader = new AsnValueReader(encodedKeyValue.Span, AsnEncodingRules.BER);
@@ -135,7 +133,6 @@ public static class GostECDsaCertificateExtensions
         throw new CryptographicException(CryptographyStrings.CryptographicDerInvalidEncoding);
     }
 
-    [SecuritySafeCritical]
     private static ECCurve ReadCurve(ReadOnlyMemory<byte> encodedParameters)
     {
         var parameters = GostECDsaPublicKeyParameters.Decode(encodedParameters, AsnEncodingRules.BER);

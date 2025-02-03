@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Security;
 
 namespace OpenGost.Security.Cryptography;
 
@@ -182,7 +181,6 @@ public class Streebog512Managed : Streebog512
         return HashValue;
     }
 
-    [SecuritySafeCritical]
     private void DoTransform(byte[] block, uint blockSize)
     {
         unsafe
@@ -217,7 +215,6 @@ public class Streebog512Managed : Streebog512
         }
     }
 
-    [SecuritySafeCritical]
     private void DoFinalTransform(ulong sizeInBits, byte[] sigma)
     {
         unsafe
@@ -255,7 +252,6 @@ public class Streebog512Managed : Streebog512
         }
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Encrypt(byte* key, byte* block, byte* result,
         ulong* t0, ulong* t1, ulong* t2, ulong* t3,
@@ -272,7 +268,6 @@ public class Streebog512Managed : Streebog512
             }
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Transform(byte* data,
         ulong* t0, ulong* t1, ulong* t2, ulong* t3,
@@ -288,7 +283,6 @@ public class Streebog512Managed : Streebog512
         CryptoUtils.UInt64ToLittleEndian(data, temp, 8);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Copy(byte* source, byte* destination)
     {
@@ -296,7 +290,6 @@ public class Streebog512Managed : Streebog512
             *(((ulong*)destination) + i) = *(((ulong*)source) + i);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Xor(byte* left, byte* right, byte* result)
     {
@@ -304,7 +297,6 @@ public class Streebog512Managed : Streebog512
             *(((ulong*)result) + i) = *(((ulong*)left) + i) ^ *(((ulong*)right) + i);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Xor(byte* result, byte* right)
     {
@@ -312,7 +304,6 @@ public class Streebog512Managed : Streebog512
             *(((ulong*)result) + i) ^= *(((ulong*)right) + i);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Xor(byte* left, ulong right, byte* result)
     {
@@ -322,7 +313,6 @@ public class Streebog512Managed : Streebog512
             *(((ulong*)result) + i) = *(((ulong*)left) + i);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void AddModuloLittleEndian(byte* left, byte* right, byte* result)
     {
@@ -334,7 +324,6 @@ public class Streebog512Managed : Streebog512
         }
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void AddModuloLittleEndian(byte* left, ulong right, byte* result)
     {
@@ -354,7 +343,6 @@ public class Streebog512Managed : Streebog512
         }
     }
 
-    [SecuritySafeCritical]
     private static ulong[] InitializeLookupTable()
     {
         var lookupTable = GC.AllocateArray<ulong>(8 * 256, true);

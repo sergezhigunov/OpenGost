@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Security;
 
 namespace OpenGost.Security.Cryptography;
 
@@ -69,7 +68,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         : base(rgbKey, rgbIV, blockSize, cipherMode, paddingMode, encrypting)
     { }
 
-    [SecuritySafeCritical]
     protected override void GenerateKeyExpansion(byte[] key)
     {
         _key = new byte[160];
@@ -117,7 +115,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         base.Dispose(disposing);
     }
 
-    [SecuritySafeCritical]
     protected override void EncryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
     {
         unsafe
@@ -127,7 +124,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         }
     }
 
-    [SecuritySafeCritical]
     protected override void DecryptBlock(byte[] inputBuffer, int inputOffset, byte[] outputBuffer, int outputOffset)
     {
         unsafe
@@ -137,7 +133,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         }
     }
 
-    [SecurityCritical]
     private static unsafe void EncryptBlock(byte* k, byte* input, byte* output)
     {
         Xor(input, k, output);
@@ -158,7 +153,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         }
     }
 
-    [SecurityCritical]
     private static unsafe void DecryptBlock(byte* k, byte* input, byte* output)
     {
         Xor(input, k + 9 * 16, output);
@@ -179,7 +173,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         }
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Copy(byte* source, byte* destination)
     {
@@ -187,7 +180,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         *(((ulong*)destination) + 1) = *(((ulong*)source) + 1);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Xor(byte* left, byte* right, byte* result)
     {
@@ -195,7 +187,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         *(((ulong*)result) + 1) = *(((ulong*)left) + 1) ^ *(((ulong*)right) + 1);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Xor(byte* result, byte* right)
     {
@@ -203,7 +194,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         *(((ulong*)result) + 1) ^= *(((ulong*)right) + 1);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void Substitute(byte* substTable, byte* data)
     {
@@ -211,7 +201,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
             data[i] = substTable[data[i]];
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void DoLinearTransformForward(
         byte* data,
@@ -352,7 +341,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
             t192[data[6]] ^ t192[data[10]]);
     }
 
-    [SecurityCritical]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe void DoLinearTransformBackward(
         byte* data,
@@ -493,7 +481,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
             t192[data[5]] ^ t192[data[9]]);
     }
 
-    [SecuritySafeCritical]
     private static byte[] InitializeIterationConstants()
     {
         var retval = GC.AllocateArray<byte>(512);
@@ -520,7 +507,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         return retval;
     }
 
-    [SecuritySafeCritical]
     private static byte[] InitializeLookupTable()
     {
         var lookup = GC.AllocateArray<byte>(7 * 256);
@@ -541,7 +527,6 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
         return lookup;
     }
 
-    [SecurityCritical]
     private static unsafe void InitializeLookupRow(byte* row, byte c)
     {
         for (var i = 0; i < 256; i++)

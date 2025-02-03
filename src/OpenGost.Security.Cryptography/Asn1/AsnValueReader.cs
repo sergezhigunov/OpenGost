@@ -1,9 +1,7 @@
 ﻿using System.Formats.Asn1;
-using System.Security;
 
 namespace OpenGost.Security.Cryptography.Asn1;
 
-[SecuritySafeCritical]
 internal ref struct AsnValueReader(ReadOnlySpan<byte> span, AsnEncodingRules ruleSet)
 {
     private static readonly byte[] _singleByte = new byte[1];
@@ -16,9 +14,7 @@ internal ref struct AsnValueReader(ReadOnlySpan<byte> span, AsnEncodingRules rul
     public readonly void ThrowIfNotEmpty()
     {
         if (!_span.IsEmpty)
-        {
             new AsnReader(_singleByte, _ruleSet).ThrowIfNotEmpty();
-        }
     }
 
     public readonly Asn1Tag PeekTag()
@@ -34,7 +30,7 @@ internal ref struct AsnValueReader(ReadOnlySpan<byte> span, AsnEncodingRules rul
             _span,
             _ruleSet,
             out value,
-            out int consumed,
+            out var consumed,
             expectedTag);
 
         _span = _span.Slice(consumed);
@@ -43,7 +39,7 @@ internal ref struct AsnValueReader(ReadOnlySpan<byte> span, AsnEncodingRules rul
 
     public string ReadObjectIdentifier(Asn1Tag? expectedTag = default)
     {
-        var ret = AsnDecoder.ReadObjectIdentifier(_span, _ruleSet, out int consumed, expectedTag);
+        var ret = AsnDecoder.ReadObjectIdentifier(_span, _ruleSet, out var consumed, expectedTag);
         _span = _span.Slice(consumed);
         return ret;
     }
@@ -53,9 +49,9 @@ internal ref struct AsnValueReader(ReadOnlySpan<byte> span, AsnEncodingRules rul
         AsnDecoder.ReadSequence(
             _span,
             _ruleSet,
-            out int contentOffset,
-            out int contentLength,
-            out int bytesConsumed,
+            out var contentOffset,
+            out var contentLength,
+            out var bytesConsumed,
             expectedTag);
 
         var content = _span.Slice(contentOffset, contentLength);

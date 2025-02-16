@@ -25,26 +25,10 @@ public class CMACMagma : CMAC
     /// The <paramref name="key"/> parameter is <see langword="null"/>.
     /// </exception>
     public CMACMagma(byte[] key)
-        : this(CryptoConstants.MagmaAlgorithmName, key)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CMACMagma"/> class with the specified key data
-    /// and using the specified implementation of <see cref="Magma"/>.
-    /// </summary>
-    /// <param name="algorithmName">
-    /// The name of the <see cref="Magma"/> implementation to use.
-    /// </param>
-    /// <param name="key">
-    /// The secret key for <see cref="CMACMagma"/> encryption.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// The <paramref name="key"/> parameter is <see langword="null"/>.
-    /// </exception>
-    public CMACMagma(string algorithmName, byte[] key)
         : base()
     {
-        SymmetricAlgorithmName = algorithmName;
-        base.Key = key ?? throw new ArgumentNullException(nameof(key));
+        ArgumentNullException.ThrowIfNull(key);
+        SymmetricAlgorithmName = CryptoConstants.MagmaAlgorithmName;
+        base.Key = key;
     }
 }

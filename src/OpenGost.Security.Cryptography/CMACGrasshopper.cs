@@ -25,26 +25,10 @@ public class CMACGrasshopper : CMAC
     /// The <paramref name="key"/> parameter is <see langword="null"/>.
     /// </exception>
     public CMACGrasshopper(byte[] key)
-        : this(CryptoConstants.GrasshopperAlgorithmName, key)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CMACGrasshopper"/> class with the specified key data
-    /// and using the specified implementation of <see cref="Grasshopper"/>.
-    /// </summary>
-    /// <param name="algorithmName">
-    /// The name of the <see cref="Grasshopper"/> implementation to use.
-    /// </param>
-    /// <param name="key">
-    /// The secret key for <see cref="CMACGrasshopper"/> encryption.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// The <paramref name="key"/> parameter is <see langword="null"/>.
-    /// </exception>
-    public CMACGrasshopper(string algorithmName, byte[] key)
         : base()
     {
-        SymmetricAlgorithmName = algorithmName;
-        base.Key = key ?? throw new ArgumentNullException(nameof(key));
+        ArgumentNullException.ThrowIfNull(key);
+        SymmetricAlgorithmName = CryptoConstants.GrasshopperAlgorithmName;
+        base.Key = key;
     }
 }

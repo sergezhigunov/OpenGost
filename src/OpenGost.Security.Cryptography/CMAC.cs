@@ -236,32 +236,6 @@ public abstract class CMAC : KeyedHashAlgorithm
         base.Dispose(disposing);
     }
 
-    /// <summary>
-    /// Creates an instance of the default implementation of <see cref="CMAC"/> algorithm.
-    /// </summary>
-    /// <returns>
-    /// A new instance of <see cref="CMAC"/>.
-    /// </returns>
-    [ComVisible(false)]
-    [Obsolete(Obsoletions.DefaultCryptoAlgorithmsMessage,
-        DiagnosticId = Obsoletions.DefaultCryptoAlgorithmsDiagId,
-        UrlFormat = Obsoletions.SharedUrlFormat)]
-    public static new CMAC Create()
-        => new CMACGrasshopper();
-
-    /// <summary>
-    /// Creates an instance of a specified implementation of <see cref="CMAC"/> algorithm.
-    /// </summary>
-    /// <param name="algorithmName">
-    /// The name of the specific implementation of <see cref="CMAC"/> to be used.
-    /// </param>
-    /// <returns>
-    /// A new instance of <see cref="CMAC"/> using the specified implementation.
-    /// </returns>
-    [ComVisible(false)]
-    public static new CMAC Create(string algorithmName)
-        => (CMAC)CryptoConfig.CreateFromName(algorithmName)!;
-
     private void EnsureEncryptorInitialized()
     {
         if (_encryptor is null)

@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\OpenGost.Security.Cryptography\OpenGost.Security.Cryptography.csproj" />
   </ItemGroup>
 

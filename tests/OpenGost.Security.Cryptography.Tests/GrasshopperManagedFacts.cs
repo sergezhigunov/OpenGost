@@ -1,6 +1,6 @@
 ﻿namespace OpenGost.Security.Cryptography.Tests;
 
-public class GrasshopperFacts : SymmetricAlgorithmTest<GrasshopperManaged>
+public class GrasshopperManagedFacts : SymmetricAlgorithmTest<GrasshopperManaged>
 {
     private const string
         PlainText =

@@ -1,4 +1,6 @@
 ﻿namespace OpenGost.Security.Cryptography;
+
+using System.Threading;
 using static CryptoConfig;
 using static CryptoConstants;
 using static OpenGostSignedXml;
@@ -8,7 +10,7 @@ using static OpenGostSignedXml;
 /// </summary>
 public static class OpenGostCryptoConfig
 {
-    private static readonly object _syncRoot = new();
+    private static readonly Lock _lock = new();
     private static bool _configured;
 
     /// <summary>
@@ -17,7 +19,7 @@ public static class OpenGostCryptoConfig
     public static void ConfigureCryptographicServices()
     {
         if (!_configured)
-            lock (_syncRoot)
+            lock (_lock)
                 if (!_configured)
                 {
                     ConfigureCryptographicServicesCore();

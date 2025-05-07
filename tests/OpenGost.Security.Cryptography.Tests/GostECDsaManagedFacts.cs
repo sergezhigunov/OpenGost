@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.Xml;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography.Xml;
 using System.Xml;
 
 namespace OpenGost.Security.Cryptography.Tests;
@@ -62,6 +63,8 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
+    [SuppressMessage("Usage", "xUnit1044")]
+    [SuppressMessage("CodeQuality", "IDE0079")]
     public void SignHash_CreatesVerifiableSignature_OnTestDomainParameters(ECParameters parameters)
     {
         using var algorithm = new GostECDsaManaged(parameters);
@@ -103,6 +106,8 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [MemberData(nameof(TestCases))]
+    [SuppressMessage("Usage", "xUnit1044")]
+    [SuppressMessage("CodeQuality", "IDE0079")]
     public void VerifyHash_WhenSignatureIsValid_ReturnsTrue(
         ECParameters parameters,
         byte[] hash,
@@ -194,6 +199,8 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
+    [SuppressMessage("Usage", "xUnit1044")]
+    [SuppressMessage("CodeQuality", "IDE0079")]
     public void ExportParameters_ExportsValidParametersWithPrivateKey_IfHasPrivateKeyAndIncludePrivateParametersIsTrue(
         ECParameters parameters)
     {
@@ -209,6 +216,8 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
+    [SuppressMessage("Usage", "xUnit1044")]
+    [SuppressMessage("CodeQuality", "IDE0079")]
     public void ExportParameters_ExportsValidPublicOnlyParameters_IfHasPrivateKeyAndIncludePrivateParametersIsFalse(
         ECParameters parameters)
     {
@@ -224,6 +233,8 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
+    [SuppressMessage("Usage", "xUnit1044")]
+    [SuppressMessage("CodeQuality", "IDE0079")]
     public void ExportParameters_ExportsValidPublicOnlyParameters_IfHasNotPrivateKeyAndIncludePrivateParametersIsTrue(
         ECParameters parameters)
     {
@@ -240,6 +251,8 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
+    [SuppressMessage("Usage", "xUnit1044")]
+    [SuppressMessage("CodeQuality", "IDE0079")]
     public void ExportParameters_ExportsValidPublicOnlyParameters_IfHasNotPrivateKeyAndIncludePrivateParametersIsFalse(
         ECParameters parameters)
     {
@@ -298,6 +311,8 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
+    [SuppressMessage("Usage", "xUnit1044")]
+    [SuppressMessage("CodeQuality", "IDE0079")]
     public void GenerateKey_GeneratesValidParametersWithPrivateKey(ECParameters parameters)
     {
         var curve = parameters.Curve;
@@ -313,6 +328,8 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [MemberData(nameof(TestDomainParameters))]
+    [SuppressMessage("Usage", "xUnit1044")]
+    [SuppressMessage("CodeQuality", "IDE0079")]
     public void SignedXml_ComputeSignature_GeneratesValidSignature(ECParameters parameters)
     {
         using var algorithm = new GostECDsaManaged();
@@ -390,6 +407,8 @@ public class GostECDsaManagedFacts
 
     [Theory]
     [MemberData(nameof(ValidSignedXmlCases))]
+    [SuppressMessage("Usage", "xUnit1044")]
+    [SuppressMessage("CodeQuality", "IDE0079")]
     public void SignedXml_CheckSignature_ReturnsTrue_IfSignatureValid(ECParameters parameters, string signedXmlName)
     {
         using var algorithm = new GostECDsaManaged();

@@ -62,6 +62,5 @@
     target for all inputs for incremental builds. -->
     <Touch Condition="'@(_FilesDiffer)' != 'true'" Files="@(AsnXml -> '%(Identity).cs')" />
 
-    <Warning Condition="'@(_FilesDiffer)' == 'true'" Text="AsnXml regenerated files, be sure to check them in: @(AsnXml -> '%(Identity).cs')" />
   </Target>
 </Project>

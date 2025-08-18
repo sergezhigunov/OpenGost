@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/dotnet.yml" />
+  </Folder>
+  <Folder Name="/benchmarks/">
+    <File Path="benchmarks/Directory.Build.props" />
+    <Project Path="benchmarks/OpenGost.Security.Cryptography.Benchmarks/OpenGost.Security.Cryptography.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path=".mailmap" />
+    <File Path="Directory.Build.props" />
+    <File Path="global.json" />
+    <File Path="Key.snk" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path="src/Directory.Build.props" />
+    <Project Path="src/OpenGost.Security.Cryptography/OpenGost.Security.Cryptography.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <File Path="tests/Directory.Build.props" />
+    <Project Path="tests/OpenGost.Security.Cryptography.Tests/OpenGost.Security.Cryptography.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <File Path="tools/Resources.tt" />
+  </Folder>
+</Solution>

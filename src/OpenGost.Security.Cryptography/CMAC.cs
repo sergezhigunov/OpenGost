@@ -127,11 +127,8 @@ public abstract class CMAC : KeyedHashAlgorithm
     /// </summary>
     public override void Initialize()
     {
-        if (_encryptor != null)
-        {
-            _encryptor.Dispose();
-            _encryptor = null;
-        }
+        _encryptor?.Dispose();
+        _encryptor = null;
 
         CryptoUtils.EraseData(ref _subkey1);
         CryptoUtils.EraseData(ref _subkey2);

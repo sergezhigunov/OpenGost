@@ -4,7 +4,7 @@
     <Authors>Sergey Zhigunov</Authors>
     <Copyright>Copyright © 2016 Sergey Zhigunov</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <LangVersion>13.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <VersionPrefix>0.2.2</VersionPrefix>

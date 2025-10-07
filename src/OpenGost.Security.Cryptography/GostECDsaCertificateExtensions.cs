@@ -108,7 +108,7 @@ public static class GostECDsaCertificateExtensions
 
     private static ECParameters ReadParameters(PublicKey publicKey)
     {
-        var curve = ReadCurve(publicKey.EncodedParameters.RawData);
+        var curve = ReadCurve(publicKey.EncodedParameters!.RawData);
         var publicPoint = ReadPublicKey(publicKey.EncodedKeyValue.RawData);
         return new ECParameters { Curve = curve, Q = publicPoint };
     }

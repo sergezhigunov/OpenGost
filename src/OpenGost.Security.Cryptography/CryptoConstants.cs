@@ -13,5 +13,4 @@ internal static class CryptoConstants
     public const string HMACStreebog256AlgorithmName = nameof(HMACStreebog256);
     public const string Streebog512AlgorithmName = nameof(Streebog512);
     public const string HMACStreebog512AlgorithmName = nameof(HMACStreebog512);
-
 }

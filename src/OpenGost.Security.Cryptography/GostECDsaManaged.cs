@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using OpenGost.Security.Cryptography.Properties;
 
@@ -149,6 +150,7 @@ public sealed class GostECDsaManaged : GostECDsa
     /// <exception cref="CryptographicException">
     /// Invalid hash size.
     /// </exception>
+    [SuppressMessage("Performance", "CA1863")]
     public override byte[] SignHash(byte[] hash)
     {
         ArgumentNullException.ThrowIfNull(hash);
@@ -157,7 +159,11 @@ public sealed class GostECDsaManaged : GostECDsa
 
         var keySizeInBytes = KeySize / 8;
         if (keySizeInBytes != hash.Length)
-            throw new CryptographicException(CryptographyStrings.CryptographicInvalidHashSize(keySizeInBytes));
+            throw new CryptographicException(
+                string.Format(
+                    null,
+                    CryptographyStrings.CryptographicInvalidHashSize,
+                    keySizeInBytes));
 
         if (!_parametersSet)
             GenerateKey(GetDefaultCurve(KeySize));
@@ -225,6 +231,7 @@ public sealed class GostECDsaManaged : GostECDsa
     /// <exception cref="CryptographicException">
     /// Invalid signature size.
     /// </exception>
+    [SuppressMessage("Performance", "CA1863")]
     public override bool VerifyHash(byte[] hash, byte[] signature)
     {
         ArgumentNullException.ThrowIfNull(hash);
@@ -234,11 +241,18 @@ public sealed class GostECDsaManaged : GostECDsa
 
         var keySizeInBytes = KeySize / 8;
         if (keySizeInBytes != hash.Length)
-            throw new CryptographicException(CryptographyStrings.CryptographicInvalidHashSize(keySizeInBytes));
+            throw new CryptographicException(
+                string.Format(
+                    null,
+                    CryptographyStrings.CryptographicInvalidHashSize,
+                    keySizeInBytes));
         var signatureSizeInBytes = keySizeInBytes * 2;
         if (signatureSizeInBytes != signature.Length)
             throw new CryptographicException(
-                CryptographyStrings.CryptographicInvalidSignatureSize(signatureSizeInBytes));
+                string.Format(
+                    null,
+                    CryptographyStrings.CryptographicInvalidSignatureSize,
+                    signatureSizeInBytes));
 
         // There is no necessity to generate new parameter, just return false
         if (!_parametersSet)

@@ -151,7 +151,7 @@
     <value>Specified feedback is not a valid for this algorithm.</value>
   </data>
   <data name="CryptographicInvalidHashSize" xml:space="preserve">
-    <value>Hash size must be {size} bytes.</value>
+    <value>Hash size must be {0} bytes.</value>
   </data>
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Specified initialization vector (IV) does not match allowed size for this algorithm.</value>
@@ -160,7 +160,7 @@
     <value>Padding is invalid and cannot be removed.</value>
   </data>
   <data name="CryptographicInvalidSignatureSize" xml:space="preserve">
-    <value>Digital signature size must be {size} bytes.</value>
+    <value>Digital signature size must be {0} bytes.</value>
   </data>
   <data name="CryptographicSymmetricAlgorithmKeySet" xml:space="preserve">
     <value>The key cannot be changed after the first write to the stream.</value>
@@ -172,9 +172,9 @@
     <value>Symmetric algorithm name cannot be changed after the first write to the stream.</value>
   </data>
   <data name="CryptographicUnknownOid" xml:space="preserve">
-    <value>'{oid}' is not a known object identifier.</value>
+    <value>'{0}' is not a known object identifier.</value>
   </data>
   <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
-    <value>'{algorithm}' is not a known symmetric algorithm.</value>
+    <value>'{0}' is not a known symmetric algorithm.</value>
   </data>
 </root>

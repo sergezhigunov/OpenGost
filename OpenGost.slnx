@@ -26,7 +26,4 @@
     <File Path="tests/Directory.Build.props" />
     <Project Path="tests/OpenGost.Security.Cryptography.Tests/OpenGost.Security.Cryptography.Tests.csproj" />
   </Folder>
-  <Folder Name="/tools/">
-    <File Path="tools/Resources.tt" />
-  </Folder>
 </Solution>

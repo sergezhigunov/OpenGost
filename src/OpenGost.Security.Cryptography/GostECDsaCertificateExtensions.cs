@@ -136,6 +136,6 @@ public static class GostECDsaCertificateExtensions
         var algorithm = parameters.PublicKeyParamSet;
         if (ECCurveOidMap.OidValueRegistered(algorithm))
             return ECCurve.CreateFromValue(algorithm);
-        throw new CryptographicException(CryptographyStrings.CryptographicUnknownOid(algorithm));
+        throw new CryptographicException(CryptographyStrings.CryptographicUnknownOid, algorithm);
     }
 }

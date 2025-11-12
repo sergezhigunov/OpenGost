@@ -97,8 +97,7 @@ public abstract class CMAC : KeyedHashAlgorithm
                 throw new CryptographicException(CryptographyStrings.CryptographicSymmetricAlgorithmNameSet);
 
             _symmetricAlgorithm = SymmetricAlgorithm.Create(value) ??
-                throw new CryptographicException(
-                    CryptographyStrings.CryptographicUnknownSymmetricAlgorithm(value));
+                throw new CryptographicException(CryptographyStrings.CryptographicUnknownSymmetricAlgorithm, value);
 
             _symmetricAlgorithmName = value;
             HashSizeValue = _symmetricAlgorithm.BlockSize;

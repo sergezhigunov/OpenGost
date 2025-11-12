@@ -151,7 +151,7 @@
     <value>Задан недопустимый размер блока обратной связи.</value>
   </data>
   <data name="CryptographicInvalidHashSize" xml:space="preserve">
-    <value>Размер хэша должен быть равен {size} байт.</value>
+    <value>Размер хэша должен быть равен {0} байт.</value>
   </data>
   <data name="CryptographicInvalidIVSize" xml:space="preserve">
     <value>Заданный вектор инициализации (IV) не соответствует размеру блоков для этого алгоритма.</value>
@@ -160,7 +160,7 @@
     <value>Дополнение имеет недопустимый формат и не может быть удалено.</value>
   </data>
   <data name="CryptographicInvalidSignatureSize" xml:space="preserve">
-    <value>Размер цифровой подписи должен быть равен {size} байт.</value>
+    <value>Размер цифровой подписи должен быть равен {0} байт.</value>
   </data>
   <data name="CryptographicSymmetricAlgorithmKeySet" xml:space="preserve">
     <value>После первой записи в поток ключ симметричного алгоритма изменить невозможно.</value>
@@ -172,9 +172,9 @@
     <value>После первой записи в поток имя симметричного алгоритма изменить невозможно.</value>
   </data>
   <data name="CryptographicUnknownOid" xml:space="preserve">
-    <value>"{oid}" - неизвестный идентификатор объекта.</value>
+    <value>"{0}" - неизвестный идентификатор объекта.</value>
   </data>
   <data name="CryptographicUnknownSymmetricAlgorithm" xml:space="preserve">
-    <value>"{algorithm}" - неизвестный симметричный алгоритм.</value>
+    <value>"{0}" - неизвестный симметричный алгоритм.</value>
   </data>
 </root>

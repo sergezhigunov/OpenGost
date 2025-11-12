@@ -21,9 +21,15 @@ An open-source .NET library providing the modern Russian national standard crypt
 
 ## Installation
 
-To install Russian national standard cryptographic algorithms, run the following command in the Nuget Package Manager Console:
+To install Russian national standard cryptographic algorithms, run the following command in the Terminal:
 
+```dotnetcli
+dotnet add package OpenGost.Security.Cryptography
 ```
+
+Alternatively run the following command in the Nuget Package Manager Console:
+
+```powershell
 PM> Install-Package OpenGost.Security.Cryptography
 ```
 

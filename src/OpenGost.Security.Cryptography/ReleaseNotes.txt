@@ -1,4 +1,10 @@
-﻿0.2.2
+﻿0.3.0
+• Added – .NET 9.0 and .NET 10.0 target frameworks support.
+• Breaking – Remove .NET 6.0 target frameworks support.
+• Breaking – Remove obsolete creation factory methods.
+• Fixed – A few performance issues.
+
+0.2.2
 • Added – `net6.0` and `net8.0` target frameworks support.
 • Fixed - Microsoft Security Advisory CVE-2024-3809. https://github.com/advisories/GHSA-447r-wph3-92pm.
 

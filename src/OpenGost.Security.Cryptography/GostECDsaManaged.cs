@@ -153,8 +153,11 @@ public sealed class GostECDsaManaged : GostECDsa
     [SuppressMessage("Performance", "CA1863")]
     public override byte[] SignHash(byte[] hash)
     {
+#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(hash);
-
+#else
+        if (hash is null) throw new ArgumentNullException(nameof(hash));
+#endif
         ThrowIfDisposed();
 
         var keySizeInBytes = KeySize / 8;
@@ -234,9 +237,13 @@ public sealed class GostECDsaManaged : GostECDsa
     [SuppressMessage("Performance", "CA1863")]
     public override bool VerifyHash(byte[] hash, byte[] signature)
     {
+#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(hash);
         ArgumentNullException.ThrowIfNull(signature);
-
+#else
+        if (hash is null) throw new ArgumentNullException(nameof(hash));
+        if (signature is null) throw new ArgumentNullException(nameof(signature));
+#endif
         ThrowIfDisposed();
 
         var keySizeInBytes = KeySize / 8;
@@ -344,7 +351,11 @@ public sealed class GostECDsaManaged : GostECDsa
 
     private void ThrowIfDisposed()
     {
+#if NET7_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
+#else
+        if (_disposed) throw new ObjectDisposedException(GetType().FullName);
+#endif
     }
 
     private static ECCurve GetDefaultCurve(int keySize)

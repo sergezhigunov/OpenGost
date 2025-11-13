@@ -140,7 +140,11 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
 
     private static uint[] InitializeLookupTable()
     {
+#if NET5_0_OR_GREATER
         var lookupTable = GC.AllocateArray<uint>(256 * 4, true);
+#else
+        var lookupTable = new uint[256 * 4];
+#endif
         unsafe
         {
             byte* substitutionBox = stackalloc byte[]
@@ -184,8 +188,16 @@ internal sealed class MagmaManagedTransform : SymmetricTransform
         int b,
         int shift)
     {
-        lookup[b] = BitOperations.RotateLeft(
-            offset: 11,
-            value: (sbox1[b & 0x0f] ^ (uint)sbox2[b >> 4] << 4) << shift);
+#if NET5_0_OR_GREATER
+        lookup[b] = BitOperations.RotateLeft(offset: 11, value: (sbox1[b & 0x0f] ^ (uint)sbox2[b >> 4] << 4) << shift);
     }
+#else
+        lookup[b] = RotateElevenBitsLeft((sbox1[b & 0x0f] ^ (uint)sbox2[b >> 4] << 4) << shift);
+    }
+
+    private static uint RotateElevenBitsLeft(uint input)
+    {
+        return input << 11 | input >> 21;
+    }
+#endif
 }

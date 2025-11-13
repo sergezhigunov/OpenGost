@@ -27,7 +27,11 @@ public class CMACMagma : CMAC
     public CMACMagma(byte[] key)
         : base()
     {
-        ArgumentNullException.ThrowIfNull(key);
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(key);
+#else
+        if (key is null) throw new ArgumentNullException(nameof(key));
+#endif
         SymmetricAlgorithmName = CryptoConstants.MagmaAlgorithmName;
         base.Key = key;
     }

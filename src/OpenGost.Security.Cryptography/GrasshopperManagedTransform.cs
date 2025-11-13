@@ -483,8 +483,11 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
 
     private static byte[] InitializeIterationConstants()
     {
-        var retval = GC.AllocateArray<byte>(512);
-
+#if NET5_0_OR_GREATER
+        var retval = GC.AllocateArray<byte>(512, true);
+#else
+        var retval = new byte[512];
+#endif
         unsafe
         {
             fixed (byte* t16 = _lookup, ptr = retval)
@@ -509,7 +512,11 @@ internal sealed class GrasshopperManagedTransform : SymmetricTransform
 
     private static byte[] InitializeLookupTable()
     {
-        var lookup = GC.AllocateArray<byte>(7 * 256);
+#if NET5_0_OR_GREATER
+        var lookup = GC.AllocateArray<byte>(7 * 256, true);
+#else
+        var lookup = new byte[7 * 256];
+#endif
         unsafe
         {
             fixed (byte* ptr = lookup)

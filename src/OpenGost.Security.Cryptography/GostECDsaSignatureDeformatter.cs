@@ -6,9 +6,13 @@ internal sealed class GostECDsaSignatureDeformatter : AsymmetricSignatureDeforma
 
     public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature)
     {
+#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(rgbHash);
         ArgumentNullException.ThrowIfNull(rgbSignature);
-
+#else
+        if (rgbHash is null) throw new ArgumentNullException(nameof(rgbHash));
+        if (rgbSignature is null) throw new ArgumentNullException(nameof(rgbSignature));
+#endif
         if (_key is null)
             throw new CryptographicUnexpectedOperationException();
 
@@ -21,8 +25,11 @@ internal sealed class GostECDsaSignatureDeformatter : AsymmetricSignatureDeforma
 
     public override void SetKey(AsymmetricAlgorithm key)
     {
-        ArgumentNullException.ThrowIfNull(key);
-
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(key);
+#else
+        if (key is null) throw new ArgumentNullException(nameof(key));
+#endif
         _key = (GostECDsa)key;
     }
 }

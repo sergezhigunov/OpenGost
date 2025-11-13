@@ -14,7 +14,7 @@ internal static class CryptoPool
         Debug.Assert(arraySegment.Array != null);
         Debug.Assert(arraySegment.Offset == 0);
 
-        Return(arraySegment.Array, arraySegment.Count);
+        Return(arraySegment.Array!, arraySegment.Count);
     }
 
     internal static void Return(byte[] array, int clearSize = ClearAll)
@@ -24,7 +24,11 @@ internal static class CryptoPool
 
         if (!clearWholeArray && clearSize != 0)
         {
+#if NET5_0_OR_GREATER
             CryptographicOperations.ZeroMemory(array.AsSpan(0, clearSize));
+#else
+            Array.Clear(array, 0, clearSize);
+#endif
         }
 
         ArrayPool<byte>.Shared.Return(array, clearWholeArray);

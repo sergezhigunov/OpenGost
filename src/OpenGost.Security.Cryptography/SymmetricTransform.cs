@@ -31,8 +31,11 @@ internal abstract class SymmetricTransform : ICryptoTransform
         PaddingMode paddingMode,
         bool encrypting)
     {
-        ArgumentNullException.ThrowIfNull(key);
-
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(key);
+#else
+        if (key is null) throw new ArgumentNullException(nameof(key));
+#endif
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(nameof(blockSize),
                 CryptographyStrings.ArgumentOutOfRangeNeedPositiveNum);
@@ -50,7 +53,11 @@ internal abstract class SymmetricTransform : ICryptoTransform
             case CipherMode.CBC:
             case CipherMode.CFB:
             case CipherMode.OFB:
+#if NET6_0_OR_GREATER
                 ArgumentNullException.ThrowIfNull(iv);
+#else
+                if (iv is null) throw new ArgumentNullException(nameof(iv));
+#endif
                 _rgbIV = (byte[])iv.Clone();
                 _stateBuffer = new byte[_rgbIV.Length];
                 _tempBuffer = new byte[InputBlockSize];
@@ -95,8 +102,13 @@ internal abstract class SymmetricTransform : ICryptoTransform
         byte[] outputBuffer,
         int outputOffset)
     {
+#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(inputBuffer);
         ArgumentNullException.ThrowIfNull(outputBuffer);
+#else
+        if (inputBuffer is null) throw new ArgumentNullException(nameof(inputBuffer));
+        if (outputBuffer is null) throw new ArgumentNullException(nameof(outputBuffer));
+#endif
         if (inputOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset,
                 CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);
@@ -147,7 +159,11 @@ internal abstract class SymmetricTransform : ICryptoTransform
 
     public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
     {
+#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(inputBuffer);
+#else
+        if (inputBuffer is null) throw new ArgumentNullException(nameof(inputBuffer));
+#endif
         if (inputOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(inputOffset), inputOffset,
                 CryptographyStrings.ArgumentOutOfRangeNeedNonNegNum);

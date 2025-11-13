@@ -1,11 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Description>An open-source .NET library providing the modern Russian national standard cryptographic algorithms</Description>
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)ReleaseNotes.txt'))</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Formats.Asn1" Version="10.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <AsnXml Include="Asn1/GostECDsaPublicKeyParameters.xml"/>
@@ -30,7 +34,6 @@
     <EmbeddedResource Update="Properties\CryptographyStrings.*.resx">
       <DependentUpon>CryptographyStrings.resx</DependentUpon>
     </EmbeddedResource>
-
   </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)\Asn1\AsnXml.targets" />

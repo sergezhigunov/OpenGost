@@ -1,9 +1,13 @@
-﻿namespace OpenGost.Security.Cryptography;
+﻿using System.Threading;
 
-using System.Threading;
+namespace OpenGost.Security.Cryptography;
+
 using static CryptoConfig;
 using static CryptoConstants;
 using static OpenGostSignedXml;
+#if !NET9_0_OR_GREATER
+using Lock = System.Object;
+#endif
 
 /// <summary>
 /// Contains an entry point to configure cryptographic services.

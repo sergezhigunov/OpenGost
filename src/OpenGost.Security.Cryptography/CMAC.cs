@@ -56,8 +56,11 @@ public abstract class CMAC : KeyedHashAlgorithm
         get => (byte[])KeyValue.Clone();
         set
         {
+#if NET6_0_OR_GREATER
             ArgumentNullException.ThrowIfNull(value);
-
+#else
+            if (value is null) throw new ArgumentNullException(nameof(value));
+#endif
             if (_hashing)
                 throw new CryptographicException(CryptographyStrings.CryptographicSymmetricAlgorithmKeySet);
 
@@ -96,8 +99,10 @@ public abstract class CMAC : KeyedHashAlgorithm
             if (_hashing)
                 throw new CryptographicException(CryptographyStrings.CryptographicSymmetricAlgorithmNameSet);
 
+#pragma warning disable CA1508
             _symmetricAlgorithm = SymmetricAlgorithm.Create(value) ??
                 throw new CryptographicException(CryptographyStrings.CryptographicUnknownSymmetricAlgorithm, value);
+#pragma warning restore CA1508
 
             _symmetricAlgorithmName = value;
             HashSizeValue = _symmetricAlgorithm.BlockSize;

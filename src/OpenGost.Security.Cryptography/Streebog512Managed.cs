@@ -345,7 +345,11 @@ public class Streebog512Managed : Streebog512
 
     private static ulong[] InitializeLookupTable()
     {
+#if NET5_0_OR_GREATER
         var lookupTable = GC.AllocateArray<ulong>(8 * 256, true);
+#else
+        var lookupTable = new ulong[8 * 256];
+#endif
         unsafe
         {
             byte* substitutionBox = stackalloc byte[256]

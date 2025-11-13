@@ -63,8 +63,11 @@ public abstract class Grasshopper : SymmetricAlgorithm
         set
         {
 
+#if NET6_0_OR_GREATER
             ArgumentNullException.ThrowIfNull(value);
-
+#else
+            if (value is null) throw new ArgumentNullException(nameof(value));
+#endif
             if (value.Length == 0 || value.Length % (BlockSizeValue / 8) != 0)
                 throw new CryptographicException(CryptographyStrings.CryptographicInvalidIVSize);
 

@@ -27,7 +27,11 @@ public class CMACGrasshopper : CMAC
     public CMACGrasshopper(byte[] key)
         : base()
     {
-        ArgumentNullException.ThrowIfNull(key);
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(key);
+#else
+        if (key is null) throw new ArgumentNullException(nameof(key));
+#endif
         SymmetricAlgorithmName = CryptoConstants.GrasshopperAlgorithmName;
         base.Key = key;
     }

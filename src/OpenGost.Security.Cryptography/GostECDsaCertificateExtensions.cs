@@ -32,8 +32,11 @@ public static class GostECDsaCertificateExtensions
     /// </exception>
     public static GostECDsa? GetGostECDsaPublicKey(this X509Certificate2 certificate)
     {
+#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(certificate);
-
+#else
+        if (certificate is null) throw new ArgumentNullException(nameof(certificate));
+#endif
         if (!IsGostECDsa(certificate))
             return null;
 
@@ -69,8 +72,11 @@ public static class GostECDsaCertificateExtensions
     /// </exception>
     public static GostECDsa? GetGostECDsaPrivateKey(this X509Certificate2 certificate)
     {
+#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(certificate);
-
+#else
+        if (certificate is null) throw new ArgumentNullException(nameof(certificate));
+#endif
         if (!certificate.HasPrivateKey || !IsGostECDsa(certificate))
             return null;
 

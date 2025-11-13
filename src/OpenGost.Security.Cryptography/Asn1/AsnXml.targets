@@ -1,9 +1,9 @@
 <Project>
-  
+
   <PropertyGroup>
     <AsnXml />
   </PropertyGroup>
-  
+
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)asn.xsd" />
   </ItemGroup>

@@ -16,6 +16,6 @@
   -->
   <asn:ObjectIdentifier name="AttrType" />
   <asn:SetOf name="AttrValues">
-	  <asn:AnyValue />
+    <asn:AnyValue />
   </asn:SetOf>
 </asn:Sequence>

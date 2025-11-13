@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AsnXml Include="Asn1/**/*.xml" />
-    <Compile Update="Asn1/**/*.xml.cs">
+    <AsnXml Include="Asn1/GostECDsaPublicKeyParameters.xml"/>
+    <Compile Update="Asn1/GostECDsaPublicKeyParameters.xml.cs">
       <DependentUpon>$([System.Text.RegularExpressions.Regex]::Replace(%(Filename), '\cs$', ''))</DependentUpon>
     </Compile>
   </ItemGroup>

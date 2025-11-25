@@ -17,6 +17,7 @@
     <AnalysisLevel>latest-all</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <NoWarn>$(NoWarn);CA5358;SYSLIB0045</NoWarn>
   </PropertyGroup>
 

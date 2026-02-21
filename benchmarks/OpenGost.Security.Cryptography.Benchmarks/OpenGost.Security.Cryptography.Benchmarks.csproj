@@ -9,4 +9,8 @@
     <ProjectReference Include="..\..\src\OpenGost.Security.Cryptography\OpenGost.Security.Cryptography.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="BenchmarkDotNet" Version="0.15.8" />
+  </ItemGroup>
+
 </Project>
